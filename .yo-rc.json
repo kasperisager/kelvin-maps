@@ -1,0 +1,9 @@
+{
+  "generator-java": {
+    "title": "Kelvin Maps",
+    "description": "",
+    "author": "The Authors",
+    "email": "",
+    "namespace": "dk.itu.kelvin"
+  }
+}

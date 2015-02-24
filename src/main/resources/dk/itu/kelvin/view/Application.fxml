@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- JavFX layouts -->
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane
+  fx:controller="dk.itu.kelvin.controller.ApplicationController"
+  xmlns:fx="http://javafx.com/fxml"
+>
+  <center>
+    <fx:include fx:id="chart" source="Chart.fxml" />
+  </center>
+</BorderPane>

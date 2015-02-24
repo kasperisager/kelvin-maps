@@ -1,0 +1,50 @@
+@font-face {
+  font-family: "Ionicons";
+  src: url("../font/ionicons.ttf");
+}
+
+.root {
+  -fx-background-color: #a0c3ff;
+}
+
+.land {
+  -fx-background-color: #e9e5dd;
+}
+
+.buttons-zoom {
+  -fx-padding: 8px;
+}
+
+.button-zoom {
+  -fx-padding: 10px 12px;
+  -fx-font-family: "Ionicons";
+  -fx-font-size: 14px;
+  -fx-text-fill: #666;
+  -fx-background-color: #fff;
+  -fx-background-radius: 2;
+  -fx-background-insets: none;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
+  -fx-cursor: pointer;
+}
+.button-zoom:hover {
+  -fx-text-fill: #333;
+}
+.button-zoom:pressed {
+  -fx-text-fill: #000;
+}
+
+.compass {
+  -fx-padding: 16px;
+}
+.compass-disc {
+  -fx-fill: none;
+  -fx-stroke: #fff;
+  -fx-stroke-width: 4px;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
+}
+.compass-arrow {
+  -fx-fill: #fff;
+  -fx-stroke: #fff;
+  -fx-stroke-line-join: round;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
+}
