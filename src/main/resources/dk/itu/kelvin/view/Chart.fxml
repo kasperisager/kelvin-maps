@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- JavaFX scene utilities -->
-<?import javafx.scene.Group?>
 
 <!-- JavaFX layouts -->
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
 
 <!-- JavaFX controls -->
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
 
 <!-- JavaFX shapes -->
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.shape.LineTo?>
-<?import javafx.scene.shape.MoveTo?>
-<?import javafx.scene.shape.Path?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 <StackPane
   fx:controller="dk.itu.kelvin.controller.ChartController"
   xmlns:fx="http://javafx.com/fxml"
@@ -57,10 +54,43 @@
     alignment="TOP_LEFT"
     pickOnBounds="false"
     styleClass="address-input-wrapper"
+    maxWidth="2000"
+    spacing="10"
   >
-    <children>
-      <TextField promptText="Enter an address" />
-    </children>
+    <HBox maxWidth="Infinity">
+      <children>
+        <TextField prefWidth="500" minWidth="200" maxWidth="2000" promptText="Enter an address" fx:id="addressFrom" onAction="#findAddress"/>
+      </children>
+
+      <children>
+        <Button styleClass="search-button, icon" text="&#xf4a5;" onAction="#findAddress"/>
+      </children>
+    </HBox>
+
+    <HBox>
+      <children>
+        <TextField prefWidth="500" minWidth="200" maxWidth="2000" promptText="Get directions to this address" fx:id="addressTo" onAction="#findRoute"/>
+      </children>
+
+      <children>
+        <Button styleClass="search-button, icon" text="&#xf3d6;" onAction="#findRoute"/>
+      </children>
+    </HBox>
+
+    <HBox spacing="10">
+      <children>
+        <Button styleClass="func-button, icon" text="&#xf268;"/>
+      </children>
+
+      <children>
+        <Button styleClass="func-button, icon" text="&#xf2c1;"/>
+      </children>
+
+      <children>
+        <Button styleClass="func-button, icon" text="&#xf3bb; / &#xf369;"/>
+      </children>
+    </HBox>
+
   </VBox>
 
   <VBox
