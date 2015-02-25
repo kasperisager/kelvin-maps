@@ -1,6 +1,7 @@
 Kelvin Maps
 ===========
 
+
 Kelvin Maps is a mapping application for visualising and interacting with OpenStreetMap data.
 
 ---
