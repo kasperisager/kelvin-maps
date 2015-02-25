@@ -3,26 +3,17 @@
  */
 package dk.itu.kelvin.controller;
 
-// General utilities
-import java.util.Collections;
-import java.util.List;
-
-// I/O utilities
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 // JavaFX scene utilities
 import javafx.scene.CacheHint;
 import javafx.scene.Group;
 
 // JavaFX layout
-import javafx.scene.layout.VBox;
+import javafx.scene.control.TextField;
 
 // JavaFX shapes
 import javafx.scene.shape.Path;
 
 // JavaFX input
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.RotateEvent;
@@ -31,10 +22,6 @@ import javafx.scene.input.ZoomEvent;
 
 // JavaFX transformations
 import javafx.scene.transform.Affine;
-import javafx.scene.transform.Transform;
-
-// JavaFX collections
-import javafx.collections.FXCollections;
 
 // FXML utilities
 import javafx.fxml.FXML;
@@ -43,7 +30,6 @@ import dk.itu.kelvin.ChartParser;
 
 // Models
 import dk.itu.kelvin.model.Chart;
-import dk.itu.kelvin.model.Element;
 
 /**
  * Chart controller class.
@@ -134,6 +120,18 @@ public final class ChartController {
   private Path compassArrow;
 
   /**
+   * The address typed in.
+   */
+  @FXML
+  private TextField addressFrom;
+
+  /**
+   * The address to navigate to from addressFrom.
+   */
+  @FXML
+  private TextField addressTo;
+
+  /**
    * Initialize the controller.
    *
    * @throws Exception In case of an error. Duh.
@@ -157,25 +155,6 @@ public final class ChartController {
       -this.chart.bounds().getX(),
       -this.chart.bounds().getY()
     );
-
-    // try (
-    //   BufferedReader br = new BufferedReader(new InputStreamReader(
-    //     this.getClass().getResourceAsStream(MAP_INPUT)
-    //   ));
-    // ) {
-    //   for (String line; (line = br.readLine()) != null;) {
-    //     String[] coordinates = line.split(" ");
-
-    //     // this.canvas.node(
-    //     //   Double.parseDouble(coordinates[0]),
-    //     //   Double.parseDouble(coordinates[1]),
-    //     //   Double.parseDouble(coordinates[2]),
-    //     //   Double.parseDouble(coordinates[3])
-    //     // );
-    //   }
-
-    //   this.canvas.getChildren().addAll(this.canvas.nodes());
-    // }
   }
 
   /**
@@ -186,7 +165,7 @@ public final class ChartController {
    * @param y       The y-coordinate of the pivot point.
    */
   private void zoom(final double factor, final double x, final double y) {
-    double newZoomFactor = currentZoomFactor * factor;
+    double newZoomFactor = this.currentZoomFactor * factor;
 
     if (factor > 1 && newZoomFactor >= MAX_ZOOM_FACTOR) {
       return;
@@ -196,7 +175,7 @@ public final class ChartController {
       return;
     }
 
-    currentZoomFactor *= factor;
+    this.currentZoomFactor *= factor;
 
     this.transform.prependScale(factor, factor, x, y);
   }
@@ -291,11 +270,21 @@ public final class ChartController {
     this.initialMouseDragY = e.getSceneY();
   }
 
+  /**
+   * On mouse entered event.
+   *
+   * @param e The mouse event.
+   */
   @FXML
   private void onMouseEntered(final MouseEvent e) {
     this.setInitialMouseScroll(e);
   }
 
+  /**
+   * On mouse pressed event.
+   *
+   * @param e The mouse event.
+   */
   @FXML
   private void onMousePressed(final MouseEvent e) {
     this.setInitialMouseDrag(e);
@@ -306,6 +295,11 @@ public final class ChartController {
     this.canvas.requestFocus();
   }
 
+  /**
+   * On mouse release event.
+   *
+   * @param e The mouse event.
+   */
   @FXML
   private void onMouseReleased(final MouseEvent e) {
     this.setInitialMouseScroll(e);
@@ -313,11 +307,21 @@ public final class ChartController {
     this.setCacheQuality();
   }
 
+  /**
+   * On mouse moved event.
+   *
+   * @param e The mouse event.
+   */
   @FXML
   private void onMouseMoved(final MouseEvent e) {
     this.setInitialMouseScroll(e);
   }
 
+  /**
+   * On mouse clicked event.
+   *
+   * @param e The mouse event.
+   */
   @FXML
   private void onMouseClicked(final MouseEvent e) {
     this.setInitialMouseScroll(e);
@@ -327,6 +331,11 @@ public final class ChartController {
     }
   }
 
+  /**
+   * On mouse dragged event.
+   *
+   * @param e The mouse event.
+   */
   @FXML
   private void onMouseDragged(final MouseEvent e) {
     this.setCacheSpeed();
@@ -340,16 +349,27 @@ public final class ChartController {
     this.setInitialMouseDrag(e);
   }
 
+  /**
+   * On scroll started event.
+   */
   @FXML
   private void onScrollStarted() {
     this.setCacheSpeed();
   }
 
+  /**
+   * On scroll finished event.
+   */
   @FXML
   private void onScrollFinished() {
     this.setCacheQuality();
   }
 
+  /**
+   * On scroll event.
+   *
+   * @param e The scroll event.
+   */
   @FXML
   private void onScroll(final ScrollEvent e) {
     this.setCacheSpeed();
@@ -363,16 +383,27 @@ public final class ChartController {
     );
   }
 
+  /**
+   * On zoom started event.
+   */
   @FXML
   private void onZoomStarted() {
     this.setCacheSpeed();
   }
 
+  /**
+   * On zoom finished event.
+   */
   @FXML
   private void onZoomFinished() {
     this.setCacheQuality();
   }
 
+  /**
+   * On zoom event.
+   *
+   * @param e The zoom event.
+   */
   @FXML
   private void onZoom(final ZoomEvent e) {
     this.setCacheSpeed();
@@ -384,16 +415,27 @@ public final class ChartController {
     );
   }
 
+  /**
+   * On rotation started event.
+   */
   @FXML
   private void onRotationStarted() {
     this.setCacheSpeed();
   }
 
+  /**
+   * On rotation finished event.
+   */
   @FXML
   private void onRotationFinished() {
     this.setCacheQuality();
   }
 
+  /**
+   * On rotate event.
+   *
+   * @param e The rotate event.
+   */
   @FXML
   private void onRotate(final RotateEvent e) {
     this.rotate(
@@ -403,6 +445,11 @@ public final class ChartController {
     );
   }
 
+  /**
+   * On key pressed event.
+   *
+   * @param e The key event.
+   */
   @FXML
   private void onKeyPressed(final KeyEvent e) {
     switch (e.getCode()) {
@@ -441,13 +488,36 @@ public final class ChartController {
     }
   }
 
+  /**
+   * Zoom in.
+   */
   @FXML
   private void zoomIn() {
     this.zoom(Math.pow(ZOOM_IN, 8));
   }
 
+  /**
+   * Zoom out.
+   */
   @FXML
   private void zoomOut() {
     this.zoom(Math.pow(ZOOM_OUT, 8));
+  }
+
+  /**
+   * Is activated through input from the user looking for the address.
+   * Found in textfield addressFrom.
+   */
+  @FXML
+  private void findAddress() {
+    System.out.println(this.addressFrom.getText());
+  }
+
+  /**
+   * Takes the input from addressFrom and addressTo.
+   */
+  @FXML
+  private void findRoute() {
+    System.out.println(this.addressTo.getText());
   }
 }

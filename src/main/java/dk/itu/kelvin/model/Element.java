@@ -18,7 +18,7 @@ public interface Element extends Comparable<Element> {
    *
    * @return The ID of this element.
    */
-  public long id();
+  long id();
 
   /**
    * Add a tag to the element.
@@ -27,67 +27,42 @@ public interface Element extends Comparable<Element> {
    * @param value The value of the tag.
    * @return      The previous value of the key, if any.
    */
-  public String tag(final String key, final String value);
+  String tag(final String key, final String value);
 
   /**
    * Get a map of tags for the element.
    *
    * @return A map of tags for the element.
    */
-  public Map<String, String> tags();
+  Map<String, String> tags();
 
   /**
    * Get the order of the element.
    *
    * @return The order of the element.
    */
-  public Order order();
+  Order order();
 
   /**
    * Set the order of the element.
    *
    * @param order The order of the element.
    */
-  public void order(final Order order);
+  void order(final Order order);
 
   /**
    * Get the layer of the element.
    *
    * @return The layer of the element.
    */
-  public int layer();
+  int layer();
 
   /**
    * Set the layer of the element.
    *
    * @param layer The layer of the element.
    */
-  public void layer(final int layer);
-
-  /**
-   * Compare two elements taking into account their drawing layer and drawing
-   * order.
-   *
-   * @param a The first element.
-   * @param b The second element.
-   * @return  A negative integer, zero, or a positive integer as the first
-   *          element is less than, equal to, or greater than the second
-   *          element.
-   */
-  public static int compare(final Element a, final Element b) {
-    if (a == null) {
-      return -1;
-    }
-
-    if (b == null) {
-      return 1;
-    }
-
-    return Integer.compare(
-      a.order().ordinal() + (Order.size() * a.layer()),
-      b.order().ordinal() + (Order.size() * b.layer())
-    );
-  }
+  void layer(final int layer);
 
   /**
    * Enumerator describing the drawing order of different elements.
@@ -186,6 +161,31 @@ public interface Element extends Comparable<Element> {
           return null;
         }
       }
+    }
+
+    /**
+     * Compare two elements taking into account their drawing layer and drawing
+     * order.
+     *
+     * @param a The first element.
+     * @param b The second element.
+     * @return  A negative integer, zero, or a positive integer as the first
+     *          element is less than, equal to, or greater than the second
+     *          element.
+     */
+    public static int compare(final Element a, final Element b) {
+      if (a == null) {
+        return -1;
+      }
+
+      if (b == null) {
+        return 1;
+      }
+
+      return Integer.compare(
+        a.order().ordinal() + (Order.size() * a.layer()),
+        b.order().ordinal() + (Order.size() * b.layer())
+      );
     }
   }
 }

@@ -20,7 +20,7 @@ import javafx.fxml.FXMLLoader;
  *
  * @version 1.0.0
  */
-public class Main extends Application {
+public final class Main extends Application {
   /**
    * Start the JavaFX thread and hand off control to the primary controller.
    *
@@ -54,7 +54,7 @@ public class Main extends Application {
       this.getClass().getResource("stylesheet/OSM.css").toExternalForm()
     );
 
-    primaryStage.setTitle("Map Viewer");
+    primaryStage.setTitle("Kelvin Maps");
     primaryStage.setScene(scene);
     // primaryStage.setResizable(false);
     primaryStage.show();

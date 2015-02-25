@@ -147,7 +147,7 @@ public final class Way extends Path implements Element {
    *                element.
    */
   public int compareTo(final Element element) {
-    return Element.compare(this, element);
+    return Element.Order.compare(this, element);
   }
 
   /**
