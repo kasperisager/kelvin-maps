@@ -31,6 +31,10 @@ jar {
   }
 }
 
+tasks.withType(Compile) {
+  options.encoding = "UTF-8"
+}
+
 task wrapper(type: Wrapper) {
   gradleVersion = "2.3"
 }
