@@ -23,6 +23,8 @@ dependencies {
 
 mainClassName = "dk.itu.kelvin.Main"
 
+[ compileJava, compileTestJava ]*.options*.encoding = "UTF-8"
+
 jar {
   from sourceSets.main.allSource
 
@@ -31,3 +33,6 @@ jar {
   }
 }
 
+task wrapper(type: Wrapper) {
+  gradleVersion = "2.3"
+}
