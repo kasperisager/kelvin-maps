@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- JavaFX scene utilities -->
+<?import javafx.scene.Group?>
 
 <!-- JavaFX layouts -->
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 
 <!-- JavaFX controls -->
-
-<!-- JavaFX shapes -->
-
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.Group?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
+
+<!-- JavaFX shapes -->
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.LineTo?>
+<?import javafx.scene.shape.MoveTo?>
+<?import javafx.scene.shape.Path?>
+
 <StackPane
   fx:controller="dk.itu.kelvin.controller.ChartController"
   xmlns:fx="http://javafx.com/fxml"
