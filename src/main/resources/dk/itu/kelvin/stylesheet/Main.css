@@ -11,9 +11,8 @@
   -fx-background-color: #e9e5dd;
 }
 
-.icon{
+.icon {
   -fx-font-family: "Ionicons";
-
 }
 
 .buttons-zoom {
@@ -66,16 +65,16 @@
   -fx-padding: 8px;
 }
 
-.search-button{
+.search-button {
   -fx-font-size: 14px;
   -fx-background-radius: 0 2 2 0;
 }
 
-.search-button:hover{
+.search-button:hover {
   -fx-cursor: hand;
 }
 
-.func-button{
+.func-button {
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
   -fx-background-color: #fff;
   -fx-background-radius: 2px;
@@ -84,7 +83,7 @@
   -fx-cursor: hand;
 }
 
-.func-button:hover{
+.func-button:hover {
   -fx-text-fill: #333;
 }
 

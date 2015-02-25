@@ -137,14 +137,12 @@ public final class ChartController {
   /**
    * The address typed in.*
    */
-
   @FXML
   private TextField addressFrom;
 
   /**
    * The address to navigate to from addressFrom*
    */
-
   @FXML
   private TextField addressTo;
 
