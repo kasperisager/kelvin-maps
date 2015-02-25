@@ -510,7 +510,7 @@ public final class ChartController {
    */
   @FXML
   private void findAddress() {
-    System.out.println(addressFrom.getText());
+    System.out.println(this.addressFrom.getText());
   }
 
   /**
@@ -518,6 +518,6 @@ public final class ChartController {
    */
   @FXML
   private void findRoute() {
-    System.out.println(addressTo.getText());
+    System.out.println(this.addressTo.getText());
   }
 }
