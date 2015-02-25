@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- Net utilities -->
+<?import java.net.URL?>
+
 <!-- JavFX layouts -->
 <?import javafx.scene.layout.BorderPane?>
 
@@ -7,6 +10,11 @@
   fx:controller="dk.itu.kelvin.controller.ApplicationController"
   xmlns:fx="http://javafx.com/fxml"
 >
+  <stylesheets>
+    <URL value="@../stylesheet/Main.css" />
+    <URL value="@../stylesheet/OSM.css" />
+  </stylesheets>
+
   <center>
     <fx:include fx:id="chart" source="Chart.fxml" />
   </center>

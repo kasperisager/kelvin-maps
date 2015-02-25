@@ -34,15 +34,6 @@ public class Main extends Application {
     );
 
     Scene scene = new Scene(root);
-
-    scene.getStylesheets().add(
-      this.getClass().getResource("stylesheet/Main.css").toExternalForm()
-    );
-
-    scene.getStylesheets().add(
-      this.getClass().getResource("stylesheet/OSM.css").toExternalForm()
-    );
-
     primaryStage.setTitle("Map Viewer");
     primaryStage.setScene(scene);
     // primaryStage.setResizable(false);
