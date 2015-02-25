@@ -9,7 +9,6 @@ import javafx.scene.Group;
 
 // JavaFX layout
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 
 // JavaFX shapes
 import javafx.scene.shape.Path;
@@ -121,13 +120,13 @@ public final class ChartController {
   private Path compassArrow;
 
   /**
-   * The address typed in.*
+   * The address typed in.
    */
   @FXML
   private TextField addressFrom;
 
   /**
-   * The address to navigate to from addressFrom*
+   * The address to navigate to from addressFrom.
    */
   @FXML
   private TextField addressTo;
