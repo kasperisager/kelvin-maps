@@ -7,6 +7,10 @@ package dk.itu.kelvin.controller;
 import javafx.scene.CacheHint;
 import javafx.scene.Group;
 
+// JavaFX layout
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+
 // JavaFX shapes
 import javafx.scene.shape.Path;
 
@@ -115,6 +119,18 @@ public final class ChartController {
    */
   @FXML
   private Path compassArrow;
+
+  /**
+   * The address typed in.*
+   */
+  @FXML
+  private TextField addressFrom;
+
+  /**
+   * The address to navigate to from addressFrom*
+   */
+  @FXML
+  private TextField addressTo;
 
   /**
    * Initialize the controller.
@@ -487,5 +503,22 @@ public final class ChartController {
   @FXML
   private void zoomOut() {
     this.zoom(Math.pow(ZOOM_OUT, 8));
+  }
+
+  /**
+   * Is activated through input from the user looking for the address.
+   * Found in textfield addressFrom.
+   */
+  @FXML
+  private void findAddress() {
+    System.out.println(addressFrom.getText());
+  }
+
+  /**
+   * Takes the input from addressFrom and addressTo.
+   */
+  @FXML
+  private void findRoute() {
+    System.out.println(addressTo.getText());
   }
 }

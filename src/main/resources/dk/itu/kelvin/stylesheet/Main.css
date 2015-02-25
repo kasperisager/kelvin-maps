@@ -11,8 +11,13 @@
   -fx-background-color: #e9e5dd;
 }
 
+.icon {
+  -fx-font-family: "Ionicons";
+}
+
 .buttons-zoom {
   -fx-padding: 8px;
+  -fx-cursor: hand;
 }
 
 .button-zoom {
@@ -24,13 +29,20 @@
   -fx-background-radius: 2;
   -fx-background-insets: none;
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
-  -fx-cursor: pointer;
+  -fx-cursor: hand;
 }
 .button-zoom:hover {
   -fx-text-fill: #333;
 }
 .button-zoom:pressed {
   -fx-text-fill: #000;
+}
+
+.text-field, .search-button {
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
+  -fx-background-color: #fff;
+  -fx-background-radius: 2 0 0 2;
+  -fx-margin: 0 0 5px 0;
 }
 
 .compass {
@@ -48,3 +60,30 @@
   -fx-stroke-line-join: round;
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
 }
+
+.address-input-wrapper {
+  -fx-padding: 8px;
+}
+
+.search-button {
+  -fx-font-size: 14px;
+  -fx-background-radius: 0 2 2 0;
+}
+
+.search-button:hover {
+  -fx-cursor: hand;
+}
+
+.func-button {
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
+  -fx-background-color: #fff;
+  -fx-background-radius: 2px;
+  -fx-margin: 0 0 5px 0;
+  -fx-text-fill: #666;
+  -fx-cursor: hand;
+}
+
+.func-button:hover {
+  -fx-text-fill: #333;
+}
+
