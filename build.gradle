@@ -23,16 +23,14 @@ dependencies {
 
 mainClassName = "dk.itu.kelvin.Main"
 
+[ compileJava, compileTestJava ]*.options*.encoding = "UTF-8"
+
 jar {
   from sourceSets.main.allSource
 
   manifest {
     attributes "Main-Class": mainClassName
   }
-}
-
-tasks.withType(Compile) {
-  options.encoding = "UTF-8"
 }
 
 task wrapper(type: Wrapper) {
