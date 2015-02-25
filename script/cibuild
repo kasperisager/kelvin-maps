@@ -1,6 +1,3 @@
 #!/bin/bash
 
-./gradlew test
-
-./gradlew checkstyleMain
-./gradlew checkstyleTest
+./gradlew check
