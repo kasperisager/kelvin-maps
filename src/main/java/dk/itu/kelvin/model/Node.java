@@ -110,7 +110,7 @@ public final class Node extends Point2D implements Element {
    *                element.
    */
   public int compareTo(final Element element) {
-    return Element.compare(this, element);
+    return Element.Order.compare(this, element);
   }
 
   /**

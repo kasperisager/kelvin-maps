@@ -160,7 +160,7 @@ public final class Relation extends Group implements Element {
    *                specified element.
    */
   public int compareTo(final Element element) {
-    return Element.compare(this, element);
+    return Element.Order.compare(this, element);
   }
 
   /**

@@ -5,7 +5,6 @@ package dk.itu.kelvin.model;
 
 // JUnit annotations
 import org.junit.Test;
-import org.junit.Ignore;
 
 // JUnit assertions
 import static org.junit.Assert.assertEquals;
@@ -33,7 +32,7 @@ import static org.junit.Assert.assertNull;
  * spaces must be used in between street name + building number and the floor
  * number + door number as well as the postcode + city:
  */
-public class AddressTest {
+public final class AddressTest {
   /**
    * The Address parser should parse an address with a street name (can be
    * multiple words) consisting of letters (a-z as well as Danish letters).

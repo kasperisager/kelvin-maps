@@ -4,12 +4,8 @@
 package dk.itu.kelvin;
 
 // General utilities
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 // Net utilities
 import java.net.URL;
@@ -57,6 +53,9 @@ public final class ChartParser {
    */
   private Map<Long, Relation> relations = new HashMap<>();
 
+  /**
+   * Land element.
+   */
   private Land land = new Land();
 
   /**
@@ -149,10 +148,18 @@ public final class ChartParser {
     return Double.parseDouble(attributes.getValue(value));
   }
 
+  /**
+   * Clean up after ending an element.
+   */
   private void clearElement() {
     this.element = null;
   }
 
+  /**
+   * Start a bounds element.
+   *
+   * @param attributes Element attributes.
+   */
   private void startBounds(final Attributes attributes) {
     this.chart.bounds(new Bounds(
       Chart.lonToX(this.getFloat(attributes, "minlon")),
@@ -162,6 +169,11 @@ public final class ChartParser {
     ));
   }
 
+  /**
+   * Start a node element.
+   *
+   * @param attributes Element attributes.
+   */
   private void startNode(final Attributes attributes) {
     this.element = new Node(
       this.getLong(attributes, "id"),
@@ -170,6 +182,9 @@ public final class ChartParser {
     );
   }
 
+  /**
+   * End a node element.
+   */
   private void endNode() {
     if (this.element == null) {
       return;
@@ -182,10 +197,18 @@ public final class ChartParser {
     this.clearElement();
   }
 
+  /**
+   * Start a way element.
+   *
+   * @param attributes Element attributes.
+   */
   private void startWay(final Attributes attributes) {
     this.element = new Way(this.getLong(attributes, "id"));
   }
 
+  /**
+   * End a way element.
+   */
   private void endWay() {
     if (this.element == null) {
       return;
@@ -198,12 +221,20 @@ public final class ChartParser {
     this.clearElement();
   }
 
+  /**
+   * Start a relation element.
+   *
+   * @param attributes Element attributes.
+   */
   public void startRelation(final Attributes attributes) {
     this.element = new Relation(
       Long.parseLong(attributes.getValue("id"))
     );
   }
 
+  /**
+   * End a relation element.
+   */
   public void endRelation() {
     if (this.element == null) {
       return;
@@ -216,6 +247,11 @@ public final class ChartParser {
     this.clearElement();
   }
 
+  /**
+   * Start a tag element.
+   *
+   * @param attributes Element attributes.
+   */
   private void startTag(final Attributes attributes) {
     if (this.element == null) {
       return;
@@ -239,6 +275,11 @@ public final class ChartParser {
     }
   }
 
+  /**
+   * Start an nd element.
+   *
+   * @param attributes Element attributes.
+   */
   private void startNd(final Attributes attributes) {
     if (this.element == null) {
       return;
@@ -255,6 +296,11 @@ public final class ChartParser {
     way.node(node);
   }
 
+  /**
+   * Start a member element.
+   *
+   * @param attributes Element attributes.
+   */
   public void startMember(final Attributes attributes) {
     if (this.element == null) {
       return;
@@ -279,9 +325,14 @@ public final class ChartParser {
       case "relation":
         relation.member(this.relations.get(ref), role);
         break;
+      default:
+        // Do nothing.
     }
   }
 
+  /**
+   * End a document.
+   */
   public void endDocument() {
     this.chart.elements(this.ways.values());
     this.chart.elements(this.relations.values());
@@ -301,7 +352,7 @@ public final class ChartParser {
      * @param uri         The Namespace URI, or the empty string if the element
      *                    has no Namespace URI or if Namespace processing is not
      *                    being performed.
-     * @param localeName  The local name (without prefix), or the empty string
+     * @param localName   The local name (without prefix), or the empty string
      *                    if Namespace processing is not being performed.
      * @param qName       The qualified name (with prefix), or the empty string
      *                    if qualified names are not available.
@@ -344,19 +395,22 @@ public final class ChartParser {
         case "member":
           ChartParser.this.startMember(attributes);
           break;
+
+        default:
+          // Do nothing.
       }
     }
 
     /**
      * Parse a closing element of an OSM XML stream.
      *
-     * @param uri         The Namespace URI, or the empty string if the element
-     *                    has no Namespace URI or if Namespace processing is not
-     *                    being performed.
-     * @param localeName  The local name (without prefix), or the empty string
-     *                    if Namespace processing is not being performed.
-     * @param qName       The qualified name (with prefix), or the empty string
-     *                    if qualified names are not available.
+     * @param uri       The Namespace URI, or the empty string if the element
+     *                  has no Namespace URI or if Namespace processing is not
+     *                  being performed.
+     * @param localName The local name (without prefix), or the empty string if
+     *                  Namespace processing is not being performed.
+     * @param qName     The qualified name (with prefix), or the empty string if
+     *                  qualified names are not available.
      */
     public void endElement(
       final String uri,
@@ -374,9 +428,14 @@ public final class ChartParser {
         case "relation":
           ChartParser.this.endRelation();
           break;
+        default:
+          // Do nothing.
       }
     }
 
+    /**
+     * The end of the document has been reached; hurray!
+     */
     public void endDocument() {
       ChartParser.this.endDocument();
     }

@@ -283,6 +283,12 @@ public final class Address {
     return pattern.matcher(input.trim());
   }
 
+  /**
+   * Normalize whitespace of an input string.
+   *
+   * @param string  The string to normalize.
+   * @return        The normalized string.
+   */
   private static String normalizeWhitespace(final String string) {
     if (string != null) {
       return string.replaceAll("\\s+", " ").trim();
