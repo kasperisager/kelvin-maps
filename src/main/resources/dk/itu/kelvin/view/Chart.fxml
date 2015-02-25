@@ -1,63 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- JavaFX scene utilities -->
-
-<?import java.lang.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 <?import javafx.scene.Group?>
 
 <!-- JavaFX layouts -->
-
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <!-- JavaFX controls -->
-
 <?import javafx.scene.control.Button?>
 
 <!-- JavaFX shapes -->
-
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.LineTo?>
 <?import javafx.scene.shape.MoveTo?>
 <?import javafx.scene.shape.Path?>
 
-<StackPane prefHeight="512" prefWidth="512" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="dk.itu.kelvin.controller.ChartController">
-   <children>
-     <Pane focusTraversable="true" onKeyPressed="#onKeyPressed" onMouseClicked="#onMouseClicked" onMouseDragged="#onMouseDragged" onMouseEntered="#onMouseEntered" onMouseMoved="#onMouseMoved" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" onRotate="#onRotate" onRotationFinished="#onRotationFinished" onRotationStarted="#onRotationStarted" onScroll="#onScroll" onScrollFinished="#onScrollFinished" onScrollStarted="#onScrollStarted" onZoom="#onZoom" onZoomFinished="#onZoomFinished" onZoomStarted="#onZoomStarted" pickOnBounds="true">
+<StackPane
+  fx:controller="dk.itu.kelvin.controller.ChartController"
+  xmlns:fx="http://javafx.com/fxml"
+
+  prefWidth="512"
+  prefHeight="512"
+>
+  <Pane
+    focusTraversable="true"
+    pickOnBounds="true"
+
+    onMouseEntered="#onMouseEntered"
+    onMouseClicked="#onMouseClicked"
+    onMousePressed="#onMousePressed"
+    onMouseMoved="#onMouseMoved"
+    onMouseDragged="#onMouseDragged"
+    onMouseReleased="#onMouseReleased"
+
+    onScrollStarted="#onScrollStarted"
+    onScrollFinished="#onScrollFinished"
+    onScroll="#onScroll"
+
+    onZoomStarted="#onZoomStarted"
+    onZoomFinished="#onZoomFinished"
+    onZoom="#onZoom"
+
+    onRotationStarted="#onRotationStarted"
+    onRotationFinished="#onRotationFinished"
+    onRotate="#onRotate"
+
+    onKeyPressed="#onKeyPressed"
+  >
+    <Group fx:id="canvas" />
+  </Pane>
+
+  <VBox
+    alignment="BOTTOM_LEFT"
+    pickOnBounds="false"
+    fillWidth="false"
+  >
+    <children>
+      <VBox alignment="CENTER" styleClass="compass">
         <children>
-          <Group fx:id="canvas" />
+          <Path fx:id="compassArrow" styleClass="compass-arrow">
+            <elements>
+              <MoveTo x="0" y="6" />
+              <LineTo x="4" y="0" />
+              <LineTo x="8" y="6" />
+              <LineTo x="0" y="6" />
+            </elements>
+          </Path>
+
+          <Circle radius="30" styleClass="compass-disc" />
         </children>
-     </Pane>
+      </VBox>
+    </children>
+  </VBox>
 
-     <VBox alignment="BOTTOM_LEFT" fillWidth="false" pickOnBounds="false">
-       <children>
-         <VBox alignment="CENTER" styleClass="compass">
-           <children>
-             <Path fx:id="compassArrow" styleClass="compass-arrow">
-               <elements>
-                 <MoveTo x="0" y="6" />
-                 <LineTo x="4" y="0" />
-                 <LineTo x="8" y="6" />
-                 <LineTo x="0" y="6" />
-               </elements>
-             </Path>
-
-             <Circle radius="30" styleClass="compass-disc" />
-           </children>
-         </VBox>
-       </children>
-     </VBox>
-
-     <VBox alignment="BOTTOM_RIGHT" fillWidth="false" pickOnBounds="false" spacing="8" styleClass="buttons-zoom">
-       <children>
-         <Button onAction="#zoomIn" styleClass="button-zoom" text="" />
-         <Button onAction="#zoomOut" styleClass="button-zoom" text="" />
-       </children>
-     </VBox>
-   </children>
+  <VBox
+    spacing="8"
+    styleClass="buttons-zoom"
+    alignment="BOTTOM_RIGHT"
+    pickOnBounds="false"
+    fillWidth="false"
+  >
+    <children>
+      <Button text="&#xF218;" styleClass="button-zoom" onAction="#zoomIn"/>
+      <Button text="&#xF209;" styleClass="button-zoom" onAction="#zoomOut" />
+    </children>
+  </VBox>
 </StackPane>
