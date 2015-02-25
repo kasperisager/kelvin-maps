@@ -43,7 +43,7 @@ public class Main extends Application {
       this.getClass().getResource("stylesheet/OSM.css").toExternalForm()
     );
 
-    primaryStage.setTitle("Map Viewer");
+    primaryStage.setTitle("Kelvin Maps");
     primaryStage.setScene(scene);
     // primaryStage.setResizable(false);
     primaryStage.show();
