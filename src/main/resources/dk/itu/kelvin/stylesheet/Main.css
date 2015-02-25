@@ -33,6 +33,12 @@
   -fx-text-fill: #000;
 }
 
+.text-field {
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
+  -fx-background-color: #fff;
+  -fx-background-radius: 3px;
+}
+
 .compass {
   -fx-padding: 16px;
 }
@@ -47,4 +53,8 @@
   -fx-stroke: #fff;
   -fx-stroke-line-join: round;
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
+}
+
+.address-input-wrapper {
+  -fx-padding: 8px;
 }
