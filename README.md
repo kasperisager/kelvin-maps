@@ -1,6 +1,8 @@
 Kelvin Maps
 ===========
 
+[![](https://kelvin-strider.herokuapp.com/gruppe-kelvin/kelvin-maps/badge)](https://kelvin-strider.herokuapp.com/gruppe-kelvin/kelvin-maps/)
+
 Kelvin Maps is a mapping application for visualising and interacting with OpenStreetMap data.
 
 ---
