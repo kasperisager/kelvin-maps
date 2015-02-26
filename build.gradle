@@ -83,11 +83,12 @@ compileJava.doLast {
   tasks.lessc.execute()
 }
 
-// Push reports to GitHub Pages.
+// Push docs and reports to GitHub Pages.
 githubPages {
   repoUri = "git@giddy.itu.dk:gruppe-kelvin/kelvin-maps.git"
 
   pages {
+    from "${buildDir}/docs"
     from "${buildDir}/reports"
   }
 }
