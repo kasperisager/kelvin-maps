@@ -39,10 +39,6 @@ public final class Main extends Application {
       this.getClass().getResource("stylesheet/Main.css").toExternalForm()
     );
 
-    scene.getStylesheets().add(
-      this.getClass().getResource("stylesheet/OSM.css").toExternalForm()
-    );
-
     primaryStage.setTitle("Kelvin Maps");
     primaryStage.setScene(scene);
     // primaryStage.setResizable(false);
