@@ -40,10 +40,6 @@ public final class Main extends Application {
       this.getClass().getResource("font/ionicons.ttf").toExternalForm(), 14
     );
 
-    Font.loadFont(
-      this.getClass().getResource("font/ionicons.otf").toExternalForm(), 14
-    );
-
     Scene scene = new Scene(root);
 
     scene.getStylesheets().add(
