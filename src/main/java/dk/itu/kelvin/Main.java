@@ -9,9 +9,6 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
 
-// JavaFX text utilities
-import javafx.scene.text.Font;
-
 // FXML utilities
 import javafx.fxml.FXMLLoader;
 
