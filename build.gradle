@@ -20,6 +20,7 @@ buildscript {
   dependencies {
     classpath group: "net.carlosgsouza", name: "gradle-console", version: "1.+"
     classpath group: "com.github.houbie", name: "lesscss-gradle-plugin", version: "1.+"
+    classpath group: "org.ajoberstar", name: "gradle-git", version: "1.+"
   }
 }
 
@@ -27,7 +28,9 @@ apply plugin: "java"
 apply plugin: "application"
 apply plugin: "checkstyle"
 apply plugin: "console"
+apply plugin: "jacoco"
 apply plugin: "lesscss"
+apply plugin: "org.ajoberstar.github-pages"
 
 // Runtime dependency repositories.
 repositories {
@@ -78,4 +81,14 @@ lessc {
 // Compile LESS after compiling Java.
 compileJava.doLast {
   tasks.lessc.execute()
+}
+
+// Push docs and reports to GitHub Pages.
+githubPages {
+  repoUri = "git@giddy.itu.dk:gruppe-kelvin/kelvin-maps.git"
+
+  pages {
+    from "${buildDir}/docs"
+    from "${buildDir}/reports"
+  }
 }
