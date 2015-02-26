@@ -23,7 +23,7 @@ dependencies {
 
 mainClassName = "dk.itu.kelvin.Main"
 
-[ compileJava, compileTestJava ]*.options*.encoding = "UTF-8"
+[compileJava, compileTestJava]*.options*.encoding = "UTF-8"
 
 jar {
   from sourceSets.main.allSource
