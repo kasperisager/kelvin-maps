@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "Ionicons";
+  src: url("../font/ionicons.ttf") format("truetype");
+}
+
 .root {
   -fx-background-color: #a0c3ff;
 }
@@ -17,7 +22,6 @@
 
 .button-zoom {
   -fx-padding: 10px 12px;
-  -fx-font-family: "ionicons";
   -fx-font-size: 14px;
   -fx-text-fill: #666;
   -fx-background-color: #fff;
