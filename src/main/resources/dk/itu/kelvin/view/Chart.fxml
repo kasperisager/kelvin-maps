@@ -83,7 +83,7 @@
 
     <HBox spacing="10">
       <children>
-        <Button styleClass="func-button, icon" text="&#xf268;"/>
+        <Button styleClass="func-button, icon" text="&#xf268;" onAction="#swapTextFields"/>
       </children>
 
       <children>

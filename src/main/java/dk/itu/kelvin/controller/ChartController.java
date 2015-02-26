@@ -4,6 +4,7 @@
 package dk.itu.kelvin.controller;
 
 // JavaFX scene utilities
+import dk.itu.kelvin.model.Address;
 import javafx.scene.CacheHint;
 import javafx.scene.Group;
 
@@ -510,7 +511,8 @@ public final class ChartController {
    */
   @FXML
   private void findAddress() {
-    System.out.println(addressFrom.getText());
+    System.out.println(this.addressFrom.getText());
+    Address startAddress = Address.parse(this.addressFrom.getText());
   }
 
   /**
@@ -518,6 +520,18 @@ public final class ChartController {
    */
   @FXML
   private void findRoute() {
-    System.out.println(addressTo.getText());
+    System.out.println(this.addressTo.getText());
+    Address startAddress = Address.parse(this.addressFrom.getText());
+    Address endAddress = Address.parse(this.addressTo.getText());
+  }
+
+  @FXML
+  private void swapTextFields(){
+    String first = addressFrom.getText();
+    String last = addressTo.getText();
+
+    addressFrom.setText(last);
+    addressTo.setText(first);
+
   }
 }
