@@ -9,6 +9,9 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
 
+// JavaFX text
+import javafx.scene.text.Font;
+
 // FXML utilities
 import javafx.fxml.FXMLLoader;
 
@@ -34,6 +37,10 @@ public final class Main extends Application {
     );
 
     Scene scene = new Scene(root);
+
+    Font.loadFont(
+      this.getClass().getResourceAsStream("font/ionicons.ttf"), 14
+    );
 
     scene.getStylesheets().add(
       this.getClass().getResource("stylesheet/Main.css").toExternalForm()
