@@ -29,6 +29,7 @@ import javafx.fxml.FXML;
 import dk.itu.kelvin.ChartParser;
 
 // Models
+import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Chart;
 
 /**
@@ -511,6 +512,7 @@ public final class ChartController {
   @FXML
   private void findAddress() {
     System.out.println(this.addressFrom.getText());
+    Address startAddress = Address.parse(this.addressFrom.getText());
   }
 
   /**
@@ -519,5 +521,19 @@ public final class ChartController {
   @FXML
   private void findRoute() {
     System.out.println(this.addressTo.getText());
+    Address startAddress = Address.parse(this.addressFrom.getText());
+    Address endAddress = Address.parse(this.addressTo.getText());
+  }
+
+  /**
+   * Swap the text of the from and to address inputs.
+   */
+  @FXML
+  private void swapTextFields() {
+    String from = this.addressFrom.getText();
+    String to = this.addressTo.getText();
+
+    this.addressFrom.setText(to);
+    this.addressTo.setText(from);
   }
 }
