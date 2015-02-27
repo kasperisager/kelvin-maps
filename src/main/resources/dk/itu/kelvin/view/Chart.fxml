@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- JavaFX scene utilities -->
-<?import javafx.scene.Group?>
-
 <!-- JavaFX layouts -->
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
@@ -18,6 +15,9 @@
 <?import javafx.scene.shape.LineTo?>
 <?import javafx.scene.shape.MoveTo?>
 <?import javafx.scene.shape.Path?>
+
+<!-- Components -->
+<?import dk.itu.kelvin.component.Canvas?>
 
 <StackPane
   fx:controller="dk.itu.kelvin.controller.ChartController"
@@ -51,7 +51,7 @@
 
     onKeyPressed="#onKeyPressed"
   >
-    <Group fx:id="canvas" />
+    <Canvas fx:id="canvas" />
   </Pane>
 
   <VBox
