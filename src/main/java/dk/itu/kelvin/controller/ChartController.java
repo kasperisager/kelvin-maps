@@ -5,7 +5,6 @@ package dk.itu.kelvin.controller;
 
 // JavaFX scene utilities
 import javafx.scene.CacheHint;
-import javafx.scene.Group;
 
 // JavaFX layout
 import javafx.scene.control.TextField;
