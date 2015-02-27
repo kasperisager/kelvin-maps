@@ -4,7 +4,6 @@
 package dk.itu.kelvin.controller;
 
 // JavaFX scene utilities
-import dk.itu.kelvin.model.Address;
 import javafx.scene.CacheHint;
 import javafx.scene.Group;
 
@@ -30,6 +29,7 @@ import javafx.fxml.FXML;
 import dk.itu.kelvin.ChartParser;
 
 // Models
+import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Chart;
 
 /**
@@ -525,13 +525,15 @@ public final class ChartController {
     Address endAddress = Address.parse(this.addressTo.getText());
   }
 
+  /**
+   * Swap the text of the from and to address inputs.
+   */
   @FXML
-  private void swapTextFields(){
-    String first = addressFrom.getText();
-    String last = addressTo.getText();
+  private void swapTextFields() {
+    String from = this.addressFrom.getText();
+    String to = this.addressTo.getText();
 
-    addressFrom.setText(last);
-    addressTo.setText(first);
-
+    this.addressFrom.setText(to);
+    this.addressTo.setText(from);
   }
 }
