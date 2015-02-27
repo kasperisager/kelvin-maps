@@ -131,8 +131,8 @@ public final class ChartController {
     // this.canvas.getChildren().addAll(this.chart.nodes());
 
     this.canvas.pan(
-      -this.chart.bounds().getMinX(),
-      -this.chart.bounds().getMaxY()
+      -this.chart.bounds().getX(),
+      -this.chart.bounds().getY()
     );
   }
 
