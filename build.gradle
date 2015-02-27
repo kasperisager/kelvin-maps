@@ -1,10 +1,26 @@
+// ------------------------------------------------------------------------- //
+// Project configuration
+// ------------------------------------------------------------------------- //
+
+def namespace = "dk.itu.kelvin"
+def mainClass = "${namespace}.Main"
+def namespaceDir = namespace.replaceAll("\\.", "/")
+
+// ------------------------------------------------------------------------- //
+// Dependency configuration
+// ------------------------------------------------------------------------- //
+
 buildscript {
+  // Build step dependency repositories.
   repositories {
     mavenCentral()
   }
 
+  // Build step dependencies.
   dependencies {
     classpath group: "net.carlosgsouza", name: "gradle-console", version: "1.+"
+    classpath group: "com.github.houbie", name: "lesscss-gradle-plugin", version: "1.+"
+    classpath group: "org.ajoberstar", name: "gradle-git", version: "1.+"
   }
 }
 
@@ -12,27 +28,67 @@ apply plugin: "java"
 apply plugin: "application"
 apply plugin: "checkstyle"
 apply plugin: "console"
+apply plugin: "jacoco"
+apply plugin: "lesscss"
+apply plugin: "org.ajoberstar.github-pages"
 
+// Runtime dependency repositories.
 repositories {
   mavenCentral()
 }
 
+// Runetime dependencies.
 dependencies {
   testCompile group: "junit", name: "junit", version: "4.+"
 }
 
-mainClassName = "dk.itu.kelvin.Main"
+// ------------------------------------------------------------------------- //
+// Build configuration
+// ------------------------------------------------------------------------- //
 
-[ compileJava, compileTestJava ]*.options*.encoding = "UTF-8"
+// Use UTF-8 encoding when compiling Java.
+[compileJava, compileTestJava]*.options*.encoding = "UTF-8"
 
 jar {
+  // Include all source code in assembled JAR.
   from sourceSets.main.allSource
 
   manifest {
-    attributes "Main-Class": mainClassName
+    attributes "Main-Class": mainClass
   }
 }
 
+// Generate a Gradle wrapper.
 task wrapper(type: Wrapper) {
   gradleVersion = "2.3"
+}
+
+// Main class to run.
+mainClassName = mainClass
+
+// ------------------------------------------------------------------------- //
+// Plugin configuration
+// ------------------------------------------------------------------------- //
+
+// Configure LESS compilation.
+lessc {
+  sourceDir "src/main/resources/${namespaceDir}/stylesheet"
+  include "**/*.less"
+  exclude "imports/**/*"
+  destinationDir = "${buildDir}/resources/main/${namespaceDir}/stylesheet"
+}
+
+// Compile LESS after compiling Java.
+compileJava.doLast {
+  tasks.lessc.execute()
+}
+
+// Push docs and reports to GitHub Pages.
+githubPages {
+  repoUri = "git@giddy.itu.dk:gruppe-kelvin/kelvin-maps.git"
+
+  pages {
+    from "${buildDir}/docs"
+    from "${buildDir}/reports"
+  }
 }

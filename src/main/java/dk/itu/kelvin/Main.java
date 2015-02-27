@@ -9,6 +9,9 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
 
+// JavaFX text utilities
+import javafx.scene.text.Font;
+
 // FXML utilities
 import javafx.fxml.FXMLLoader;
 
@@ -33,14 +36,18 @@ public final class Main extends Application {
       this.getClass().getResource("view/Application.fxml")
     );
 
+    Font.loadFont(
+      this.getClass().getResource("font/ionicons.ttf").toExternalForm(), 14
+    );
+
+    Font.loadFont(
+      this.getClass().getResource("font/ionicons.otf").toExternalForm(), 14
+    );
+
     Scene scene = new Scene(root);
 
     scene.getStylesheets().add(
       this.getClass().getResource("stylesheet/Main.css").toExternalForm()
-    );
-
-    scene.getStylesheets().add(
-      this.getClass().getResource("stylesheet/OSM.css").toExternalForm()
     );
 
     primaryStage.setTitle("Kelvin Maps");
