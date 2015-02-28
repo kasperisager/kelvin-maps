@@ -5,7 +5,6 @@ package dk.itu.kelvin.controller;
 
 // JavaFX scene utilities
 import javafx.scene.CacheHint;
-import javafx.scene.Group;
 
 // JavaFX layout
 import javafx.scene.control.TextField;
@@ -27,6 +26,9 @@ import javafx.scene.transform.Affine;
 import javafx.fxml.FXML;
 
 import dk.itu.kelvin.ChartParser;
+
+// Components
+import dk.itu.kelvin.component.Canvas;
 
 // Models
 import dk.itu.kelvin.model.Address;
@@ -59,31 +61,6 @@ public final class ChartController {
   private static final double ZOOM_OUT = 1 / ZOOM_IN;
 
   /**
-   * Maximum zoom factor.
-   */
-  private static final double MAX_ZOOM_FACTOR = 4;
-
-  /**
-   * Minimum zoom factor.
-   */
-  private static final double MIN_ZOOM_FACTOR = 0.5;
-
-  /**
-   * The current zoom factor.
-   */
-  private double currentZoomFactor = 1;
-
-  /**
-   * Affine transformation instance.
-   */
-  private Affine transform = new Affine();
-
-  /**
-   * Affine transformation for chart compass.
-   */
-  private Affine compassTransform = new Affine();
-
-  /**
    * Mouse X coordinate for dragging.
    */
   private double initialMouseDragX;
@@ -104,15 +81,20 @@ public final class ChartController {
   private double initialMouseScrollY;
 
   /**
+   * Affine transformation for chart compass.
+   */
+  private Affine compassTransform = new Affine();
+
+  /**
    * The Chart model instance.
    */
   private Chart chart = new Chart();
 
   /**
-   * The Group element to add all the Chart elements to.
+   * The Canvas element to add all the Chart elements to.
    */
   @FXML
-  private Group canvas;
+  private Canvas canvas;
 
   /**
    * The compass arrow.
@@ -138,11 +120,6 @@ public final class ChartController {
    * @throws Exception In case of an error. Duh.
    */
   public void initialize() throws Exception {
-    this.canvas.setCache(true);
-    this.canvas.setCacheHint(CacheHint.QUALITY);
-
-    this.canvas.getTransforms().add(this.transform);
-
     this.compassArrow.getTransforms().add(this.compassTransform);
 
     ChartParser parser = new ChartParser(this.chart);
@@ -152,80 +129,9 @@ public final class ChartController {
 
     // this.canvas.getChildren().addAll(this.chart.nodes());
 
-    this.transform.prependTranslation(
-      -this.chart.bounds().getX(),
-      -this.chart.bounds().getY()
-    );
-  }
-
-  /**
-   * Zoom the map.
-   *
-   * @param factor  The factor with which to zoom.
-   * @param x       The x-coordinate of the pivot point.
-   * @param y       The y-coordinate of the pivot point.
-   */
-  private void zoom(final double factor, final double x, final double y) {
-    double newZoomFactor = this.currentZoomFactor * factor;
-
-    if (factor > 1 && newZoomFactor >= MAX_ZOOM_FACTOR) {
-      return;
-    }
-
-    if (factor < 1 && newZoomFactor <= MIN_ZOOM_FACTOR) {
-      return;
-    }
-
-    this.currentZoomFactor *= factor;
-
-    this.transform.prependScale(factor, factor, x, y);
-  }
-
-  /**
-   * Zoom the map, using the center as the pivot point.
-   *
-   * @param factor The factor with which to zoom.
-   */
-  private void zoom(final double factor) {
-    this.zoom(
-      factor,
-      this.canvas.getScene().getWidth() / 2,
-      this.canvas.getScene().getHeight() / 2
-    );
-  }
-
-  /**
-   * Pan the map.
-   *
-   * @param x The amount to pan on the x-axis.
-   * @param y The amount to pan on the y-axis.
-   */
-  private void pan(final double x, final double y) {
-    this.transform.prependTranslation(x, y);
-  }
-
-  /**
-   * Rotate the map.
-   *
-   * @param angle The angle of the rotation.
-   * @param x     The x-coordinate of the pivot point.
-   * @param y     The y-coordinate of the pivot point.
-   */
-  private void rotate(final double angle, final double x, final double y) {
-    this.transform.prependRotation(angle, x, y);
-    this.compassTransform.prependRotation(angle, 4, 40);
-  }
-
-  /**
-   * Rotate the map, using the center as the pivot point.
-   *
-   * @param angle The angle of the rotation.
-   */
-  private void rotate(final double angle) {
-    this.rotate(
-      angle,
-      this.canvas.getScene().getWidth() / 2,
-      this.canvas.getScene().getHeight() / 2
+    this.canvas.pan(
+      -this.chart.bounds().getMinX(),
+      -this.chart.bounds().getMaxY()
     );
   }
 
@@ -328,7 +234,7 @@ public final class ChartController {
     this.setInitialMouseScroll(e);
 
     if (e.getClickCount() == 2) {
-      this.zoom(Math.pow(ZOOM_IN, 15), e.getSceneX(), e.getSceneY());
+      this.canvas.zoom(Math.pow(ZOOM_IN, 15), e.getSceneX(), e.getSceneY());
     }
   }
 
@@ -344,7 +250,7 @@ public final class ChartController {
     double x = e.getSceneX();
     double y = e.getSceneY();
 
-    this.pan(x - this.initialMouseDragX, y - this.initialMouseDragY);
+    this.canvas.pan(x - this.initialMouseDragX, y - this.initialMouseDragY);
 
     this.setInitialMouseScroll(e);
     this.setInitialMouseDrag(e);
@@ -377,7 +283,7 @@ public final class ChartController {
 
     double factor = (e.getDeltaY() < 0) ? ZOOM_IN : ZOOM_OUT;
 
-    this.zoom(
+    this.canvas.zoom(
       factor,
       this.initialMouseScrollX,
       this.initialMouseScrollY
@@ -409,7 +315,7 @@ public final class ChartController {
   private void onZoom(final ZoomEvent e) {
     this.setCacheSpeed();
 
-    this.zoom(
+    this.canvas.zoom(
       e.getZoomFactor(),
       this.initialMouseScrollX,
       this.initialMouseScrollY
@@ -439,11 +345,12 @@ public final class ChartController {
    */
   @FXML
   private void onRotate(final RotateEvent e) {
-    this.rotate(
+    this.canvas.rotate(
       e.getAngle(),
       this.initialMouseScrollX,
       this.initialMouseScrollY
     );
+    this.compassTransform.prependRotation(e.getAngle(), 4, 40);
   }
 
   /**
@@ -456,32 +363,32 @@ public final class ChartController {
     switch (e.getCode()) {
       case UP:
       case K:
-        this.pan(0, 15);
+        this.canvas.pan(0, 15);
         e.consume();
         break;
       case DOWN:
       case J:
-        this.pan(0, -15);
+        this.canvas.pan(0, -15);
         e.consume();
         break;
       case RIGHT:
       case L:
-        this.pan(-15, 0);
+        this.canvas.pan(-15, 0);
         e.consume();
         break;
       case LEFT:
       case H:
-        this.pan(15, 0);
+        this.canvas.pan(15, 0);
         e.consume();
         break;
       case PLUS:
       case EQUALS:
-        this.zoom(Math.pow(ZOOM_IN, 8));
+        this.canvas.zoom(Math.pow(ZOOM_IN, 8));
         e.consume();
         break;
       case MINUS:
       case UNDERSCORE:
-        this.zoom(Math.pow(ZOOM_OUT, 8));
+        this.canvas.zoom(Math.pow(ZOOM_OUT, 8));
         e.consume();
         break;
       default:
@@ -494,7 +401,7 @@ public final class ChartController {
    */
   @FXML
   private void zoomIn() {
-    this.zoom(Math.pow(ZOOM_IN, 8));
+    this.canvas.zoom(Math.pow(ZOOM_IN, 8));
   }
 
   /**
@@ -502,7 +409,7 @@ public final class ChartController {
    */
   @FXML
   private void zoomOut() {
-    this.zoom(Math.pow(ZOOM_OUT, 8));
+    this.canvas.zoom(Math.pow(ZOOM_OUT, 8));
   }
 
   /**
