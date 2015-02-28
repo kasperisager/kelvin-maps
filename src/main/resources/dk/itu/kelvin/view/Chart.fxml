@@ -128,8 +128,8 @@
     fillWidth="false"
   >
     <children>
-      <Button text="&#xF218;" styleClass="button-zoom" onAction="#zoomIn"/>
-      <Button text="&#xF209;" styleClass="button-zoom" onAction="#zoomOut" />
+      <Button text="&#xF218;" styleClass="button-zoom, icon" onAction="#zoomIn"/>
+      <Button text="&#xF209;" styleClass="button-zoom, icon" onAction="#zoomOut" />
     </children>
   </VBox>
 </StackPane>
