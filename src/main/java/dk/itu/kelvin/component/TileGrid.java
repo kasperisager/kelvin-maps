@@ -11,18 +11,37 @@ import java.util.List;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.Parent;
 
 // JavaFX geometry
 import javafx.geometry.Bounds;
 import javafx.geometry.BoundingBox;
+
+// JavaFX transformations
+import javafx.scene.transform.Affine;
 
 /**
  * Tile grid class.
  *
  * @version 1.0.0
  */
-public class TileGrid extends Group {
+public final class TileGrid extends Group {
+  /**
+   * The affine transformation associated with the tile grid.
+   *
+   * Whenever this transformation changes, the tile grid will adjust its tiles
+   * accordingly.
+   */
+  private Affine affine;
+
+  /**
+   * Initialize a tile grid.
+   *
+   * @param affine The affine transformation associated with the tile grid.
+   */
+  public TileGrid(final Affine affine) {
+    this.affine = affine;
+  }
+
   /**
    * Add a tile to the tile grid.
    *
