@@ -29,16 +29,16 @@ public final class Chart {
   private List<Element> elements = new ArrayList<>();
 
   /**
-   * The shape that describes the chart bounds.
+   * The bounds of the chart.
    */
-  private Bounds bounds;
+  private BoundingBox bounds;
 
   /**
    * Get the shape describing the chart bounds.
    *
    * @return The shape describing the chart bounds.
    */
-  public Bounds bounds() {
+  public BoundingBox bounds() {
     return this.bounds;
   }
 
@@ -47,7 +47,7 @@ public final class Chart {
    *
    * @param bounds The shape describing the chart bounds.
    */
-  public void bounds(final Bounds bounds) {
+  public void bounds(final BoundingBox bounds) {
     this.bounds = bounds;
   }
 
