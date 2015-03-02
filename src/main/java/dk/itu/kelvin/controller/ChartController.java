@@ -363,21 +363,25 @@ public final class ChartController {
     switch (e.getCode()) {
       case UP:
       case K:
+      case W:
         this.canvas.pan(0, 15);
         e.consume();
         break;
       case DOWN:
       case J:
+      case S:
         this.canvas.pan(0, -15);
         e.consume();
         break;
       case RIGHT:
       case L:
+      case D:
         this.canvas.pan(-15, 0);
         e.consume();
         break;
       case LEFT:
       case H:
+      case A:
         this.canvas.pan(15, 0);
         e.consume();
         break;
@@ -389,6 +393,16 @@ public final class ChartController {
       case MINUS:
       case UNDERSCORE:
         this.canvas.zoom(Math.pow(ZOOM_OUT, 8));
+        e.consume();
+        break;
+      case Q:
+        this.canvas.rotate(-10);
+        this.compassTransform.prependRotation(-10, 4, 40);
+        e.consume();
+        break;
+      case E:
+        this.canvas.rotate(10);
+        this.compassTransform.prependRotation(10, 4, 40);
         e.consume();
         break;
       default:
