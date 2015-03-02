@@ -9,7 +9,6 @@ import java.util.List;
 
 // JavaFX scene utilities
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 
 // JavaFX geometry
@@ -79,8 +78,26 @@ public final class TileGrid extends Group {
     return this.tiles;
   }
 
-  private void remove(final Tile tile) {
+  /**
+   * Add a tile to the tile grid scene graph.
+   *
+   * @param tile The tile to add.
+   */
+  private void add(final Tile tile) {
+    if (!this.getChildren().contains(tile)) {
+      this.getChildren().add(tile);
+    }
+  }
 
+  /**
+   * Remove a tile from the tile grid scene graph.
+   *
+   * @param tile The tile to remove.
+   */
+  private void remove(final Tile tile) {
+    if (this.getChildren().contains(tile)) {
+      this.getChildren().remove(tile);
+    }
   }
 
   /**
@@ -120,14 +137,10 @@ public final class TileGrid extends Group {
   private void layoutTiles() {
     for (Tile tile: this.tiles) {
       if (this.withinBounds(tile)) {
-        if (!this.getChildren().contains(tile)) {
-          this.getChildren().add(tile);
-        }
+        this.add(tile);
       }
       else {
-        if (this.getChildren().contains(tile)) {
-          this.getChildren().remove(tile);
-        }
+        this.remove(tile);
       }
     }
   }
