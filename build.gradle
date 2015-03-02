@@ -51,6 +51,10 @@ dependencies {
 // Use UTF-8 encoding when compiling Java.
 [compileJava, compileTestJava]*.options*.encoding = "UTF-8"
 
+checkstyle {
+  toolVersion = "5.9"
+}
+
 jar {
   // Include all source code in assembled JAR.
   from sourceSets.main.allSource
