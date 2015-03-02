@@ -450,9 +450,10 @@ public final class ChartController {
    * Will reset the compass, so it points north.
    */
   @FXML
-  private void compassReset(){
+  private void compassReset() {
     //to be continued
   }
+
   /**
    * Swap the text of the from and to address inputs.
    */
