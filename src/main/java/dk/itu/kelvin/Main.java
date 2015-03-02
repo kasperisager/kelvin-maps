@@ -48,7 +48,6 @@ public final class Main extends Application {
 
     primaryStage.setTitle("Kelvin Maps");
     primaryStage.setScene(scene);
-    // primaryStage.setResizable(false);
     primaryStage.show();
   }
 

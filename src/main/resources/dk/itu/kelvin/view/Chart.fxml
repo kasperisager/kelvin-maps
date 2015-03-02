@@ -19,6 +19,7 @@
 <!-- Components -->
 <?import dk.itu.kelvin.component.Canvas?>
 
+<?import javafx.scene.text.Text?>
 <StackPane
   fx:controller="dk.itu.kelvin.controller.ChartController"
   xmlns:fx="http://javafx.com/fxml"
@@ -54,12 +55,12 @@
     <Canvas fx:id="canvas" />
   </Pane>
 
-    <VBox
+  <VBox
       alignment="TOP_LEFT"
       pickOnBounds="false"
       styleClass="address-input-wrapper"
       spacing="10"
-    >
+  >
     <HBox maxWidth="Infinity">
       <children>
         <TextField prefWidth="355" minWidth="200" promptText="Enter an address" fx:id="addressFrom" onAction="#findAddress"/>
@@ -92,8 +93,11 @@
       <children>
         <Button styleClass="func-button, icon" text="&#xf3bb; / &#xf369;" onAction="#routeByFoot"/>
       </children>
-    </HBox>
 
+      <children>
+        <Button styleClass="func-button, icon" text="&#xf13d;" onAction="#showConfig"/>
+      </children>
+    </HBox>
   </VBox>
 
   <VBox
@@ -131,4 +135,5 @@
       <Button text="&#xF209;" styleClass="button-zoom, icon" onAction="#zoomOut" />
     </children>
   </VBox>
+
 </StackPane>

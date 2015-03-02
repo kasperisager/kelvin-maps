@@ -8,8 +8,11 @@ import javafx.scene.CacheHint;
 
 // JavaFX layout
 import javafx.scene.control.TextField;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 
 // JavaFX shapes
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Path;
 
 // JavaFX input
@@ -22,6 +25,15 @@ import javafx.scene.input.ZoomEvent;
 // JavaFX transformations
 import javafx.scene.transform.Affine;
 
+// Java FX control
+import javafx.scene.control.Label;
+
+// Java FX event
+import javafx.event.ActionEvent;
+
+// Controls FX
+import org.controlsfx.control.PopOver;
+
 // FXML utilities
 import javafx.fxml.FXML;
 
@@ -33,6 +45,8 @@ import dk.itu.kelvin.component.Canvas;
 // Models
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Chart;
+
+import javax.swing.*;
 
 /**
  * Chart controller class.
@@ -89,6 +103,11 @@ public final class ChartController {
    * The Chart model instance.
    */
   private Chart chart = new Chart();
+
+  /**
+   * PopOver
+   */
+  private PopOver popOver;
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -444,6 +463,33 @@ public final class ChartController {
     System.out.println(this.addressTo.getText());
     Address startAddress = Address.parse(this.addressFrom.getText());
     Address endAddress = Address.parse(this.addressTo.getText());
+  }
+
+  /**
+   * Show a config pop-up menu.
+   */
+  @FXML
+  private void showConfig(ActionEvent e) {
+    VBox vbox = new VBox(2);
+    vbox.getStyleClass().add("config-vbox");
+
+    Button blind = new Button("High Contrast");
+    Button poi = new Button("Points of Interest");
+
+    blind.getStyleClass().add("config-button");
+    poi.getStyleClass().add("config-button");
+    blind.setPrefWidth(120);
+    poi.setPrefWidth(120);
+    vbox.getChildren().addAll(blind, poi);
+
+    if (popOver == null) {
+      popOver = new PopOver();
+      popOver.setContentNode(vbox);
+      popOver.setCornerRadius(2);
+      popOver.setArrowSize(6);
+      popOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
+    }
+    popOver.show((Node) e.getSource());
   }
 
   /**
