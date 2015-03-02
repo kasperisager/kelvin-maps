@@ -34,12 +34,27 @@ public final class TileGrid extends Group {
   private Affine affine;
 
   /**
+   * List of tiles contained within the tile grid.
+   */
+  private List<Tile> tiles = new ArrayList<>();
+
+  /**
    * Initialize a tile grid.
    *
    * @param affine The affine transformation associated with the tile grid.
    */
   public TileGrid(final Affine affine) {
     this.affine = affine;
+
+    this.layoutTiles();
+
+    this.affine.txProperty().addListener((ob, ov, nv) -> {
+      this.layoutTiles();
+    });
+
+    this.affine.tyProperty().addListener((ob, ov, nv) -> {
+      this.layoutTiles();
+    });
   }
 
   /**
@@ -52,7 +67,7 @@ public final class TileGrid extends Group {
       return;
     }
 
-    this.getChildren().add(tile);
+    this.tiles.add(tile);
   }
 
   /**
@@ -61,15 +76,11 @@ public final class TileGrid extends Group {
    * @return A list of tiles contained within the tile grid.
    */
   public List<Tile> tiles() {
-    List<Tile> tiles = new ArrayList<>();
+    return this.tiles;
+  }
 
-    for (Node node: this.getChildren()) {
-      if (Tile.class.isAssignableFrom(node.getClass())) {
-        tiles.add((Tile) node);
-      }
-    }
+  private void remove(final Tile tile) {
 
-    return tiles;
   }
 
   /**
@@ -79,7 +90,7 @@ public final class TileGrid extends Group {
    * @return      A boolean indicating whether or not the specified tile is
    *              within the visible bounds of the tile grid.
    */
-  public boolean withinBounds(final Tile tile) {
+  private boolean withinBounds(final Tile tile) {
     Scene scene = this.getScene();
 
     if (scene == null) {
@@ -101,5 +112,23 @@ public final class TileGrid extends Group {
     // If the bounds of the scene and tile intersect, the tile will be within
     // the bounds of the scene.
     return sceneBounds.intersects(tileBounds);
+  }
+
+  /**
+   * Add the visible tiles to the tile grid.
+   */
+  private void layoutTiles() {
+    for (Tile tile: this.tiles) {
+      if (this.withinBounds(tile)) {
+        if (!this.getChildren().contains(tile)) {
+          this.getChildren().add(tile);
+        }
+      }
+      else {
+        if (this.getChildren().contains(tile)) {
+          this.getChildren().remove(tile);
+        }
+      }
+    }
   }
 }
