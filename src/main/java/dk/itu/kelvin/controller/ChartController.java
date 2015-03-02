@@ -536,4 +536,14 @@ public final class ChartController {
     this.addressFrom.setText(to);
     this.addressTo.setText(from);
   }
+
+  @FXML
+  private void routeByCar(){
+    System.out.println("route by car");
+  }
+
+  @FXML
+  private void routeByFoot(){
+    System.out.println("route by foot");
+  }
 }
