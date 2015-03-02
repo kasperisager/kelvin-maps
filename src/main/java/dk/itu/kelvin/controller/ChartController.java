@@ -542,7 +542,6 @@ public final class ChartController {
     System.out.println("route by car");
   }
 
-  @FXML
   private void routeByFoot(){
     System.out.println("route by foot");
   }
