@@ -68,10 +68,12 @@
 .search-button {
   -fx-font-size: 14px;
   -fx-background-radius: 0 2 2 0;
+  -fx-text-fill: #666;
 }
 
 .search-button:hover {
   -fx-cursor: hand;
+  -fx-text-fill: #333;
 }
 
 .search-button:pressed {

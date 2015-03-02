@@ -86,11 +86,11 @@
       </children>
 
       <children>
-        <Button styleClass="func-button, icon" text="&#xf2c1;"/>
+        <Button styleClass="func-button, icon" text="&#xf2c1;" onAction="#routeByCar"/>
       </children>
 
       <children>
-        <Button styleClass="func-button, icon" text="&#xf3bb; / &#xf369;"/>
+        <Button styleClass="func-button, icon" text="&#xf3bb; / &#xf369;" onAction="#routeByFoot"/>
       </children>
     </HBox>
 

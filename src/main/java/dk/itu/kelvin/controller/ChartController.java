@@ -526,12 +526,20 @@ public final class ChartController {
   }
 
   @FXML
-  private void swapTextFields(){
+     private void swapTextFields(){
     String first = addressFrom.getText();
     String last = addressTo.getText();
-
     addressFrom.setText(last);
     addressTo.setText(first);
+  }
 
+  @FXML
+  private void routeByCar(){
+    System.out.println("route by car");
+  }
+
+  @FXML
+  private void routeByFoot(){
+    System.out.println("route by foot");
   }
 }
