@@ -107,23 +107,23 @@
       <StackPane>
         <children>
           <VBox alignment="CENTER" styleClass="compass">
-           <children>
-             <Path fx:id="compassArrow" styleClass="compass-arrow">
-              <elements>
-              <MoveTo x="0" y="6" />
-              <LineTo x="4" y="0" />
-              <LineTo x="8" y="6" />
-              <LineTo x="0" y="6" />
-              </elements>
-             </Path>
+            <children>
+              <Path fx:id="compassArrow" styleClass="compass-arrow">
+                <elements>
+                  <MoveTo x="0" y="6" />
+                  <LineTo x="4" y="0" />
+                  <LineTo x="8" y="6" />
+                  <LineTo x="0" y="6" />
+                </elements>
+              </Path>
 
-             <Circle radius="30" styleClass="compass-disc" />
+              <Circle radius="30" styleClass="compass-disc" />
             </children>
           </VBox>
+          
           <VBox alignment="CENTER" styleClass="compass-reset">
             <Button styleClass="compass-reset-button, icon" text="&#xf3d7;" onAction="#compassReset" />
           </VBox>
-
         </children>
       </StackPane>
     </children>
