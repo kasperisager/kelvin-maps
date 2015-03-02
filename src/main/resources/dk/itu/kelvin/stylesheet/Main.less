@@ -33,12 +33,6 @@
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
   -fx-cursor: hand;
 }
-.button-zoom:hover {
-  -fx-text-fill: #333;
-}
-.button-zoom:pressed {
-  -fx-text-fill: #000;
-}
 
 .text-field, .search-button {
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
@@ -70,10 +64,16 @@
 .search-button {
   -fx-font-size: 15px;
   -fx-background-radius: 0 2 2 0;
+  -fx-text-fill: #666;
+  -fx-cursor: hand;
 }
 
-.search-button:hover {
-  -fx-cursor: hand;
+.search-button:hover, .func-button:hover, .button-zoom:hover {
+  -fx-text-fill: #333;
+}
+
+.search-button:pressed, .func-button:pressed, .button-zoom:pressed {
+  -fx-text-fill: #000;
 }
 
 .func-button {
