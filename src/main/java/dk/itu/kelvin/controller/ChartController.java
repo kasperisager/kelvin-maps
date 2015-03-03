@@ -481,8 +481,7 @@ public final class ChartController {
        */
       @Override
       public void handle(final ActionEvent event) {
-        System.out.println("I am colour blind!");
-        ApplicationController.setHighContrast();
+        ApplicationController.highContrast();
       }
     });
 

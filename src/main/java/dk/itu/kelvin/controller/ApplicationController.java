@@ -4,9 +4,6 @@
 package dk.itu.kelvin.controller;
 
 // JavaFX layout
-
-import javafx.scene.Scene;
-import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 
 // JavaFX shapes
@@ -32,20 +29,49 @@ import javafx.fxml.FXML;
  * @version 1.0.0
  */
 public class ApplicationController {
-  private static final ApplicationController applicationController;
+  /**
+   * Field that holds only instance of the class.
+   */
+  private static ApplicationController applicationController;
 
+  /**
+   * Borderpane element.
+   */
   @FXML
   private BorderPane borderPane;
 
-  public void initialize() {
+  /**
+   * JavaFX constructor for the ApplicationController.
+   */
+  public final void initialize() {
     ApplicationController.applicationController = this;
   }
 
   /**
-   * Add style class to borderpane.
+   *  Method to point to this instance from a static context.
+   * @return this instance of the class.
    */
-  public static void setHighContrast() {
-    this.borderPane.getStyleClass().add("high-contrast");
+  public static ApplicationController instance() {
+    return ApplicationController.applicationController;
+  }
+
+  /**
+   * Add a styleclass to borderpane element.
+   * This enables us to change colours of the map.
+   */
+  public static void highContrast() {
+    if (!ApplicationController.instance().borderPane.getStyleClass().
+      contains("high-contrast")) {
+      ApplicationController.instance().borderPane.getStyleClass().
+      add("high-contrast");
+      System.out.println(ApplicationController.instance().borderPane.
+      getStyleClass());
+    } else {
+      ApplicationController.instance().borderPane.getStyleClass().
+      remove("high-contrast");
+      System.out.println(ApplicationController.instance().borderPane.
+      getStyleClass());
+    }
   }
 }
 
