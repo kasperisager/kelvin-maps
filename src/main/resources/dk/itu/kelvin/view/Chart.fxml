@@ -56,10 +56,10 @@
   </Pane>
 
   <VBox
-      alignment="TOP_LEFT"
-      pickOnBounds="false"
-      styleClass="address-input-wrapper"
-      spacing="10"
+    alignment="TOP_LEFT"
+    pickOnBounds="false"
+    styleClass="address-input-wrapper"
+    spacing="10"
   >
     <HBox maxWidth="Infinity">
       <children>
@@ -123,7 +123,7 @@
               <Circle radius="30" styleClass="compass-disc" />
             </children>
           </VBox>
-          
+
           <VBox alignment="CENTER" styleClass="compass-reset">
             <Button styleClass="compass-reset-button, icon" text="&#xf3d7;" onAction="#compassReset" />
           </VBox>
