@@ -4,6 +4,7 @@
 package dk.itu.kelvin;
 
 // JavaFX utilities
+import dk.itu.kelvin.controller.ApplicationController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -37,6 +38,8 @@ public final class Main extends Application {
     );
 
     Scene scene = new Scene(root);
+
+    ApplicationController.setScene(scene);
 
     Font.loadFont(
       this.getClass().getResourceAsStream("font/ionicons.ttf"), 14

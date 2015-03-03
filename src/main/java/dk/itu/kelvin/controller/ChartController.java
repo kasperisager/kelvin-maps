@@ -25,10 +25,8 @@ import javafx.scene.input.ZoomEvent;
 // JavaFX transformations
 import javafx.scene.transform.Affine;
 
-// Java FX control
-import javafx.scene.control.Label;
-
 // Java FX event
+import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
 // Controls FX
@@ -45,8 +43,6 @@ import dk.itu.kelvin.component.Canvas;
 // Models
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Chart;
-
-import javax.swing.*;
 
 /**
  * Chart controller class.
@@ -105,7 +101,7 @@ public final class ChartController {
   private Chart chart = new Chart();
 
   /**
-   * PopOver
+   * PopOver.
    */
   private PopOver popOver;
 
@@ -466,10 +462,11 @@ public final class ChartController {
   }
 
   /**
-   * Show a config pop-up menu.
+   *  Click event to show the popover.
+   * @param e click event.
    */
   @FXML
-  private void showConfig(ActionEvent e) {
+  private void showConfig(final ActionEvent e) {
     VBox vbox = new VBox(2);
     vbox.getStyleClass().add("config-vbox");
 
@@ -478,16 +475,26 @@ public final class ChartController {
 
     blind.setOnAction(new EventHandler<ActionEvent>() {
 
+      /**
+       * Click event for high contrast button.
+       * @param event Mouse event.
+       */
       @Override
-      public void handle(ActionEvent event) {
+      public void handle(final ActionEvent event) {
+        System.out.println("I am colour blind!");
+        ApplicationController.setHighContrast();
       }
     });
 
     poi.setOnAction(new EventHandler<ActionEvent>() {
 
+      /**
+       *  Click event for points of interest button.
+       * @param event Click event.
+       */
       @Override
-      public void handle(ActionEvent event) {
-        System.out.println("Hello World!");
+      public void handle(final ActionEvent event) {
+        System.out.println("Show me points of interest!");
       }
     });
 
@@ -497,14 +504,14 @@ public final class ChartController {
     poi.setPrefWidth(120);
     vbox.getChildren().addAll(blind, poi);
 
-    if (popOver == null) {
-      popOver = new PopOver();
-      popOver.setContentNode(vbox);
-      popOver.setCornerRadius(2);
-      popOver.setArrowSize(6);
-      popOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
+    if (this.popOver == null) {
+      this.popOver = new PopOver();
+      this.popOver.setContentNode(vbox);
+      this.popOver.setCornerRadius(2);
+      this.popOver.setArrowSize(6);
+      this.popOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
     }
-    popOver.show((Node) e.getSource());
+    this.popOver.show((Node) e.getSource());
   }
 
   /**
