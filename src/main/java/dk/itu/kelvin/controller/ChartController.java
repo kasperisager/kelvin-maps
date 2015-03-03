@@ -453,18 +453,23 @@ public final class ChartController {
   private void swapTextFields() {
     String from = this.addressFrom.getText();
     String to = this.addressTo.getText();
-
     this.addressFrom.setText(to);
     this.addressTo.setText(from);
   }
 
+  /**
+   * Show the route from a to b by car.
+   */
   @FXML
-  private void routeByCar(){
+  private void routeByCar() {
     System.out.println("route by car");
   }
 
+  /**
+   * Show the route from a to b by foot.
+   */
   @FXML
-  private void routeByFoot(){
+  private void routeByFoot() {
     System.out.println("route by foot");
   }
 }
