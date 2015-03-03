@@ -3,17 +3,20 @@
  */
 package dk.itu.kelvin.model;
 
+// JavaFX geometry
+import javafx.geometry.BoundingBox;
+
 /**
  * A bounding box describes the bounds of a chart.
  *
  * @see <a href="http://wiki.openstreetmap.org/wiki/Bounding_Box">
  *      http://wiki.openstreetmap.org/wiki/Bounding_Box</a>
  */
-public final class BoundingBox extends javafx.geometry.BoundingBox {
+public final class Bounds extends BoundingBox {
   /**
    * Initialize a new empty bounding box.
    */
-  public BoundingBox() {
+  public Bounds() {
     super(0, 0, -1, -1);
   }
 
@@ -25,7 +28,7 @@ public final class BoundingBox extends javafx.geometry.BoundingBox {
    * @param right   The right coordinate of the bounds.
    * @param top     The top coordinate of the bounds.
    */
-  public BoundingBox(
+  public Bounds(
     final float left,
     final float bottom,
     final float right,

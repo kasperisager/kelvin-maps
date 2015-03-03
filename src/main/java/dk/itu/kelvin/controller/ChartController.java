@@ -3,6 +3,9 @@
  */
 package dk.itu.kelvin.controller;
 
+// General utilities
+// import java.util.Collections;
+
 // JavaFX scene utilities
 import javafx.scene.CacheHint;
 
@@ -25,6 +28,7 @@ import javafx.scene.transform.Affine;
 // FXML utilities
 import javafx.fxml.FXML;
 
+// Kelvin utilities
 import dk.itu.kelvin.ChartParser;
 
 // Components
@@ -33,6 +37,7 @@ import dk.itu.kelvin.component.Canvas;
 // Models
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Chart;
+// import dk.itu.kelvin.model.Element;
 
 /**
  * Chart controller class.
@@ -125,7 +130,7 @@ public final class ChartController {
     ChartParser parser = new ChartParser(this.chart);
     parser.read(MAP_INPUT);
 
-    // Collections.sort(this.chart.elements());
+    // Collections.sort(this.chart.elements(), Element.Order.COMPARATOR);
 
     // this.canvas.getChildren().addAll(this.chart.nodes());
 
@@ -432,8 +437,8 @@ public final class ChartController {
    */
   @FXML
   private void findAddress() {
-    System.out.println(this.addressFrom.getText());
     Address startAddress = Address.parse(this.addressFrom.getText());
+    System.out.println(startAddress);
   }
 
   /**
@@ -441,9 +446,10 @@ public final class ChartController {
    */
   @FXML
   private void findRoute() {
-    System.out.println(this.addressTo.getText());
     Address startAddress = Address.parse(this.addressFrom.getText());
     Address endAddress = Address.parse(this.addressTo.getText());
+    System.out.println(startAddress);
+    System.out.println(endAddress);
   }
 
   /**

@@ -42,7 +42,7 @@ public final class Land extends Group implements Element {
   /**
    * Bounds of the land element.
    */
-  private BoundingBox bounds;
+  private Bounds bounds;
 
   /**
    * Coastlines contained within the land element.
@@ -52,7 +52,7 @@ public final class Land extends Group implements Element {
   /**
    * Intersections between the coastlines and the bounds of the land.
    */
-  private Map<Node, Intersection> intersections = new HashMap<>();
+  // private Map<Node, Intersection> intersections = new HashMap<>();
 
   /**
    * Initialize a land instance.
@@ -66,7 +66,7 @@ public final class Land extends Group implements Element {
    *
    * @param bounds The bounds of the land.
    */
-  public Land(final BoundingBox bounds) {
+  public Land(final Bounds bounds) {
     this();
     this.bounds = bounds;
   }
@@ -145,24 +145,11 @@ public final class Land extends Group implements Element {
   }
 
   /**
-   * Compare the drawing order of this land with the drawing order of another
-   * element.
-   *
-   * @param element The element to compare the current land to.
-   * @return        A negative integer, zero, or a positive integer as this land
-   *                is less than, equal to, or greater than the specified
-   *                element.
-   */
-  public int compareTo(final Element element) {
-    return Element.Order.compare(this, element);
-  }
-
-  /**
    * Get the bounds of the element.
    *
    * @return The bounds of the element.
    */
-  public BoundingBox bounds() {
+  public Bounds bounds() {
     return this.bounds;
   }
 

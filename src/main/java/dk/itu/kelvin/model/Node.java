@@ -18,6 +18,11 @@ import javafx.geometry.Point2D;
  */
 public final class Node extends Point2D implements Element {
   /**
+   * Cache the hash of the node.
+   */
+  private int hash = 0;
+
+  /**
    * The ID of the node.
    */
   private long id;
@@ -101,19 +106,6 @@ public final class Node extends Point2D implements Element {
   }
 
   /**
-   * Compare the drawing order of this node with the drawing order of another
-   * element.
-   *
-   * @param element The element to compare the current node to.
-   * @return        A negative integer, zero, or a positive integer as this node
-   *                is less than, equal to, or greater than the specified
-   *                element.
-   */
-  public int compareTo(final Element element) {
-    return Element.Order.compare(this, element);
-  }
-
-  /**
    * Get the drawing layer of the node.
    *
    * @return The drawing layer of the node.
@@ -129,5 +121,54 @@ public final class Node extends Point2D implements Element {
    */
   public void layer(final int layer) {
     this.layer = layer;
+  }
+
+  /**
+   * Check if the current Node equals the specified object.
+   *
+   * @param object  The reference object with which to compare.
+   * @return        Boolean indicating whether or not the Node is equal to the
+   *                specified object.
+   */
+  @Override
+  public boolean equals(final Object object) {
+    if (object == null) {
+      return false;
+    }
+
+    if (this == object) {
+      return true;
+    }
+
+    if (!(object instanceof Node)) {
+      return false;
+    }
+
+    Node node = (Node) object;
+
+    return (
+      this.id() == node.id()
+      && this.order() == node.order()
+      && this.layer() == node.layer()
+      && super.equals(node)
+    );
+  }
+
+  /**
+   * Compute the hashcode of the Node.
+   *
+   * @return The computed hashcode of the Node.
+   */
+  @Override
+  public int hashCode() {
+    if (this.hash == 0) {
+      long bits = 7L;
+      bits = 31L * bits + this.id();
+      bits = 31L * bits + (long) this.order().ordinal();
+      bits = 31L * bits + (long) this.layer();
+      this.hash = super.hashCode() + (int) (bits ^ (bits >> 32));
+    }
+
+    return this.hash;
   }
 }

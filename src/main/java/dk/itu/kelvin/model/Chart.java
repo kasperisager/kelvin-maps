@@ -31,14 +31,14 @@ public final class Chart {
   /**
    * The bounds of the chart.
    */
-  private BoundingBox bounds;
+  private Bounds bounds;
 
   /**
    * Get the shape describing the chart bounds.
    *
    * @return The shape describing the chart bounds.
    */
-  public BoundingBox bounds() {
+  public Bounds bounds() {
     return this.bounds;
   }
 
@@ -47,7 +47,7 @@ public final class Chart {
    *
    * @param bounds The shape describing the chart bounds.
    */
-  public void bounds(final BoundingBox bounds) {
+  public void bounds(final Bounds bounds) {
     this.bounds = bounds;
   }
 

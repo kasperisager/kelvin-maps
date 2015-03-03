@@ -30,6 +30,8 @@ apply plugin: "application"
 apply plugin: "checkstyle"
 apply plugin: "console"
 apply plugin: "jacoco"
+apply plugin: "project-report"
+apply plugin: "findbugs"
 apply plugin: "lesscss"
 apply plugin: "org.ajoberstar.github-pages"
 
@@ -58,6 +60,14 @@ jar {
 
   manifest {
     attributes "Main-Class": mainClass
+  }
+}
+
+// FindBugs config.
+tasks.withType(FindBugs) {
+  reports {
+    xml.enabled = false
+    html.enabled = true
   }
 }
 

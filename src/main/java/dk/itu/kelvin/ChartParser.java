@@ -19,7 +19,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 // Models
-import dk.itu.kelvin.model.BoundingBox;
+import dk.itu.kelvin.model.Bounds;
 import dk.itu.kelvin.model.Chart;
 import dk.itu.kelvin.model.Element;
 import dk.itu.kelvin.model.Land;
@@ -161,7 +161,7 @@ public final class ChartParser {
    * @param attributes Element attributes.
    */
   private void startBounds(final Attributes attributes) {
-    this.chart.bounds(new BoundingBox(
+    this.chart.bounds(new Bounds(
       Chart.lonToX(this.getFloat(attributes, "minlon")),
       Chart.latToY(this.getFloat(attributes, "minlat")),
       Chart.lonToX(this.getFloat(attributes, "maxlon")),

@@ -138,19 +138,6 @@ public final class Way extends Path implements Element {
   }
 
   /**
-   * Compare the drawing order of this way with the drawing order of another
-   * element.
-   *
-   * @param element The element to compare the current way to.
-   * @return        A negative integer, zero, or a positive integer as this way
-   *                is less than, equal to, or greater than the specified
-   *                element.
-   */
-  public int compareTo(final Element element) {
-    return Element.Order.compare(this, element);
-  }
-
-  /**
    * Get the drawing layer of the way.
    *
    * @return The drawing layer of the way.
