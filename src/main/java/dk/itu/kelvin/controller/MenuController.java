@@ -26,6 +26,7 @@ public class MenuController {
       new FileChooser.ExtensionFilter("All Files", "*.osm")
     );
     File file = filechooser.showOpenDialog(new Stage());
+
     if (file != null) {
       //do something with the file
       System.out.println(file.getAbsolutePath());

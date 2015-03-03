@@ -4,7 +4,8 @@
 <?import javafx.scene.layout.BorderPane?>
 
 <BorderPane
-  fx:controller="dk.itu.kelvin.controller.ApplicationController" xmlns:fx="http://javafx.com/fxml"
+  fx:controller="dk.itu.kelvin.controller.ApplicationController"
+  xmlns:fx="http://javafx.com/fxml"
 >
   <top>
     <fx:include fx:id="menu" source="Menu.fxml" />
