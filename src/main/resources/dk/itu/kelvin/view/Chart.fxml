@@ -58,12 +58,11 @@
     alignment="TOP_LEFT"
     pickOnBounds="false"
     styleClass="address-input-wrapper"
-    maxWidth="2000"
     spacing="10"
   >
     <HBox maxWidth="Infinity">
       <children>
-        <TextField prefWidth="500" minWidth="200" maxWidth="2000" promptText="Enter an address" fx:id="addressFrom" onAction="#findAddress"/>
+        <TextField prefWidth="355" minWidth="200" promptText="Enter an address" fx:id="addressFrom" onAction="#findAddress"/>
       </children>
 
       <children>
@@ -73,7 +72,7 @@
 
     <HBox>
       <children>
-        <TextField prefWidth="500" minWidth="200" maxWidth="2000" promptText="Get directions to this address" fx:id="addressTo" onAction="#findRoute"/>
+        <TextField prefWidth="355" minWidth="200" promptText="Get directions to this address" fx:id="addressTo" onAction="#findRoute"/>
       </children>
 
       <children>
@@ -87,11 +86,11 @@
       </children>
 
       <children>
-        <Button styleClass="func-button, icon" text="&#xf2c1;"/>
+        <Button styleClass="func-button, icon" text="&#xf2c1;" onAction="#routeByCar"/>
       </children>
 
       <children>
-        <Button styleClass="func-button, icon" text="&#xf3bb; / &#xf369;"/>
+        <Button styleClass="func-button, icon" text="&#xf3bb; / &#xf369;" onAction="#routeByFoot"/>
       </children>
     </HBox>
 
