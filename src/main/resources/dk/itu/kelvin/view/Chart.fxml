@@ -29,6 +29,7 @@
   <Pane
     focusTraversable="true"
     pickOnBounds="true"
+    styleClass="map"
 
     onMouseEntered="#onMouseEntered"
     onMouseClicked="#onMouseClicked"
@@ -119,7 +120,7 @@
               <Circle radius="30" styleClass="compass-disc" />
             </children>
           </VBox>
-          
+
           <VBox alignment="CENTER" styleClass="compass-reset">
             <Button styleClass="compass-reset-button, icon" text="&#xf3d7;" onAction="#compassReset" />
           </VBox>

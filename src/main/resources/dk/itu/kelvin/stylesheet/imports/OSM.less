@@ -1,9 +1,39 @@
-/**
- * Ways.
- *
- * @see <a href="http://wiki.openstreetmap.org/wiki/Way">
- *      http://wiki.openstreetmap.org/wiki/Way</a>
- */
+// ------------------------------------------------------------------------- //
+// # VARIABLES
+// ------------------------------------------------------------------------- //
+
+// Colors
+@color-white: #fff;
+@color-black: #000;
+
+@color-blue: #a0c3ff;
+
+@color-water: @color-blue;
+@color-land: #e9e5dd;
+
+// Areas
+@fill-area: #F1EEE8;
+
+// Buildings
+@fill-building: #D6D1C8;
+@stroke-building: #D2CDC2;
+
+// ------------------------------------------------------------------------- //
+// # STYLES
+// ------------------------------------------------------------------------- //
+
+.map {
+  -fx-background-color: @color-water;
+}
+
+.land {
+  -fx-background-color: @color-land;
+}
+
+// Ways.
+//
+// @see <a href="http://wiki.openstreetmap.org/wiki/Way">
+//      http://wiki.openstreetmap.org/wiki/Way</a>
 .way {
   -fx-fill: none;
   -fx-stroke: none;
@@ -11,148 +41,163 @@
   -fx-stroke-line-join: round;
 }
 
-/**
- * Relations.
- *
- * @see <a href="http://wiki.openstreetmap.org/wiki/Relation">
- *      http://wiki.openstreetmap.org/wiki/Relation</a>
- */
+// Relations.
+//
+// @see <a href="http://wiki.openstreetmap.org/wiki/Relation">
+//      http://wiki.openstreetmap.org/wiki/Relation</a>
 .relation .member {
   -fx-fill: none;
   -fx-stroke: none;
 }
 
-/**
- * Areas.
- *
- * @see <a href="http://wiki.openstreetmap.org/wiki/Key:area">
- *      http://wiki.openstreetmap.org/wiki/Key:area</a>
- */
+// Areas.
+//
+// @see <a href="http://wiki.openstreetmap.org/wiki/Key:area">
+//      http://wiki.openstreetmap.org/wiki/Key:area</a>
 .area {
-  -fx-fill: #F1EEE8;
+  -fx-fill: @fill-area;
   -fx-stroke: none;
 }
 
-/**
- * Buildings.
- *
- * @see <a href="http://wiki.openstreetmap.org/wiki/Key:building">
- *      http://wiki.openstreetmap.org/wiki/Key:building</a>
- */
-.building, .building .member {
-  -fx-fill: #D6D1C8;
-  -fx-stroke: #D2CDC2;
-  -fx-stroke-width: 0.25px;
-  -fx-stroke-type: inside;
+// Buildings.
+//
+// @see <a href="http://wiki.openstreetmap.org/wiki/Key:building">
+//      http://wiki.openstreetmap.org/wiki/Key:building</a>
+.building {
+  &, .member {
+    -fx-fill: @fill-building;
+    -fx-stroke: @stroke-building;
+    -fx-stroke-width: 0.25px;
+    -fx-stroke-type: inside;
+  }
 }
 
-/**
- * Highways.
- *
- * @see <a href="http://wiki.openstreetmap.org/wiki/Map_Features#Highway">
- *      http://wiki.openstreetmap.org/wiki/Map_Features#Highway</a>
- */
-.highway                              { -fx-fill: none; -fx-stroke: none; }
-.highway.unclassfied                  { -fx-stroke: #FEFEFE; -fx-stroke-width: 4px; }
-.highway.residential                  { -fx-stroke: #FEFEFE; -fx-stroke-width: 4px; }
-.highway.service                      { -fx-stroke: #FDFDFD; -fx-stroke-width: 2px; }
-.highway.cycleway,
-.highway.steps,
-.highway.footway                      { -fx-stroke: #d5d4c8; -fx-stroke-width: 1px; }
-.highway.steps                        { -fx-stroke-dash-array: 0.5; }
-.highway.bridleway                    { -fx-stroke: #248E23; -fx-stroke-width: 1px; }
-.highway.path                         { -fx-stroke: #7E7D7B; -fx-stroke-width: 1px; }
-.highway.tertiary                     { -fx-stroke: #ffffff; -fx-stroke-width: 4px; }
-.highway.secondary                    { -fx-stroke: #F8D5A9; -fx-stroke-width: 6px; }
-.highway.primary                      { -fx-stroke: #ffe169; -fx-stroke-width: 6px; }
-.highway.motorway,
-.highway.trunk                        { -fx-stroke: #ffffff; -fx-stroke-width: 8px; }
+// Highways.
+//
+// @see <a href="http://wiki.openstreetmap.org/wiki/Map_Features#Highway">
+//      http://wiki.openstreetmap.org/wiki/Map_Features#Highway</a>
+.highway {
+  -fx-fill: none;
+  -fx-stroke: none;
 
-/**
- * Waterway.
- *
- * @see <a href="http://wiki.openstreetmap.org/wiki/Map_Features#Waterway">
- *      http://wiki.openstreetmap.org/wiki/Map_Features#Waterway</a>
- */
-.waterway                             { -fx-stroke: #a0c3ff; -fx-stroke-width: 0; }
-.waterway.river                       { -fx-stroke-width: 8px; }
-.waterway.stream                      { -fx-stroke-width: 3px; }
-.waterway.canal                       { -fx-stroke-width: 6px; }
-.waterway.drain                       { -fx-stroke-width: 1px; }
-.waterway.ditch                       { -fx-stroke-width: 2px; }
+  &.unclassfied,
+  &.residential { -fx-stroke: #FEFEFE; -fx-stroke-width: 4px; }
+  &.service     { -fx-stroke: #FDFDFD; -fx-stroke-width: 2px; }
+  &.cycleway,
+  &.steps,
+  &.footway     { -fx-stroke: #d5d4c8; -fx-stroke-width: 1px; }
+  &.steps       { -fx-stroke-dash-array: 0.5; }
+  &.bridleway   { -fx-stroke: #248E23; -fx-stroke-width: 1px; }
+  &.path        { -fx-stroke: #7E7D7B; -fx-stroke-width: 1px; }
+  &.tertiary    { -fx-stroke: #ffffff; -fx-stroke-width: 4px; }
+  &.secondary   { -fx-stroke: #F8D5A9; -fx-stroke-width: 6px; }
+  &.primary     { -fx-stroke: #ffe169; -fx-stroke-width: 6px; }
+  &.motorway,
+  &.trunk       { -fx-stroke: #ffffff; -fx-stroke-width: 8px; }
+}
 
-.waterway.riverbank,                  .waterway.riverbank .member,
-.waterway.dock,                       .waterway.dock .member,
-.waterway.boatyard                    .waterway.boardyard .member { -fx-fill: #a0c3ff; }
+// Waterway.
+//
+// @see <a href="http://wiki.openstreetmap.org/wiki/Map_Features#Waterway">
+//      http://wiki.openstreetmap.org/wiki/Map_Features#Waterway</a>
+.waterway {
+  -fx-stroke: @color-water;
+  -fx-stroke-width: 0;
 
-/**
- * Landuse.
- *
- * @see <a href="http://wiki.openstreetmap.org/wiki/Map_Features#Landuse">
- *      http://wiki.openstreetmap.org/wiki/Map_Features#Landuse</a>
- */
-.landuse,                             .landuse .member                        { -fx-fill: none; -fx-stroke: none; }
-.landuse.allotments,                  .landuse.allotments .member             { -fx-fill: #E5C7AB; }
-.landuse.basin,                       .landuse.basin .member                  { -fx-fill: #B5D0D0; }
-.landuse.brownfield,                  .landuse.brownfield .member             { -fx-fill: #B6B592; }
-.landuse.cemetery,                    .landuse.cemetery .member               { -fx-fill: #87B38C; }
-.landuse.commercial,                  .landuse.commercial .member             { -fx-fill: #EFC8C8; }
-.landuse.construction,                .landuse.construction .member           { -fx-fill: #B6B592; }
-.landuse.farmland,                    .landuse.farmland .member               { -fx-fill: #ECDDC9; }
-.landuse.farmyard,                    .landuse.farmyard .member               { -fx-fill: #EED5B5; }
-.landuse.forest,                      .landuse.forest .member                 { -fx-fill: #A0CF85; }
-.landuse.garages,                     .landuse.garages .member                { -fx-fill: #DEDDCD; }
-.landuse.greenfield,                  .landuse.greenfield .member             { -fx-fill: #CFECA8; }
-.landuse.greenhouse_horticulture,     .landuse.greenhouse_horticulture .member{ -fx-fill: #DCEAEE; }
-.landuse.industrial,                  .landuse.industrial .member             { -fx-fill: #DFD1D6; }
-.landuse.landfill,                    .landuse.landfill .member               { -fx-fill: #B6B592; }
-.landuse.meadow,                      .landuse.meadow .member                 { -fx-fill: #CFECA8; }
-.landuse.military,                    .landuse.military .member               { -fx-fill: #F6ACA8; }
-.landuse.orchard,                     .landuse.orchard .member                { -fx-fill: #9ED88F; }
-.landuse.quarry,                      .landuse.quarry .member                 { -fx-fill: #C5C3C3; }
-.landuse.railway,                     .landuse.railway .member                { -fx-fill: #DED0D5; }
-.landuse.recreation_ground,           .landuse.recreation_ground .member      { -fx-fill: #CFECA8; }
-.landuse.reservoir,                   .landuse.reservoir .member              { -fx-fill: #B5D0D0; }
-.landuse.residential,                 .landuse.residential .member            { -fx-fill: #E1E1E1; }
-.landuse.retail,                      .landuse.retail .member                 { -fx-fill: #F0D9D9; }
-.landuse.village_green,               .landuse.village_green .member          { -fx-fill: #CFECA8; }
-.landuse.vineyard,                    .landuse.vineyard .member               { -fx-fill: #B3E2A8; }
+  &.river  { -fx-stroke-width: 8px; }
+  &.stream { -fx-stroke-width: 3px; }
+  &.canal  { -fx-stroke-width: 6px; }
+  &.drain  { -fx-stroke-width: 1px; }
+  &.ditch  { -fx-stroke-width: 2px; }
 
-/**
- * Natural.
- *
- * @see <a href="http://wiki.openstreetmap.org/wiki/Map_Features#Natural">
- *      http://wiki.openstreetmap.org/wiki/Map_Features#Natural</a>
- */
-.natural,                             .natural .member                        { -fx-fill: none; -fx-stroke: none; }
-.natural.wood,                        .natural.wood .member                   { -fx-fill: #AED1A0; }
-.natural.scrub,                       .natural.scrub .member                  { -fx-fill: #B5E3B5; }
-.natural.heath,                       .natural.heath .member                  { -fx-fill: #D6D99F; }
-.natural.grassland,                   .natural.grassland .member              { -fx-fill: #C6E4B4; }
-.natural.fell,                        .natural.fell .member                   { -fx-fill: #D6D99F; }
-.natural.bare_rock,                   .natural.bare_rock .member              { -fx-fill: #E9E0D9; }
-.natural.scree,                       .natural.scree .member                  { -fx-fill: #EBE2DB; }
-.natural.sand,                        .natural.sand .member                   { -fx-fill: #F4E9C6; }
-.natural.mud,                         .natural.mud .member                    { -fx-fill: #E6DCD1; }
-.natural.water,                       .natural.water .member                  { -fx-fill: #a0c3ff; }
-.natural.wetland,                     .natural.wetland .member                { -fx-fill: #F1EEE9; }
-.natural.glacier,                     .natural.glacier .member                { -fx-fill: #DDECEC; }
-.natural.beach,                       .natural.beach .member                  { -fx-fill: #FFF1BA; }
+  &.riverbank,
+  &.dock,
+  &.boatyard {
+    &, .member {
+      -fx-fill: @color-water;
+    }
+  }
+}
 
-.natural.coastline                    { -fx-stroke: #DAE2DE; -fx-stroke-width: 1px; }
+// Landuse.
+//
+// @see <a href="http://wiki.openstreetmap.org/wiki/Map_Features#Landuse">
+//      http://wiki.openstreetmap.org/wiki/Map_Features#Landuse</a>
+.landuse {
+  &, .member {
+    -fx-fill: none;
+    -fx-stroke: none;
+  }
 
-/**
- * Leisure.
- *
- * @see <a href="http://wiki.openstreetmap.org/wiki/Map_Features#Leisure">
- *      http://wiki.openstreetmap.org/wiki/Map_Features#Leisure</a>
- */
-.leisure,                             .leisure .member                        { -fx-stroke: none; }
-.leisure.garden,                      .leisure.garden .member                 { -fx-fill: #CFECA8; }
-.leisure.golf_course,                 .leisure.golf_course .member            { -fx-fill: #B5E3B5; }
-.leisure.nature_reserve,              .leisure.nature_reserve .member         { -fx-fill: #F1EEE8; }
-.leisure.park,                        .leisure.park .member                   { -fx-fill: #cbdfaa; }
-.leisure.pitch,                       .leisure.pitch .member                  { -fx-fill: #8AD3AF; }
-.leisure.playground,                  .leisure.playground .member             { -fx-fill: #CCFDF1; }
-.leisure.sports_centre,               .leisure.sports_centre .member          { -fx-fill: #31CC99; }
-.leisure.stadium,                     .leisure.stadium .member                { -fx-fill: #31CC99; }
+  &.allotments              { &, .member { -fx-fill: #E5C7AB; } }
+  &.basin                   { &, .member { -fx-fill: #B5D0D0; } }
+  &.brownfield              { &, .member { -fx-fill: #B6B592; } }
+  &.cemetery                { &, .member { -fx-fill: #87B38C; } }
+  &.commercial              { &, .member { -fx-fill: #EFC8C8; } }
+  &.construction            { &, .member { -fx-fill: #B6B592; } }
+  &.farmland                { &, .member { -fx-fill: #ECDDC9; } }
+  &.farmyard                { &, .member { -fx-fill: #EED5B5; } }
+  &.forest                  { &, .member { -fx-fill: #A0CF85; } }
+  &.garages                 { &, .member { -fx-fill: #DEDDCD; } }
+  &.greenfield              { &, .member { -fx-fill: #CFECA8; } }
+  &.greenhouse_horticulture { &, .member { -fx-fill: #DCEAEE; } }
+  &.industrial              { &, .member { -fx-fill: #DFD1D6; } }
+  &.landfill                { &, .member { -fx-fill: #B6B592; } }
+  &.meadow                  { &, .member { -fx-fill: #CFECA8; } }
+  &.military                { &, .member { -fx-fill: #F6ACA8; } }
+  &.orchard                 { &, .member { -fx-fill: #9ED88F; } }
+  &.quarry                  { &, .member { -fx-fill: #C5C3C3; } }
+  &.railway                 { &, .member { -fx-fill: #DED0D5; } }
+  &.recreation_ground       { &, .member { -fx-fill: #CFECA8; } }
+  &.reservoir               { &, .member { -fx-fill: #B5D0D0; } }
+  &.residential             { &, .member { -fx-fill: #E1E1E1; } }
+  &.retail                  { &, .member { -fx-fill: #F0D9D9; } }
+  &.village_green           { &, .member { -fx-fill: #CFECA8; } }
+  &.vineyard                { &, .member { -fx-fill: #B3E2A8; } }
+}
+
+// Natural.
+//
+// @see <a href="http://wiki.openstreetmap.org/wiki/Map_Features#Natural">
+//      http://wiki.openstreetmap.org/wiki/Map_Features#Natural</a>
+.natural {
+  &, .member {
+    -fx-fill: none;
+    -fx-stroke: none;
+  }
+
+  &.wood      { &, .member { -fx-fill: #AED1A0; } }
+  &.scrub     { &, .member { -fx-fill: #B5E3B5; } }
+  &.heath     { &, .member { -fx-fill: #D6D99F; } }
+  &.grassland { &, .member { -fx-fill: #C6E4B4; } }
+  &.fell      { &, .member { -fx-fill: #D6D99F; } }
+  &.bare_rock { &, .member { -fx-fill: #E9E0D9; } }
+  &.scree     { &, .member { -fx-fill: #EBE2DB; } }
+  &.sand      { &, .member { -fx-fill: #F4E9C6; } }
+  &.mud       { &, .member { -fx-fill: #E6DCD1; } }
+  &.water     { &, .member { -fx-fill: #a0c3ff; } }
+  &.wetland   { &, .member { -fx-fill: #F1EEE9; } }
+  &.glacier   { &, .member { -fx-fill: #DDECEC; } }
+  &.beach     { &, .member { -fx-fill: #FFF1BA; } }
+}
+
+.coastline { -fx-stroke: #DAE2DE; -fx-stroke-width: 1px; }
+
+// Leisure.
+//
+// @see <a href="http://wiki.openstreetmap.org/wiki/Map_Features#Leisure">
+//      http://wiki.openstreetmap.org/wiki/Map_Features#Leisure</a>
+.leisure {
+  &, .member {
+    -fx-stroke: none;
+  }
+
+  &.garden          { &, .member { -fx-fill: #CFECA8; } }
+  &.golf_course     { &, .member { -fx-fill: #B5E3B5; } }
+  &.nature_reserve  { &, .member { -fx-fill: #F1EEE8; } }
+  &.park            { &, .member { -fx-fill: #cbdfaa; } }
+  &.pitch           { &, .member { -fx-fill: #8AD3AF; } }
+  &.playground      { &, .member { -fx-fill: #CCFDF1; } }
+  &.sports_centre   { &, .member { -fx-fill: #31CC99; } }
+  &.stadium         { &, .member { -fx-fill: #31CC99; } }
+}
