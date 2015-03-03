@@ -5,14 +5,12 @@ package dk.itu.kelvin.controller;
 
 // JavaFX scene utilities
 import javafx.scene.CacheHint;
+import javafx.scene.Node;
 
 // JavaFX layout
-import javafx.scene.control.TextField;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
 
 // JavaFX shapes
-import javafx.scene.layout.VBox;
 import javafx.scene.shape.Path;
 
 // JavaFX input
@@ -24,6 +22,11 @@ import javafx.scene.input.ZoomEvent;
 
 // JavaFX transformations
 import javafx.scene.transform.Affine;
+
+// JavaFX controls
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 
 // Java FX event
 import javafx.event.EventHandler;
