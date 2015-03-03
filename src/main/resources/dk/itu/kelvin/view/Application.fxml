@@ -4,8 +4,7 @@
 <?import javafx.scene.layout.BorderPane?>
 
 <BorderPane
-  fx:controller="dk.itu.kelvin.controller.ApplicationController"
-  xmlns:fx="http://javafx.com/fxml"
+  fx:controller="dk.itu.kelvin.controller.ApplicationController" xmlns:fx="http://javafx.com/fxml"
 >
   <center>
     <fx:include fx:id="chart" source="Chart.fxml" />

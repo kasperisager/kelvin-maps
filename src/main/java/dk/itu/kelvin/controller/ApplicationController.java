@@ -10,4 +10,11 @@ package dk.itu.kelvin.controller;
  */
 public class ApplicationController {
   // Do nothing
+
+  public setHighContrast(){
+
+
+  }
 }
+
+

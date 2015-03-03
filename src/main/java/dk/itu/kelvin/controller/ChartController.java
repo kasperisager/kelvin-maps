@@ -476,6 +476,21 @@ public final class ChartController {
     Button blind = new Button("High Contrast");
     Button poi = new Button("Points of Interest");
 
+    blind.setOnAction(new EventHandler<ActionEvent>() {
+
+      @Override
+      public void handle(ActionEvent event) {
+      }
+    });
+
+    poi.setOnAction(new EventHandler<ActionEvent>() {
+
+      @Override
+      public void handle(ActionEvent event) {
+        System.out.println("Hello World!");
+      }
+    });
+
     blind.getStyleClass().add("config-button");
     poi.getStyleClass().add("config-button");
     blind.setPrefWidth(120);
