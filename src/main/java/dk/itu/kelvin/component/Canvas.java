@@ -3,9 +3,15 @@
  */
 package dk.itu.kelvin.component;
 
+// General utilities
+import java.util.Collection;
+
 // JavaFX scene utilities
-import javafx.scene.CacheHint;
 import javafx.scene.Group;
+import javafx.scene.Node;
+
+// JavaFX geometry
+import javafx.geometry.Bounds;
 
 // JavaFX transformations
 import javafx.scene.transform.Affine;
@@ -17,6 +23,11 @@ import javafx.scene.transform.Affine;
  */
 public final class Canvas extends Group {
   /**
+   * The size of each tile within the tile grid.
+   */
+  private static final int TILE_SIZE = 256;
+
+  /**
    * Maximum zoom factor.
    */
   private static final double MAX_ZOOM_FACTOR = 4;
@@ -27,23 +38,64 @@ public final class Canvas extends Group {
   private static final double MIN_ZOOM_FACTOR = 0.5;
 
   /**
-   * The current zoom factor.
-   */
-  private double currentZoomFactor = 1;
-
-  /**
    * Affine transformation instance.
    */
   private Affine transform = new Affine();
 
   /**
+   * The tile grid containing all the elements within the canvas.
+   */
+  private TileGrid tileGrid = new TileGrid(this.transform);
+
+  /**
    * Initialize the canvas.
    */
   public Canvas() {
-    this.setCache(true);
-    this.setCacheHint(CacheHint.QUALITY);
-
     this.getTransforms().add(this.transform);
+    this.getChildren().add(this.tileGrid);
+  }
+
+  /**
+   * Add a node to the canvas.
+   *
+   * @param node The node to add to the canvas.
+   */
+  public void add(final Node node) {
+    Bounds bounds = node.getBoundsInParent();
+
+    int x = (int) (TILE_SIZE * Math.floor(
+      Math.round(bounds.getMaxX() / TILE_SIZE)
+    ));
+
+    int y = (int) (TILE_SIZE * Math.floor(
+      Math.round(bounds.getMaxY() / TILE_SIZE)
+    ));
+
+    TileGrid.Anchor anchor = new TileGrid.Anchor(x, y);
+
+    if (this.tileGrid.contains(anchor)) {
+      this.tileGrid.get(anchor).add(node);
+    }
+    else {
+      Tile tile = new Tile();
+      tile.add(node);
+      this.tileGrid.add(anchor, tile);
+    }
+  }
+
+  /**
+   * Add a collection of nodes to the canvas.
+   *
+   * @param nodes The collection of nodes to add to the canvas.
+   */
+  public void add(final Collection<Node> nodes) {
+    if (nodes == null) {
+      return;
+    }
+
+    for (Node node: nodes) {
+      this.add(node);
+    }
   }
 
   /**
@@ -54,7 +106,7 @@ public final class Canvas extends Group {
    * @param y       The y-coordinate of the pivot point.
    */
   public void zoom(final double factor, final double x, final double y) {
-    double newZoomFactor = this.currentZoomFactor * factor;
+    double newZoomFactor = this.transform.getMxx() * factor;
 
     if (factor > 1 && newZoomFactor >= MAX_ZOOM_FACTOR) {
       return;
@@ -63,8 +115,6 @@ public final class Canvas extends Group {
     if (factor < 1 && newZoomFactor <= MIN_ZOOM_FACTOR) {
       return;
     }
-
-    this.currentZoomFactor *= factor;
 
     this.transform.prependScale(factor, factor, x, y);
   }
