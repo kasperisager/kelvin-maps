@@ -11,7 +11,7 @@
   <menus>
     <Menu text="File">
       <items>
-        <MenuItem text="Open file"/>
+        <MenuItem text="Open file" onAction="#pickFile"/>
         <MenuItem text="Save as .bin"/>
         <MenuItem text="Load last .bin"/>
         <MenuItem text="Reset to default"/>
