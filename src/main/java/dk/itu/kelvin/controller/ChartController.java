@@ -447,14 +447,37 @@ public final class ChartController {
   }
 
   /**
+   * Will reset the compass, so it points north.
+   */
+  @FXML
+  private void compassReset() {
+    //to be continued
+  }
+
+  /**
    * Swap the text of the from and to address inputs.
    */
   @FXML
   private void swapTextFields() {
     String from = this.addressFrom.getText();
     String to = this.addressTo.getText();
-
     this.addressFrom.setText(to);
     this.addressTo.setText(from);
+  }
+
+  /**
+   * Show the route from a to b by car.
+   */
+  @FXML
+  private void routeByCar() {
+    System.out.println("route by car");
+  }
+
+  /**
+   * Show the route from a to b by foot.
+   */
+  @FXML
+  private void routeByFoot() {
+    System.out.println("route by foot");
   }
 }

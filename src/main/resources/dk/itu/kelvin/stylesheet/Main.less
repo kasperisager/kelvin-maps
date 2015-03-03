@@ -50,6 +50,16 @@
 .compass {
   -fx-padding: 16px;
 }
+
+.compass-reset{
+  -fx-padding: 10px 0 0 0;
+}
+.compass-reset-button {
+  -fx-padding: 7px 12px;
+  -fx-font-size: 14px;
+  -fx-background-color: #fff;
+  -fx-background-radius: 1000px;
+}
 .compass-disc {
   -fx-fill: none;
   -fx-stroke: #fff;
@@ -70,10 +80,16 @@
 .search-button {
   -fx-font-size: 15px;
   -fx-background-radius: 0 2 2 0;
+  -fx-text-fill: #666;
 }
 
 .search-button:hover {
   -fx-cursor: hand;
+  -fx-text-fill: #333;
+}
+
+.search-button:pressed {
+  -fx-text-fill: #000;
 }
 
 .func-button {
