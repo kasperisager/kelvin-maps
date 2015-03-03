@@ -29,7 +29,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 // Java FX event
-import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
 // Controls FX
@@ -476,28 +475,12 @@ public final class ChartController {
     Button blind = new Button("High Contrast");
     Button poi = new Button("Points of Interest");
 
-    blind.setOnAction(new EventHandler<ActionEvent>() {
-
-      /**
-       * Click event for high contrast button.
-       * @param event Mouse event.
-       */
-      @Override
-      public void handle(final ActionEvent event) {
-        ApplicationController.highContrast();
-      }
+    blind.setOnAction((event) -> {
+      ApplicationController.highContrast();
     });
 
-    poi.setOnAction(new EventHandler<ActionEvent>() {
-
-      /**
-       *  Click event for points of interest button.
-       * @param event Click event.
-       */
-      @Override
-      public void handle(final ActionEvent event) {
-        System.out.println("Show me points of interest!");
-      }
+    poi.setOnAction((event) -> {
+      System.out.println("Show me points of interest!");
     });
 
     blind.getStyleClass().add("config-button");
