@@ -12,6 +12,9 @@ import javafx.application.Platform;
 // JavaFX concurrency utilities
 import javafx.concurrent.Task;
 
+// JavaFX scene utilities
+import javafx.scene.CacheHint;
+
 // JavaFX layout
 import javafx.scene.control.TextField;
 
@@ -134,28 +137,28 @@ public final class ChartController {
     Task task = new Task<Void>() {
       @Override
       public Void call() {
-	ChartParser parser = new ChartParser(chart);
+        ChartParser parser = new ChartParser(chart);
 
-	try {
-	  parser.read(MAP_INPUT);
-	}
-	catch (Exception ex) {
-	  throw new RuntimeException(ex);
-	}
+        try {
+          parser.read(MAP_INPUT);
+        }
+        catch (Exception ex) {
+          throw new RuntimeException(ex);
+        }
 
-	Collections.sort(chart.elements());
+        Collections.sort(chart.elements());
 
-	// Schedule rendering of the chart nodes.
-	Platform.runLater(() -> {
-	  // canvas.add(chart.nodes());
+        // Schedule rendering of the chart nodes.
+        Platform.runLater(() -> {
+          // canvas.add(chart.nodes());
 
-	  canvas.pan(
-	    -chart.bounds().getMinX(),
-	    -chart.bounds().getMaxY()
-	  );
-	});
+          canvas.pan(
+            -chart.bounds().getMinX(),
+            -chart.bounds().getMaxY()
+          );
+        });
 
-	return null;
+        return null;
       }
     };
 
