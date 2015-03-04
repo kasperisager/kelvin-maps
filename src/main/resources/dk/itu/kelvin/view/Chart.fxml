@@ -70,7 +70,7 @@
       <children>
         <Button styleClass="search-button, icon" text="&#xf4a5;" onAction="#findAddress">
           <tooltip>
-            <Tooltip text="Søg efter adresse"/>
+            <Tooltip text="Search for address"/>
           </tooltip>
         </Button>
       </children>
@@ -84,7 +84,7 @@
       <children>
         <Button styleClass="search-button, icon" text="&#xf3d6;" onAction="#findRoute">
           <tooltip>
-            <Tooltip text="Søg efter rute"/>
+            <Tooltip text="Get directions"/>
           </tooltip>
         </Button>
       </children>
@@ -94,7 +94,7 @@
       <children>
         <Button styleClass="func-button, icon" text="&#xf268;" onAction="#swapTextFields">
           <tooltip>
-            <Tooltip text="Byt om på tekstfelter"/>
+            <Tooltip text="Switch textfields"/>
           </tooltip>
         </Button>
       </children>
@@ -102,7 +102,7 @@
       <children>
         <Button styleClass="func-button, icon" text="&#xf2c1;">
           <tooltip>
-            <Tooltip text="Highlight bil ruter"/>
+            <Tooltip text="Highlight car routes"/>
           </tooltip>
         </Button>
       </children>
@@ -110,7 +110,7 @@
       <children>
         <Button styleClass="func-button, icon" text="&#xf3bb; / &#xf369;">
           <tooltip>
-            <Tooltip text="Highlight gå/cykel ruter"/>
+            <Tooltip text="Highlight walk/bike routes"/>
           </tooltip>
         </Button>
       </children>
@@ -145,7 +145,7 @@
           <VBox alignment="CENTER" styleClass="compass-reset">
             <Button styleClass="compass-reset-button, icon" text="&#xf3d7;" onAction="#compassReset">
               <tooltip>
-                <Tooltip text="Nulstil kompas"/>
+                <Tooltip text="Reset compass"/>
               </tooltip>
             </Button>
           </VBox>
