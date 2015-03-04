@@ -19,6 +19,7 @@
 <!-- Components -->
 <?import dk.itu.kelvin.component.Canvas?>
 
+<?import javafx.scene.control.Tooltip?>
 <StackPane
   fx:controller="dk.itu.kelvin.controller.ChartController"
   xmlns:fx="http://javafx.com/fxml"
@@ -67,7 +68,11 @@
       </children>
 
       <children>
-        <Button styleClass="search-button, icon" text="&#xf4a5;" onAction="#findAddress"/>
+        <Button styleClass="search-button, icon" text="&#xf4a5;" onAction="#findAddress">
+          <tooltip>
+            <Tooltip text="Søg efter adresse"/>
+          </tooltip>
+        </Button>
       </children>
     </HBox>
 
@@ -77,21 +82,37 @@
       </children>
 
       <children>
-        <Button styleClass="search-button, icon" text="&#xf3d6;" onAction="#findRoute"/>
+        <Button styleClass="search-button, icon" text="&#xf3d6;" onAction="#findRoute">
+          <tooltip>
+            <Tooltip text="Søg efter rute"/>
+          </tooltip>
+        </Button>
       </children>
     </HBox>
 
     <HBox spacing="10">
       <children>
-        <Button styleClass="func-button, icon" text="&#xf268;" onAction="#swapTextFields"/>
+        <Button styleClass="func-button, icon" text="&#xf268;" onAction="#swapTextFields">
+          <tooltip>
+            <Tooltip text="Byt om på tekstfelter"/>
+          </tooltip>
+        </Button>
       </children>
 
       <children>
-        <Button styleClass="func-button, icon" text="&#xf2c1;"/>
+        <Button styleClass="func-button, icon" text="&#xf2c1;">
+          <tooltip>
+            <Tooltip text="Highlight bil ruter"/>
+          </tooltip>
+        </Button>
       </children>
 
       <children>
-        <Button styleClass="func-button, icon" text="&#xf3bb; / &#xf369;"/>
+        <Button styleClass="func-button, icon" text="&#xf3bb; / &#xf369;">
+          <tooltip>
+            <Tooltip text="Highlight gå/cykel ruter"/>
+          </tooltip>
+        </Button>
       </children>
     </HBox>
 
@@ -120,9 +141,13 @@
               <Circle radius="30" styleClass="compass-disc" />
             </children>
           </VBox>
-          
+
           <VBox alignment="CENTER" styleClass="compass-reset">
-            <Button styleClass="compass-reset-button, icon" text="&#xf3d7;" onAction="#compassReset" />
+            <Button styleClass="compass-reset-button, icon" text="&#xf3d7;" onAction="#compassReset">
+              <tooltip>
+                <Tooltip text="Nulstil kompas"/>
+              </tooltip>
+            </Button>
           </VBox>
         </children>
       </StackPane>
@@ -137,8 +162,16 @@
     fillWidth="false"
   >
     <children>
-      <Button text="&#xF218;" styleClass="button-zoom, icon" onAction="#zoomIn"/>
-      <Button text="&#xF209;" styleClass="button-zoom, icon" onAction="#zoomOut" />
+      <Button text="&#xF218;" styleClass="button-zoom, icon" onAction="#zoomIn">
+        <tooltip>
+          <Tooltip text="Zoom ind"/>
+        </tooltip>
+      </Button>
+      <Button text="&#xF209;" styleClass="button-zoom, icon" onAction="#zoomOut">
+       <tooltip>
+         <Tooltip text="Zoom ud"/>
+       </tooltip>
+      </Button>
     </children>
   </VBox>
 </StackPane>
