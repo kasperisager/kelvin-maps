@@ -164,12 +164,12 @@
     <children>
       <Button text="&#xF218;" styleClass="button-zoom, icon" onAction="#zoomIn">
         <tooltip>
-          <Tooltip text="Zoom ind"/>
+          <Tooltip text="Zoom in"/>
         </tooltip>
       </Button>
       <Button text="&#xF209;" styleClass="button-zoom, icon" onAction="#zoomOut">
        <tooltip>
-         <Tooltip text="Zoom ud"/>
+         <Tooltip text="Zoom out"/>
        </tooltip>
       </Button>
     </children>
