@@ -25,8 +25,8 @@ import javafx.scene.transform.Affine;
 
 // JavaFX controls
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.CheckBox;
 
 // Java FX event
 import javafx.event.ActionEvent;
@@ -480,6 +480,7 @@ public final class ChartController {
     });
 
     poi.setOnAction((event) -> {
+      showPOI(event);
       System.out.println("Show me points of interest!");
     });
 
@@ -496,6 +497,51 @@ public final class ChartController {
       this.popOver.setArrowSize(6);
       this.popOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
     }
+    this.popOver.show((Node) e.getSource());
+  }
+
+  public void showPOI(final ActionEvent e) {
+    VBox vbox = new VBox(2);
+    vbox.getStyleClass().add("config-vbox");
+
+    CheckBox parking = new CheckBox("Parking");
+    CheckBox restaurant = new CheckBox("Restaurant");
+    CheckBox fastFood = new CheckBox("Fast Food");
+    CheckBox toilets = new CheckBox("Toilets");
+    CheckBox cafe = new CheckBox("Cafe");
+    CheckBox pub = new CheckBox("Pub");
+    CheckBox recycling = new CheckBox("Recycling");
+    CheckBox bar = new CheckBox("Bar");
+    CheckBox compressedAir = new CheckBox("Compressed Air");
+    CheckBox postBox = new CheckBox("Post Box");
+    CheckBox taxi = new CheckBox("Taxi");
+    CheckBox bbq = new CheckBox("BBQ");
+    CheckBox solarium = new CheckBox("Solarium");
+    CheckBox telephone = new CheckBox("Telephone");
+
+    parking.getStyleClass().add("config-button");
+    restaurant.getStyleClass().add("config-button");
+    fastFood.getStyleClass().add("config-button");
+    toilets.getStyleClass().add("config-button");
+    cafe.getStyleClass().add("config-button");
+    pub.getStyleClass().add("config-button");
+    recycling.getStyleClass().add("config-button");
+    bar.getStyleClass().add("config-button");
+    compressedAir.getStyleClass().add("config-button");
+    postBox.getStyleClass().add("config-button");
+    taxi.getStyleClass().add("config-button");
+    bbq.getStyleClass().add("config-button");
+    solarium.getStyleClass().add("config-button");
+    telephone.getStyleClass().add("config-button");
+    /*blind.setPrefWidth(120);
+    poi.setPrefWidth(120); */
+    vbox.getChildren().addAll(parking, restaurant, fastFood, toilets, cafe, pub, recycling, bar, compressedAir, postBox, taxi, bbq, solarium, telephone);
+    PopOver checkboxPopover = new PopOver();
+    checkboxPopover.setContentNode(vbox);
+    checkboxPopover.setCornerRadius(2);
+    checkboxPopover.setArrowSize(6);
+    checkboxPopover.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
+    
     this.popOver.show((Node) e.getSource());
   }
 
