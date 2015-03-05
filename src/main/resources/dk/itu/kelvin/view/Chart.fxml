@@ -29,8 +29,8 @@
   fx:controller="dk.itu.kelvin.controller.ChartController"
   xmlns:fx="http://javafx.com/fxml"
 
-  prefWidth="512"
-  prefHeight="512"
+  prefWidth="640"
+  prefHeight="640"
 >
   <Pane
     focusTraversable="true"
@@ -125,7 +125,7 @@
       </children>
     </HBox>
 
-    <VBox styleClass="config-vbox" fx:id="checkboxVBox" prefHeight="200" prefWidth="355" maxWidth="355" maxHeight="200">
+    <VBox styleClass="config-vbox" fx:id="checkboxVBox" prefWidth="166" maxWidth="166">
       <children>
         <CheckBox text="Parking" styleClass="config-button"/>
       </children>
@@ -166,7 +166,7 @@
         <CheckBox text="Solarium" styleClass="config-button"/>
       </children>
       <children>
-        <CheckBox text="Telephon" styleClass="config-button"/>
+        <CheckBox text="Telephone" styleClass="config-button"/>
       </children>
     </VBox>
   </VBox>

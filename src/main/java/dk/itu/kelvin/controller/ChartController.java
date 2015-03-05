@@ -35,14 +35,11 @@ import javafx.scene.transform.Affine;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.TextField;
-import javafx.scene.control.CheckBox;
 
 // Java FX event
-import javafx.event.ActionEvent;
 
 // Controls FX
 import org.controlsfx.control.PopOver;
-import org.controlsfx.control.HiddenSidesPane;
 
 // FXML utilities
 import javafx.fxml.FXML;
@@ -196,7 +193,7 @@ public final class ChartController {
 
     new Thread(task).start();
 
-    createPopOver();
+    this.createPopOver();
   }
 
   /**
@@ -236,9 +233,9 @@ public final class ChartController {
     this.popOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
     this.popOver.setAutoHide(true);
 
-    toggleButton.selectedProperty().addListener((ob, ov, nv) -> {
+    this.toggleButton.selectedProperty().addListener((ob, ov, nv) -> {
       if (nv) {
-        this.popOver.show(toggleButton);
+        this.popOver.show(this.toggleButton);
       }
       else {
         this.popOver.hide();
@@ -246,8 +243,8 @@ public final class ChartController {
     });
 
     this.popOver.showingProperty().addListener((ob, ov, nv) -> {
-      if (!nv && toggleButton.isSelected()) {
-        toggleButton.setSelected(false);
+      if (!nv && this.toggleButton.isSelected()) {
+        this.toggleButton.setSelected(false);
       }
     });
   }
@@ -561,10 +558,6 @@ public final class ChartController {
     System.out.println(this.addressTo.getText());
     Address startAddress = Address.parse(this.addressFrom.getText());
     Address endAddress = Address.parse(this.addressTo.getText());
-  }
-
-  public void showPOI(final ActionEvent e) {
-
   }
 
   /**
