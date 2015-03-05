@@ -34,6 +34,23 @@ import static org.junit.Assert.assertNull;
  */
 public final class AddressTest {
   /**
+   * The Address parser should handle null input without blowing up.
+   */
+  @Test
+  public void testNullInput() {
+    assertNull(Address.parse(null));
+  }
+
+  /**
+   * The Address parser should handle empty input without blowing up.
+   */
+  @Test
+  public void testEmptyInput() {
+    assertNull(Address.parse(""));
+    assertNull(Address.parse("\t"));
+  }
+
+  /**
    * The Address parser should parse an address with a street name (can be
    * multiple words) consisting of letters (a-z as well as Danish letters).
    */
@@ -243,6 +260,20 @@ public final class AddressTest {
       assertNotNull(a);
       assertEquals("1 tv", a.door());
     }
+
+    // Test door/postcode mixup. In this case, "1234" should be parsed as a
+    // postcode.
+    Address a4 = Address.parse("Foo 27, 12. 1234");
+    assertNotNull(a4);
+    assertNull(a4.door());
+    assertEquals("1234", a4.postcode());
+
+    // Test door/postcode mixup. In this case, "1234." should be parsed as a
+    // door number.
+    Address a5 = Address.parse("Foo 27, 12. 1234.");
+    assertNotNull(a5);
+    assertEquals("1234", a5.door());
+    assertNull(a5.postcode());
   }
 
   /**
