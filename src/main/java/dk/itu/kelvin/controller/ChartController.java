@@ -43,7 +43,7 @@ import dk.itu.kelvin.component.Canvas;
 // Models
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Chart;
-// import dk.itu.kelvin.model.Element;
+import dk.itu.kelvin.model.Element;
 
 /**
  * Chart controller class.
