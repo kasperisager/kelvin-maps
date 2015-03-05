@@ -20,6 +20,11 @@ import javafx.scene.Group;
  */
 public final class Land extends Group implements Element {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 58;
+
+  /**
    * ID of the land element.
    */
   private long id;
