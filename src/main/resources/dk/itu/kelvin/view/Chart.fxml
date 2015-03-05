@@ -22,12 +22,15 @@
 <!-- Components -->
 <?import dk.itu.kelvin.component.Canvas?>
 
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.CheckBox?>
 <StackPane
   fx:controller="dk.itu.kelvin.controller.ChartController"
   xmlns:fx="http://javafx.com/fxml"
 
-  prefWidth="512"
-  prefHeight="512"
+  prefWidth="640"
+  prefHeight="640"
 >
   <Pane
     focusTraversable="true"
@@ -116,16 +119,64 @@
           </tooltip>
         </Button>
       </children>
+
+      <children>
+        <ToggleButton styleClass="func-button, icon" text="&#xf13d;" fx:id="toggleButton"/>
+      </children>
     </HBox>
 
+    <VBox styleClass="config-vbox" fx:id="checkboxVBox" prefWidth="166" maxWidth="166">
+      <children>
+        <CheckBox text="Parking" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Restaurant" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Fast Food" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Toilets" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Cafe" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Pub" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Recycling" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Bar" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Compressed Air" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Post Box" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Taxi" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="BBQ" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Solarium" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Telephone" styleClass="config-button"/>
+      </children>
+    </VBox>
   </VBox>
 
   <VBox
     alignment="BOTTOM_LEFT"
     pickOnBounds="false"
     fillWidth="false"
-
   >
+
     <children>
       <StackPane>
         <children>
@@ -176,4 +227,5 @@
       </Button>
     </children>
   </VBox>
+
 </StackPane>

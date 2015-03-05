@@ -16,7 +16,7 @@ import javafx.concurrent.Task;
 import javafx.scene.CacheHint;
 
 // JavaFX layout
-import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 
 // JavaFX shapes
 import javafx.scene.shape.Path;
@@ -31,9 +31,20 @@ import javafx.scene.input.ZoomEvent;
 // JavaFX transformations
 import javafx.scene.transform.Affine;
 
+// JavaFX controls
+import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.TextField;
+
+// Java FX event
+
+// Controls FX
+import org.controlsfx.control.PopOver;
+
 // FXML utilities
 import javafx.fxml.FXML;
 
+// Kelvin utilities
 import dk.itu.kelvin.ChartParser;
 
 // Components
@@ -42,6 +53,7 @@ import dk.itu.kelvin.component.Canvas;
 // Models
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Chart;
+import dk.itu.kelvin.model.Element;
 
 /**
  * Chart controller class.
@@ -100,6 +112,11 @@ public final class ChartController {
   private Chart chart = new Chart();
 
   /**
+   * PopOver for the config menu.
+   */
+  private PopOver popOver;
+
+  /**
    * The Canvas element to add all the Chart elements to.
    */
   @FXML
@@ -124,11 +141,25 @@ public final class ChartController {
   private TextField addressTo;
 
   /**
+   * The config button.
+   */
+  @FXML
+  private ToggleButton toggleButton;
+
+  /**
+   * The checkbox VBox element.
+   */
+  @FXML
+  private VBox checkboxVBox;
+
+  /**
    * Initialize the controller.
    *
    * @throws Exception In case of an error. Duh.
    */
   public void initialize() throws Exception {
+    this.checkboxVBox.setVisible(false);
+
     this.compassArrow.getTransforms().add(this.compassTransform);
 
     Canvas canvas = this.canvas;
@@ -146,7 +177,7 @@ public final class ChartController {
           throw new RuntimeException(ex);
         }
 
-        Collections.sort(chart.elements());
+        Collections.sort(chart.elements(), Element.Order.COMPARATOR);
 
         // Schedule rendering of the chart nodes.
         Platform.runLater(() -> {
@@ -163,6 +194,61 @@ public final class ChartController {
     };
 
     new Thread(task).start();
+
+    this.createPopOver();
+  }
+
+  /**
+   * Creates a PopOver object with buttons, eventhandlers and listeners.
+   */
+  private void createPopOver() {
+    VBox vbox = new VBox(2);
+    vbox.getStyleClass().add("config-vbox");
+
+    Button blind = new Button("High Contrast");
+    Button poi = new Button("Points of Interest");
+
+    blind.getStyleClass().add("config-button");
+    poi.getStyleClass().add("config-button");
+    blind.setPrefWidth(120);
+    poi.setPrefWidth(120);
+    vbox.getChildren().addAll(blind, poi);
+
+    blind.setOnAction((event) -> {
+      ApplicationController.highContrast();
+    });
+
+    poi.setOnAction((event) -> {
+      if (!this.checkboxVBox.isVisible()) {
+        this.checkboxVBox.setVisible(true);
+      }
+      else {
+        this.checkboxVBox.setVisible(false);
+      }
+      this.popOver.hide();
+    });
+
+    this.popOver = new PopOver();
+    this.popOver.setContentNode(vbox);
+    this.popOver.setCornerRadius(2);
+    this.popOver.setArrowSize(6);
+    this.popOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
+    this.popOver.setAutoHide(true);
+
+    this.toggleButton.selectedProperty().addListener((ob, ov, nv) -> {
+      if (nv) {
+        this.popOver.show(this.toggleButton);
+      }
+      else {
+        this.popOver.hide();
+      }
+    });
+
+    this.popOver.showingProperty().addListener((ob, ov, nv) -> {
+      if (!nv && this.toggleButton.isSelected()) {
+        this.toggleButton.setSelected(false);
+      }
+    });
   }
 
   /**
@@ -462,8 +548,8 @@ public final class ChartController {
    */
   @FXML
   private void findAddress() {
-    System.out.println(this.addressFrom.getText());
     Address startAddress = Address.parse(this.addressFrom.getText());
+    System.out.println(startAddress);
   }
 
   /**
@@ -471,9 +557,10 @@ public final class ChartController {
    */
   @FXML
   private void findRoute() {
-    System.out.println(this.addressTo.getText());
     Address startAddress = Address.parse(this.addressFrom.getText());
     Address endAddress = Address.parse(this.addressTo.getText());
+    System.out.println(startAddress);
+    System.out.println(endAddress);
   }
 
   /**
@@ -496,18 +583,18 @@ public final class ChartController {
   }
 
   /**
-   * Show the route from a to b by car.
+   * Shows the route between a and b by car.
    */
   @FXML
   private void routeByCar() {
-    System.out.println("route by car");
+    System.out.println("Route by car");
   }
 
   /**
-   * Show the route from a to b by foot.
+   * Shows the rout between a and b by foot or bicycle.
    */
   @FXML
   private void routeByFoot() {
-    System.out.println("route by foot");
+    System.out.println("Route by foot");
   }
 }

@@ -4,6 +4,7 @@
 package dk.itu.kelvin.model;
 
 // General utilities
+import java.util.Comparator;
 import java.util.Map;
 
 // I/O utilities
@@ -15,7 +16,7 @@ import java.io.Serializable;
  * @see <a href="http://wiki.openstreetmap.org/wiki/Element">
  * http://wiki.openstreetmap.org/wiki/Element</a>
  */
-public interface Element extends Comparable<Element>, Serializable {
+public interface Element extends Serializable {
   /**
    * Return the ID of this element.
    *
@@ -129,11 +130,32 @@ public interface Element extends Comparable<Element>, Serializable {
     private static final int SIZE = Order.values().length;
 
     /**
+     * Comparator for comparing the drawing layer and order of two elements.
+     */
+    public static final Comparator<Element> COMPARATOR =
+      new Comparator<Element>() {
+      /**
+       * Compare two elements taking into account their drawing layer and
+       * drawing order.
+       *
+       * @param a The first element.
+       * @param b The second element.
+       * @return  A negative integer, zero, or a positive integer as the first
+       *          element is less than, equal to, or greater than the second
+       *          element.
+       */
+      @Override
+      public int compare(final Element a, final Element b) {
+        return Element.Order.compare(a, b);
+      }
+    };
+
+    /**
      * Return the number of enumerator elements.
      *
      * @return The number of enumrator elements.
      */
-    public static int size() {
+    public static final int size() {
       return Order.SIZE;
     }
 
@@ -144,7 +166,7 @@ public interface Element extends Comparable<Element>, Serializable {
      * @param value The "value" of the enumerator element.
      * @return      The enumerator element if found, otherwise null;
      */
-    public static Order fromString(final String key, final String value) {
+    public static final Order fromString(final String key, final String value) {
       if (key == null || value == null) {
         return null;
       }
@@ -176,7 +198,7 @@ public interface Element extends Comparable<Element>, Serializable {
      *          element is less than, equal to, or greater than the second
      *          element.
      */
-    public static int compare(final Element a, final Element b) {
+    public static final int compare(final Element a, final Element b) {
       if (a == null) {
         return -1;
       }
