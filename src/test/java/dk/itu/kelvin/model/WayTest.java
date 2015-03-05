@@ -203,6 +203,8 @@ public final class WayTest {
     w2.node(n4);
 
     assertEquals(2, w1.nodes().size());
+    w1.append(null);
+    assertEquals(2, w1.nodes().size());
 
     w1.append(w2);
     assertEquals(4, w1.nodes().size());
@@ -210,6 +212,78 @@ public final class WayTest {
     assertTrue(w1.nodes().contains(n2));
     assertTrue(w1.nodes().contains(n3));
     assertTrue(w1.nodes().contains(n4));
+  }
+
+  @Test
+  public void testIntersect() {
+    Way w1 = new Way(1112550893);
+    Node n1 = new Node(1112550893, (float)55.6758261, (float)12.5831593);
+    Node n2 = new Node(1212550893, (float)55.6753869, (float)12.5850681);
+    Node n3 = new Node(1312550893, (float)55.6752059, (float)12.5849356);
+    Node n4 = new Node(1412550893, (float)55.6756510, (float)12.5830358);
+    w1.node(n1);
+    w1.node(n2);
+    w1.node(n3);
+    w1.node(n4);
+
+    Way w2 = new Way(1212550893);
+    Node n5 = new Node(1512550893, (float)55.6758241, (float)12.5831493);
+    Node n6 = new Node(1612550893, (float)55.6753869, (float)12.5850681);
+    Node n7 = new Node(1712550893, (float)55.6752059, (float)12.5849356);
+    Node n8 = new Node(1812550893, (float)55.6756510, (float)12.5830358);
+    w2.node(n5);
+    w2.node(n6);
+    w2.node(n7);
+    w2.node(n8);
+
+    Way w3 = new Way(1312550893);
+    Node n9 = new Node(1912550893, (float)50.6758241, (float)10.5831493);
+    Node n10 = new Node(1922550893, (float)50.6753869, (float)10.5850681);
+    Node n11 = new Node(1932550893, (float)50.6752059, (float)10.5849356);
+    Node n12 = new Node(1942550893, (float)50.6756510, (float)10.5830358);
+    w3.node(n9);
+    w3.node(n10);
+    w3.node(n11);
+    w3.node(n12);
+
+    assertFalse(w1.intersects(w3));
+    assertFalse(w2.intersects(w3));
+  }
+
+  @Test
+  public void testContains() {
+    Way w1 = new Way(1112550893);
+    Node n1 = new Node(1112550893, (float)56.6758261, (float)12.5831593);
+    Node n2 = new Node(1212550893, (float)52.6753869, (float)12.5831593);
+    Node n3 = new Node(1312550893, (float)52.6753869, (float)18.5849356);
+    Node n4 = new Node(1412550893, (float)56.6758261, (float)18.5830358);
+    w1.node(n1);
+    w1.node(n2);
+    w1.node(n3);
+    w1.node(n4);
+
+    Way w2 = new Way(1212550893);
+    Node n5 = new Node(1512550893, (float)55.6758241, (float)12.1831493);
+    Node n6 = new Node(1612550893, (float)53.6753869, (float)12.1831493);
+    Node n7 = new Node(1712550893, (float)53.6753869, (float)15.5849356);
+    Node n8 = new Node(1812550893, (float)55.6758241, (float)15.5849356);
+    w2.node(n5);
+    w2.node(n6);
+    w2.node(n7);
+    w2.node(n8);
+
+    Way w3 = new Way(1312550893);
+    Node n9 = new Node(1912550893, (float)55.6758241, (float)11.5831493);
+    Node n10 = new Node(1922550893, (float)53.6753869, (float)11.5850681);
+    Node n11 = new Node(1932550893, (float)53.6753869, (float)11.5849356);
+    Node n12 = new Node(1942550893, (float)55.6758241, (float)11.5830358);
+    w3.node(n9);
+    w3.node(n10);
+    w3.node(n11);
+    w3.node(n12);
+
+    assertTrue(w1.contains(w2));
+    assertFalse(w1.contains(w3));
   }
 
 }
