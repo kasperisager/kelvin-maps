@@ -20,6 +20,11 @@ import javafx.scene.Group;
  */
 public final class Land extends Group implements Element {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 58;
+
+  /**
    * ID of the land element.
    */
   private long id;
@@ -52,7 +57,7 @@ public final class Land extends Group implements Element {
   /**
    * Intersections between the coastlines and the bounds of the land.
    */
-  private Map<Node, Intersection> intersections = new HashMap<>();
+  // private Map<Node, Intersection> intersections = new HashMap<>();
 
   /**
    * Initialize a land instance.
@@ -142,19 +147,6 @@ public final class Land extends Group implements Element {
    */
   public void layer(final int layer) {
     this.layer = layer;
-  }
-
-  /**
-   * Compare the drawing order of this land with the drawing order of another
-   * element.
-   *
-   * @param element The element to compare the current land to.
-   * @return        A negative integer, zero, or a positive integer as this land
-   *                is less than, equal to, or greater than the specified
-   *                element.
-   */
-  public int compareTo(final Element element) {
-    return Element.Order.compare(this, element);
   }
 
   /**

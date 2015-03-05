@@ -26,6 +26,11 @@ import javafx.scene.shape.Shape;
  */
 public final class Relation extends Group implements Element {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 81;
+
+  /**
    * The ID of the relation.
    */
   private long id;
@@ -148,19 +153,6 @@ public final class Relation extends Group implements Element {
     }
 
     this.order = order;
-  }
-
-  /**
-   * Compare the drawing order of this relation with the drawing order of
-   * another element.
-   *
-   * @param element The element to compare the current node to.
-   * @return        A negative integer, zero, or a positive integer as this
-   *                relation is less than, equal to, or greater than the
-   *                specified element.
-   */
-  public int compareTo(final Element element) {
-    return Element.Order.compare(this, element);
   }
 
   /**

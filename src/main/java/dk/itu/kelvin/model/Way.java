@@ -25,6 +25,11 @@ import javafx.scene.paint.Color;
  */
 public final class Way extends Path implements Element {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 74;
+
+  /**
    * The ID of the way.
    */
   private long id;
@@ -135,19 +140,6 @@ public final class Way extends Path implements Element {
     }
 
     this.order = order;
-  }
-
-  /**
-   * Compare the drawing order of this way with the drawing order of another
-   * element.
-   *
-   * @param element The element to compare the current way to.
-   * @return        A negative integer, zero, or a positive integer as this way
-   *                is less than, equal to, or greater than the specified
-   *                element.
-   */
-  public int compareTo(final Element element) {
-    return Element.Order.compare(this, element);
   }
 
   /**
@@ -329,8 +321,8 @@ public final class Way extends Path implements Element {
     }
 
     return (
-      this.contains(this.parentToLocal(way.start()))
-      && this.contains(this.parentToLocal(way.end()))
+      this.contains(this.parentToLocal(way.start().point()))
+      && this.contains(this.parentToLocal(way.end().point()))
     );
   }
 }
