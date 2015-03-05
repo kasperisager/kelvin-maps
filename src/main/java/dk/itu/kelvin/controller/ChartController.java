@@ -4,7 +4,13 @@
 package dk.itu.kelvin.controller;
 
 // General utilities
-// import java.util.Collections;
+import java.util.Collections;
+
+// JavaFX application utilities
+import javafx.application.Platform;
+
+// JavaFX concurrency utilities
+import javafx.concurrent.Task;
 
 // JavaFX scene utilities
 import javafx.scene.CacheHint;
@@ -127,17 +133,38 @@ public final class ChartController {
   public void initialize() throws Exception {
     this.compassArrow.getTransforms().add(this.compassTransform);
 
-    ChartParser parser = new ChartParser(this.chart);
-    parser.read(MAP_INPUT);
+    Canvas canvas = this.canvas;
+    Chart chart = this.chart;
 
-    // Collections.sort(this.chart.elements(), Element.Order.COMPARATOR);
+    Task task = new Task<Void>() {
+      @Override
+      public Void call() {
+        ChartParser parser = new ChartParser(chart);
 
-    // this.canvas.getChildren().addAll(this.chart.nodes());
+        try {
+          parser.read(MAP_INPUT);
+        }
+        catch (Exception ex) {
+          throw new RuntimeException(ex);
+        }
 
-    this.canvas.pan(
-      -this.chart.bounds().getMinX(),
-      -this.chart.bounds().getMaxY()
-    );
+        Collections.sort(chart.elements(), Element.Order.COMPARATOR);
+
+        // Schedule rendering of the chart nodes.
+        Platform.runLater(() -> {
+          // canvas.add(chart.nodes());
+
+          canvas.pan(
+            -chart.bounds().getMinX(),
+            -chart.bounds().getMaxY()
+          );
+        });
+
+        return null;
+      }
+    };
+
+    new Thread(task).start();
   }
 
   /**

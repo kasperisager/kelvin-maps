@@ -7,13 +7,16 @@ package dk.itu.kelvin.model;
 import java.util.Comparator;
 import java.util.Map;
 
+// I/O utilities
+import java.io.Serializable;
+
 /**
  * Interface that all elements of a chart must follow.
  *
  * @see <a href="http://wiki.openstreetmap.org/wiki/Element">
  * http://wiki.openstreetmap.org/wiki/Element</a>
  */
-public interface Element {
+public interface Element extends Serializable {
   /**
    * Return the ID of this element.
    *

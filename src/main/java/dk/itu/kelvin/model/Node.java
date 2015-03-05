@@ -17,6 +17,11 @@ import javafx.geometry.Point2D;
  *      http://wiki.openstreetmap.org/wiki/Node</a>
  */
 public final class Node extends Point2D implements Element {
+  /*
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 42;
+
   /**
    * Cache the hash of the node.
    */

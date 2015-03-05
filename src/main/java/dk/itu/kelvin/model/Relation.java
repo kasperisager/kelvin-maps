@@ -26,6 +26,11 @@ import javafx.scene.shape.Shape;
  */
 public final class Relation extends Group implements Element {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 81;
+
+  /**
    * The ID of the relation.
    */
   private long id;
