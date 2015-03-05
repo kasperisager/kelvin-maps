@@ -155,16 +155,6 @@ public final class Address {
   }
 
   /**
-   * Alias for getting the building number of the address.
-   *
-   * @return      The door of the apartment floor.
-   * @deprecated  Use `number()` instead.
-   */
-  public String house() {
-    return this.number();
-  }
-
-  /**
    * Set the building number of the address.
    *
    * @param number  The building number of the address.
@@ -204,16 +194,6 @@ public final class Address {
    */
   public String door() {
     return this.door;
-  }
-
-  /**
-   * Alias for getting the door of the apartment floor.
-   *
-   * @return      The door of the apartment floor.
-   * @deprecated  Use `door()` instead.
-   */
-  public String side() {
-    return this.door();
   }
 
   /**
@@ -290,11 +270,11 @@ public final class Address {
    * @return        The normalized string.
    */
   private static String normalizeWhitespace(final String string) {
-    if (string != null) {
-      return string.replaceAll("\\s+", " ").trim();
-    } else {
-      return string;
+    if (string == null) {
+      return null;
     }
+
+    return string.replaceAll("\\s+", " ").trim();
   }
 
   /**
@@ -304,11 +284,11 @@ public final class Address {
    * @return        The trimmed string.
    */
   private static String trimPunctuation(final String string) {
-    if (string != null) {
-      return string.replaceAll("\\.|\\-|,", "").trim();
-    } else {
-      return string;
+    if (string == null) {
+      return null;
     }
+
+    return string.replaceAll("\\.|\\-|,", "").trim();
   }
 
   /**
@@ -318,72 +298,75 @@ public final class Address {
    * @return      An {@link Address} object.
    */
   public static Address parse(final String input) {
+    if (input == null || input.trim().isEmpty()) {
+      return null;
+    }
+
     // Normalize whitespace of the input prior to parsing.
     String normalizedInput = Address.normalizeWhitespace(input);
 
     Matcher matcher = Address.matchRegex(REGEX, normalizedInput);
 
-    if (matcher.find()) {
-      String street = matcher.group("street");
-      String number = matcher.group("number");
-      String floor = matcher.group("floor");
-      String door = matcher.group("door");
-      String postcode = matcher.group("postcode");
-      String city = matcher.group("city");
-
-      if (postcode == null) {
-        if (door != null && door.trim().matches(POSTCODE)) {
-          postcode = door;
-          door = null;
-        }
-        else if (floor != null && floor.trim().matches(POSTCODE)) {
-          postcode = floor;
-          floor = null;
-        }
-        else if (number != null && number.trim().matches(POSTCODE)) {
-          postcode = number;
-          number = null;
-        }
-      }
-
-      if (floor != null) {
-        floor = Address.trimPunctuation(floor);
-      }
-
-      if (door != null) {
-        String doorNumber = Address.trimPunctuation(
-          matcher.group("doorNumber")
-        );
-        String doorSide = Address.trimPunctuation(
-          matcher.group("doorSide")
-        );
-
-        if (doorNumber != null && !doorNumber.isEmpty()
-            && doorSide != null && !doorSide.isEmpty()) {
-          door = doorNumber + " " + doorSide;
-        }
-        else if (doorNumber != null && !doorNumber.isEmpty()) {
-          door = doorNumber;
-        }
-        else if (doorSide != null && !doorSide.isEmpty()) {
-          door = doorSide;
-        }
-      }
-
-      Address address = new Address();
-
-      address
-        .street(street)
-        .number(number)
-        .floor(floor)
-        .door(door)
-        .postcode(postcode)
-        .city(city);
-
-      return address;
-    }
-    else {
+    if (!matcher.find()) {
       return null;
     }
+
+    String street = matcher.group("street");
+    String number = matcher.group("number");
+    String floor = matcher.group("floor");
+    String door = matcher.group("door");
+    String postcode = matcher.group("postcode");
+    String city = matcher.group("city");
+
+    if (postcode == null) {
+      if (door != null && door.trim().matches(POSTCODE)) {
+        postcode = door;
+        door = null;
+      }
+      else if (floor != null && floor.trim().matches(POSTCODE)) {
+        postcode = floor;
+        floor = null;
+      }
+      else if (number != null && number.trim().matches(POSTCODE)) {
+        postcode = number;
+        number = null;
+      }
+    }
+
+    if (floor != null) {
+      floor = Address.trimPunctuation(floor);
+    }
+
+    if (door != null) {
+      String doorNumber = Address.trimPunctuation(
+        matcher.group("doorNumber")
+      );
+      String doorSide = Address.trimPunctuation(
+        matcher.group("doorSide")
+      );
+
+      if (doorNumber != null && !doorNumber.isEmpty()
+          && doorSide != null && !doorSide.isEmpty()) {
+        door = doorNumber + " " + doorSide;
+      }
+      else if (doorNumber != null && !doorNumber.isEmpty()) {
+        door = doorNumber;
+      }
+      else if (doorSide != null && !doorSide.isEmpty()) {
+        door = doorSide;
+      }
+    }
+
+    Address address = new Address();
+
+    address
+      .street(street)
+      .number(number)
+      .floor(floor)
+      .door(door)
+      .postcode(postcode)
+      .city(city);
+
+    return address;
   }
 }
