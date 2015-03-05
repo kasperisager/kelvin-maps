@@ -3,9 +3,17 @@
  */
 package dk.itu.kelvin.controller;
 
+// General utilities
+import java.util.Collections;
+
+// JavaFX application utilities
+import javafx.application.Platform;
+
+// JavaFX concurrency utilities
+import javafx.concurrent.Task;
+
 // JavaFX scene utilities
 import javafx.scene.CacheHint;
-import javafx.scene.Node;
 
 // JavaFX layout
 import javafx.scene.layout.VBox;
@@ -25,14 +33,16 @@ import javafx.scene.transform.Affine;
 
 // JavaFX controls
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.CheckBox;
 
 // Java FX event
 import javafx.event.ActionEvent;
 
 // Controls FX
 import org.controlsfx.control.PopOver;
+import org.controlsfx.control.HiddenSidesPane;
 
 // FXML utilities
 import javafx.fxml.FXML;
@@ -103,7 +113,7 @@ public final class ChartController {
   private Chart chart = new Chart();
 
   /**
-   * PopOver.
+   * PopOver for the config menu.
    */
   private PopOver popOver;
 
@@ -132,24 +142,114 @@ public final class ChartController {
   private TextField addressTo;
 
   /**
+   * The config button.
+   */
+  @FXML
+  private ToggleButton toggleButton;
+
+  /**
+   * The checkbox VBox element.
+   */
+  @FXML
+  private VBox checkboxVBox;
+
+  /**
    * Initialize the controller.
    *
    * @throws Exception In case of an error. Duh.
    */
   public void initialize() throws Exception {
+    this.checkboxVBox.setVisible(false);
+
     this.compassArrow.getTransforms().add(this.compassTransform);
 
-    ChartParser parser = new ChartParser(this.chart);
-    parser.read(MAP_INPUT);
+    Canvas canvas = this.canvas;
+    Chart chart = this.chart;
 
-    // Collections.sort(this.chart.elements());
+    Task task = new Task<Void>() {
+      @Override
+      public Void call() {
+        ChartParser parser = new ChartParser(chart);
 
-    // this.canvas.getChildren().addAll(this.chart.nodes());
+        try {
+          parser.read(MAP_INPUT);
+        }
+        catch (Exception ex) {
+          throw new RuntimeException(ex);
+        }
 
-    this.canvas.pan(
-      -this.chart.bounds().getMinX(),
-      -this.chart.bounds().getMaxY()
-    );
+        Collections.sort(chart.elements());
+
+        // Schedule rendering of the chart nodes.
+        Platform.runLater(() -> {
+          // canvas.add(chart.nodes());
+
+          canvas.pan(
+            -chart.bounds().getMinX(),
+            -chart.bounds().getMaxY()
+          );
+        });
+
+        return null;
+      }
+    };
+
+    new Thread(task).start();
+
+    createPopOver();
+  }
+
+  /**
+   * Creates a PopOver object with buttons, eventhandlers and listeners.
+   */
+  private void createPopOver() {
+    VBox vbox = new VBox(2);
+    vbox.getStyleClass().add("config-vbox");
+
+    Button blind = new Button("High Contrast");
+    Button poi = new Button("Points of Interest");
+
+    blind.getStyleClass().add("config-button");
+    poi.getStyleClass().add("config-button");
+    blind.setPrefWidth(120);
+    poi.setPrefWidth(120);
+    vbox.getChildren().addAll(blind, poi);
+
+    blind.setOnAction((event) -> {
+      ApplicationController.highContrast();
+    });
+
+    poi.setOnAction((event) -> {
+      if (!this.checkboxVBox.isVisible()) {
+        this.checkboxVBox.setVisible(true);
+      }
+      else {
+        this.checkboxVBox.setVisible(false);
+      }
+      this.popOver.hide();
+    });
+
+    this.popOver = new PopOver();
+    this.popOver.setContentNode(vbox);
+    this.popOver.setCornerRadius(2);
+    this.popOver.setArrowSize(6);
+    this.popOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
+    this.popOver.setAutoHide(true);
+
+    toggleButton.selectedProperty().addListener((ob, ov, nv) -> {
+      if (nv) {
+        this.popOver.show(toggleButton);
+      }
+      else {
+        this.popOver.hide();
+      }
+    });
+
+    this.popOver.showingProperty().addListener((ob, ov, nv) -> {
+      if (!nv && toggleButton.isSelected()) {
+        toggleButton.setSelected(false);
+      }
+    });
   }
 
   /**
@@ -463,40 +563,8 @@ public final class ChartController {
     Address endAddress = Address.parse(this.addressTo.getText());
   }
 
-  /**
-   *  Click event to show the popover.
-   * @param e click event.
-   */
-  @FXML
-  private void showConfig(final ActionEvent e) {
-    VBox vbox = new VBox(2);
-    vbox.getStyleClass().add("config-vbox");
+  public void showPOI(final ActionEvent e) {
 
-    Button blind = new Button("High Contrast");
-    Button poi = new Button("Points of Interest");
-
-    blind.setOnAction((event) -> {
-      ApplicationController.highContrast();
-    });
-
-    poi.setOnAction((event) -> {
-      System.out.println("Show me points of interest!");
-    });
-
-    blind.getStyleClass().add("config-button");
-    poi.getStyleClass().add("config-button");
-    blind.setPrefWidth(120);
-    poi.setPrefWidth(120);
-    vbox.getChildren().addAll(blind, poi);
-
-    if (this.popOver == null) {
-      this.popOver = new PopOver();
-      this.popOver.setContentNode(vbox);
-      this.popOver.setCornerRadius(2);
-      this.popOver.setArrowSize(6);
-      this.popOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
-    }
-    this.popOver.show((Node) e.getSource());
   }
 
   /**
