@@ -156,19 +156,6 @@ public final class Relation extends Group implements Element {
   }
 
   /**
-   * Compare the drawing order of this relation with the drawing order of
-   * another element.
-   *
-   * @param element The element to compare the current node to.
-   * @return        A negative integer, zero, or a positive integer as this
-   *                relation is less than, equal to, or greater than the
-   *                specified element.
-   */
-  public int compareTo(final Element element) {
-    return Element.Order.compare(this, element);
-  }
-
-  /**
    * Get the drawing layer of the relation.
    *
    * @return The drawing layer of the relation.
