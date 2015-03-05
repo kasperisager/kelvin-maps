@@ -127,7 +127,7 @@ public final class WayTest {
     Node n1 = new Node(1112550893, (float)55.1198149, (float)12.1159972);
     Node n2 = new Node(1212550893, (float)56.2298149, (float)17.2259972);
     Node n3 = new Node(1312550893, (float)57.3398149, (float)18.3359972);
-    Node n4 = new Node(1312550893, (float)55.1198149, (float)12.1159972);
+    Node n4 = new Node(1112550893, (float)55.1198149, (float)12.1159972);
     w1.node(n1);
     w1.node(n2);
     w1.node(n3);
@@ -166,7 +166,7 @@ public final class WayTest {
     w1.node(n4);
 
     Way w2 = new Way(15838049);
-    Node n5 = new Node(1512550893, (float)55.1198149, (float)12.1159972);
+    Node n5 = new Node(1112550893, (float)55.1198149, (float)12.1159972);
     Node n6 = new Node(1612550893, (float)56.2298149, (float)17.2259972);
     Node n7 = new Node(1712550893, (float)57.3398149, (float)18.3359972);
     Node n8 = new Node(1812550893, (float)55.4498149, (float)12.4459972);
@@ -179,7 +179,7 @@ public final class WayTest {
     assertFalse(w1.startsIn(null));
 
     Way w3 = new Way(15838049);
-    Node n9 = new Node(1512550893, (float)59.1198149, (float)18.1159972);
+    Node n9 = new Node(1112550893, (float)59.1198149, (float)18.1159972);
     Node n10 = new Node(1612550893, (float)56.2298149, (float)17.2259972);
     Node n11 = new Node(1712550893, (float)57.3398149, (float)18.3359972);
     Node n12 = new Node(1112550893, (float)55.1198149, (float)12.1159972);
@@ -209,7 +209,7 @@ public final class WayTest {
     w1.node(n3);
 
     Way w2 = new Way(15838049);
-    Node n4 = new Node(1112550893, (float)57.3398149, (float)18.3359972);
+    Node n4 = new Node(1312550893, (float)57.3398149, (float)18.3359972);
     Node n5 = new Node(1612550893, (float)56.2298149, (float)17.2259972);
     Node n6 = new Node(1712550893, (float)50.3398149, (float)10.3359972);
     w2.node(n4);
@@ -226,7 +226,7 @@ public final class WayTest {
     Node n9 = new Node(1512550893, (float)59.1198149, (float)18.1159972);
     Node n10 = new Node(1612550893, (float)56.2298149, (float)17.2259972);
     Node n11 = new Node(1712550893, (float)50.3398149, (float)10.3359972);
-    Node n12 = new Node(1112550893, (float)57.3398149, (float)18.3359972);
+    Node n12 = new Node(1312550893, (float)57.3398149, (float)18.3359972);
     w3.node(n9);
     w3.node(n10);
     w3.node(n11);
