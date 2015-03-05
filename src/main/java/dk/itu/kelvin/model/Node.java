@@ -89,6 +89,10 @@ public final class Node implements Element {
    * @return      The previous value of the key, if any.
    */
   public String tag(final String key, final String value) {
+    if (key == null || value == null) {
+      return null;
+    }
+
     return this.tags.put(key, value);
   }
 
