@@ -321,8 +321,8 @@ public final class Way extends Path implements Element {
     }
 
     return (
-      this.contains(this.parentToLocal(way.start()))
-      && this.contains(this.parentToLocal(way.end()))
+      this.contains(this.parentToLocal(way.start().point()))
+      && this.contains(this.parentToLocal(way.end().point()))
     );
   }
 }

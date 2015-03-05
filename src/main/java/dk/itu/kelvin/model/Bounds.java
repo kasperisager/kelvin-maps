@@ -3,8 +3,11 @@
  */
 package dk.itu.kelvin.model;
 
-// JavaFX geometry
-import javafx.geometry.BoundingBox;
+// I/O utilities
+import java.io.Serializable;
+
+// JavaFX shapes
+import javafx.scene.shape.Rectangle;
 
 /**
  * A bounding box describes the bounds of a chart.
@@ -12,7 +15,12 @@ import javafx.geometry.BoundingBox;
  * @see <a href="http://wiki.openstreetmap.org/wiki/Bounding_Box">
  *      http://wiki.openstreetmap.org/wiki/Bounding_Box</a>
  */
-public final class Bounds extends BoundingBox {
+public final class Bounds extends Rectangle implements Serializable {
+  /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 19;
+
   /**
    * Initialize a new empty bounding box.
    */
@@ -35,5 +43,41 @@ public final class Bounds extends BoundingBox {
     final float top
   ) {
     super(left, top, Math.abs(right - left), Math.abs(top - bottom));
+  }
+
+  /**
+   * Get the smallest x-coodinate of the bounds.
+   *
+   * @return The smallest x-coordinate of the bounds.
+   */
+  public double getMinX() {
+    return this.getX();
+  }
+
+  /**
+   * Get the largest x-coordinate of the bounds.
+   *
+   * @return The largest x-coordinate of the bounds.
+   */
+  public double getMaxX() {
+    return this.getX() + this.getWidth();
+  }
+
+  /**
+   * Get the smallest y-coordinate of the bounds.
+   *
+   * @return The smallest y-coordinate of the bounds.
+   */
+  public double getMinY() {
+    return this.getY();
+  }
+
+  /**
+   * Get the largest y-coordinate of the bounds.
+   *
+   * @return The largest y-coordinate of the bounds.
+   */
+  public double getMaxY() {
+    return this.getY() + this.getHeight();
   }
 }
