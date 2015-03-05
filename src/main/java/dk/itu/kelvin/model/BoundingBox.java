@@ -15,7 +15,7 @@ import javafx.scene.shape.Rectangle;
  * @see <a href="http://wiki.openstreetmap.org/wiki/Bounding_Box">
  *      http://wiki.openstreetmap.org/wiki/Bounding_Box</a>
  */
-public final class Bounds extends Rectangle implements Serializable {
+public final class BoundingBox extends Rectangle implements Serializable {
   /**
    * UID for identifying serialized objects.
    */
@@ -24,7 +24,7 @@ public final class Bounds extends Rectangle implements Serializable {
   /**
    * Initialize a new empty bounding box.
    */
-  public Bounds() {
+  public BoundingBox() {
     super(0, 0, -1, -1);
   }
 
@@ -36,7 +36,7 @@ public final class Bounds extends Rectangle implements Serializable {
    * @param right   The right coordinate of the bounds.
    * @param top     The top coordinate of the bounds.
    */
-  public Bounds(
+  public BoundingBox(
     final float left,
     final float bottom,
     final float right,

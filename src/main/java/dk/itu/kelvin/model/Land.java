@@ -47,7 +47,7 @@ public final class Land extends Group implements Element {
   /**
    * Bounds of the land element.
    */
-  private Bounds bounds;
+  private BoundingBox bounds;
 
   /**
    * Coastlines contained within the land element.
@@ -71,7 +71,7 @@ public final class Land extends Group implements Element {
    *
    * @param bounds The bounds of the land.
    */
-  public Land(final Bounds bounds) {
+  public Land(final BoundingBox bounds) {
     this();
     this.bounds = bounds;
   }
@@ -154,7 +154,7 @@ public final class Land extends Group implements Element {
    *
    * @return The bounds of the element.
    */
-  public Bounds bounds() {
+  public BoundingBox bounds() {
     return this.bounds;
   }
 
