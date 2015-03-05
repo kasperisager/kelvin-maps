@@ -64,7 +64,7 @@ public final class ChartController {
   /**
    * The input file to show in the map viewer.
    */
-  private static final String MAP_INPUT = "denmark-latest.osm";
+  private static final String MAP_INPUT = "small.osm";
 
   /**
    * Default zoom step factor.
@@ -183,10 +183,10 @@ public final class ChartController {
         Platform.runLater(() -> {
           // canvas.add(chart.nodes());
 
-          // canvas.pan(
-          //   -chart.bounds().getMinX(),
-          //   -chart.bounds().getMaxY()
-          // );
+          canvas.pan(
+            -chart.bounds().getMinX(),
+            -chart.bounds().getMaxY()
+          );
         });
 
         return null;
