@@ -1,17 +1,21 @@
+// ------------------------------------------------------------------------- //
+// # VARIABLES
+// ------------------------------------------------------------------------- //
+
+// Colors
+@color-background: #248E23;
+@color-btn-highlight: #ece7e7;
+
+// Fonts
+@font-icons: "ionicons";
+
 .high-contrast {
-  -fx-background-color: #248E23 !important;
+  -fx-background-color: @color-background;
 }
+
 
 .icon {
-  -fx-font-family: "ionicons";
-}
-
-.text-field {
-  -fx-background-insets: none;
-}
-
-.button {
-  -fx-background-insets: none;
+  -fx-font-family: @font-icons;
 }
 
 .buttons-zoom {
@@ -19,36 +23,50 @@
   -fx-cursor: hand;
 }
 
-.button-zoom {
-  -fx-padding: 10px 12px;
-  -fx-font-size: 14px;
-  -fx-text-fill: #666;
-  -fx-background-color: #fff;
-  -fx-background-radius: 2;
+// All buttons
+.button, .toggle-button {
   -fx-background-insets: none;
-  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
+  -fx-background-color: #fff;
   -fx-cursor: hand;
+  -fx-font-size: 16px;
+  -fx-background-radius: 2;
+  -fx-text-fill: #666;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
+}
+.button:hover{
+  -fx-text-fill: #333;
+}
+.button:pressed{
+  -fx-text-fill: #000;
+}
+.hover-highlight:hover{
+  -fx-background-color: @color-btn-highlight;
 }
 
-.text-field, .search-button {
+.button-zoom{
+  -fx-padding: 10px 12px;
+}
+.compass-reset-button {
+   -fx-padding: 7px 12px;
+   -fx-background-radius: 1000px;
+}
+.func-button {
+   -fx-margin: 0 0 5px 0;
+}
+.text-field{
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
   -fx-background-color: #fff;
   -fx-background-radius: 2 0 0 2;
   -fx-margin: 0 0 5px 0;
+  -fx-background-insets: none;
 }
 
+// Compass Styling ---------------------
 .compass {
   -fx-padding: 16px;
 }
-
 .compass-reset{
   -fx-padding: 10px 0 0 0;
-}
-.compass-reset-button {
-  -fx-padding: 7px 12px;
-  -fx-font-size: 14px;
-  -fx-background-color: #fff;
-  -fx-background-radius: 1000px;
 }
 .compass-disc {
   -fx-fill: none;
@@ -62,53 +80,23 @@
   -fx-stroke-line-join: round;
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
 }
+// -------------------------------------
 
 .address-input-wrapper {
   -fx-padding: 8px;
 }
-
-.search-button {
-  -fx-font-size: 15px;
-  -fx-background-radius: 0 2 2 0;
-  -fx-text-fill: #666;
-  -fx-cursor: hand;
-}
-
-.search-button:hover, .func-button:hover, .button-zoom:hover {
-  -fx-text-fill: #333;
-}
-
-.search-button:pressed, .func-button:pressed, .button-zoom:pressed {
-  -fx-text-fill: #000;
-}
-
-.func-button {
-  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
-  -fx-background-color: #fff;
-  -fx-background-radius: 2px;
-  -fx-margin: 0 0 5px 0;
-  -fx-text-fill: #666;
-  -fx-cursor: hand;
-}
-
-.config-button {
-  -fx-background-radius: 2px;
-  -fx-background-color: #fff;
-  -fx-text-fill: #666;
-  -fx-cursor: hand;
-  -fx-padding: 4px;
-  -fx-text-alignment: left;
-}
-
-.config-button:hover {
-  -fx-background-color: #ece7e7;
-}
-
 .config-vbox {
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
   -fx-background-radius: 2px;
   -fx-background-color: #fff;
   -fx-padding: 4px;
-}
 
+  .check-box{
+    -fx-padding: 4px;
+    -fx-text-alignment: left;
+    &:hover{
+      -fx-background-color: @color-btn-highlight;
+    }
+  }
+}
 @import "imports/OSM";
