@@ -194,6 +194,9 @@ public final class WayTest {
     assertFalse(w3.startsIn(w1));
   }
 
+  /**
+   * Tests if one way ends in the same node as the start or end of another way.
+   */
   @Test
   public void testEndsIn() {
     // Way w1 and Way w2 starts in the same coordinates.
@@ -233,6 +236,9 @@ public final class WayTest {
     assertTrue(w1.endsIn(w3));
   }
 
+  /**
+   * Tests if the method returns all elements added to the list.
+   */
   @Test
   public void testNodes() {
     List<Node> nodes = new ArrayList<Node>();
@@ -258,6 +264,9 @@ public final class WayTest {
     assertTrue(w1.nodes().contains(n4));
   }
 
+  /**
+   * Tests if one way has been appended to another way.
+   */
   @Test
   public void testAppend() {
     Way w1 = new Way(1112550893);
@@ -285,6 +294,9 @@ public final class WayTest {
     assertTrue(w1.nodes().contains(n4));
   }
 
+  /**
+   * Test wether two roads intersect.
+   */
   @Test
   public void testIntersect() {
     Way w1 = new Way(1112550893);
@@ -321,6 +333,9 @@ public final class WayTest {
     assertFalse(w2.intersects(w3));
   }
 
+  /**
+   * Tests whether a way is sorrounded by another way.
+   */
   @Test
   public void testContains() {
     Way w1 = new Way(1112550893);
