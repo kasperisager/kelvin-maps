@@ -191,12 +191,13 @@ public final class ChartController {
     });
 
     poi.setOnAction((event) -> {
-      if (!checkboxVBox.isVisible()) {
-        checkboxVBox.setVisible(true);
+      if (!this.checkboxVBox.isVisible()) {
+        this.checkboxVBox.setVisible(true);
       }
       else {
-        checkboxVBox.setVisible(false);
+        this.checkboxVBox.setVisible(false);
       }
+      this.popOver.hide();
     });
 
     this.popOver = new PopOver();

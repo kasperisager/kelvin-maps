@@ -100,51 +100,51 @@
         <ToggleButton styleClass="func-button, icon" text="&#xf13d;" fx:id="toggleButton"/>
       </children>
     </HBox>
-  </VBox>
 
-  <VBox styleClass="config-vbox" fx:id="checkboxVBox" prefHeight="200" prefWidth="355" maxWidth="355" maxHeight="200">
-    <children>
-      <CheckBox text="Parking" styleClass="config-button"/>
-    </children>
-    <children>
-      <CheckBox text="Restaurant" styleClass="config-button"/>
-    </children>
-    <children>
-      <CheckBox text="Fast Food" styleClass="config-button"/>
-    </children>
-    <children>
-      <CheckBox text="Toilets" styleClass="config-button"/>
-    </children>
-    <children>
-      <CheckBox text="Cafe" styleClass="config-button"/>
-    </children>
-    <children>
-      <CheckBox text="Pub" styleClass="config-button"/>
-    </children>
-    <children>
-      <CheckBox text="Recycling" styleClass="config-button"/>
-    </children>
-    <children>
-      <CheckBox text="Bar" styleClass="config-button"/>
-    </children>
-    <children>
-      <CheckBox text="Compressed Air" styleClass="config-button"/>
-    </children>
-    <children>
-      <CheckBox text="Post Box" styleClass="config-button"/>
-    </children>
-    <children>
-      <CheckBox text="Taxi" styleClass="config-button"/>
-    </children>
-    <children>
-      <CheckBox text="BBQ" styleClass="config-button"/>
-    </children>
-    <children>
-      <CheckBox text="Solarium" styleClass="config-button"/>
-    </children>
-    <children>
-      <CheckBox text="Telephon" styleClass="config-button"/>
-    </children>
+    <VBox styleClass="config-vbox" fx:id="checkboxVBox" prefHeight="200" prefWidth="355" maxWidth="355" maxHeight="200">
+      <children>
+        <CheckBox text="Parking" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Restaurant" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Fast Food" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Toilets" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Cafe" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Pub" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Recycling" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Bar" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Compressed Air" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Post Box" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Taxi" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="BBQ" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Solarium" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Telephon" styleClass="config-button"/>
+      </children>
+    </VBox>
   </VBox>
 
   <VBox
