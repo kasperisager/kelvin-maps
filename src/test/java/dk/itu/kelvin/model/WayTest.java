@@ -48,6 +48,77 @@ public final class WayTest {
   }
 
   /**
+   * Tests if the element order is higher, lower, or equal.
+   */
+  @Test
+  public void testOrder() {
+    Way w1 = new Way(25338049);
+    assertEquals(Element.Order.DEFAULT, w1.order());
+    w1.order(Element.Order.NATURAL_WATER);
+    assertEquals(Element.Order.NATURAL_WATER, w1.order());
+
+    Way w2 = new Way(15338049);
+    w2.order(Element.Order.HIGHWAY);
+
+    Way w3 = new Way(25338045);
+    w3.order(Element.Order.HIGHWAY);
+
+    Way w4 = new Way(24838049);
+    w4.order(Element.Order.HIGHWAY_MOTORWAY);
+
+    // < 0 first object's order is smaller than the second obejct's order.
+    // 0 if there are equal.
+    // and > 0 if first is larger than second.
+    assertTrue(Element.Order.compare(w1, w3) < 0);
+    assertTrue(Element.Order.compare(w4, w2) > 0);
+    assertTrue(Element.Order.compare(w2, w3) == 0);
+
+  }
+
+  /**
+   * test of layers and test when there is a layer and a order.
+   */
+  @Test
+  public void testLayer() {
+    Way w1 = new Way(35338049);
+    w1.layer(-2);
+
+    Way w2 = new Way(45338049);
+    w2.layer(0);
+
+    Way w3 = new Way(25338009);
+    w3.layer(2);
+
+    Way w4 = new Way(65338049);
+    w4.layer(2);
+
+    assertTrue(Element.Order.compare(w1, w2) < 0);
+    assertTrue(Element.Order.compare(w1, w3) < 0);
+    assertTrue(Element.Order.compare(w3, w2) > 0);
+    assertTrue(Element.Order.compare(w3, w4) == 0);
+
+    Way n5 = new Way(35338049);
+    n5.order(Element.Order.HIGHWAY);
+    n5.layer(0);
+
+    Way n6 = new Way(26338049);
+    n6.order(Element.Order.HIGHWAY);
+    n6.layer(1);
+
+    Way n7 = new Way(75338049);
+    n7.order(Element.Order.HIGHWAY_MOTORWAY);
+    n7.layer(-2);
+
+    Way n8 = new Way(25330009);
+    n8.order(Element.Order.HIGHWAY_MOTORWAY);
+    n8.layer(-2);
+
+    assertTrue(Element.Order.compare(n5, n6) < 0);
+    assertTrue(Element.Order.compare(n7, n8) == 0);
+
+  }
+
+  /**
    * Test if the closed method recognizes closed ways and unclosed ways.
    */
   @Test
