@@ -3,6 +3,10 @@
  */
 package dk.itu.kelvin.model;
 
+// Java utilities
+import java.util.List;
+import java.util.ArrayList;
+
 // JUnit annotations
 import org.junit.Test;
 
@@ -158,6 +162,54 @@ public final class WayTest {
     assertTrue(w1.endsIn(w3));
   }
 
+  @Test
+  public void testNodes() {
+    List<Node> nodes = new ArrayList<Node>();
+    Node n1 = new Node(1512550893, (float)59.1198149, (float)18.1159972);
+    Node n2 = new Node(1612550893, (float)56.2298149, (float)17.2259972);
+    Node n3 = new Node(1712550893, (float)50.3398149, (float)10.3359972);
+    Node n4 = new Node(1112550893, (float)57.3398149, (float)18.3359972);
 
+    nodes.add(n1);
+    nodes.add(n2);
+    nodes.add(n3);
+    nodes.add(n4);
+
+    Way w1 = new Way(1112550893);
+    w1.nodes(null);
+    assertEquals(0, w1.nodes().size());
+
+    w1.nodes(nodes);
+    assertEquals(4, w1.nodes().size());
+    assertTrue(w1.nodes().contains(n1));
+    assertTrue(w1.nodes().contains(n2));
+    assertTrue(w1.nodes().contains(n3));
+    assertTrue(w1.nodes().contains(n4));
+  }
+
+  @Test
+  public void testAppend() {
+    Way w1 = new Way(1112550893);
+    Way w2 = new Way(1112550893);
+
+    Node n1 = new Node(1512550893, (float)59.1198149, (float)18.1159972);
+    Node n2 = new Node(1612550893, (float)56.2298149, (float)17.2259972);
+    Node n3 = new Node(1712550893, (float)50.3398149, (float)10.3359972);
+    Node n4 = new Node(1112550893, (float)57.3398149, (float)18.3359972);
+
+    w1.node(n1);
+    w1.node(n2);
+    w2.node(n3);
+    w2.node(n4);
+
+    assertEquals(2, w1.nodes().size());
+
+    w1.append(w2);
+    assertEquals(4, w1.nodes().size());
+    assertTrue(w1.nodes().contains(n1));
+    assertTrue(w1.nodes().contains(n2));
+    assertTrue(w1.nodes().contains(n3));
+    assertTrue(w1.nodes().contains(n4));
+  }
 
 }
