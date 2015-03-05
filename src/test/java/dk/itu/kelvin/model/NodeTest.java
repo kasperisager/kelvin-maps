@@ -157,15 +157,19 @@ public final class NodeTest {
     assertEquals(n1.hashCode(), n2.hashCode());
     assertNotEquals(n1.hashCode(), n3.hashCode());
 
-  //test the method's three if-statements.
+    //test the method's three if-statements.
     Node n6 = new Node(4, 4, 4);
     assertFalse(n6.equals(null));
     assertTrue(n6.equals(n6));
     assertFalse(n6.equals("not a node"));
+  }
 
-
-    //Tests all combinations of id, x, y, order and layer.
-
+    /**
+     * Second part of equal method.
+     * Tests all combinations of id, x, y, order and layer.
+     */
+    @Test
+    public void testEqualCombinations() {
     //all Nodes will be compared with n1a.
     Node n1a = new Node(1, 1, 1);
     n1a.order(Element.Order.BUILDING);
