@@ -32,6 +32,7 @@
   <Pane
     focusTraversable="true"
     pickOnBounds="true"
+    styleClass="map"
 
     onMouseEntered="#onMouseEntered"
     onMouseClicked="#onMouseClicked"
