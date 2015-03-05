@@ -64,7 +64,7 @@ public final class ChartController {
   /**
    * The input file to show in the map viewer.
    */
-  private static final String MAP_INPUT = "small.osm";
+  private static final String MAP_INPUT = "denmark-latest.osm";
 
   /**
    * Default zoom step factor.
@@ -162,7 +162,7 @@ public final class ChartController {
 
     this.compassArrow.getTransforms().add(this.compassTransform);
 
-    Canvas canvas = this.canvas;
+    // Canvas canvas = this.canvas;
     Chart chart = this.chart;
 
     Task task = new Task<Void>() {
@@ -183,10 +183,10 @@ public final class ChartController {
         Platform.runLater(() -> {
           // canvas.add(chart.nodes());
 
-          canvas.pan(
-            -chart.bounds().getMinX(),
-            -chart.bounds().getMaxY()
-          );
+          // canvas.pan(
+          //   -chart.bounds().getMinX(),
+          //   -chart.bounds().getMaxY()
+          // );
         });
 
         return null;

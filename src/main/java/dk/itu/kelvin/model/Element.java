@@ -156,7 +156,7 @@ public abstract class Element<T extends Node> implements Serializable {
    *
    * @return A JavaFX representation of the element.
    */
-  public abstract T fx();
+  public abstract T render();
 
   /**
    * Enumerator describing the drawing order of different elements.

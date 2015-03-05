@@ -18,9 +18,14 @@ import javafx.scene.Group;
  */
 public final class Land extends Element<Group> {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 81;
+
+  /**
    * The JavaFX representation of the land.
    */
-  private Group fx;
+  private transient Group fx;
 
   /**
    * Bounds of the land element.
@@ -106,7 +111,7 @@ public final class Land extends Element<Group> {
    *
    * @return The JavaFX representation of the land.
    */
-  public Group fx() {
+  public Group render() {
     if (this.fx != null) {
       return this.fx;
     }

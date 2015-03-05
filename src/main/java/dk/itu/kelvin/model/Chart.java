@@ -103,7 +103,7 @@ public final class Chart {
     List<javafx.scene.Node> nodes = new ArrayList<>();
 
     for (Element element: this.elements) {
-      nodes.add(element.fx());
+      nodes.add(element.render());
     }
 
     return nodes;

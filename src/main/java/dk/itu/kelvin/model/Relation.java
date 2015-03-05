@@ -6,6 +6,7 @@ package dk.itu.kelvin.model;
 // General utilities
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +26,14 @@ import javafx.scene.shape.Shape;
  */
 public final class Relation extends Element<Group> {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 48;
+
+  /**
    * The JavaFX representation of the relation.
    */
-  private Group fx;
+  private transient Group fx;
 
   /**
    * The members of the relation mapped to their roles.
@@ -91,6 +97,10 @@ public final class Relation extends Element<Group> {
       return null;
     }
 
+    if (this.elements == null) {
+      this.elements = new HashMap<>();
+    }
+
     return this.elements.get(element);
   }
 
@@ -100,6 +110,10 @@ public final class Relation extends Element<Group> {
    * @return A list of members of the relation.
    */
   public List<Element> members() {
+    if (this.elements == null) {
+      this.elements = new HashMap<>();
+    }
+
     return new ArrayList<Element>(this.elements.keySet());
   }
 
@@ -112,6 +126,10 @@ public final class Relation extends Element<Group> {
   public void member(final Element element, final Role role) {
     if (element == null || role == null) {
       return;
+    }
+
+    if (this.elements == null) {
+      this.elements = new HashMap<>();
     }
 
     this.elements.put(element, role);
@@ -135,7 +153,7 @@ public final class Relation extends Element<Group> {
    *
    * @return The JavaFX representation of the relation.
    */
-  public Group fx() {
+  public Group render() {
     if (this.fx != null) {
       return this.fx;
     }
@@ -283,7 +301,7 @@ public final class Relation extends Element<Group> {
         continue;
       }
 
-      Shape polygon = (Shape) outer.fx();
+      Shape polygon = (Shape) outer.render();
 
       // RG-4: Find all unused rings that are contained by the ring found in
       // RG-3, but not contained by any other unused ring. Mark these rings as
@@ -305,7 +323,7 @@ public final class Relation extends Element<Group> {
 
           // RG-7: Construct a polygon from the outer ring and the holes.
           if (contained) {
-            polygon = Shape.subtract(polygon, (Shape) inner.fx());
+            polygon = Shape.subtract(polygon, (Shape) inner.render());
           }
         }
       }

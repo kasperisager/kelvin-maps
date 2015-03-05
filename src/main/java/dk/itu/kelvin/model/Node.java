@@ -14,9 +14,14 @@ import javafx.scene.control.Label;
  */
 public final class Node extends Element<Label> {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 19;
+
+  /**
    * The JavaFX representation of the land.
    */
-  private Label fx;
+  private transient Label fx;
 
   /**
    * Cache the hash of the node.
@@ -117,7 +122,7 @@ public final class Node extends Element<Label> {
    *
    * @return The JavaFX representation of the node.
    */
-  public Label fx() {
+  public Label render() {
     if (this.fx != null) {
       return this.fx;
     }

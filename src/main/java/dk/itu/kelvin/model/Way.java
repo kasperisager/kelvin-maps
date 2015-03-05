@@ -22,9 +22,14 @@ import javafx.scene.paint.Color;
  */
 public final class Way extends Element<Polyline> {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 67;
+
+  /**
    * The JavaFX representation of the way.
    */
-  private Polyline fx;
+  private transient Polyline fx;
 
   /**
    * List of nodes contained within the way.
@@ -190,7 +195,7 @@ public final class Way extends Element<Polyline> {
    *
    * @return The JavaFX representation of the way.
    */
-  public Polyline fx() {
+  public Polyline render() {
     if (this.fx != null) {
       return this.fx;
     }
@@ -251,8 +256,8 @@ public final class Way extends Element<Polyline> {
       return false;
     }
 
-    return this.fx().intersects(
-      this.fx().parentToLocal(way.fx().getBoundsInParent())
+    return this.render().intersects(
+      this.render().parentToLocal(way.render().getBoundsInParent())
     );
   }
 
@@ -269,10 +274,10 @@ public final class Way extends Element<Polyline> {
     }
 
     return (
-      this.fx().contains(this.fx().parentToLocal(
+      this.render().contains(this.render().parentToLocal(
         way.start().x(), way.start().y())
       )
-      && this.fx().contains(this.fx().parentToLocal(
+      && this.render().contains(this.render().parentToLocal(
         way.end().x(), way.end().y())
       )
     );
