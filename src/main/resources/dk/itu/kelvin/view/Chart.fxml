@@ -16,10 +16,12 @@
 <?import javafx.scene.shape.MoveTo?>
 <?import javafx.scene.shape.Path?>
 
+<!-- Controls -->
+<?import javafx.scene.control.Tooltip?>
+
 <!-- Components -->
 <?import dk.itu.kelvin.component.Canvas?>
 
-<?import javafx.scene.control.Tooltip?>
 <StackPane
   fx:controller="dk.itu.kelvin.controller.ChartController"
   xmlns:fx="http://javafx.com/fxml"
