@@ -7,6 +7,10 @@
   fx:controller="dk.itu.kelvin.controller.ApplicationController"
   xmlns:fx="http://javafx.com/fxml"
 >
+  <top>
+    <fx:include fx:id="menu" source="Menu.fxml" />
+  </top>
+
   <center>
     <fx:include fx:id="chart" source="Chart.fxml" />
   </center>
