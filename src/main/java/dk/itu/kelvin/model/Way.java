@@ -5,14 +5,11 @@ package dk.itu.kelvin.model;
 
 // General utilities
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 // JavaFX shapes
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.Path;
+import javafx.scene.shape.Polyline;
 
 // JavaFX paint
 import javafx.scene.paint.Color;
@@ -21,38 +18,21 @@ import javafx.scene.paint.Color;
  * A way is an ordered list of 2 to 2,000 nodes.
  *
  * @see <a href="http://wiki.openstreetmap.org/wiki/Way">
- *      http://wiki.openstreetmap.org/wiki/Way</a>
+ * http://wiki.openstreetmap.org/wiki/Way</a>
  */
-public final class Way extends Path implements Element {
+public final class Way extends Element<Polyline> {
   /**
-   * UID for identifying serialized objects.
+   * The JavaFX representation of the way.
    */
-  private static final long serialVersionUID = 74;
+  private Polyline fx;
 
   /**
-   * The ID of the way.
+   * List of nodes contained within the way.
+   *
+   * The list is initialized on-demand when first accessed to avoid allocating
+   * memory to empty lists.
    */
-  private long id;
-
-  /**
-   * A map of tags associated with the way.
-   */
-  private Map<String, String> tags = new HashMap<>();
-
-  /**
-   * Drawing order of the way.
-   */
-  private Element.Order order = Element.Order.DEFAULT;
-
-  /**
-   * Drawing layer of the way.
-   */
-  private int layer;
-
-  /**
-   * Nodes contained within the way.
-   */
-  private List<Node> nodes = new ArrayList<>();
+  private List<Node> nodes;
 
   /**
    * Initialize a way.
@@ -60,104 +40,7 @@ public final class Way extends Path implements Element {
    * @param id The ID of the way.
    */
   public Way(final long id) {
-    this.id = id;
-
-    // Don't use antialiasing for performance reasons.
-    this.setSmooth(false);
-
-    // Ensure that the bounds of the way are calculated correctly. This is only
-    // the case if both a stroke and a fill is set, otherwise calculation of
-    // bounds will be off.
-    this.setStroke(Color.TRANSPARENT);
-    this.setFill(Color.TRANSPARENT);
-
-    this.getStyleClass().add("way");
-  }
-
-  /**
-   * Get the ID of the way.
-   *
-   * @return The ID of the way.
-   */
-  public long id() {
-    return this.id;
-  }
-
-  /**
-   * Add a tag to the way.
-   *
-   * @param key   The key of the tag.
-   * @param value The value of the tag.
-   * @return      The previous value of the key, if any.
-   */
-  public String tag(final String key, final String value) {
-    switch (key) {
-      case "building":
-      case "area":
-        this.getStyleClass().add(key);
-        break;
-      case "highway":
-      case "leisure":
-      case "landuse":
-      case "natural":
-      case "waterway":
-        this.getStyleClass().add(key);
-        this.getStyleClass().add(value);
-        break;
-      default:
-        // Do nothing.
-    }
-
-    return this.tags.put(key, value);
-  }
-
-  /**
-   * Get a map of tags for the way.
-   *
-   * @return A map of tags for the way.
-   */
-  public Map<String, String> tags() {
-    return this.tags;
-  }
-
-  /**
-   * Get the drawing order of the way.
-   *
-   * @return The drawing order of the way.
-   */
-  public Element.Order order() {
-    return this.order;
-  }
-
-  /**
-   * Set the drawing order of the way.
-   *
-   * @param order The drawing order of the way.
-   */
-  public void order(final Element.Order order) {
-    if (order == null) {
-      return;
-    }
-
-    this.order = order;
-  }
-
-  /**
-   * Get the drawing layer of the way.
-   *
-   * @return The drawing layer of the way.
-   */
-  public int layer() {
-    return this.layer;
-  }
-
-  /**
-   * Set the drawing layer of the way.
-   *
-   * @param layer The drawing layer of the way.
-   */
-  public void layer(final int layer) {
-    this.layer = layer;
+    super(id);
   }
 
   /**
@@ -166,6 +49,10 @@ public final class Way extends Path implements Element {
    * @return The initial node of the way.
    */
   protected Node start() {
+    if (this.nodes == null) {
+      this.nodes = new ArrayList<>();
+    }
+
     return this.nodes.get(0);
   }
 
@@ -175,6 +62,10 @@ public final class Way extends Path implements Element {
    * @return The last node of the way.
    */
   protected Node end() {
+    if (this.nodes == null) {
+      this.nodes = new ArrayList<>();
+    }
+
     return this.nodes.get(this.nodes.size() - 1);
   }
 
@@ -240,6 +131,10 @@ public final class Way extends Path implements Element {
    * @return The nodes contained within the way.
    */
   public List<Node> nodes() {
+    if (this.nodes == null) {
+      this.nodes = new ArrayList<>();
+    }
+
     return this.nodes;
   }
 
@@ -253,11 +148,8 @@ public final class Way extends Path implements Element {
       return;
     }
 
-    if (this.getElements().isEmpty()) {
-      this.getElements().add(new MoveTo(node.getX(), node.getY()));
-    }
-    else {
-      this.getElements().add(new LineTo(node.getX(), node.getY()));
+    if (this.nodes == null) {
+      this.nodes = new ArrayList<>();
     }
 
     this.nodes.add(node);
@@ -269,13 +161,15 @@ public final class Way extends Path implements Element {
    * @param nodes The nodes to add to the way.
    */
   public void nodes(final List<Node> nodes) {
-    if (nodes == null) {
+    if (nodes == null || nodes.isEmpty()) {
       return;
     }
 
-    for (Node node: nodes) {
-      this.node(node);
+    if (this.nodes == null) {
+      this.nodes = new ArrayList<>();
     }
+
+    this.nodes.addAll(nodes);
   }
 
   /**
@@ -292,6 +186,60 @@ public final class Way extends Path implements Element {
   }
 
   /**
+   * Get the JavaFX representation of the way.
+   *
+   * @return The JavaFX representation of the way.
+   */
+  public Polyline fx() {
+    if (this.fx != null) {
+      return this.fx;
+    }
+
+    Polyline polyline = new Polyline();
+
+    // Don't use antialiasing for performance reasons.
+    polyline.setSmooth(false);
+
+    // Ensure that the bounds of the way are calculated correctly. This is only
+    // the case if both a stroke and a fill is set, otherwise calculation of
+    // bounds will be off.
+    polyline.setStroke(Color.TRANSPARENT);
+    polyline.setFill(Color.TRANSPARENT);
+
+    // this.getStyleClass().add("way");
+    for (Map.Entry<String, String> tag: this.tags().entrySet()) {
+      String key = tag.getKey();
+      String value = tag.getValue();
+
+      switch (key) {
+        case "building":
+        case "area":
+          polyline.getStyleClass().add(key);
+          break;
+        case "highway":
+        case "leisure":
+        case "landuse":
+        case "natural":
+        case "waterway":
+          polyline.getStyleClass().add(key);
+          polyline.getStyleClass().add(value);
+          break;
+        default:
+          // Do nothing.
+      }
+    }
+
+    for (Node node: this.nodes()) {
+      polyline.getPoints().add((double) node.x());
+      polyline.getPoints().add((double) node.y());
+    }
+
+    this.fx = polyline;
+
+    return this.fx;
+  }
+
+  /**
    * Does the current way intersect the specified way?.
    *
    * @param way The way to check intersection of.
@@ -303,8 +251,8 @@ public final class Way extends Path implements Element {
       return false;
     }
 
-    return this.intersects(
-      this.parentToLocal(way.getBoundsInParent())
+    return this.fx().intersects(
+      this.fx().parentToLocal(way.fx().getBoundsInParent())
     );
   }
 
@@ -321,8 +269,12 @@ public final class Way extends Path implements Element {
     }
 
     return (
-      this.contains(this.parentToLocal(way.start().point()))
-      && this.contains(this.parentToLocal(way.end().point()))
+      this.fx().contains(this.fx().parentToLocal(
+        way.start().x(), way.start().y())
+      )
+      && this.fx().contains(this.fx().parentToLocal(
+        way.end().x(), way.end().y())
+      )
     );
   }
 }
