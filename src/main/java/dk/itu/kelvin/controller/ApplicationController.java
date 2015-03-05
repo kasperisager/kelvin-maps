@@ -6,33 +6,19 @@ package dk.itu.kelvin.controller;
 // JavaFX layout
 import javafx.scene.layout.BorderPane;
 
-// JavaFX shapes
-
-// JavaFX input
-
-// JavaFX transformations
-
-// Java FX event
-
-// Controls FX
-
 // FXML utilities
 import javafx.fxml.FXML;
-
-// Components
-
-// Models
 
 /**
  * Application controller class.
  *
  * @version 1.0.0
  */
-public class ApplicationController {
+public final class ApplicationController {
   /**
    * Field that holds only instance of the class.
    */
-  private static ApplicationController applicationController;
+  private static ApplicationController instance;
 
   /**
    * Borderpane element.
@@ -43,16 +29,26 @@ public class ApplicationController {
   /**
    * JavaFX constructor for the ApplicationController.
    */
-  public final void initialize() {
-    ApplicationController.applicationController = this;
+  public void initialize() {
+    ApplicationController.instance(this);
   }
 
   /**
-   *  Method to point to this instance from a static context.
-   * @return this instance of the class.
+   * Get the application controller instance.
+   *
+   * @return The application controller instance.
    */
   public static ApplicationController instance() {
-    return ApplicationController.applicationController;
+    return ApplicationController.instance;
+  }
+
+  /**
+   * Set the application controller instance.
+   *
+   * @param instance The application controller instance.
+   */
+  private static void instance(final ApplicationController instance) {
+    ApplicationController.instance = instance;
   }
 
   /**
@@ -74,5 +70,3 @@ public class ApplicationController {
     }
   }
 }
-
-
