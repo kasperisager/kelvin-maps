@@ -1,9 +1,5 @@
-.root {
-  -fx-background-color: #a0c3ff;
-}
-
-.land {
-  -fx-background-color: #e9e5dd;
+.high-contrast {
+  -fx-background-color: #248E23 !important;
 }
 
 .icon {
@@ -33,12 +29,6 @@
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
   -fx-cursor: hand;
 }
-.button-zoom:hover {
-  -fx-text-fill: #333;
-}
-.button-zoom:pressed {
-  -fx-text-fill: #000;
-}
 
 .text-field, .search-button {
   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
@@ -49,6 +39,16 @@
 
 .compass {
   -fx-padding: 16px;
+}
+
+.compass-reset{
+  -fx-padding: 10px 0 0 0;
+}
+.compass-reset-button {
+  -fx-padding: 7px 12px;
+  -fx-font-size: 14px;
+  -fx-background-color: #fff;
+  -fx-background-radius: 1000px;
 }
 .compass-disc {
   -fx-fill: none;
@@ -70,10 +70,16 @@
 .search-button {
   -fx-font-size: 15px;
   -fx-background-radius: 0 2 2 0;
+  -fx-text-fill: #666;
+  -fx-cursor: hand;
 }
 
-.search-button:hover {
-  -fx-cursor: hand;
+.search-button:hover, .func-button:hover, .button-zoom:hover {
+  -fx-text-fill: #333;
+}
+
+.search-button:pressed, .func-button:pressed, .button-zoom:pressed {
+  -fx-text-fill: #000;
 }
 
 .func-button {
@@ -85,8 +91,24 @@
   -fx-cursor: hand;
 }
 
-.func-button:hover {
-  -fx-text-fill: #333;
+.config-button {
+  -fx-background-radius: 2px;
+  -fx-background-color: #fff;
+  -fx-text-fill: #666;
+  -fx-cursor: hand;
+  -fx-padding: 4px;
+  -fx-text-alignment: left;
+}
+
+.config-button:hover {
+  -fx-background-color: #ece7e7;
+}
+
+.config-vbox {
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
+  -fx-background-radius: 2px;
+  -fx-background-color: #fff;
+  -fx-padding: 4px;
 }
 
 @import "imports/OSM";

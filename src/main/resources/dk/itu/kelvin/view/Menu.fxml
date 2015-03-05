@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- JavaFX controls -->
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+
+<MenuBar
+  fx:controller="dk.itu.kelvin.controller.MenuController"
+  xmlns:fx="http://javafx.com/fxml"
+
+  useSystemMenuBar="true"
+>
+  <menus>
+    <Menu text="File">
+      <items>
+        <MenuItem text="Open file" onAction="#pickFile"/>
+        <MenuItem text="Save as .bin"/>
+        <MenuItem text="Load last .bin"/>
+        <MenuItem text="Reset to default"/>
+        <MenuItem text="Exit"/>
+      </items>
+    </Menu>
+    <Menu text="View">
+      <items>
+        <CheckMenuItem text="Public transit" selected="true"/>
+        <CheckMenuItem text="Bicycle"/>
+        <CheckMenuItem text="Color blind"/>
+      </items>
+    </Menu>
+    <Menu text="Help">
+      <items>
+        <MenuItem text="User manual"/>
+        <MenuItem text="About"/>
+      </items>
+    </Menu>
+  </menus>
+</MenuBar>

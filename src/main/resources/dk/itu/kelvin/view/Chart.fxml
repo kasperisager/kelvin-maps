@@ -16,19 +16,26 @@
 <?import javafx.scene.shape.MoveTo?>
 <?import javafx.scene.shape.Path?>
 
+<!-- Controls -->
+<?import javafx.scene.control.Tooltip?>
+
 <!-- Components -->
 <?import dk.itu.kelvin.component.Canvas?>
 
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.CheckBox?>
 <StackPane
   fx:controller="dk.itu.kelvin.controller.ChartController"
   xmlns:fx="http://javafx.com/fxml"
 
-  prefWidth="512"
-  prefHeight="512"
+  prefWidth="640"
+  prefHeight="640"
 >
   <Pane
     focusTraversable="true"
     pickOnBounds="true"
+    styleClass="map"
 
     onMouseEntered="#onMouseEntered"
     onMouseClicked="#onMouseClicked"
@@ -58,43 +65,110 @@
     alignment="TOP_LEFT"
     pickOnBounds="false"
     styleClass="address-input-wrapper"
-    maxWidth="2000"
     spacing="10"
   >
     <HBox maxWidth="Infinity">
       <children>
-        <TextField prefWidth="500" minWidth="200" maxWidth="2000" promptText="Enter an address" fx:id="addressFrom" onAction="#findAddress"/>
+        <TextField prefWidth="355" minWidth="200" promptText="Enter an address" fx:id="addressFrom" onAction="#findAddress"/>
       </children>
 
       <children>
-        <Button styleClass="search-button, icon" text="&#xf4a5;" onAction="#findAddress"/>
+        <Button styleClass="search-button, icon" text="&#xf4a5;" onAction="#findAddress">
+          <tooltip>
+            <Tooltip text="Search for address"/>
+          </tooltip>
+        </Button>
       </children>
     </HBox>
 
     <HBox>
       <children>
-        <TextField prefWidth="500" minWidth="200" maxWidth="2000" promptText="Get directions to this address" fx:id="addressTo" onAction="#findRoute"/>
+        <TextField prefWidth="355" minWidth="200" promptText="Get directions to this address" fx:id="addressTo" onAction="#findRoute"/>
       </children>
 
       <children>
-        <Button styleClass="search-button, icon" text="&#xf3d6;" onAction="#findRoute"/>
+        <Button styleClass="search-button, icon" text="&#xf3d6;" onAction="#findRoute">
+          <tooltip>
+            <Tooltip text="Get directions"/>
+          </tooltip>
+        </Button>
       </children>
     </HBox>
 
     <HBox spacing="10">
       <children>
-        <Button styleClass="func-button, icon" text="&#xf268;" onAction="#swapTextFields"/>
+        <Button styleClass="func-button, icon" text="&#xf268;" onAction="#swapTextFields">
+          <tooltip>
+            <Tooltip text="Switch textfields"/>
+          </tooltip>
+        </Button>
       </children>
 
       <children>
-        <Button styleClass="func-button, icon" text="&#xf2c1;"/>
+        <Button styleClass="func-button, icon" text="&#xf2c1;" onAction="#routeByCar">
+          <tooltip>
+            <Tooltip text="Highlight car routes"/>
+          </tooltip>
+        </Button>
       </children>
 
       <children>
-        <Button styleClass="func-button, icon" text="&#xf3bb; / &#xf369;"/>
+        <Button styleClass="func-button, icon" text="&#xf3bb; / &#xf369;" onAction="#routeByFoot">
+          <tooltip>
+            <Tooltip text="Highlight walk/bike routes"/>
+          </tooltip>
+        </Button>
+      </children>
+
+      <children>
+        <ToggleButton styleClass="func-button, icon" text="&#xf13d;" fx:id="toggleButton"/>
       </children>
     </HBox>
 
+    <VBox styleClass="config-vbox" fx:id="checkboxVBox" prefWidth="166" maxWidth="166">
+      <children>
+        <CheckBox text="Parking" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Restaurant" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Fast Food" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Toilets" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Cafe" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Pub" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Recycling" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Bar" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Compressed Air" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Post Box" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Taxi" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="BBQ" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Solarium" styleClass="config-button"/>
+      </children>
+      <children>
+        <CheckBox text="Telephone" styleClass="config-button"/>
+      </children>
+    </VBox>
   </VBox>
 
   <VBox
@@ -102,21 +176,34 @@
     pickOnBounds="false"
     fillWidth="false"
   >
-    <children>
-      <VBox alignment="CENTER" styleClass="compass">
-        <children>
-          <Path fx:id="compassArrow" styleClass="compass-arrow">
-            <elements>
-              <MoveTo x="0" y="6" />
-              <LineTo x="4" y="0" />
-              <LineTo x="8" y="6" />
-              <LineTo x="0" y="6" />
-            </elements>
-          </Path>
 
-          <Circle radius="30" styleClass="compass-disc" />
+    <children>
+      <StackPane>
+        <children>
+          <VBox alignment="CENTER" styleClass="compass">
+            <children>
+              <Path fx:id="compassArrow" styleClass="compass-arrow">
+                <elements>
+                  <MoveTo x="0" y="6" />
+                  <LineTo x="4" y="0" />
+                  <LineTo x="8" y="6" />
+                  <LineTo x="0" y="6" />
+                </elements>
+              </Path>
+
+              <Circle radius="30" styleClass="compass-disc" />
+            </children>
+          </VBox>
+
+          <VBox alignment="CENTER" styleClass="compass-reset">
+            <Button styleClass="compass-reset-button, icon" text="&#xf3d7;" onAction="#compassReset">
+              <tooltip>
+                <Tooltip text="Reset compass"/>
+              </tooltip>
+            </Button>
+          </VBox>
         </children>
-      </VBox>
+      </StackPane>
     </children>
   </VBox>
 
@@ -128,8 +215,17 @@
     fillWidth="false"
   >
     <children>
-      <Button text="&#xF218;" styleClass="button-zoom, icon" onAction="#zoomIn"/>
-      <Button text="&#xF209;" styleClass="button-zoom, icon" onAction="#zoomOut" />
+      <Button text="&#xF218;" styleClass="button-zoom, icon" onAction="#zoomIn">
+        <tooltip>
+          <Tooltip text="Zoom in"/>
+        </tooltip>
+      </Button>
+      <Button text="&#xF209;" styleClass="button-zoom, icon" onAction="#zoomOut">
+       <tooltip>
+         <Tooltip text="Zoom out"/>
+       </tooltip>
+      </Button>
     </children>
   </VBox>
+
 </StackPane>

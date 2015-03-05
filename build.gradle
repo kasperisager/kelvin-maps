@@ -5,6 +5,7 @@
 def namespace = "dk.itu.kelvin"
 def mainClass = "${namespace}.Main"
 def namespaceDir = namespace.replaceAll("\\.", "/")
+def apiName = "Kelvin Maps API"
 
 // ------------------------------------------------------------------------- //
 // Dependency configuration
@@ -29,6 +30,8 @@ apply plugin: "application"
 apply plugin: "checkstyle"
 apply plugin: "console"
 apply plugin: "jacoco"
+apply plugin: "project-report"
+apply plugin: "findbugs"
 apply plugin: "lesscss"
 apply plugin: "org.ajoberstar.github-pages"
 
@@ -51,6 +54,10 @@ dependencies {
 // Use UTF-8 encoding when compiling Java.
 [compileJava, compileTestJava]*.options*.encoding = "UTF-8"
 
+checkstyle {
+  toolVersion = "5.9"
+}
+
 jar {
   // Include all source code in assembled JAR.
   from sourceSets.main.allSource
@@ -60,9 +67,23 @@ jar {
   }
 }
 
+// FindBugs config.
+tasks.withType(FindBugs) {
+  reports {
+    xml.enabled = false
+    html.enabled = true
+  }
+}
+
 // Generate a Gradle wrapper.
 task wrapper(type: Wrapper) {
   gradleVersion = "2.3"
+}
+
+// Generate Java docs.
+task docs(type: Javadoc) {
+  title = apiName
+  source = sourceSets.main.allJava
 }
 
 // Main class to run.
