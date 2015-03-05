@@ -25,6 +25,7 @@ import javafx.scene.transform.Affine;
 
 // JavaFX controls
 import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.CheckBox;
 
@@ -33,6 +34,7 @@ import javafx.event.ActionEvent;
 
 // Controls FX
 import org.controlsfx.control.PopOver;
+import org.controlsfx.control.HiddenSidesPane;
 
 // FXML utilities
 import javafx.fxml.FXML;
@@ -103,7 +105,7 @@ public final class ChartController {
   private Chart chart = new Chart();
 
   /**
-   * PopOver.
+   * PopOver for the config menu.
    */
   private PopOver popOver;
 
@@ -132,11 +134,25 @@ public final class ChartController {
   private TextField addressTo;
 
   /**
+   * The config button.
+   */
+  @FXML
+  private ToggleButton toggleButton;
+
+  /**
+   * The checkbox VBox element.
+   */
+  @FXML
+  private VBox checkboxVBox;
+
+  /**
    * Initialize the controller.
    *
    * @throws Exception In case of an error. Duh.
    */
   public void initialize() throws Exception {
+    this.checkboxVBox.setVisible(false);
+
     this.compassArrow.getTransforms().add(this.compassTransform);
 
     ChartParser parser = new ChartParser(this.chart);
@@ -150,6 +166,60 @@ public final class ChartController {
       -this.chart.bounds().getMinX(),
       -this.chart.bounds().getMaxY()
     );
+
+    createPopOver();
+  }
+
+  /**
+   * Creates a PopOver object with buttons, eventhandlers and listeners.
+   */
+  private void createPopOver() {
+    VBox vbox = new VBox(2);
+    vbox.getStyleClass().add("config-vbox");
+
+    Button blind = new Button("High Contrast");
+    Button poi = new Button("Points of Interest");
+
+    blind.getStyleClass().add("config-button");
+    poi.getStyleClass().add("config-button");
+    blind.setPrefWidth(120);
+    poi.setPrefWidth(120);
+    vbox.getChildren().addAll(blind, poi);
+
+    blind.setOnAction((event) -> {
+      ApplicationController.highContrast();
+    });
+
+    poi.setOnAction((event) -> {
+      if (!checkboxVBox.isVisible()) {
+        checkboxVBox.setVisible(true);
+      }
+      else {
+        checkboxVBox.setVisible(false);
+      }
+    });
+
+    this.popOver = new PopOver();
+    this.popOver.setContentNode(vbox);
+    this.popOver.setCornerRadius(2);
+    this.popOver.setArrowSize(6);
+    this.popOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
+    this.popOver.setAutoHide(true);
+
+    toggleButton.selectedProperty().addListener((ob, ov, nv) -> {
+      if (nv) {
+        this.popOver.show(toggleButton);
+      }
+      else {
+        this.popOver.hide();
+      }
+    });
+
+    this.popOver.showingProperty().addListener((ob, ov, nv) -> {
+      if (!nv && toggleButton.isSelected()) {
+        toggleButton.setSelected(false);
+      }
+    });
   }
 
   /**
@@ -463,86 +533,8 @@ public final class ChartController {
     Address endAddress = Address.parse(this.addressTo.getText());
   }
 
-  /**
-   *  Click event to show the popover.
-   * @param e click event.
-   */
-  @FXML
-  private void showConfig(final ActionEvent e) {
-    VBox vbox = new VBox(2);
-    vbox.getStyleClass().add("config-vbox");
-
-    Button blind = new Button("High Contrast");
-    Button poi = new Button("Points of Interest");
-
-    blind.setOnAction((event) -> {
-      ApplicationController.highContrast();
-    });
-
-    poi.setOnAction((event) -> {
-      showPOI(event);
-      System.out.println("Show me points of interest!");
-    });
-
-    blind.getStyleClass().add("config-button");
-    poi.getStyleClass().add("config-button");
-    blind.setPrefWidth(120);
-    poi.setPrefWidth(120);
-    vbox.getChildren().addAll(blind, poi);
-
-    if (this.popOver == null) {
-      this.popOver = new PopOver();
-      this.popOver.setContentNode(vbox);
-      this.popOver.setCornerRadius(2);
-      this.popOver.setArrowSize(6);
-      this.popOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
-    }
-    this.popOver.show((Node) e.getSource());
-  }
-
   public void showPOI(final ActionEvent e) {
-    VBox vbox = new VBox(2);
-    vbox.getStyleClass().add("config-vbox");
 
-    CheckBox parking = new CheckBox("Parking");
-    CheckBox restaurant = new CheckBox("Restaurant");
-    CheckBox fastFood = new CheckBox("Fast Food");
-    CheckBox toilets = new CheckBox("Toilets");
-    CheckBox cafe = new CheckBox("Cafe");
-    CheckBox pub = new CheckBox("Pub");
-    CheckBox recycling = new CheckBox("Recycling");
-    CheckBox bar = new CheckBox("Bar");
-    CheckBox compressedAir = new CheckBox("Compressed Air");
-    CheckBox postBox = new CheckBox("Post Box");
-    CheckBox taxi = new CheckBox("Taxi");
-    CheckBox bbq = new CheckBox("BBQ");
-    CheckBox solarium = new CheckBox("Solarium");
-    CheckBox telephone = new CheckBox("Telephone");
-
-    parking.getStyleClass().add("config-button");
-    restaurant.getStyleClass().add("config-button");
-    fastFood.getStyleClass().add("config-button");
-    toilets.getStyleClass().add("config-button");
-    cafe.getStyleClass().add("config-button");
-    pub.getStyleClass().add("config-button");
-    recycling.getStyleClass().add("config-button");
-    bar.getStyleClass().add("config-button");
-    compressedAir.getStyleClass().add("config-button");
-    postBox.getStyleClass().add("config-button");
-    taxi.getStyleClass().add("config-button");
-    bbq.getStyleClass().add("config-button");
-    solarium.getStyleClass().add("config-button");
-    telephone.getStyleClass().add("config-button");
-    /*blind.setPrefWidth(120);
-    poi.setPrefWidth(120); */
-    vbox.getChildren().addAll(parking, restaurant, fastFood, toilets, cafe, pub, recycling, bar, compressedAir, postBox, taxi, bbq, solarium, telephone);
-    PopOver checkboxPopover = new PopOver();
-    checkboxPopover.setContentNode(vbox);
-    checkboxPopover.setCornerRadius(2);
-    checkboxPopover.setArrowSize(6);
-    checkboxPopover.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
-    
-    this.popOver.show((Node) e.getSource());
   }
 
   /**
