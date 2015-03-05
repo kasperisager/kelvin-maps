@@ -25,6 +25,11 @@ import javafx.scene.paint.Color;
  */
 public final class Way extends Path implements Element {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 74;
+
+  /**
    * The ID of the way.
    */
   private long id;

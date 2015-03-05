@@ -18,6 +18,11 @@ import javafx.geometry.Point2D;
  */
 public final class Node extends Point2D implements Element {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 42;
+
+  /**
    * The ID of the node.
    */
   private long id;
