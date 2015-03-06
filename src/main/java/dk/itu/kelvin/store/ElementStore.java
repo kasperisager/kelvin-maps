@@ -4,11 +4,8 @@
 package dk.itu.kelvin.store;
 
 // General utilities
+import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Map;
-
-// Koloboke collections
-import net.openhft.koloboke.collect.map.hash.HashLongObjMaps;
 
 // Models
 import dk.itu.kelvin.model.Element;
@@ -16,19 +13,81 @@ import dk.itu.kelvin.model.Element;
 /**
  * Element store class.
  *
+ * @see <a href="http://algs4.cs.princeton.edu/34hash/">
+ *      http://algs4.cs.princeton.edu/34hash/</a>
+ *
  * @param <T> The type of elements contained within the store.
  */
 public final class ElementStore<T extends Element> implements Iterable<T> {
   /**
-   * Internal element storage.
-   *
-   * This uses the Koloboke primitive hash map implementation to minimize memory
-   * footprint.
-   *
-   * @see <a href="http://openhft.github.io/Koloboke/api/0.6/java8">
-   *      http://openhft.github.io/Koloboke/api/0.6/java8</a>
+   * Default initial capacity of the internal storage of the store.
    */
-  private Map<Long, T> store = HashLongObjMaps.newMutableMap();
+  private static final int DEFAULT_CAPACITY = 16;
+
+  /**
+   * The upper factor to use for rehashing the internal storage of the store.
+   *
+   * When the number of entries in the store reaches this factor of the total
+   * capacity of the internal storage, the storage is rehashed.
+   */
+  private static final float UPPER_LOAD_FACTOR = 0.5f;
+
+  /**
+   * The lower factor to use for rehashing the internal storage of the store.
+   *
+   * When the number of entries in the store reaches this factor of the total
+   * capacity of the internal storage, the storage is rehashed.
+   */
+  private static final float LOWER_LOAD_FACTOR = 0.25f;
+
+  /**
+   * Primes to use for hashing IDs.
+   */
+  private static final int[] PRIMES = new int[] {
+    31, 61, 127, 251, 509, 1021, 2039, 4093, 8191, 16381, 32749, 65521, 131071,
+    262139, 524287, 1048573, 2097143, 4194301, 8388593, 16777213, 33554393,
+    67108859, 134217689, 268435399, 536870909, 1073741789, 2147483647
+  };
+
+  /**
+   * The capacity of the internal array storage of the storek.
+   */
+  private int capacity;
+
+  /**
+   * The number of entries contained within the store.
+   */
+  private int size;
+
+  /**
+   * The IDs contained within the store.
+   */
+  private long[] ids;
+
+  /**
+   * The elements contained within the store.
+   */
+  private T[] elements;
+
+  /**
+   * Intialize a new store with the specified initial capacity.
+   *
+   * @param capacity The initial capacity of the store.
+   */
+  public ElementStore(final int capacity) {
+    this.capacity = capacity;
+
+    // Initialize the array storage
+    this.ids = new long[capacity];
+    this.elements = (T[]) new Element[capacity];
+  }
+
+  /**
+   * Initialize a new store with the default initial capacity.
+   */
+  public ElementStore() {
+    this(DEFAULT_CAPACITY);
+  }
 
   /**
    * Get the size of the element store.
@@ -36,7 +95,7 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
    * @return The size of the element store.
    */
   public int size() {
-    return this.store.size();
+    return this.size;
   }
 
   /**
@@ -45,7 +104,126 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
    * @return A boolean indicating whether or not the store is empty.
    */
   public boolean empty() {
-    return this.store.isEmpty();
+    return this.size == 0;
+  }
+
+  /**
+   * Compute the hash for the specified ID.
+   *
+   * @param id  The ID for which to compute a hash.
+   * @return    The computed hash.
+   */
+  public int hash(final long id) {
+    int t = Long.hashCode(id) & 0x7fffffff;
+
+    if (Math.log(this.capacity) < 26) {
+      t = t % PRIMES[(int) Math.log(this.capacity) + 5];
+    }
+
+    return (int) (t % this.capacity);
+  }
+
+  /**
+   * Return the index of the specified ID.
+   *
+   * @param id  The ID to look up the index of.
+   * @return    The index of the specified ID.
+   */
+  private int index(final long id) {
+    return this.quadraticProbe(id);
+  }
+
+  /**
+   * Linear probing algorithm for resolving hash collisions.
+   *
+   * @see <a href="http://en.wikipedia.org/wiki/Linear_probing">
+   *      http://en.wikipedia.org/wiki/Linear_probing</a>
+   *
+   * @param id  The ID to look up the index of.
+   * @return    The index of the specified ID.
+   */
+  private int linearProbe(final long id) {
+    int i = this.hash(id);
+
+    while (this.elements[i] != null) {
+      // If this is the element we're looking for, bail out.
+      if (this.ids[i] == id) {
+        break;
+      }
+
+      // Otherwise, check the next element.
+      i = (i + 1) % this.capacity;
+    }
+
+    return i;
+  }
+
+  /**
+   * Quadratic probing algorithm for resolving hash collisions.
+   *
+   * @see <a href="http://en.wikipedia.org/wiki/Quadratic_probing">
+   *      http://en.wikipedia.org/wiki/Quadratic_probing</a>
+   *
+   * @param id  The ID to look ip the index of.
+   * @return    The index of the specified ID.
+   */
+  private int quadraticProbe(final long id) {
+    int i = this.hash(id);
+    int step = 0;
+
+    while (this.elements[i] != null) {
+      // If this is the element we're looking for, bail out.
+      if (this.ids[i] == id) {
+        break;
+      }
+
+      // Otherwise, check the next element.
+      i = (i + step * step++) % this.capacity;
+    }
+
+    return i;
+  }
+
+  /**
+   * Double hashing algorithm for resolving hash collisions.
+   *
+   * @see <a href="http://en.wikipedia.org/wiki/Double_hashing">
+   *      http://en.wikipedia.org/wiki/Double_hashing</a>
+   *
+   * @param id  The ID to look ip the index of.
+   * @return    The index of the specified ID.
+   */
+  private int doubleHash(final long id) {
+    int i = this.hash(id);
+    int skip = 7 + (Long.hashCode(id) % 31);
+
+    while (this.elements[i] != null) {
+      i += skip;
+      i %= this.capacity;
+    }
+
+    return i;
+  }
+
+  /**
+   * Rehash the internal storage of the store.
+   *
+   * @param capacity The new capacity of the internal storage.
+   */
+  public void rehash(final int capacity) {
+    ElementStore<T> temp = new ElementStore<>(capacity);
+
+    for (int i = 0; i < this.capacity; i++) {
+      if (this.elements[i] != null) {
+        temp.put(this.ids[i], this.elements[i]);
+      }
+    }
+
+    this.ids = temp.ids;
+    this.elements = temp.elements;
+    this.capacity = temp.capacity;
+
+    temp = null;
   }
 
   /**
@@ -55,7 +233,7 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
    * @return    The element if found, otherwise null.
    */
   public T get(final long id) {
-    return this.store.get(id);
+    return this.elements[this.index(id)];
   }
 
   /**
@@ -66,7 +244,7 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
    *            the element with the specified ID.
    */
   public boolean contains(final long id) {
-    return this.store.containsKey(id);
+    return this.get(id) != null;
   }
 
   /**
@@ -77,7 +255,13 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
    *                contains the specified element.
    */
   public boolean contains(final T element) {
-    return this.store.containsValue(element);
+    for (T found: this.elements) {
+      if (element.equals(found)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**
@@ -88,10 +272,21 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
    */
   public void put(final long id, final T element) {
     if (element == null) {
+      this.remove(id);
       return;
     }
 
-    this.store.put(id, element);
+    // Rehash the internal storage if we've reached the upper threshold.
+    if (this.size >= this.capacity * UPPER_LOAD_FACTOR) {
+      this.rehash(this.capacity * 2);
+    }
+
+    int i = this.index(id);
+
+    this.ids[i] = id;
+    this.elements[i] = element;
+
+    this.size++;
   }
 
   /**
@@ -100,7 +295,21 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
    * @param id The ID of the element to remove.
    */
   public void remove(final long id) {
-    this.store.remove(id);
+    if (!this.contains(id)) {
+      return;
+    }
+
+    int i = this.index(id);
+
+    this.ids[i] = 0L;
+    this.elements[i] = null;
+
+    this.size--;
+
+    // Rehash the internal storage if we've reached the lower threshold.
+    if (this.size > 0 && this.size <= this.capacity * LOWER_LOAD_FACTOR) {
+      this.rehash(this.capacity / 2);
+    }
   }
 
   /**
@@ -108,7 +317,7 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
    *
    * @return An iterator over the elements of the store.
    */
-  public Iterator iterator() {
-    return this.store.values().iterator();
+  public Iterator<T> iterator() {
+    return Arrays.asList(this.elements).iterator();
   }
 }
