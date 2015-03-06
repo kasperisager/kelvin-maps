@@ -29,6 +29,27 @@ public abstract class Element<T extends Node> implements Serializable {
   private static final long serialVersionUID = 42;
 
   /**
+   * Comparator for comparing the drawing layer and order of two elements.
+   */
+  public static final Comparator<Element> COMPARATOR =
+    new Comparator<Element>() {
+    /**
+     * Compare two elements taking into account their drawing layer and
+     * drawing order.
+     *
+     * @param a The first element.
+     * @param b The second element.
+     * @return  A negative integer, zero, or a positive integer as the first
+     *          element is less than, equal to, or greater than the second
+     *          element.
+     */
+    @Override
+    public int compare(final Element a, final Element b) {
+      return Element.compare(a, b);
+    }
+  };
+
+  /**
    * The ID of the node.
    */
   private long id;
@@ -159,6 +180,33 @@ public abstract class Element<T extends Node> implements Serializable {
   public abstract T render();
 
   /**
+   * Compare two elements taking into account their drawing layer and drawing
+   * order.
+   *
+   * @param a The first element.
+   * @param b The second element.
+   * @return  A negative integer, zero, or a positive integer as the first
+   *          element is less than, equal to, or greater than the second
+   *          element.
+   */
+  public static final int compare(final Element a, final Element b) {
+    if (a == null && b == null) {
+      return 0;
+    }
+    else if (a == null) {
+      return -1;
+    }
+    else if (b == null) {
+      return 1;
+    }
+
+    return Integer.compare(
+      a.order().ordinal() + (Order.SIZE * a.layer()),
+      b.order().ordinal() + (Order.SIZE * b.layer())
+    );
+  }
+
+  /**
    * Enumerator describing the drawing order of different elements.
    *
    * The declaration order of the enumerator elements is what determines the
@@ -220,27 +268,6 @@ public abstract class Element<T extends Node> implements Serializable {
     public static final int SIZE = Order.values().length;
 
     /**
-     * Comparator for comparing the drawing layer and order of two elements.
-     */
-    public static final Comparator<Element> COMPARATOR =
-      new Comparator<Element>() {
-      /**
-       * Compare two elements taking into account their drawing layer and
-       * drawing order.
-       *
-       * @param a The first element.
-       * @param b The second element.
-       * @return  A negative integer, zero, or a positive integer as the first
-       *          element is less than, equal to, or greater than the second
-       *          element.
-       */
-      @Override
-      public int compare(final Element a, final Element b) {
-        return Element.Order.compare(a, b);
-      }
-    };
-
-    /**
      * Convert a key and value to an enumerator element.
      *
      * @param key   The "key" of the enumerator element.
@@ -267,33 +294,6 @@ public abstract class Element<T extends Node> implements Serializable {
           return null;
         }
       }
-    }
-
-    /**
-     * Compare two elements taking into account their drawing layer and drawing
-     * order.
-     *
-     * @param a The first element.
-     * @param b The second element.
-     * @return  A negative integer, zero, or a positive integer as the first
-     *          element is less than, equal to, or greater than the second
-     *          element.
-     */
-    public static final int compare(final Element a, final Element b) {
-      if (a == null && b == null) {
-        return 0;
-      }
-      else if (a == null) {
-        return -1;
-      }
-      else if (b == null) {
-        return 1;
-      }
-
-      return Integer.compare(
-        a.order().ordinal() + (Order.SIZE * a.layer()),
-        b.order().ordinal() + (Order.SIZE * b.layer())
-      );
     }
   }
 }

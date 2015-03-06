@@ -177,7 +177,7 @@ public final class ChartController {
           throw new RuntimeException(ex);
         }
 
-        Collections.sort(chart.elements(), Element.Order.COMPARATOR);
+        Collections.sort(chart.elements(), Element.COMPARATOR);
 
         // Schedule rendering of the chart nodes.
         Platform.runLater(() -> {
