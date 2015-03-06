@@ -36,16 +36,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.TextField;
 
-// Java FX event
-
 // Controls FX
 import org.controlsfx.control.PopOver;
 
 // FXML utilities
 import javafx.fxml.FXML;
 
-// Kelvin utilities
-import dk.itu.kelvin.ChartParser;
+// Parser
+import dk.itu.kelvin.parser.ChartParser;
 
 // Components
 import dk.itu.kelvin.component.Canvas;
