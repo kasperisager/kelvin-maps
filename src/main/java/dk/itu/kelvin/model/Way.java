@@ -28,6 +28,10 @@ public final class Way extends Element<Polyline> {
 
   /**
    * The JavaFX representation of the way.
+   *
+   * This field is transient as it is simply used for caching the rendered
+   * JavaFX scene graph node. We therefore don't want to store it when
+   * serializing the element.
    */
   private transient Polyline fx;
 

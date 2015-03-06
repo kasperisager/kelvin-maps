@@ -32,6 +32,10 @@ public final class Relation extends Element<Group> {
 
   /**
    * The JavaFX representation of the relation.
+   *
+   * This field is transient as it is simply used for caching the rendered
+   * JavaFX scene graph node. We therefore don't want to store it when
+   * serializing the element.
    */
   private transient Group fx;
 

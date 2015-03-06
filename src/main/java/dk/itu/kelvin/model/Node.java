@@ -19,14 +19,18 @@ public final class Node extends Element<Label> {
   private static final long serialVersionUID = 19;
 
   /**
-   * The JavaFX representation of the land.
+   * The JavaFX representation of the node.
+   *
+   * This field is transient as it is simply used for caching the rendered
+   * JavaFX scene graph node. We therefore don't want to store it when
+   * serializing the element.
    */
   private transient Label fx;
 
   /**
    * Cache the hash of the node.
    */
-  private int hash = 0;
+  private int hash;
 
   /**
    * X-coordinate of the node.
@@ -90,10 +94,10 @@ public final class Node extends Element<Label> {
 
     return (
       this.id() == node.id()
-      && this.x == node.x()
-      && this.y == node.y()
       && this.order() == node.order()
       && this.layer() == node.layer()
+      && this.x == node.x()
+      && this.y == node.y()
     );
   }
 
@@ -107,10 +111,10 @@ public final class Node extends Element<Label> {
     if (this.hash == 0) {
       long bits = 7L;
       bits = 31L * bits + this.id();
-      bits = 31L * bits + Double.doubleToLongBits(this.x);
-      bits = 31L * bits + Double.doubleToLongBits(this.y);
       bits = 31L * bits + (long) this.order().ordinal();
       bits = 31L * bits + (long) this.layer();
+      bits = 31L * bits + Double.doubleToLongBits(this.x);
+      bits = 31L * bits + Double.doubleToLongBits(this.y);
       this.hash = (int) (bits ^ (bits >> 32));
     }
 
