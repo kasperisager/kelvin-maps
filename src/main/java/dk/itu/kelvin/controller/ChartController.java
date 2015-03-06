@@ -162,7 +162,7 @@ public final class ChartController {
 
     this.compassArrow.getTransforms().add(this.compassTransform);
 
-    // Canvas canvas = this.canvas;
+    Canvas canvas = this.canvas;
     Chart chart = this.chart;
 
     Task task = new Task<Void>() {
