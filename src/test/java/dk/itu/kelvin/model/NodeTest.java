@@ -27,8 +27,8 @@ public final class NodeTest {
   public void testInitialization() {
     Node n1 = new Node(5, 15, 25);
     assertEquals(5, n1.id());
-    assertEquals(15, n1.getX(), 0);
-    assertEquals(25, n1.getY(), 0);
+    assertEquals(15, n1.x(), 0);
+    assertEquals(25, n1.y(), 0);
   }
 
   /**
