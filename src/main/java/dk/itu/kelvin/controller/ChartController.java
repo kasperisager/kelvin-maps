@@ -13,6 +13,7 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 
 // JavaFX scene utilities
+import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 
 // JavaFX layout
@@ -206,6 +207,8 @@ public final class ChartController {
     Button blind = new Button("High Contrast");
     Button poi = new Button("Points of Interest");
 
+    blind.setAlignment(Pos.BOTTOM_LEFT);
+    poi.setAlignment(Pos.BOTTOM_LEFT);
     blind.getStyleClass().add("config-button");
     poi.getStyleClass().add("config-button");
     blind.setPrefWidth(120);
