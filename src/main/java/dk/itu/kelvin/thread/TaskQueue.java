@@ -38,10 +38,12 @@ public final class TaskQueue {
   /**
    * Don't allow instantiation of the class.
    *
+   * <p>
    * Since the class only contains static fields and methods, we never want to
    * instantiate the class. We therefore define a private constructor so that
    * noone can create instances of the class other than the class itself.
    *
+   * <p>
    * NB: This does not make the class a singleton. In fact, there never exists
    * an instance of the class since not even the class instantiates itself.
    */
@@ -50,10 +52,28 @@ public final class TaskQueue {
   }
 
   /**
-   * Register a new task belonging to the specified group.
+   * Register new task(s) belonging to the specified group.
    *
-   * @param group The group that the task belongs to.
-   * @param tasks The tasks to perform.
+   * <p>
+   * Tasks are registered in the following way using lambda functions:
+   *
+   * <pre>
+   * TaskQueue.register("group1",
+   *   () -&gt; {
+   *     System.out.println("First task");
+   *   },
+   *   () -&gt; {
+   *     System.out.println("Second task");
+   *   },
+   *   // ...
+   * );
+   * </pre>
+   *
+   * <p>
+   * One or more tasks may be defined in a single {@code register()} call.
+   *
+   * @param group The group that the task(s) belongs to.
+   * @param tasks The task(s) to perform.
    */
   public static void register(
     final String group,
@@ -81,6 +101,15 @@ public final class TaskQueue {
 
   /**
    * Run the specified task on a separate thread.
+   *
+   * <p>
+   * Tasks can be run in the following way using lambda functions:
+   *
+   * <pre>
+   * TaskQueue.run(() -&gt; {
+   *   System.out.println("Task");
+   * });
+   * </pre>
    *
    * @param task The task to perform.
    */
