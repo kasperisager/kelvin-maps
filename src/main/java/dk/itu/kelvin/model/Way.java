@@ -59,7 +59,7 @@ public final class Way extends Element<Polyline> {
    */
   protected Node start() {
     if (this.nodes == null) {
-      this.nodes = new ArrayList<>();
+      return null;
     }
 
     return this.nodes.get(0);
@@ -72,7 +72,7 @@ public final class Way extends Element<Polyline> {
    */
   protected Node end() {
     if (this.nodes == null) {
-      this.nodes = new ArrayList<>();
+      return null;
     }
 
     return this.nodes.get(this.nodes.size() - 1);
@@ -84,7 +84,14 @@ public final class Way extends Element<Polyline> {
    * @return Boolean indicating whether or not the way is closed.
    */
   public boolean closed() {
-    return this.start().equals(this.end());
+    Node start = this.start();
+    Node end = this.end();
+
+    if (start == null || end == null) {
+      return false;
+    }
+
+    return start.equals(end);
   }
 
   /**
@@ -106,6 +113,13 @@ public final class Way extends Element<Polyline> {
    */
   public boolean startsIn(final Way way) {
     if (way == null) {
+      return false;
+    }
+
+    Node start = this.start();
+    Node end = this.end();
+
+    if (start == null || end == null) {
       return false;
     }
 
