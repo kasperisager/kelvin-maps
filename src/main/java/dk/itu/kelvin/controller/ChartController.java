@@ -46,8 +46,8 @@ import javafx.fxml.FXML;
 // Parser
 import dk.itu.kelvin.parser.ChartParser;
 
-// Components
-import dk.itu.kelvin.component.Canvas;
+// Layout
+import dk.itu.kelvin.layout.Canvas;
 
 // Models
 import dk.itu.kelvin.model.Address;

@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2015 The Authors.
  */
-package dk.itu.kelvin.component;
+package dk.itu.kelvin.layout;
 
 // JavaFX scene utilities
 import javafx.scene.CacheHint;
