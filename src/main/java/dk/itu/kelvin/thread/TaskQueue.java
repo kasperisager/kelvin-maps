@@ -53,10 +53,13 @@ public final class TaskQueue {
    * Register a new task belonging to the specified group.
    *
    * @param group The group that the task belongs to.
-   * @param task  The task to perform.
+   * @param tasks The tasks to perform.
    */
-  public static void register(final String group, final FunctionalTask task) {
-    if (group == null || task == null) {
+  public static void register(
+    final String group,
+    final FunctionalTask... tasks
+  ) {
+    if (group == null || tasks == null || tasks.length == 0) {
       return;
     }
 
@@ -69,7 +72,11 @@ public final class TaskQueue {
       TaskQueue.groups.put(group, new ConcurrentLinkedQueue<FunctionalTask>());
     }
 
-    TaskQueue.groups.get(group).add(task);
+    Queue<FunctionalTask> queue = TaskQueue.groups.get(group);
+
+    for (FunctionalTask task: tasks) {
+      queue.add(task);
+    }
   }
 
   /**
@@ -109,11 +116,11 @@ public final class TaskQueue {
     // main thread isn't blocked.
     TaskQueue.run(() -> {
       // Get the task queue for the specified group.
-      Queue<FunctionalTask> tasks = TaskQueue.groups.get(group);
+      Queue<FunctionalTask> queue = TaskQueue.groups.get(group);
 
       // While there are tasks left in the queue, get the next one and run it.
-      while (!tasks.isEmpty()) {
-        TaskQueue.run(tasks.poll());
+      while (!queue.isEmpty()) {
+        TaskQueue.run(queue.poll());
       }
 
       // Remove the group from the map of groups. No loitering!
