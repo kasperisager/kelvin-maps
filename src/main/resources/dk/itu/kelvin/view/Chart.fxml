@@ -9,6 +9,8 @@
 <!-- JavaFX controls -->
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.CheckBox?>
 
 <!-- JavaFX shapes -->
 <?import javafx.scene.shape.Circle?>
@@ -16,15 +18,15 @@
 <?import javafx.scene.shape.MoveTo?>
 <?import javafx.scene.shape.Path?>
 
-<!-- Controls -->
+<!-- JavaFX controls -->
 <?import javafx.scene.control.Tooltip?>
 
-<!-- Components -->
-<?import dk.itu.kelvin.component.Canvas?>
-
+<!-- JavaFX text -->
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.control.CheckBox?>
+
+<!-- Layout -->
+<?import dk.itu.kelvin.layout.Canvas?>
+
 <StackPane
   fx:controller="dk.itu.kelvin.controller.ChartController"
   xmlns:fx="http://javafx.com/fxml"
