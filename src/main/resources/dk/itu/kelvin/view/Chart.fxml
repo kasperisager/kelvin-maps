@@ -127,46 +127,46 @@
 
     <VBox styleClass="config-vbox" fx:id="checkboxVBox" prefWidth="166" maxWidth="166">
       <children>
-        <CheckBox text="Parking" styleClass="config-button"/>
+        <CheckBox text="Parking" styleClass="config-button" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Restaurant" styleClass="config-button"/>
+        <CheckBox text="Restaurant" styleClass="config-button" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Fast Food" styleClass="config-button"/>
+        <CheckBox text="Fast Food" styleClass="config-button" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Toilets" styleClass="config-button"/>
+        <CheckBox text="Toilets" styleClass="config-button" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Cafe" styleClass="config-button"/>
+        <CheckBox text="Cafe" styleClass="config-button" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Pub" styleClass="config-button"/>
+        <CheckBox text="Pub" styleClass="config-button" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Recycling" styleClass="config-button"/>
+        <CheckBox text="Recycling" styleClass="config-button" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Bar" styleClass="config-button"/>
+        <CheckBox text="Bar" styleClass="config-button" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Compressed Air" styleClass="config-button"/>
+        <CheckBox text="Compressed Air" styleClass="config-button" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Post Box" styleClass="config-button"/>
+        <CheckBox text="Post Box" styleClass="config-button" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Taxi" styleClass="config-button"/>
+        <CheckBox text="Taxi" styleClass="config-button" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="BBQ" styleClass="config-button"/>
+        <CheckBox text="BBQ" styleClass="config-button" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Solarium" styleClass="config-button"/>
+        <CheckBox text="Solarium" styleClass="config-button" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Telephone" styleClass="config-button"/>
+        <CheckBox text="Telephone" styleClass="config-button" prefWidth="200"/>
       </children>
     </VBox>
   </VBox>
