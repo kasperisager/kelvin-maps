@@ -50,9 +50,33 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
   };
 
   /**
-   * The capacity of the internal array storage of the storek.
+   * The capacity of the internal array storage of the store.
    */
   private int capacity;
+
+  /**
+   * The logarithm of the capacity.
+   *
+   * This is used for computing hashes and cached in a field to avoid overhead
+   * associated with computing the logarithm.
+   */
+  private int logCapacity;
+
+  /**
+   * The upper threshold of the internal storage of the store.
+   *
+   * This is cached in a field to avoid computing it every time a new element
+   * is added.
+   */
+  private int upperThreshold;
+
+  /**
+   * The lower threshold of the internal storage of the store.
+   *
+   * This is cached in a field to avoid computing it every time an element is
+   * removed.
+   */
+  private int lowerThreshold;
 
   /**
    * The number of entries contained within the store.
@@ -75,9 +99,10 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
    * @param capacity The initial capacity of the store.
    */
   public ElementStore(final int capacity) {
-    this.capacity = capacity;
+    // Set the initial capacity of the store.
+    this.capacity(capacity);
 
-    // Initialize the array storage
+    // Initialize the array storage.
     this.ids = new long[capacity];
     this.elements = (T[]) new Element[capacity];
   }
@@ -108,6 +133,25 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
   }
 
   /**
+   * Set the capacity of the store.
+   *
+   * Note: This method does not rehash the internal storage; it simply sets
+   * the `capacity` field and computes a bunch of stuff.
+   *
+   * @param capacity The capacity of the store.
+   */
+  private void capacity(final int capacity) {
+    this.capacity = capacity;
+
+    // Compute the logarithm of the capacity. This is used for computing hashes.
+    this.logCapacity = (int) Math.log(this.capacity);
+
+    // Compute the upper and lower thresholds of the internal storage capacity.
+    this.upperThreshold = (int) (this.capacity * UPPER_LOAD_FACTOR);
+    this.lowerThreshold = (int) (this.capacity * LOWER_LOAD_FACTOR);
+  }
+
+  /**
    * Compute the hash for the specified ID.
    *
    * @param id  The ID for which to compute a hash.
@@ -116,8 +160,8 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
   public int hash(final long id) {
     int t = Long.hashCode(id) & 0x7fffffff;
 
-    if (Math.log(this.capacity) < 26) {
-      t = t % PRIMES[(int) Math.log(this.capacity) + 5];
+    if (this.logCapacity < 26) {
+      t = t % PRIMES[this.logCapacity + 5];
     }
 
     return (int) (t % this.capacity);
@@ -195,7 +239,7 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
    */
   private int doubleHash(final long id) {
     int i = this.hash(id);
-    int skip = 7 + (Long.hashCode(id) % 31);
+    int skip = 1 + (Long.hashCode(id) % 31);
 
     while (this.elements[i] != null) {
       i += skip;
@@ -213,17 +257,20 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
   public void rehash(final int capacity) {
     ElementStore<T> temp = new ElementStore<>(capacity);
 
+    // For each of the entries in the current store, put them in the temporary
+    // store, effectively recomputing their hashes.
     for (int i = 0; i < this.capacity; i++) {
       if (this.elements[i] != null) {
         temp.put(this.ids[i], this.elements[i]);
       }
     }
 
+    // Point the entries of the current store to the entries of the temporary,
+    // rehashed store.
     this.ids = temp.ids;
     this.elements = temp.elements;
-    this.capacity = temp.capacity;
 
-    temp = null;
+    this.capacity(temp.capacity);
   }
 
   /**
@@ -277,7 +324,7 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
     }
 
     // Rehash the internal storage if we've reached the upper threshold.
-    if (this.size >= this.capacity * UPPER_LOAD_FACTOR) {
+    if (this.size >= this.upperThreshold) {
       this.rehash(this.capacity * 2);
     }
 
@@ -307,7 +354,7 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
     this.size--;
 
     // Rehash the internal storage if we've reached the lower threshold.
-    if (this.size > 0 && this.size <= this.capacity * LOWER_LOAD_FACTOR) {
+    if (this.size > 0 && this.size <= this.lowerThreshold) {
       this.rehash(this.capacity / 2);
     }
   }
