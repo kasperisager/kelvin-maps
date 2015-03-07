@@ -196,7 +196,7 @@
           </VBox>
 
           <VBox alignment="CENTER" styleClass="compass-reset">
-            <Button styleClass="compass-reset-button, icon" text="&#xf3d7;" onAction="#compassReset">
+            <Button styleClass="icon" text="&#xf3d7;" onAction="#compassReset">
               <tooltip>
                 <Tooltip text="Reset compass"/>
               </tooltip>
@@ -215,12 +215,12 @@
     fillWidth="false"
   >
     <children>
-      <Button text="&#xF218;" styleClass="button-zoom, icon" onAction="#zoomIn">
+      <Button text="&#xF218;" styleClass="icon" onAction="#zoomIn">
         <tooltip>
           <Tooltip text="Zoom in"/>
         </tooltip>
       </Button>
-      <Button text="&#xF209;" styleClass="button-zoom, icon" onAction="#zoomOut">
+      <Button text="&#xF209;" styleClass="icon" onAction="#zoomOut">
        <tooltip>
          <Tooltip text="Zoom out"/>
        </tooltip>

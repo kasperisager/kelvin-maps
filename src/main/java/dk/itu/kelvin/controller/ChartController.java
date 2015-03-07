@@ -208,8 +208,8 @@ public final class ChartController {
     Button blind = new Button("High Contrast");
     Button poi = new Button("Points of Interest");
 
-    blind.getStyleClass().add("hover-highlight");
-    poi.getStyleClass().add("hover-highlight");
+    blind.getStyleClass().add("dialog-menu");
+    poi.getStyleClass().add("dialog-menu");
     blind.setPrefWidth(120);
     poi.setPrefWidth(120);
     vbox.getChildren().addAll(blind, poi);
