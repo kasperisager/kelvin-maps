@@ -162,7 +162,7 @@ public final class ChartController {
     this.compassArrow.getTransforms().add(this.compassTransform);
 
     TaskQueue.run(() -> {
-      ChartParser parser = new ChartParser(chart);
+      ChartParser parser = new ChartParser(this.chart);
 
       try {
         parser.read(MAP_INPUT);
