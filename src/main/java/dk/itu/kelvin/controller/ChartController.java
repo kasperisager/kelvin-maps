@@ -13,7 +13,6 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 
 // JavaFX scene utilities
-import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 
 // JavaFX layout
