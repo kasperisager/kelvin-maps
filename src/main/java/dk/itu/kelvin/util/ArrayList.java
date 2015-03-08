@@ -16,6 +16,11 @@ import java.util.Iterator;
  */
 public class ArrayList<V> extends AbstractCollection<V> {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 47;
+
+  /**
    * Internal value storage.
    */
   private V[] values;

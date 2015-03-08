@@ -20,6 +20,11 @@ import java.util.Iterator;
  */
 public class HashTable<K, V> extends AbstractHashCollection<K, V> {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 55;
+
+  /**
    * Internal key storage.
    */
   private K[] keys;
@@ -32,7 +37,7 @@ public class HashTable<K, V> extends AbstractHashCollection<K, V> {
   /**
    * The hash collision resolver to use.
    */
-  private HashCollision<K> resolver = new QuadraticProbe<>();
+  private transient HashCollision<K> resolver = new QuadraticProbe<>();
 
   /**
    * Initialize a hash table with the specified initial capacity.
