@@ -1,8 +1,18 @@
-// ------------------------------------------------------------------------- //
-// # VARIABLES
-// ------------------------------------------------------------------------- //
+// -------------------------------------------------------------------------- //
+// # IMPORTS
+// -------------------------------------------------------------------------- //
 
-// Colors
+@import "imports/OSM";
+
+// -------------------------------------------------------------------------- //
+// # VARIABLES
+// -------------------------------------------------------------------------- //
+
+// Colors ------------------------------------------------------------------- //
+
+@color-black: #000;
+@color-white: #fff;
+
 @color-background: #248E23;
 
 @color-btn-highlight: #ece7e7;
@@ -11,115 +21,310 @@
 @color-btn-hover: #333;
 @color-btn-pressed: #000;
 
-// Fonts
-@font-icons: "ionicons";
+// Root --------------------------------------------------------------------- //
 
-// Font-size
-@size-button: 21px;
-@size-textfield: 16px;
-@size-menu: 13px;
+@fontFamily-base--root: Arial;
+@fontSize-base--root: 14px;
+@textFill-base--root: #333;
 
-// Effect
-@effect-general: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
+// Icons -------------------------------------------------------------------- //
 
-.high-contrast{
-  -fx-background-color: @color-background;
+@fontFamily-base--icons: "ionicons";
+
+// Sizing ------------------------------------------------------------------- //
+
+@borderRadius-base: 2px;
+
+// Inputs ------------------------------------------------------------------- //
+
+@padding-vertical--input: 10px;
+@padding-horizontal--input: 12px;
+@fontSize-base--input: @fontSize-base--root;
+@textFill-base--input: #666;
+@backgroundColor-base--input: @color-white;
+@borderRadius-base--input: @borderRadius-base;
+@effect-base--input: dropshadow(gaussian, rgba(0,0,0,0.25), 0, 0, 0, 1);
+
+// Text fields -------------------------------------------------------------- //
+
+@padding-base--textField: @padding-vertical--input @padding-horizontal--input @padding-vertical--input - 1px;
+@fontSize-base--textField: @fontSize-base--input;
+@textFill-base--textField: @textFill-base--input;
+@backgroundColor-base--textField: @backgroundColor-base--input;
+@borderRadius-base--textField: @borderRadius-base--input;
+@effect-base--textField: @effect-base--input;
+
+// Buttons ------------------------------------------------------------------ //
+
+@padding-base--button: @padding-vertical--input @padding-horizontal--input;
+@fontSize-base--button: @fontSize-base--input;
+@textFill-base--button: @textFill-base--input;
+@backgroundColor-base--button: @backgroundColor-base--input;
+@borderRadius-base--button: @borderRadius-base--input;
+@effect-base--button: @effect-base--input;
+
+// Hover
+@textFill-hover--button: #333;
+
+// Pressed
+@textFill-pressed--button: @color-black;
+
+// Popovers ----------------------------------------------------------------- //
+
+@backgroundColor-base--popover: @color-black;
+
+// Buttons
+@backgroundColor-hover--popoverButton: #eee;
+
+// Menus -------------------------------------------------------------------- //
+
+// Menu bar
+@padding-base--menuBar: 4px 10px;
+@backgroundColor-base--menuBar: @color-white;
+@borderColor-base--menuBar: #7791c1;
+@effect-base--menuBar: @effect-base--input;
+
+// Menu button
+@textFill-base--menuButton: #555;
+@textFill-hover--menuButton: #333;
+@textFill-showing--menuButton: #000;
+
+// Compass ------------------------------------------------------------------ //
+
+@padding-base--compass: 16px;
+
+// Compass arrow
+@fill-base--compassArrow: @color-white;
+@stroke-base--compassArrow: @color-white;
+@strokeLineJoin-base--compassArrow: round;
+@effect-base--compassArrow: @effect-base--input;
+
+// Compass disc
+@fill-base--compassDisc: none;
+@stroke-base--compassDisc: @stroke-base--compassArrow;
+@strokeWidth-base--compassDisc: 4px;
+@effect-base--compassDisc: @effect-base--compassArrow;
+
+// Configuration box -------------------------------------------------------- //
+
+@padding-base--configBox: 4px;
+@backgroundColor-base--configBox: @color-white;
+@borderRadius-base--configBox: @borderRadius-base;
+@effect-base--configBox: @effect-base--input;
+
+// Check boxes
+@padding-base--configBoxCheckBox: 4px;
+@borderRadius-base--configBoxCheckBox: @borderRadius-base;
+@backgroundColor-hover--configBoxCheckBox: #eee;
+
+// -------------------------------------------------------------------------- //
+// # STYLES
+// -------------------------------------------------------------------------- //
+
+// Root --------------------------------------------------------------------- //
+
+.root {
+  -fx-font-family: @fontFamily-base--root;
+  -fx-font-size: @fontSize-base--root;
+  -fx-text-fill: @textFill-base--root;
 }
+
+// Icons -------------------------------------------------------------------- //
 
 .icon {
-  -fx-font-family: @font-icons;
+  -fx-font-family: @fontFamily-base--icons;
 }
 
-// All buttons ---------------------------------------------- //
-.button, .toggle-button {
-  -fx-background-insets: none;
-  -fx-background-color: @color-btn-background;
-  -fx-cursor: hand;
-  -fx-font-size: @size-button;
-  -fx-background-radius: 2px;
-  -fx-text-fill: @color-btn-fill;
-  -fx-effect: @effect-general;
-  &:hover{
-    -fx-text-fill: @color-btn-hover;
+// Inputs ------------------------------------------------------------------- //
+
+.input-group {
+  .text-field,
+  .button,
+  .toggle-button {
+    -fx-background-radius: 0;
   }
-  &:pressed{
-    -fx-text-fill: @color-btn-pressed;
+
+  .text-field {
+    &.first {
+      -fx-background-radius:
+        @borderRadius-base--textField 0 0 @borderRadius-base--textField;
+    }
+
+    &.last {
+      -fx-background-radius:
+        0 @borderRadius-base--textField @borderRadius-base--textField 0;
+    }
   }
-}
 
-.buttons-zoom {
-  -fx-padding: 8px;
-  .button{
-    -fx-padding: 10px 12px;
-  }
-}
+  .button,
+  .toggle-button {
+    &.first {
+      -fx-background-radius:
+        @borderRadius-base--button 0 0 @borderRadius-base--button;
+    }
 
-.search-button{
-  -fx-background-radius: 0px 2px 2px 0px;
-}
-
-// ---------------------------------------------------------------------
-.address-input-wrapper {
-  -fx-padding: 8px;
-}
-
-.text-field{
-  -fx-effect: @effect-general;
-  -fx-background-color: #fff;
-  -fx-background-radius: 2 0 0 2;
-  -fx-margin: 0 0 5px 0;
-  -fx-background-insets: none;
-  -fx-font-size: @size-textfield;
-}
-
-.dialog-menu{
-  -fx-font-size: @size-menu;
-  &:hover{
-    -fx-background-color: @color-btn-highlight;
-  }
-}
-
-.menu:hover,.menu-item:hover{
-  -fx-cursor: hand;
-}
-
-// Compass Styling ---------------------------------------------- //
-.compass {
-  -fx-padding: 16px;
-}
-.compass-arrow{
-  -fx-fill: #fff;
-   -fx-stroke: #fff;
-   -fx-stroke-line-join: round;
-   -fx-effect: @effect-general;
- }
-.compass-disc {
-   -fx-fill: none;
-   -fx-stroke: #fff;
-   -fx-stroke-width: 4px;
-   -fx-effect: @effect-general;
- }
-.compass-reset{
-  -fx-padding: 10px 0 0 0;
-  .button{
-    -fx-padding: 5px 12px;
-    -fx-background-radius: 100%;
-  }
-}
-// -----------------------------------------------------------------
-
-.config-vbox {
-  -fx-effect: @effect-general;
-  -fx-background-radius: 2px;
-  -fx-background-color: #fff;
-  -fx-padding: 4px;
-  .check-box{
-    -fx-padding: 4px;
-    -fx-text-alignment: left;
-    &:hover{
-      -fx-background-color: @color-btn-highlight;
+    &.last {
+      -fx-background-radius:
+        0 @borderRadius-base--button @borderRadius-base--button 0;
     }
   }
 }
 
-@import "imports/OSM";
+// Text fields -------------------------------------------------------------- //
+
+.text-field {
+  -fx-skin: none;
+  -fx-padding: @padding-base--textField;
+  -fx-font-size: @fontSize-base--textField;
+  -fx-text-fill: @textFill-base--textField;
+  -fx-cursor: text;
+  -fx-background-color: @backgroundColor-base--textField;
+  -fx-background-insets: 0;
+  -fx-background-radius: @borderRadius-base--textField;
+  -fx-effect: @effect-base--textField;
+}
+
+// Buttons ------------------------------------------------------------------ //
+
+.button,
+.toggle-button {
+  -fx-skin: none;
+  -fx-padding: @padding-base--button;
+  -fx-font-size: @fontSize-base--button;
+  -fx-text-fill: @textFill-base--input;
+  -fx-cursor: hand;
+  -fx-background-color: @backgroundColor-base--button;
+  -fx-background-insets: 0;
+  -fx-background-radius: @borderRadius-base--button;
+  -fx-effect: @effect-base--button;
+
+  &:hover {
+    -fx-text-fill: @textFill-hover--button;
+  }
+
+  &:pressed {
+    -fx-text-fill: @textFill-pressed--button;
+  }
+}
+
+// Popovers ----------------------------------------------------------------- //
+
+.popover {
+  > .border {
+    -fx-stroke: none !important;
+    -fx-fill: #fff !important;
+  }
+
+  .content {
+    -fx-padding: 4px;
+  }
+
+  .button {
+    -fx-alignment: BASELINE_LEFT;
+    -fx-effect: none;
+
+    &:hover {
+      -fx-background-color: @backgroundColor-hover--popoverButton;
+    }
+  }
+}
+
+// Menus -------------------------------------------------------------------- //
+
+.menu-bar {
+  -fx-skin: none;
+  -fx-padding: @padding-base--menuBar;
+  -fx-background-color: @backgroundColor-base--menuBar;
+  -fx-background-insets: 0;
+  -fx-border-color: @borderColor-base--menuBar;
+  -fx-border-width: 0 0 1px;
+  -fx-effect: @effect-base--menuBar;
+
+  // Nested due to default specificity.
+  .menu-button {
+    -fx-text-fill: @textFill-base--menuButton;
+    -fx-background-radius: 2px;
+
+    &:hover,
+    &:focused,
+    &:showing {
+      -fx-cursor: hand;
+      -fx-background-color: #eee;
+    }
+
+    &:hover {
+      &,
+      .label {
+        -fx-text-fill: @textFill-hover--menuButton;
+      }
+    }
+
+    &:focused,
+    &:showing {
+      &,
+      .label {
+        -fx-text-fill: @textFill-showing--menuButton;
+      }
+    }
+  }
+}
+
+.menu-item {
+  &:hover {
+    -fx-cursor: hand;
+  }
+}
+
+// Compass ------------------------------------------------------------------ //
+
+.compass {
+  -fx-padding: @padding-base--compass;
+}
+
+.compass-arrow {
+  -fx-fill: @fill-base--compassArrow;
+  -fx-stroke: @stroke-base--compassArrow;
+  -fx-stroke-line-join: @strokeLineJoin-base--compassArrow;
+  -fx-effect: @effect-base--compassArrow;
+}
+
+.compass-disc {
+   -fx-fill: @fill-base--compassDisc;
+   -fx-stroke: @stroke-base--compassDisc;
+   -fx-stroke-width: @strokeWidth-base--compassDisc;
+   -fx-effect: @effect-base--compassDisc;
+}
+
+.compass-reset {
+  -fx-padding: 10px 0 0;
+
+  .button {
+    -fx-background-radius: 1000px;
+  }
+}
+
+// Configuration box -------------------------------------------------------- //
+
+.config-box {
+  -fx-padding: @padding-base--configBox;
+  -fx-background-color: @backgroundColor-base--configBox;
+  -fx-background-radius: @borderRadius-base--configBox;
+  -fx-effect: @effect-base--configBox;
+
+  .check-box {
+    -fx-padding: @padding-base--configBoxCheckBox;
+    -fx-text-alignment: left;
+    -fx-cursor: hand;
+    -fx-background-radius: @borderRadius-base--configBoxCheckBox;
+
+    &:hover {
+      -fx-background-color: @backgroundColor-hover--configBoxCheckBox;
+    }
+  }
+}
+
+// Utilities ---------------------------------------------------------------- //
+
+.u-padded {
+  -fx-padding: 10px;
+}
