@@ -157,8 +157,8 @@
     <VBox
       styleClass="config-box"
       fx:id="checkboxVBox"
-      prefWidth="166"
-      maxWidth="166"
+      prefWidth="150"
+      maxWidth="150"
     >
       <children>
         <CheckBox text="Parking" prefWidth="200"/>
