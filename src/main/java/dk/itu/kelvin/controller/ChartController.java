@@ -209,8 +209,8 @@ public final class ChartController {
 
     blind.setAlignment(Pos.BOTTOM_LEFT);
     poi.setAlignment(Pos.BOTTOM_LEFT);
-    blind.getStyleClass().add("config-button");
-    poi.getStyleClass().add("config-button");
+    blind.getStyleClass().add("dialog-menu");
+    poi.getStyleClass().add("dialog-menu");
     blind.setPrefWidth(120);
     poi.setPrefWidth(120);
     vbox.getChildren().addAll(blind, poi);

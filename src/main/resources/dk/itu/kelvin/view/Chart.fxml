@@ -129,46 +129,46 @@
 
     <VBox styleClass="config-vbox" fx:id="checkboxVBox" prefWidth="166" maxWidth="166">
       <children>
-        <CheckBox text="Parking" styleClass="config-button" prefWidth="200"/>
+        <CheckBox text="Parking" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Restaurant" styleClass="config-button" prefWidth="200"/>
+        <CheckBox text="Restaurant" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Fast Food" styleClass="config-button" prefWidth="200"/>
+        <CheckBox text="Fast Food" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Toilets" styleClass="config-button" prefWidth="200"/>
+        <CheckBox text="Toilets" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Cafe" styleClass="config-button" prefWidth="200"/>
+        <CheckBox text="Cafe" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Pub" styleClass="config-button" prefWidth="200"/>
+        <CheckBox text="Pub" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Recycling" styleClass="config-button" prefWidth="200"/>
+        <CheckBox text="Recycling" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Bar" styleClass="config-button" prefWidth="200"/>
+        <CheckBox text="Bar" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Compressed Air" styleClass="config-button" prefWidth="200"/>
+        <CheckBox text="Compressed Air" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Post Box" styleClass="config-button" prefWidth="200"/>
+        <CheckBox text="Post Box" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Taxi" styleClass="config-button" prefWidth="200"/>
+        <CheckBox text="Taxi" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="BBQ" styleClass="config-button" prefWidth="200"/>
+        <CheckBox text="BBQ" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Solarium" styleClass="config-button" prefWidth="200"/>
+        <CheckBox text="Solarium" prefWidth="200"/>
       </children>
       <children>
-        <CheckBox text="Telephone" styleClass="config-button" prefWidth="200"/>
+        <CheckBox text="Telephone" prefWidth="200"/>
       </children>
     </VBox>
   </VBox>
@@ -198,7 +198,7 @@
           </VBox>
 
           <VBox alignment="CENTER" styleClass="compass-reset">
-            <Button styleClass="compass-reset-button, icon" text="&#xf3d7;" onAction="#compassReset">
+            <Button styleClass="icon" text="&#xf3d7;" onAction="#compassReset">
               <tooltip>
                 <Tooltip text="Reset compass"/>
               </tooltip>
@@ -217,12 +217,12 @@
     fillWidth="false"
   >
     <children>
-      <Button text="&#xF218;" styleClass="button-zoom, icon" onAction="#zoomIn">
+      <Button text="&#xF218;" styleClass="icon" onAction="#zoomIn">
         <tooltip>
           <Tooltip text="Zoom in"/>
         </tooltip>
       </Button>
-      <Button text="&#xF209;" styleClass="button-zoom, icon" onAction="#zoomOut">
+      <Button text="&#xF209;" styleClass="icon" onAction="#zoomOut">
        <tooltip>
          <Tooltip text="Zoom out"/>
        </tooltip>
