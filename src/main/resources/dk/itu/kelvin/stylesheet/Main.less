@@ -76,6 +76,19 @@
 // Buttons
 @backgroundColor-hover--popoverButton: #eee;
 
+// Menus -------------------------------------------------------------------- //
+
+// Menu bar
+@padding-base--menuBar: 4px 10px;
+@backgroundColor-base--menuBar: @color-white;
+@borderColor-base--menuBar: #7791c1;
+@effect-base--menuBar: @effect-base--input;
+
+// Menu button
+@textFill-base--menuButton: #555;
+@textFill-hover--menuButton: #333;
+@textFill-showing--menuButton: #000;
+
 // Compass ------------------------------------------------------------------ //
 
 @padding-base--compass: 16px;
@@ -213,6 +226,52 @@
     &:hover {
       -fx-background-color: @backgroundColor-hover--popoverButton;
     }
+  }
+}
+
+// Menus -------------------------------------------------------------------- //
+
+.menu-bar {
+  -fx-skin: none;
+  -fx-padding: @padding-base--menuBar;
+  -fx-background-color: @backgroundColor-base--menuBar;
+  -fx-background-insets: 0;
+  -fx-border-color: @borderColor-base--menuBar;
+  -fx-border-width: 0 0 1px;
+  -fx-effect: @effect-base--menuBar;
+
+  // Nested due to default specificity.
+  .menu-button {
+    -fx-text-fill: @textFill-base--menuButton;
+    -fx-background-radius: 2px;
+
+    &:hover,
+    &:focused,
+    &:showing {
+      -fx-cursor: hand;
+      -fx-background-color: #eee;
+    }
+
+    &:hover {
+      &,
+      .label {
+        -fx-text-fill: @textFill-hover--menuButton;
+      }
+    }
+
+    &:focused,
+    &:showing {
+      &,
+      .label {
+        -fx-text-fill: @textFill-showing--menuButton;
+      }
+    }
+  }
+}
+
+.menu-item {
+  &:hover {
+    -fx-cursor: hand;
   }
 }
 
