@@ -202,17 +202,12 @@ public final class ChartController {
    */
   private void createPopOver() {
     VBox vbox = new VBox(2);
-    vbox.getStyleClass().add("config-vbox");
 
     Button blind = new Button("High Contrast");
     Button poi = new Button("Points of Interest");
 
-    blind.setAlignment(Pos.BOTTOM_LEFT);
-    poi.setAlignment(Pos.BOTTOM_LEFT);
-    blind.getStyleClass().add("dialog-menu");
-    poi.getStyleClass().add("dialog-menu");
-    blind.setPrefWidth(120);
-    poi.setPrefWidth(120);
+    blind.setPrefWidth(140);
+    poi.setPrefWidth(140);
     vbox.getChildren().addAll(blind, poi);
 
     blind.setOnAction((event) -> {
