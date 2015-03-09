@@ -6,11 +6,9 @@ package dk.itu.kelvin.util;
 /**
  * Hash collision resolver interface.
  *
- * @param <K> The type of keys to resolve collisions of.
- *
  * @version 1.0.0
  */
-public interface HashResolver<K> {
+public interface HashResolver {
   /**
    * Resolve hash collisions for primitive {@code int} keys.
    *
@@ -59,5 +57,5 @@ public interface HashResolver<K> {
    * @param keys  The list of keys to look through.
    * @return      The index of the specified key.
    */
-  int resolve(final int hash, final K key, final K[] keys);
+  int resolve(final int hash, final Object key, final Object[] keys);
 }

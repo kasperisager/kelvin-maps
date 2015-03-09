@@ -9,12 +9,9 @@ import java.io.Serializable;
 /**
  * Abstract collection class.
  *
- * @param <V> The type of values stored within the collection.
- *
  * @version 1.0.0
  */
-public abstract class AbstractCollection<V>
-  implements Iterable<V>, Serializable {
+public abstract class AbstractCollection implements Serializable {
   /**
    * Default initial capacity of the internal storage of the collection.
    */

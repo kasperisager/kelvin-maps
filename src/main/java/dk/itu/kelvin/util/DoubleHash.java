@@ -9,11 +9,9 @@ package dk.itu.kelvin.util;
  * @see <a href="http://en.wikipedia.org/wiki/Double_hashing">
  *      http://en.wikipedia.org/wiki/Double_hashing</a>
  *
- * @param <K> The type of keys to resolve collisions of.
- *
  * @version 1.0.0
  */
-public final class DoubleHash<K> implements HashResolver<K> {
+public final class DoubleHash implements HashResolver {
   /**
    * Compute a second hash used for the skipping step when probing.
    *
@@ -112,7 +110,7 @@ public final class DoubleHash<K> implements HashResolver<K> {
    * @param keys  The list of keys to look through.
    * @return      The index of the specified key.
    */
-  public int resolve(final int hash, final K key, final K[] keys) {
+  public int resolve(final int hash, final Object key, final Object[] keys) {
     int i = hash;
     int step = this.step(i);
 

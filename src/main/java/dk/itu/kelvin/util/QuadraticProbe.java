@@ -9,11 +9,9 @@ package dk.itu.kelvin.util;
  * @see <a href="http://en.wikipedia.org/wiki/Quadratic_probing">
  *      http://en.wikipedia.org/wiki/Quadratic_probing</a>
  *
- * @param <K> The type of keys to resolve collisions of.
- *
  * @version 1.0.0
  */
-public final class QuadraticProbe<K> implements HashResolver<K> {
+public final class QuadraticProbe implements HashResolver {
   /**
    * Calculate the next index to step through.
    *
@@ -126,7 +124,7 @@ public final class QuadraticProbe<K> implements HashResolver<K> {
    * @param keys  The list of keys to look through.
    * @return      The index of the specified key.
    */
-  public int resolve(final int hash, final K key, final K[] keys) {
+  public int resolve(final int hash, final Object key, final Object[] keys) {
     int i = hash;
     int step = 0;
 

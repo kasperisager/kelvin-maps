@@ -18,7 +18,7 @@ import java.util.Iterator;
  *
  * @version 1.0.0
  */
-public class HashTable<K, V> extends AbstractHashCollection<K, V> {
+public class HashTable<K, V> extends AbstractHashCollection {
   /**
    * UID for identifying serialized objects.
    */
@@ -37,7 +37,7 @@ public class HashTable<K, V> extends AbstractHashCollection<K, V> {
   /**
    * The hash collision resolver to use.
    */
-  private transient HashResolver<K> resolver = new QuadraticProbe<>();
+  private transient HashResolver resolver = new QuadraticProbe();
 
   /**
    * Initialize a hash table with the specified initial capacity.
@@ -56,6 +56,24 @@ public class HashTable<K, V> extends AbstractHashCollection<K, V> {
    */
   public HashTable() {
     this(16);
+  }
+
+  /**
+   * Access the internal key storage of the table.
+   *
+   * @return The internal key storage of the table.
+   */
+  public final K[] keys() {
+    return this.keys;
+  }
+
+  /**
+   * Access the internal value storage of the table.
+   *
+   * @return The internal value storage of the table.
+   */
+  public final V[] values() {
+    return this.values;
   }
 
   /**
@@ -167,14 +185,5 @@ public class HashTable<K, V> extends AbstractHashCollection<K, V> {
     this.keys[i] = null;
     this.values[i] = null;
     this.shrink();
-  }
-
-  /**
-   * Iterate over the values of the table.
-   *
-   * @return An iterator over the values of the table.
-   */
-  public final Iterator<V> iterator() {
-    return Arrays.asList(this.values).iterator();
   }
 }

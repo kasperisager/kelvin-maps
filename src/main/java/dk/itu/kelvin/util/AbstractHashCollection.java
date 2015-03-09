@@ -6,13 +6,9 @@ package dk.itu.kelvin.util;
 /**
  * Hash table class.
  *
- * @param <K> The type of keys stored within the table.
- * @param <V> The type of values stored within the table.
- *
  * @version 1.0.0
  */
-public abstract class AbstractHashCollection<K, V>
-  extends AbstractCollection<V> {
+public abstract class AbstractHashCollection extends AbstractCollection {
   /**
    * Primes to use for hashing keys.
    */
@@ -90,7 +86,7 @@ public abstract class AbstractHashCollection<K, V>
    * @param key The key for which to compute a hash.
    * @return    The computed hash.
    */
-  protected final int hash(final K key) {
+  protected final int hash(final Object key) {
     return this.hash(key.hashCode());
   }
 }
