@@ -52,6 +52,10 @@ import dk.itu.kelvin.layout.Canvas;
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Chart;
 import dk.itu.kelvin.model.Element;
+import dk.itu.kelvin.model.Node;
+
+// Stores
+import dk.itu.kelvin.store.AddressStore;
 
 /**
  * Chart controller class.
@@ -544,7 +548,10 @@ public final class ChartController {
   @FXML
   private void findAddress() {
     Address startAddress = Address.parse(this.addressFrom.getText());
+    Node position = AddressStore.findAddress(startAddress);
+    // centerView(position.x(), position.y());
     
+    System.out.println("X: " + position.x() + "Y: " + position.y());
     System.out.println(startAddress);
   }
 

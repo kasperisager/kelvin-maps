@@ -31,6 +31,9 @@ import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Address;
 
+// Stores
+import dk.itu.kelvin.store.AddressStore;
+
 /**
  * Parser class.
  *
@@ -372,6 +375,7 @@ public final class ChartParser {
     this.chart.elements(this.ways.values());
     this.chart.elements(this.relations.values());
     this.chart.elements(this.land.coastlines());
+    new AddressStore(this.addresses);
   }
 
   /**
