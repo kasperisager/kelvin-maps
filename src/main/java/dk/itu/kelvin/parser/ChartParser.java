@@ -26,6 +26,7 @@ import dk.itu.kelvin.model.Land;
 import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.Way;
+import dk.itu.kelvin.model.Address;
 
 /**
  * Parser class.
@@ -54,6 +55,11 @@ public final class ChartParser {
   private Map<Long, Relation> relations = new HashMap<>();
 
   /**
+   * Map of all Address objects and their related Node objects in the OSM file.
+   */
+  private Map<Address, Node> addresses = new HashMap<>();
+
+  /**
    * Land element.
    */
   private Land land = new Land();
@@ -62,6 +68,11 @@ public final class ChartParser {
    * The currently active element.
    */
   private Element element;
+
+  /**
+   * The currently active address object.
+   */
+  private Address address;
 
   /**
    * Initialize a new chart parser.
@@ -194,6 +205,11 @@ public final class ChartParser {
 
     this.nodes.put(node.id(), node);
 
+    if (this.address != null) {
+      this.addresses.put(this.address, node);
+      this.address = null;
+    }
+
     this.clearElement();
   }
 
@@ -269,6 +285,22 @@ public final class ChartParser {
     switch (k) {
       case "layer":
         this.element.layer(Integer.parseInt(v));
+        break;
+      case "addr:city":
+        if(address == null) this.address = new Address();
+        this.address.city(v);
+        break;
+      case "addr:housenumber":
+        if(address == null) this.address = new Address();
+        this.address.number(v);
+        break;
+      case "addr:postcode":
+        if(address == null) this.address = new Address();
+        this.address.postcode(v);
+        break;
+      case "addr:street":
+        if(address == null) this.address = new Address();
+        this.address.street(v);
         break;
       default:
         this.element.tag(k, v);

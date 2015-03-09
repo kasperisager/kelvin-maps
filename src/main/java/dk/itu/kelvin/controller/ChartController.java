@@ -544,6 +544,7 @@ public final class ChartController {
   @FXML
   private void findAddress() {
     Address startAddress = Address.parse(this.addressFrom.getText());
+    
     System.out.println(startAddress);
   }
 
