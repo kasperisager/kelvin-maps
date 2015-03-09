@@ -13,7 +13,7 @@ package dk.itu.kelvin.util;
  *
  * @version 1.0.0
  */
-public final class DoubleHash<K> implements HashCollision<K> {
+public final class DoubleHash<K> implements HashResolver<K> {
   /**
    * Compute a second hash used for the skipping step when probing.
    *

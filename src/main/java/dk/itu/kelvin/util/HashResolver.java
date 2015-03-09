@@ -4,13 +4,13 @@
 package dk.itu.kelvin.util;
 
 /**
- * Hash collision interface.
+ * Hash collision resolver interface.
  *
  * @param <K> The type of keys to resolve collisions of.
  *
  * @version 1.0.0
  */
-public interface HashCollision<K> {
+public interface HashResolver<K> {
   /**
    * Resolve hash collisions for primitive {@code int} keys.
    *

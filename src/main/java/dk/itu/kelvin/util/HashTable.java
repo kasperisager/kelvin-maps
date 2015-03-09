@@ -37,7 +37,7 @@ public class HashTable<K, V> extends AbstractHashCollection<K, V> {
   /**
    * The hash collision resolver to use.
    */
-  private transient HashCollision<K> resolver = new QuadraticProbe<>();
+  private transient HashResolver<K> resolver = new QuadraticProbe<>();
 
   /**
    * Initialize a hash table with the specified initial capacity.

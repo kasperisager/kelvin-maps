@@ -13,7 +13,7 @@ package dk.itu.kelvin.util;
  *
  * @version 1.0.0
  */
-public final class LinearProbe<K> implements HashCollision<K> {
+public final class LinearProbe<K> implements HashResolver<K> {
   /**
    * Calculate the next index to step through.
    *
