@@ -43,8 +43,7 @@ public final class QuadraticProbe<K> implements HashResolver<K> {
         break;
       }
 
-      i = this.step(i, keys.length, step);
-      step++;
+      i = this.step(i, keys.length, step++);
     }
 
     return i;
@@ -67,8 +66,7 @@ public final class QuadraticProbe<K> implements HashResolver<K> {
         break;
       }
 
-      i = this.step(i, keys.length, step);
-      step++;
+      i = this.step(i, keys.length, step++);
     }
 
     return i;
@@ -91,8 +89,7 @@ public final class QuadraticProbe<K> implements HashResolver<K> {
         break;
       }
 
-      i = this.step(i, keys.length, step);
-      step++;
+      i = this.step(i, keys.length, step++);
     }
 
     return i;
@@ -115,8 +112,7 @@ public final class QuadraticProbe<K> implements HashResolver<K> {
         break;
       }
 
-      i = this.step(i, keys.length, step);
-      step++;
+      i = this.step(i, keys.length, step++);
     }
 
     return i;
@@ -139,8 +135,7 @@ public final class QuadraticProbe<K> implements HashResolver<K> {
         break;
       }
 
-      i = this.step(i, keys.length, step);
-      step++;
+      i = this.step(i, keys.length, step++);
     }
 
     return i;
