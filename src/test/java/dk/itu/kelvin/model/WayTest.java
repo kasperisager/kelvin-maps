@@ -61,9 +61,9 @@ public final class WayTest {
     // < 0 first object's order is smaller than the second obejct's order.
     // 0 if there are equal.
     // and > 0 if first is larger than second.
-    assertTrue(Element.Order.compare(w1, w3) < 0);
-    assertTrue(Element.Order.compare(w4, w2) > 0);
-    assertTrue(Element.Order.compare(w2, w3) == 0);
+    assertTrue(Element.compare(w1, w3) < 0);
+    assertTrue(Element.compare(w4, w2) > 0);
+    assertTrue(Element.compare(w2, w3) == 0);
 
   }
 
@@ -84,10 +84,10 @@ public final class WayTest {
     Way w4 = new Way(65338049);
     w4.layer(2);
 
-    assertTrue(Element.Order.compare(w1, w2) < 0);
-    assertTrue(Element.Order.compare(w1, w3) < 0);
-    assertTrue(Element.Order.compare(w3, w2) > 0);
-    assertTrue(Element.Order.compare(w3, w4) == 0);
+    assertTrue(Element.compare(w1, w2) < 0);
+    assertTrue(Element.compare(w1, w3) < 0);
+    assertTrue(Element.compare(w3, w2) > 0);
+    assertTrue(Element.compare(w3, w4) == 0);
 
     Way n5 = new Way(35338049);
     n5.order(Element.Order.HIGHWAY);
@@ -105,8 +105,8 @@ public final class WayTest {
     n8.order(Element.Order.HIGHWAY_MOTORWAY);
     n8.layer(-2);
 
-    assertTrue(Element.Order.compare(n5, n6) < 0);
-    assertTrue(Element.Order.compare(n7, n8) == 0);
+    assertTrue(Element.compare(n5, n6) < 0);
+    assertTrue(Element.compare(n7, n8) == 0);
 
   }
 

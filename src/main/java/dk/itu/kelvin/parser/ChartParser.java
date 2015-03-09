@@ -18,6 +18,9 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+// Storage
+import dk.itu.kelvin.store.ElementStore;
+
 // Models
 import dk.itu.kelvin.model.BoundingBox;
 import dk.itu.kelvin.model.Chart;
@@ -40,9 +43,9 @@ public final class ChartParser {
   private Chart chart;
 
   /**
-   * Map node IDs to nodes.
+   * Store nodes.
    */
-  private Map<Long, Node> nodes = new HashMap<>();
+  private ElementStore<Node> nodes = new ElementStore<>();
 
   /**
    * Map way IDs to ways.
