@@ -55,24 +55,6 @@ public class HashTable<K, V> extends AbstractHashCollection {
   }
 
   /**
-   * Access the internal key storage of the table.
-   *
-   * @return The internal key storage of the table.
-   */
-  public final K[] keys() {
-    return this.keys;
-  }
-
-  /**
-   * Access the internal value storage of the table.
-   *
-   * @return The internal value storage of the table.
-   */
-  public final V[] values() {
-    return this.values;
-  }
-
-  /**
    * Resize the internal storage of the table to the specified capacity.
    *
    * @param capacity The new capacity of the internal storage of the table.
