@@ -1,14 +1,4 @@
 /**
- * Kelvin Maps is a mapping application for visualising and interacting with
- * OpenStreetMap data.
- *
- * <p>
- * It was written by Hjalte a Trødni, Mathias Grundtvig Andreasen, Niklas Pelle
- * Michelsen, Sebastian Molding Bork, and Kasper Kronborg Isager as our first-
- * year project at the <a href="http://itu.dk">IT University of Copenhagen</a>.
- * If all else fails, we have at least succeeded in increasing the GDP of
- * Colombia given our aggressive coffee consumption while writing this thing.
- *
  * <p>
  * Copyright &copy; 2015 The Authors.
  *
@@ -33,4 +23,4 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-package dk.itu.kelvin;
+package dk.itu.kelvin.parser;
