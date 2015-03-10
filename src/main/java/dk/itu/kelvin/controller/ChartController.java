@@ -9,9 +9,6 @@ import java.util.Collections;
 // JavaFX application utilities
 import javafx.application.Platform;
 
-// JavaFX concurrency utilities
-import javafx.concurrent.Task;
-
 // JavaFX scene utilities
 import javafx.scene.CacheHint;
 
@@ -44,6 +41,9 @@ import javafx.fxml.FXML;
 
 // Parser
 import dk.itu.kelvin.parser.ChartParser;
+
+// Threading
+import dk.itu.kelvin.thread.TaskQueue;
 
 // Layout
 import dk.itu.kelvin.layout.Canvas;
@@ -169,41 +169,31 @@ public final class ChartController {
 
     this.compassArrow.getTransforms().add(this.compassTransform);
 
-    Canvas canvas = this.canvas;
-    Chart chart = this.chart;
+    TaskQueue.run(() -> {
+      ChartParser parser = new ChartParser(this.chart);
 
-    Task task = new Task<Void>() {
-      @Override
-      public Void call() {
-        ChartParser parser = new ChartParser(chart);
-
-        try {
-          parser.read(MAP_INPUT);
-        }
-        catch (Exception ex) {
-          throw new RuntimeException(ex);
-        }
-
-        //Get map of all addresses from parser.
-        addresses = parser.addresses();
-
-        Collections.sort(chart.elements(), Element.COMPARATOR);
-
-        // Schedule rendering of the chart nodes.
-        Platform.runLater(() -> {
-          // canvas.add(chart.nodes());
-
-          canvas.pan(
-            -chart.bounds().getMinX(),
-            -chart.bounds().getMaxY()
-          );
-        });
-
-        return null;
+      try {
+        parser.read(MAP_INPUT);
       }
-    };
+      catch (Exception ex) {
+        throw new RuntimeException(ex);
+      }
 
-    new Thread(task).start();
+      Collections.sort(this.chart.elements(), Element.COMPARATOR);
+
+      //Get map of all addresses from parser.
+      addresses = parser.addresses();
+
+      // Schedule rendering of the chart nodes.
+      Platform.runLater(() -> {
+        // this.canvas.add(chart.nodes());
+
+        this.canvas.pan(
+          -this.chart.bounds().getMinX(),
+          -this.chart.bounds().getMaxY()
+        );
+      });
+    });
 
     this.createPopOver();
 

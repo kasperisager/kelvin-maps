@@ -29,7 +29,7 @@ public final class WayTest {
     // Test that a tag is recognized and added to the Way object.
     Way w3 = new Way(25338049);
     w3.tag("building", null);
-    //assertEquals(1, w3.tags().size());
+    assertEquals(1, w3.tags().size());
     assertTrue(w3.tags().containsKey("building"));
 
     // Test that key and value type tags
