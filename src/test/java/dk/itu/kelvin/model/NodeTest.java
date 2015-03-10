@@ -27,8 +27,8 @@ public final class NodeTest {
   public void testInitialization() {
     Node n1 = new Node(5, 15, 25);
     assertEquals(5, n1.id());
-    assertEquals(15, n1.getX(), 0);
-    assertEquals(25, n1.getY(), 0);
+    assertEquals(15, n1.x(), 0);
+    assertEquals(25, n1.y(), 0);
   }
 
   /**
@@ -86,9 +86,9 @@ public final class NodeTest {
     // < 0 first object's order is smaller than the second obejct's order.
     // 0 if there are equal.
     // and > 0 if first is larger than second.
-    assertTrue(Element.Order.compare(n1, n3) < 0);
-    assertTrue(Element.Order.compare(n4, n2) > 0);
-    assertTrue(Element.Order.compare(n2, n3) == 0);
+    assertTrue(Element.compare(n1, n3) < 0);
+    assertTrue(Element.compare(n4, n2) > 0);
+    assertTrue(Element.compare(n2, n3) == 0);
 
   }
 
@@ -109,10 +109,10 @@ public final class NodeTest {
     Node n4 = new Node(4, 4, 4);
     n4.layer(2);
 
-    assertTrue(Element.Order.compare(n1, n2) < 0);
-    assertTrue(Element.Order.compare(n1, n3) < 0);
-    assertTrue(Element.Order.compare(n3, n2) > 0);
-    assertTrue(Element.Order.compare(n3, n4) == 0);
+    assertTrue(Element.compare(n1, n2) < 0);
+    assertTrue(Element.compare(n1, n3) < 0);
+    assertTrue(Element.compare(n3, n2) > 0);
+    assertTrue(Element.compare(n3, n4) == 0);
 
     Node n5 = new Node(4, 4, 4);
     n5.order(Element.Order.HIGHWAY);
@@ -130,8 +130,8 @@ public final class NodeTest {
     n8.order(Element.Order.HIGHWAY_MOTORWAY);
     n8.layer(-2);
 
-    assertTrue(Element.Order.compare(n5, n6) < 0);
-    assertTrue(Element.Order.compare(n7, n8) == 0);
+    assertTrue(Element.compare(n5, n6) < 0);
+    assertTrue(Element.compare(n7, n8) == 0);
 
   }
   /**
