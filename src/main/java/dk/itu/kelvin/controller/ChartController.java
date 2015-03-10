@@ -52,6 +52,10 @@ import dk.itu.kelvin.layout.Canvas;
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Chart;
 import dk.itu.kelvin.model.Element;
+import dk.itu.kelvin.model.Node;
+
+// Stores
+import dk.itu.kelvin.store.AddressStore;
 
 /**
  * Chart controller class.
@@ -108,6 +112,11 @@ public final class ChartController {
    * The Chart model instance.
    */
   private Chart chart = new Chart();
+
+  /**
+   * The addresses map from the parser.
+   */
+  private AddressStore addresses;
 
   /**
    * PopOver for the config menu.
@@ -172,6 +181,9 @@ public final class ChartController {
 
       Collections.sort(this.chart.elements(), Element.COMPARATOR);
 
+      //Get map of all addresses from parser.
+      this.addresses = parser.addresses();
+
       // Schedule rendering of the chart nodes.
       Platform.runLater(() -> {
         // this.canvas.add(chart.nodes());
@@ -184,6 +196,8 @@ public final class ChartController {
     });
 
     this.createPopOver();
+
+    Platform.runLater(() -> this.addressFrom.requestFocus());
   }
 
   /**
@@ -534,7 +548,10 @@ public final class ChartController {
   @FXML
   private void findAddress() {
     Address startAddress = Address.parse(this.addressFrom.getText());
-    System.out.println(startAddress);
+    Node position = this.addresses.find(startAddress);
+    // centerView(position.x(), position.y());
+
+    System.out.println("X: " + position.x() + " " + "Y: " + position.y());
   }
 
   /**
@@ -544,8 +561,13 @@ public final class ChartController {
   private void findRoute() {
     Address startAddress = Address.parse(this.addressFrom.getText());
     Address endAddress = Address.parse(this.addressTo.getText());
-    System.out.println(startAddress);
-    System.out.println(endAddress);
+    Node startPosition = this.addresses.find(startAddress);
+    Node endPosition = this.addresses.find(endAddress);
+
+    System.out.println("X: " + startPosition.x() + " " + "Y: "
+      + startPosition.y());
+    System.out.println("X: " + endPosition.x() + " " + "Y: "
+      + endPosition.y());
   }
 
   /**
