@@ -3,6 +3,8 @@
  */
 package dk.itu.kelvin.controller;
 
+import java.util.ArrayList;
+
 // General utilities
 import java.util.Collections;
 
@@ -252,8 +254,14 @@ public final class ChartController {
   }
 
   public void autoComplete() {
-    TextFields.bindAutoCompletion(addressFrom, addresses);
-    TextFields.bindAutoCompletion(addressTo, addresses);
+    ArrayList l = new ArrayList<String>();
+
+    for (Address a : addresses.keySet()){
+      l.add(a.toString());
+    }
+
+    TextFields.bindAutoCompletion(addressFrom, l);
+    TextFields.bindAutoCompletion(addressTo, l);
   }
 
   /**

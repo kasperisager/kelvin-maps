@@ -449,4 +449,9 @@ public final class Address {
 
     return address;
   }
+
+  @Override
+  public String toString() {
+    return this.street + " " + this.number + ", " + this.postcode + " " + this.city;
+  }
 }
