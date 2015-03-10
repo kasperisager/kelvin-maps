@@ -95,6 +95,11 @@ public final class Address {
   + "$";
 
   /**
+   * Cache the hash of the address.
+   */
+  private int hash;
+
+  /**
    * The street of the address.
    */
   private String street;
@@ -289,6 +294,77 @@ public final class Address {
     }
 
     return string.replaceAll("\\.|\\-|,", "").trim();
+  }
+
+  /**
+   * Check if the current Node equals the specified object.
+   *
+   * @param object  The reference object with which to compare.
+   * @return        Boolean indicating whether or not the Node is equal to the
+   *                specified object.
+   */
+  @Override
+  public boolean equals(final Object object) {
+    if (object == null || !(object instanceof Node)) {
+      return false;
+    }
+
+    if (this == object) {
+      return true;
+    }
+
+    Address address = (Address) object;
+
+    return (
+      (
+        // Testing whether the objects strictly equal each other.
+        // Specifically if both objects are null.
+        this.city == address.city
+        // Or testing if the values are equal.
+        || (this.city != null && this.city.equals(address.city))
+      )
+      && (
+        this.number == address.number
+        || (this.number != null && this.number.equals(address.number))
+      )
+      && (
+        this.floor == address.floor
+        || (this.floor != null && this.floor.equals(address.floor))
+      )
+      && (
+        this.door == address.door
+        || (this.door != null && this.door.equals(address.door))
+      )
+      && (
+        this.postcode == address.postcode
+          || (this.postcode != null && this.postcode.equals(address.postcode))
+      )
+      && (
+        this.street == address.street
+          || (this.street != null && this.street.equals(address.street))
+      )
+    );
+  }
+
+  /**
+   * Compute the hashcode of the Node.
+   *
+   * @return The computed hashcode of the Node.
+   */
+  @Override
+  public int hashCode() {
+    if (this.hash == 0) {
+      long bits = 7L;
+      bits = 31L * bits + ((this.city != null) ? this.city.hashCode() : 0);
+      bits = 31L * bits + ((this.number != null) ? this.number.hashCode() : 0);
+      bits = 31L * bits + ((this.floor != null) ? this.floor.hashCode() : 0);
+      bits = 31L * bits + ((this.door != null) ? this.door.hashCode() : 0);
+      bits = 31L * bits + ((this.postcode != null) ? this.postcode.hashCode() : 0);
+      bits = 31L * bits + ((this.street != null) ? this.street.hashCode() : 0);
+      this.hash = (int) (bits ^ (bits >> 32));
+    }
+
+    return this.hash;
   }
 
   /**

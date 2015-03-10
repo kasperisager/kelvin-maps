@@ -11,6 +11,7 @@ import java.util.Map;
 import java.net.URL;
 
 // SAX utilities
+import dk.itu.kelvin.controller.ChartController;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -51,6 +52,11 @@ public final class ChartParser {
   private ElementStore<Node> nodes = new ElementStore<>();
 
   /**
+   *
+   */
+  private AddressStore addresses = new AddressStore();
+
+  /**
    * Map way IDs to ways.
    */
   private Map<Long, Way> ways = new HashMap<>();
@@ -59,11 +65,6 @@ public final class ChartParser {
    * Map relation IDs to relations.
    */
   private Map<Long, Relation> relations = new HashMap<>();
-
-  /**
-   * Map of all Address objects and their related Node objects in the OSM file.
-   */
-  private Map<Address, Node> addresses = new HashMap<>();
 
   /**
    * Land element.
@@ -87,6 +88,13 @@ public final class ChartParser {
    */
   public ChartParser(final Chart chart) {
     this.chart = chart;
+  }
+
+  /**
+   * Get the Addressstore field
+   */
+  public AddressStore addresses() {
+    return this.addresses;
   }
 
   /**
@@ -375,7 +383,6 @@ public final class ChartParser {
     this.chart.elements(this.ways.values());
     this.chart.elements(this.relations.values());
     this.chart.elements(this.land.coastlines());
-    new AddressStore(this.addresses);
   }
 
   /**

@@ -4,7 +4,7 @@
 package dk.itu.kelvin.store;
 
 // General utilities
-import java.util.Map;
+import java.util.HashMap;
 
 // Models
 import dk.itu.kelvin.model.Node;
@@ -13,22 +13,12 @@ import dk.itu.kelvin.model.Address;
 /**
  * A class to store all addresses from the OSM file.
  */
-public class AddressStore {
-
-  private Map<Address, Node> addresses;
-
-  /**
-   *  Constructor taking in a HashMap with Address and Node objects.
-   * @param addresses The list of all addresses.
-   */
-  public AddressStore(Map<Address, Node> addresses) {
-    this.addresses = addresses;
-  }
+public class AddressStore extends HashMap<Address, Node>{
 
   /**
    * Sort the map for faster searches.
    */
-  public void sortAddresses() {
+  public void sort() {
     // sort the map.
   }
 
@@ -37,12 +27,16 @@ public class AddressStore {
    * @param a the address to find.
    * @return the node related to the found address.
    */
-  public Node findAddress(Address a) {
-    if (a == null) return null;
+  public Node find(Address a) {
+    if (a == null) {
+      return null;
+    }
 
-    Node node = this.addresses.get(a);
+    Node node = this.get(a);
+    if (node == null) {
+      return null;
+    }
 
-    if (node == null) return null;
     System.out.println(node.x() + node.y());
     return node;
   }

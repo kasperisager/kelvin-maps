@@ -114,6 +114,11 @@ public final class ChartController {
   private Chart chart = new Chart();
 
   /**
+   * The addresses map from the parser.
+   */
+  private AddressStore addresses;
+
+  /**
    * PopOver for the config menu.
    */
   private PopOver popOver;
@@ -178,6 +183,9 @@ public final class ChartController {
         catch (Exception ex) {
           throw new RuntimeException(ex);
         }
+
+        //Get map of all addresses from parser.
+        addresses = parser.addresses();
 
         Collections.sort(chart.elements(), Element.COMPARATOR);
 
@@ -548,10 +556,10 @@ public final class ChartController {
   @FXML
   private void findAddress() {
     Address startAddress = Address.parse(this.addressFrom.getText());
-    Node position = AddressStore.findAddress(startAddress);
+    Node position = addresses.find(startAddress);
     // centerView(position.x(), position.y());
-    
-    System.out.println("X: " + position.x() + "Y: " + position.y());
+
+    System.out.println("X: " + position);
     System.out.println(startAddress);
   }
 
