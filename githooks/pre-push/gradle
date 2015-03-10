@@ -2,9 +2,9 @@
 
 source ${0%/*}/../spinner.sh
 
-start_spinner "Checking the project"
-
 # Based on https://gist.github.com/chadmaughan/5889802
+
+start_spinner "Checking the project"
 
 # Stash any unstaged changes
 git stash -q --keep-index
@@ -17,12 +17,16 @@ RESULT=$?
 
 stop_spinner RESULT
 
-# Unstash the unstashed changes
-git stash pop -q
-
 if [ $RESULT -ne 0 ]; then
   echo "Aborting commit due to failed tests"
 fi
+
+cleanup() {
+  # Unstash the unstashed changes
+  git stash pop -q
+}
+
+trap cleanup EXIT
 
 # Return the exit code
 exit $RESULT
