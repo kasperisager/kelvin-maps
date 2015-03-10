@@ -182,7 +182,7 @@ public final class ChartController {
       Collections.sort(this.chart.elements(), Element.COMPARATOR);
 
       //Get map of all addresses from parser.
-      addresses = parser.addresses();
+      this.addresses = parser.addresses();
 
       // Schedule rendering of the chart nodes.
       Platform.runLater(() -> {
