@@ -1,18 +1,28 @@
 #!/bin/bash
 
+source ${0%/*}/../spinner.sh
+
+start_spinner "Checking the project"
+
 # Based on https://gist.github.com/chadmaughan/5889802
 
 # Stash any unstaged changes
 git stash -q --keep-index
 
 # Run the check with the Gradle wrapper
-./gradlew check
+./gradlew -q check
 
 # Store the last exit code in a variable
 RESULT=$?
 
+stop_spinner RESULT
+
 # Unstash the unstashed changes
 git stash pop -q
 
-# Return the './gradlew test' exit code
+if [ $RESULT -ne 0 ]; then
+  echo "Aborting commit due to failed tests"
+fi
+
+# Return the exit code
 exit $RESULT
