@@ -35,6 +35,7 @@ import javafx.scene.control.TextField;
 
 // Controls FX
 import org.controlsfx.control.PopOver;
+import org.controlsfx.control.textfield.TextFields;
 
 // FXML utilities
 import javafx.fxml.FXML;
@@ -165,8 +166,7 @@ public final class ChartController {
 
       try {
         parser.read(MAP_INPUT);
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         throw new RuntimeException(ex);
       }
 
@@ -184,6 +184,7 @@ public final class ChartController {
     });
 
     this.createPopOver();
+    this.autoComplete();
   }
 
   /**
@@ -234,6 +235,11 @@ public final class ChartController {
         this.toggleButton.setSelected(false);
       }
     });
+  }
+
+  public void autoComplete() {
+    TextFields.bindAutoCompletion(addressFrom, addresses);
+    TextFields.bindAutoCompletion(addressTo, addresses);
   }
 
   /**
