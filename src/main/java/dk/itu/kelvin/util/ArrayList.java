@@ -30,6 +30,7 @@ public class ArrayList<E> extends AbstractCollection implements List<E> {
    *
    * @param capacity The initial capacity of the array list.
    */
+  @SuppressWarnings("unchecked")
   public ArrayList(final int capacity) {
     super(
       capacity,
@@ -54,6 +55,7 @@ public class ArrayList<E> extends AbstractCollection implements List<E> {
    *
    * @param capacity The new capacity of the internal storage of the list.
    */
+  @SuppressWarnings("unchecked")
   protected final void resize(final int capacity) {
     E[] temp = (E[]) new Object[capacity];
 

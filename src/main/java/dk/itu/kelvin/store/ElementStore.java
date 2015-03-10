@@ -98,6 +98,7 @@ public final class ElementStore<T extends Element> implements Iterable<T> {
    *
    * @param capacity The initial capacity of the store.
    */
+  @SuppressWarnings("unchecked")
   public ElementStore(final int capacity) {
     // Set the initial capacity of the store.
     this.capacity(capacity);

@@ -41,6 +41,7 @@ public class HashTable<K, V> extends AbstractHashCollection
    *
    * @param capacity The initial capacity of the hash table.
    */
+  @SuppressWarnings("unchecked")
   public HashTable(final int capacity) {
     super(capacity);
 
