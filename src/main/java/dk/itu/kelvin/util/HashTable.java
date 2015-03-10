@@ -14,7 +14,8 @@ package dk.itu.kelvin.util;
  *
  * @version 1.0.0
  */
-public class HashTable<K, V> extends AbstractHashCollection {
+public class HashTable<K, V> extends AbstractHashCollection
+  implements Map<K, V> {
   /**
    * UID for identifying serialized objects.
    */
@@ -82,7 +83,7 @@ public class HashTable<K, V> extends AbstractHashCollection {
    * @param key The key to look up the index of.
    * @return    The index of the specified key.
    */
-  private int index(final K key) {
+  private int indexOf(final Object key) {
     return this.resolver.resolve(this.hash(key), key, this.keys);
   }
 
@@ -92,8 +93,8 @@ public class HashTable<K, V> extends AbstractHashCollection {
    * @param key The key of the value to get.
    * @return    The value if found.
    */
-  public final V get(final K key) {
-    return this.values[this.index(key)];
+  public final V get(final Object key) {
+    return this.values[this.indexOf(key)];
   }
 
   /**
@@ -103,7 +104,7 @@ public class HashTable<K, V> extends AbstractHashCollection {
    * @return    A boolean indicating whether or not the table contains the
    *            specified key.
    */
-  public final boolean containsKey(final K key) {
+  public final boolean containsKey(final Object key) {
     return this.get(key) != null;
   }
 
@@ -114,7 +115,7 @@ public class HashTable<K, V> extends AbstractHashCollection {
    * @return      A boolean indicating whether or not the table contains the
    *              specified value.
    */
-  public final boolean containsValue(final V value) {
+  public final boolean containsValue(final Object value) {
     for (V found: this.values) {
       if (value.equals(found)) {
         return true;
@@ -129,22 +130,28 @@ public class HashTable<K, V> extends AbstractHashCollection {
    *
    * @param key   The key to put in the table.
    * @param value The value to put in the table.
+   * @return      The previous value associated with the key if found.
    */
-  public final void put(final K key, final V value) {
+  public final V put(final K key, final V value) {
     if (value == null) {
       this.remove(key);
-      return;
+      return null;
     }
 
-    int i = this.index(key);
+    int i = this.indexOf(key);
 
     if (this.keys[i] != null && this.keys[i].equals(key)) {
+      V old = this.values[i];
       this.values[i] = value;
+
+      return old;
     }
     else {
       this.keys[i] = key;
       this.values[i] = value;
       this.grow();
+
+      return null;
     }
   }
 
@@ -152,16 +159,21 @@ public class HashTable<K, V> extends AbstractHashCollection {
    * Remove a key/value pair from the table.
    *
    * @param key The key of the value to remove.
+   * @return    The removed value if fonund.
    */
-  public final void remove(final K key) {
+  public final V remove(final Object key) {
     if (!this.containsKey(key)) {
-      return;
+      return null;
     }
 
-    int i = this.index(key);
+    int i = this.indexOf(key);
+
+    V old = this.values[i];
 
     this.keys[i] = null;
     this.values[i] = null;
     this.shrink();
+
+    return old;
   }
 }

@@ -10,20 +10,20 @@ import java.util.Iterator;
 /**
  * Array list class.
  *
- * @param <V> The type of values stored within the list.
+ * @param <E> The type of elements stored within the list.
  *
  * @version 1.0.0
  */
-public class ArrayList<V> extends AbstractCollection implements Iterable<V> {
+public class ArrayList<E> extends AbstractCollection implements List<E> {
   /**
    * UID for identifying serialized objects.
    */
   private static final long serialVersionUID = 47;
 
   /**
-   * Internal value storage.
+   * Internal element storage.
    */
-  private V[] values;
+  private E[] elements;
 
   /**
    * Initialize an array list with the specified initial capacity.
@@ -39,7 +39,7 @@ public class ArrayList<V> extends AbstractCollection implements Iterable<V> {
       0.5f    // Lower resize factor
     );
 
-    this.values = (V[]) new Object[this.capacity()];
+    this.elements = (E[]) new Object[this.capacity()];
   }
 
   /**
@@ -55,29 +55,41 @@ public class ArrayList<V> extends AbstractCollection implements Iterable<V> {
    * @param capacity The new capacity of the internal storage of the list.
    */
   protected final void resize(final int capacity) {
-    V[] temp = (V[]) new Object[capacity];
+    E[] temp = (E[]) new Object[capacity];
 
     for (int i = 0; i < this.size(); i++) {
-      temp[i] = this.values[i];
+      temp[i] = this.elements[i];
     }
 
-    this.values = temp;
+    this.elements = temp;
   }
 
   /**
-   * Return the index of the specified value.
+   * Swap two elements in the array.
    *
-   * @param value The value to look up the index of.
-   * @return      The index of the specified value or -1 if the value wasn't
-   *              found within the list.
+   * @param a The index of the first element.
+   * @param b The index of the second element.
    */
-  private int index(final V value) {
-    if (value == null) {
+  private void swap(final int a, final int b) {
+    E temp = this.elements[a];
+    this.elements[a] = this.elements[b];
+    this.elements[b] = temp;
+  }
+
+  /**
+   * Return the index of the specified element.
+   *
+   * @param element The value to look up the index of.
+   * @return        The index of the specified element or -1 if the element
+   *                wasn't found within the list.
+   */
+  public final int indexOf(final Object element) {
+    if (element == null) {
       return -1;
     }
 
     for (int i = 0; i < this.size(); i++) {
-      if (value.equals(this.values[i])) {
+      if (element.equals(this.elements[i])) {
         return i;
       }
     }
@@ -86,63 +98,54 @@ public class ArrayList<V> extends AbstractCollection implements Iterable<V> {
   }
 
   /**
-   * Swap two values in the array.
+   * Get a element by index from the list.
    *
-   * @param a The index of the first value.
-   * @param b The index of the second value.
+   * @param index The index of the element to get.
+   * @return      The element if found.
    */
-  private void swap(final int a, final int b) {
-    V temp = this.values[a];
-    this.values[a] = this.values[b];
-    this.values[b] = temp;
-  }
-
-  /**
-   * Get a value by index from the list.
-   *
-   * @param index The index of the value to get.
-   * @return      The value if found.
-   */
-  public final V get(final int index) {
+  public final E get(final int index) {
     if (index > 0 || index >= this.size()) {
       return null;
     }
 
-    return this.values[index];
+    return this.elements[index];
   }
 
   /**
-   * Check if the specified value exists within the list.
+   * Check if the specified element exists within the list.
    *
-   * @param value The value to check for.
-   * @return      A boolean indicating whether or not the list contains the
-   *              specified value.
+   * @param element The element to check for.
+   * @return        A boolean indicating whether or not the list contains the
+   *                specified element.
    */
-  public final boolean contains(final V value) {
-    return this.index(value) != -1;
+  public final boolean contains(final Object element) {
+    return this.indexOf(element) != -1;
   }
 
   /**
-   * Add a value to the list.
+   * Add an element to the list.
    *
-   * @param value The value to add to the list.
+   * @param element The element to add to the list.
+   * @return        {@code true}
    */
-  public final void add(final V value) {
-    if (value == null) {
-      return;
+  public final boolean add(final E element) {
+    if (element == null) {
+      return false;
     }
 
-    this.values[this.size()] = value;
+    this.elements[this.size()] = element;
     this.grow();
+
+    return true;
   }
 
   /**
-   * Remove a value from the list.
+   * Remove an element from the list.
    *
-   * @param index The index of the value to remove.
+   * @param index The index of the element to remove.
    * @return      The removed element.
    */
-  public final V remove(final int index) {
+  public final E remove(final int index) {
     if (index < 0 || index >= this.size()) {
       return null;
     }
@@ -150,31 +153,31 @@ public class ArrayList<V> extends AbstractCollection implements Iterable<V> {
     int lastIndex = this.size() - 1;
     this.swap(index, lastIndex);
 
-    V value = this.values[lastIndex];
+    E element = this.elements[lastIndex];
 
-    this.values[lastIndex] = null;
+    this.elements[lastIndex] = null;
     this.shrink();
 
-    return value;
+    return element;
   }
 
   /**
-   * Remove a value from the list.
+   * Remove an element from the list.
    *
-   * @param value The value to remove.
-   * @return      A boolean inidicating whether or not the list contained the
-   *              value to remove.
+   * @param element The element to remove.
+   * @return        A boolean inidicating whether or not the list contained the
+   *                element to remove.
    */
-  public final boolean remove(final V value) {
-    return this.remove(this.index(value)) != null;
+  public final boolean remove(final Object element) {
+    return this.remove(this.indexOf(element)) != null;
   }
 
   /**
-   * Iterate over the values of the list.
+   * Iterate over the elements of the list.
    *
-   * @return An iterator over the values of the list.
+   * @return An iterator over the elements of the list.
    */
-  public final Iterator<V> iterator() {
-    return Arrays.asList(this.values).iterator();
+  public final Iterator<E> iterator() {
+    return Arrays.asList(this.elements).iterator();
   }
 }
