@@ -5,10 +5,8 @@ package dk.itu.kelvin.model;
 
 // General utilities
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 // JavaFX scene utilities
 import javafx.scene.Group;
@@ -18,31 +16,20 @@ import javafx.scene.Group;
  *
  * @version 1.0.0
  */
-public final class Land extends Group implements Element {
+public final class Land extends Element<Group> {
   /**
    * UID for identifying serialized objects.
    */
-  private static final long serialVersionUID = 58;
+  private static final long serialVersionUID = 81;
 
   /**
-   * ID of the land element.
+   * The JavaFX representation of the land.
+   *
+   * This field is transient as it is simply used for caching the rendered
+   * JavaFX scene graph node. We therefore don't want to store it when
+   * serializing the element.
    */
-  private long id;
-
-  /**
-   * Tags of the land element.
-   */
-  private Map<String, String> tags = new HashMap<>();
-
-  /**
-   * Drawing order of the land element.
-   */
-  private Element.Order order = Element.Order.DEFAULT;
-
-  /**
-   * Drawing layer of the land element.
-   */
-  private int layer = -999;
+  private transient Group fx;
 
   /**
    * Bounds of the land element.
@@ -59,11 +46,8 @@ public final class Land extends Group implements Element {
    */
   // private Map<Node, Intersection> intersections = new HashMap<>();
 
-  /**
-   * Initialize a land instance.
-   */
   public Land() {
-    this.getStyleClass().add("land");
+    super(Long.MAX_VALUE);
   }
 
   /**
@@ -74,79 +58,7 @@ public final class Land extends Group implements Element {
   public Land(final BoundingBox bounds) {
     this();
     this.bounds = bounds;
-  }
-
-  /**
-   * Get the ID of the land element.
-   *
-   * @return The ID of the land element.
-   */
-  public long id() {
-    return this.id;
-  }
-
-  /**
-   * Get a map of tags associated with the element.
-   *
-   * @return A map of tags associated with the element.
-   */
-  public Map<String, String> tags() {
-    return this.tags;
-  }
-
-  /**
-   * Add a tag to the element.
-   *
-   * @param key   The key of the tag.
-   * @param value The value of the tag.
-   * @return      The previous value of the tag, if any.
-   */
-  public String tag(final String key, final String value) {
-    if (key == null || value == null) {
-      return null;
-    }
-
-    return this.tags.put(key, value);
-  }
-
-  /**
-   * Get the drawing order of the element.
-   *
-   * @return The drawing order of the element.
-   */
-  public Element.Order order() {
-    return this.order;
-  }
-
-  /**
-   * Set the drawing order of the element.
-   *
-   * @param order The drawing order of the element.
-   */
-  public void order(final Element.Order order) {
-    if (order == null) {
-      return;
-    }
-
-    this.order = order;
-  }
-
-  /**
-   * Get the drawing layer of the element.
-   *
-   * @return The drawng layer of the element.
-   */
-  public int layer() {
-    return this.layer;
-  }
-
-  /**
-   * Set the drawing layer of the element.
-   *
-   * @param layer The drawing layer of the element.
-   */
-  public void layer(final int layer) {
-    this.layer = layer;
+    this.layer(-999);
   }
 
   /**
@@ -196,6 +108,23 @@ public final class Land extends Group implements Element {
    */
   public List<Way> coastlines() {
     return this.coastlines;
+  }
+
+  /**
+   * Get the JavaFX representation of the land.
+   *
+   * @return The JavaFX representation of the land.
+   */
+  public Group render() {
+    if (this.fx != null) {
+      return this.fx;
+    }
+
+    Group group = new Group();
+
+    this.fx = group;
+
+    return this.fx;
   }
 
   /**

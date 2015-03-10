@@ -5,8 +5,8 @@ package dk.itu.kelvin.model;
 
 // General utilities
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,48 +24,36 @@ import javafx.scene.shape.Shape;
  * @see <a href="http://wiki.openstreetmap.org/wiki/Relation">
  * http://wiki.openstreetmap.org/wiki/Relation</a>
  */
-public final class Relation extends Group implements Element {
+public final class Relation extends Element<Group> {
   /**
    * UID for identifying serialized objects.
    */
-  private static final long serialVersionUID = 81;
+  private static final long serialVersionUID = 48;
 
   /**
-   * The ID of the relation.
+   * The JavaFX representation of the relation.
+   *
+   * This field is transient as it is simply used for caching the rendered
+   * JavaFX scene graph node. We therefore don't want to store it when
+   * serializing the element.
    */
-  private long id;
-
-  /**
-   * A map of tags associated with the relation.
-   */
-  private Map<String, String> tags = new HashMap<>();
-
-  /**
-   * Drawing order of the node.
-   */
-  private Element.Order order = Element.Order.DEFAULT;
-
-  /**
-   * Drawing layer of the relation.
-   */
-  private int layer;
+  private transient Group fx;
 
   /**
    * The members of the relation mapped to their roles.
+   *
+   * The map is initialized on-demand when first accessed to avoid allocating
+   * memory to empty maps.
    */
-  private Map<Element, Relation.Role> elements = new HashMap<>();
+  private Map<Element, Relation.Role> elements;
 
   /**
    * The type of the relation.
+   *
+   * The type is initialized on-demand when first accessed to avoid allocating
+   * memory to relations without a type.
    */
-  private Type type = Type.NONE;
-
-  /**
-   * Initialize a relation.
-   */
-  public Relation() {
-    this.getStyleClass().add("relation");
-  }
+  private Type type;
 
   /**
    * Initialize a relation with an ID.
@@ -73,104 +61,7 @@ public final class Relation extends Group implements Element {
    * @param id The ID of the relation.
    */
   public Relation(final long id) {
-    this();
-    this.id = id;
-  }
-
-  /**
-   * Get the ID of the relation.
-   *
-   * @return The id of the relation.
-   */
-  public long id() {
-    return this.id;
-  }
-
-  /**
-   * Add a tag to the relation.
-   *
-   * @param key   The key of the tag.
-   * @param value The value of the tag.
-   * @return      The previous value of the key, if any.
-   */
-  public String tag(final String key, final String value) {
-    switch (key) {
-      case "type":
-        this.type(Type.fromString(value));
-
-        switch (value) {
-          case "multipolygon":
-            this.getChildren().add(this.multipolygon());
-            break;
-          default:
-            // Do nothing.
-        }
-        break;
-
-      case "building":
-      case "area":
-        this.getStyleClass().add(key);
-        break;
-      case "leisure":
-      case "landuse":
-      case "waterway":
-        this.getStyleClass().add(key);
-        this.getStyleClass().add(value);
-        break;
-      default:
-        // Do nothing.
-    }
-
-    return this.tags.put(key, value);
-  }
-
-  /**
-   * Get a map of tags for the relation.
-   *
-   * @return A map of tags for the relation.
-   */
-  public Map<String, String> tags() {
-    return this.tags;
-  }
-
-  /**
-   * Get the drawing order of the relation.
-   *
-   * @return The drawing order of the relation.
-   */
-  public Element.Order order() {
-    return this.order;
-  }
-
-  /**
-   * Set the drawing order of the relation.
-   *
-   * @param order The drawing order of the relation.
-   */
-  public void order(final Element.Order order) {
-    if (order == null) {
-      return;
-    }
-
-    this.order = order;
-  }
-
-  /**
-   * Get the drawing layer of the relation.
-   *
-   * @return The drawing layer of the relation.
-   */
-  public int layer() {
-    return this.layer;
-  }
-
-  /**
-   * Set the drawing layer of the relation.
-   *
-   * @param layer The drawing layer of the relation.
-   */
-  public void layer(final int layer) {
-    this.layer = layer;
+    super(id);
   }
 
   /**
@@ -179,6 +70,10 @@ public final class Relation extends Group implements Element {
    * @return The type of the relation.
    */
   public Type type() {
+    if (this.type == null) {
+      return Type.NONE;
+    }
+
     return this.type;
   }
 
@@ -202,6 +97,14 @@ public final class Relation extends Group implements Element {
    * @return        The role of the member if found, otherwise null.
    */
   public Role role(final Element element) {
+    if (element == null) {
+      return null;
+    }
+
+    if (this.elements == null) {
+      this.elements = new HashMap<>();
+    }
+
     return this.elements.get(element);
   }
 
@@ -211,6 +114,10 @@ public final class Relation extends Group implements Element {
    * @return A list of members of the relation.
    */
   public List<Element> members() {
+    if (this.elements == null) {
+      this.elements = new HashMap<>();
+    }
+
     return new ArrayList<Element>(this.elements.keySet());
   }
 
@@ -225,8 +132,8 @@ public final class Relation extends Group implements Element {
       return;
     }
 
-    if (Shape.class.isAssignableFrom(element.getClass())) {
-      ((Shape) element).getStyleClass().add("member");
+    if (this.elements == null) {
+      this.elements = new HashMap<>();
     }
 
     this.elements.put(element, role);
@@ -243,6 +150,55 @@ public final class Relation extends Group implements Element {
     }
 
     this.member(element, Role.NONE);
+  }
+
+  /**
+   * Get the JavaFX representation of the relation.
+   *
+   * @return The JavaFX representation of the relation.
+   */
+  public Group render() {
+    if (this.fx != null) {
+      return this.fx;
+    }
+
+    Group group = new Group();
+
+    for (Map.Entry<String, String> tag: this.tags().entrySet()) {
+      String key = tag.getKey();
+      String value = tag.getValue();
+
+      switch (key) {
+        case "type":
+          this.type(Type.fromString(value));
+
+          switch (value) {
+            case "multipolygon":
+              group.getChildren().add(this.multipolygon());
+              break;
+            default:
+              // Do nothing.
+          }
+          break;
+
+        case "building":
+        case "area":
+          group.getStyleClass().add(key);
+          break;
+        case "leisure":
+        case "landuse":
+        case "waterway":
+          group.getStyleClass().add(key);
+          group.getStyleClass().add(value);
+          break;
+        default:
+          // Do nothing.
+      }
+    }
+
+    this.fx = group;
+
+    return this.fx;
   }
 
   /**
@@ -349,7 +305,7 @@ public final class Relation extends Group implements Element {
         continue;
       }
 
-      Shape polygon = outer;
+      Shape polygon = (Shape) outer.render();
 
       // RG-4: Find all unused rings that are contained by the ring found in
       // RG-3, but not contained by any other unused ring. Mark these rings as
@@ -371,7 +327,7 @@ public final class Relation extends Group implements Element {
 
           // RG-7: Construct a polygon from the outer ring and the holes.
           if (contained) {
-            polygon = Shape.subtract(polygon, inner);
+            polygon = Shape.subtract(polygon, (Shape) inner.render());
           }
         }
       }
@@ -401,7 +357,7 @@ public final class Relation extends Group implements Element {
    * @see <a href="http://wiki.openstreetmap.org/wiki/Relation#Roles">
    * http://wiki.openstreetmap.org/wiki/Relation#Roles</a>
    */
-  public enum Role {
+  public static enum Role {
     /** No role. */
     NONE,
 
@@ -433,7 +389,7 @@ public final class Relation extends Group implements Element {
    * @see <a href="http://wiki.openstreetmap.org/wiki/Types_of_relation">
    * http://wiki.openstreetmap.org/wiki/Types_of_relation</a>
    */
-  public enum Type {
+  public static enum Type {
     /** No type. */
     NONE,
 
