@@ -13,14 +13,6 @@
 @color-black: #000;
 @color-white: #fff;
 
-@color-background: #248E23;
-
-@color-btn-highlight: #ece7e7;
-@color-btn-fill: #666;
-@color-btn-background: #fff;
-@color-btn-hover: #333;
-@color-btn-pressed: #000;
-
 // Root --------------------------------------------------------------------- //
 
 @fontFamily-base--root: Arial;
@@ -68,6 +60,11 @@
 
 // Pressed
 @textFill-pressed--button: @color-black;
+
+// Checkboxes --------------------------------------------------------------- //
+@backgroundColor-base--checkBoxBox: @color-white;
+@borderRadius-base--checkBoxBox: @borderRadius-base;
+@borderColor-base-checkBoxBox: #999;
 
 // Popovers ----------------------------------------------------------------- //
 
@@ -204,6 +201,23 @@
 
   &:pressed {
     -fx-text-fill: @textFill-pressed--button;
+  }
+}
+
+// Checkboxes --------------------------------------------------------------- //
+
+.check-box {
+  .box {
+    -fx-background-color: @backgroundColor-base--checkBoxBox;
+    -fx-background-insets: 0;
+    -fx-background-radius: @borderRadius-base--checkBoxBox;
+    -fx-border-radius: @borderRadius-base--checkBoxBox;
+    -fx-border-color: @borderColor-base-checkBoxBox;
+  }
+
+  .mark {
+    -fx-effect: none;
+    -fx-background-insets: 0;
   }
 }
 
