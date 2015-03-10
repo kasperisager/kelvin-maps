@@ -559,7 +559,7 @@ public final class ChartController {
     Node position = addresses.find(startAddress);
     // centerView(position.x(), position.y());
 
-    System.out.println("X: " + position);
+    System.out.println("X: " + position.x() + "Y: " + position.y());
     System.out.println(startAddress);
   }
 

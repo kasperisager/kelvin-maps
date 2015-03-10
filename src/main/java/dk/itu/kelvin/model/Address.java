@@ -305,7 +305,7 @@ public final class Address {
    */
   @Override
   public boolean equals(final Object object) {
-    if (object == null || !(object instanceof Node)) {
+    if (object == null || !(object instanceof Address)) {
       return false;
     }
 
