@@ -319,29 +319,29 @@ public final class Address {
       (
         // Testing whether the objects strictly equal each other.
         // Specifically if both objects are null.
-        this.city == address.city
+        (this.city == null && address.city == null)
         // Or testing if the values are equal.
         || (this.city != null && this.city.equals(address.city))
       )
       && (
-        this.number == address.number
+        (this.number == null && address.number == null)
         || (this.number != null && this.number.equals(address.number))
       )
       && (
-        this.floor == address.floor
+        (this.floor == null && address.floor == null)
         || (this.floor != null && this.floor.equals(address.floor))
       )
       && (
-        this.door == address.door
+        (this.door == null && address.door == null)
         || (this.door != null && this.door.equals(address.door))
       )
       && (
-        this.postcode == address.postcode
-          || (this.postcode != null && this.postcode.equals(address.postcode))
+        (this.postcode == null && address.postcode == null)
+        || (this.postcode != null && this.postcode.equals(address.postcode))
       )
       && (
-        this.street == address.street
-          || (this.street != null && this.street.equals(address.street))
+        (this.street == null && address.street == null)
+        || (this.street != null && this.street.equals(address.street))
       )
     );
   }
