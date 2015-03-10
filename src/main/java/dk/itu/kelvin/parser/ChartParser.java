@@ -11,7 +11,6 @@ import java.util.Map;
 import java.net.URL;
 
 // SAX utilities
-import dk.itu.kelvin.controller.ChartController;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
@@ -91,7 +90,8 @@ public final class ChartParser {
   }
 
   /**
-   * Get the Addressstore field
+   *  Get the addresses field.
+   * @return the addresses field.
    */
   public AddressStore addresses() {
     return this.addresses;
@@ -301,19 +301,27 @@ public final class ChartParser {
         this.element.layer(Integer.parseInt(v));
         break;
       case "addr:city":
-        if(address == null) this.address = new Address();
+        if (this.address == null) {
+          this.address = new Address();
+        }
         this.address.city(v);
         break;
       case "addr:housenumber":
-        if(address == null) this.address = new Address();
+        if (this.address == null) {
+          this.address = new Address();
+        }
         this.address.number(v);
         break;
       case "addr:postcode":
-        if(address == null) this.address = new Address();
+        if (this.address == null) {
+          this.address = new Address();
+        }
         this.address.postcode(v);
         break;
       case "addr:street":
-        if(address == null) this.address = new Address();
+        if (this.address == null) {
+          this.address = new Address();
+        }
         this.address.street(v);
         break;
       default:

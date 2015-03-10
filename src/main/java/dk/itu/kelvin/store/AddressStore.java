@@ -13,7 +13,7 @@ import dk.itu.kelvin.model.Address;
 /**
  * A class to store all addresses from the OSM file.
  */
-public class AddressStore extends HashMap<Address, Node>{
+public final class AddressStore extends HashMap<Address, Node> {
 
   /**
    * Sort the map for faster searches.
@@ -27,7 +27,7 @@ public class AddressStore extends HashMap<Address, Node>{
    * @param a the address to find.
    * @return the node related to the found address.
    */
-  public Node find(Address a) {
+  public Node find(final Address a) {
     if (a == null) {
       return null;
     }

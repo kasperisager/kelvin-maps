@@ -571,11 +571,13 @@ public final class ChartController {
   private void findRoute() {
     Address startAddress = Address.parse(this.addressFrom.getText());
     Address endAddress = Address.parse(this.addressTo.getText());
-    Node startPosition = addresses.find(startAddress);
-    Node endPosition = addresses.find(endAddress);
+    Node startPosition = this.addresses.find(startAddress);
+    Node endPosition = this.addresses.find(endAddress);
 
-    System.out.println("X: " + startPosition.x() + " " + "Y: " + startPosition.y());
-    System.out.println("X: " + endPosition.x() + " " + "Y: " + endPosition.y());
+    System.out.println("X: " + startPosition.x() + " " + "Y: "
+      + startPosition.y());
+    System.out.println("X: " + endPosition.x() + " " + "Y: "
+      + endPosition.y());
   }
 
   /**

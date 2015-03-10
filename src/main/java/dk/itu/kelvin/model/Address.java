@@ -359,7 +359,8 @@ public final class Address {
       bits = 31L * bits + ((this.number != null) ? this.number.hashCode() : 0);
       bits = 31L * bits + ((this.floor != null) ? this.floor.hashCode() : 0);
       bits = 31L * bits + ((this.door != null) ? this.door.hashCode() : 0);
-      bits = 31L * bits + ((this.postcode != null) ? this.postcode.hashCode() : 0);
+      bits = 31L * bits + ((this.postcode != null)
+      ? this.postcode.hashCode() : 0);
       bits = 31L * bits + ((this.street != null) ? this.street.hashCode() : 0);
       this.hash = (int) (bits ^ (bits >> 32));
     }
