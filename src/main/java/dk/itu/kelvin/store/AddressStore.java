@@ -37,7 +37,6 @@ public class AddressStore extends HashMap<Address, Node>{
       return null;
     }
 
-    System.out.println(node.x() + node.y());
     return node;
   }
 

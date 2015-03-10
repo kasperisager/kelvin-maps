@@ -206,6 +206,8 @@ public final class ChartController {
     new Thread(task).start();
 
     this.createPopOver();
+
+    Platform.runLater(() -> this.addressFrom.requestFocus());
   }
 
   /**
@@ -556,11 +558,10 @@ public final class ChartController {
   @FXML
   private void findAddress() {
     Address startAddress = Address.parse(this.addressFrom.getText());
-    Node position = addresses.find(startAddress);
+    Node position = this.addresses.find(startAddress);
     // centerView(position.x(), position.y());
 
-    System.out.println("X: " + position.x() + "Y: " + position.y());
-    System.out.println(startAddress);
+    System.out.println("X: " + position.x() + " " + "Y: " + position.y());
   }
 
   /**
@@ -570,8 +571,11 @@ public final class ChartController {
   private void findRoute() {
     Address startAddress = Address.parse(this.addressFrom.getText());
     Address endAddress = Address.parse(this.addressTo.getText());
-    System.out.println(startAddress);
-    System.out.println(endAddress);
+    Node startPosition = addresses.find(startAddress);
+    Node endPosition = addresses.find(endAddress);
+
+    System.out.println("X: " + startPosition.x() + " " + "Y: " + startPosition.y());
+    System.out.println("X: " + endPosition.x() + " " + "Y: " + endPosition.y());
   }
 
   /**

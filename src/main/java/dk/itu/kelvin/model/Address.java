@@ -431,6 +431,9 @@ public final class Address {
       else if (doorSide != null && !doorSide.isEmpty()) {
         door = doorSide;
       }
+      else {
+        door = null;
+      }
     }
 
     Address address = new Address();
