@@ -122,6 +122,11 @@ public final class ChartController {
   private AddressStore addresses;
 
   /**
+   *
+   */
+  private ArrayList<String> addressStrings = new ArrayList<>();
+
+  /**
    * PopOver for the config menu.
    */
   private PopOver popOver;
@@ -186,6 +191,13 @@ public final class ChartController {
       //Get map of all addresses from parser.
       this.addresses = parser.addresses();
 
+      // Temporary fix.
+      // Adds all addresses as strings to a list.
+      for (Address a : this.addresses.keySet()) {
+          this.addressStrings.add(a.toString());
+          System.out.println(a.toString());
+      }
+
       // Schedule rendering of the chart nodes.
       Platform.runLater(() -> {
         // this.canvas.add(chart.nodes());
@@ -198,9 +210,36 @@ public final class ChartController {
     });
 
     this.createPopOver();
-    this.autoComplete();
+    //this.autoComplete();
 
     Platform.runLater(() -> this.addressFrom.requestFocus());
+  }
+
+  /**
+   * Creates the key for autocomplete search.
+   */
+  public void searchKey() {
+    ArrayList<String> l = new ArrayList<>();
+    if (this.addressFrom.getLength() > 2) {
+      for (int i = 0; i < this.addressStrings.size(); i++) {
+        if (this.addressStrings.get(i).contains(this.addressFrom.getText())) {
+          l.add(this.addressStrings.get(i));
+        }
+        if (l.size() > 5) {
+          break;
+        }
+      }
+    }
+    this.autoComplete(l);
+  }
+
+  /**
+   * Binding autocomplete functionality to the two textfields.
+   * @param l the list with suggestions.
+   */
+  public void autoComplete(final ArrayList<String> l) {
+    TextFields.bindAutoCompletion(this.addressFrom, l);
+    TextFields.bindAutoCompletion(this.addressTo, l);
   }
 
   /**
@@ -251,17 +290,6 @@ public final class ChartController {
         this.toggleButton.setSelected(false);
       }
     });
-  }
-
-  public void autoComplete() {
-    ArrayList l = new ArrayList<String>();
-
-    for (Address a : addresses.keySet()){
-      l.add(a.toString());
-    }
-
-    TextFields.bindAutoCompletion(addressFrom, l);
-    TextFields.bindAutoCompletion(addressTo, l);
   }
 
   /**
