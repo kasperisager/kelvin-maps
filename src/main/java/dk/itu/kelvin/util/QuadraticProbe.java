@@ -34,13 +34,9 @@ public final class QuadraticProbe implements HashResolver {
    */
   public int resolve(final int hash, final int key, final int[] keys) {
     int i = hash;
-    int step = 0;
+    int step = 1;
 
-    while (keys[i] != 0) {
-      if (keys[i] == key) {
-        break;
-      }
-
+    while (keys[i] != 0 && keys[i] != key) {
       i = this.step(i, keys.length, step++);
     }
 
@@ -57,13 +53,9 @@ public final class QuadraticProbe implements HashResolver {
    */
   public int resolve(final int hash, final long key, final long[] keys) {
     int i = hash;
-    int step = 0;
+    int step = 1;
 
-    while (keys[i] != 0L) {
-      if (keys[i] == key) {
-        break;
-      }
-
+    while (keys[i] != 0L && keys[i] != key) {
       i = this.step(i, keys.length, step++);
     }
 
@@ -80,13 +72,9 @@ public final class QuadraticProbe implements HashResolver {
    */
   public int resolve(final int hash, final float key, final float[] keys) {
     int i = hash;
-    int step = 0;
+    int step = 1;
 
-    while (keys[i] != 0.0f) {
-      if (keys[i] == key) {
-        break;
-      }
-
+    while (keys[i] != 0.0f && keys[i] != key) {
       i = this.step(i, keys.length, step++);
     }
 
@@ -103,13 +91,9 @@ public final class QuadraticProbe implements HashResolver {
    */
   public int resolve(final int hash, final double key, final double[] keys) {
     int i = hash;
-    int step = 0;
+    int step = 1;
 
-    while (keys[i] != 0.0d) {
-      if (keys[i] == key) {
-        break;
-      }
-
+    while (keys[i] != 0.0d && keys[i] == key) {
       i = this.step(i, keys.length, step++);
     }
 
@@ -126,13 +110,9 @@ public final class QuadraticProbe implements HashResolver {
    */
   public int resolve(final int hash, final Object key, final Object[] keys) {
     int i = hash;
-    int step = 0;
+    int step = 1;
 
-    while (keys[i] != null) {
-      if (keys[i].equals(key)) {
-        break;
-      }
-
+    while (keys[i] != null && keys[i].equals(key)) {
       i = this.step(i, keys.length, step++);
     }
 
