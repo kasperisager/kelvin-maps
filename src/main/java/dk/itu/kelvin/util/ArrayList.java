@@ -105,7 +105,7 @@ public class ArrayList<E> extends AbstractCollection implements List<E> {
    * @return      The element if found.
    */
   public final E get(final int index) {
-    if (index > 0 || index >= this.size()) {
+    if (index < 0 || index >= this.size()) {
       return null;
     }
 
