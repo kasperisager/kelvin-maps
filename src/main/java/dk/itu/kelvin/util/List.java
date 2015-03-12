@@ -12,6 +12,20 @@ package dk.itu.kelvin.util;
  */
 public interface List<E> extends Iterable<E> {
   /**
+   * Get the size of the list.
+   *
+   * @return The size of the list.
+   */
+  int size();
+
+  /**
+   * Check if the list is empty.
+   *
+   * @return A boolean indicating whether or not the list is empty.
+   */
+  boolean isEmpty();
+
+  /**
    * Return the index of the specified element.
    *
    * @param element The value to look up the index of.
