@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 // JavaFX scene utilities
+import groovy.transform.ASTTest;
 import javafx.scene.Group;
 
 // JavaFX shapes
@@ -115,7 +116,7 @@ public final class Relation extends Element<Group> {
    */
   public List<Element> members() {
     if (this.elements == null) {
-      this.elements = new HashMap<>();
+      return new ArrayList<Element>();
     }
 
     return new ArrayList<Element>(this.elements.keySet());
@@ -140,7 +141,7 @@ public final class Relation extends Element<Group> {
   }
 
   /**
-   * Shorthand for adding a element to the relation without a role.
+   * Shorthand for adding an element to the relation without a role.
    *
    * @param element The element to add to the relation.
    */
