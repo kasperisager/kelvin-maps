@@ -13,6 +13,20 @@ package dk.itu.kelvin.util;
  */
 public interface Map<K, V> {
   /**
+   * Get the size of the map.
+   *
+   * @return The size of the map.
+   */
+  int size();
+
+  /**
+   * Check if the map is empty.
+   *
+   * @return A boolean indicating whether or not the map is empty.
+   */
+  boolean isEmpty();
+
+  /**
    * Get a value by key from the map.
    *
    * @param key The key of the value to get.
