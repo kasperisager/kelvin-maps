@@ -3,14 +3,16 @@
  */
 package dk.itu.kelvin.layout;
 
-// General utilities
-import java.util.ArrayList;
-import java.util.List;
-
 // JavaFX scene utilities
 import javafx.scene.CacheHint;
 import javafx.scene.Group;
-import javafx.scene.Node;
+
+// Utilities
+import dk.itu.kelvin.util.ArrayList;
+import dk.itu.kelvin.util.List;
+
+// Models
+import dk.itu.kelvin.model.Element;
 
 /**
  * Tile class.
@@ -19,9 +21,9 @@ import javafx.scene.Node;
  */
 public final class Tile extends Group {
   /**
-   * List of nodes contained within the tile.
+   * List of elements contained within the tile.
    */
-  private List<Node> nodes = new ArrayList<>();
+  private List<Element> elements = new ArrayList<>();
 
   /**
    * Initialize a tile.
@@ -32,26 +34,34 @@ public final class Tile extends Group {
   }
 
   /**
-   * Add a node to the tile.
+   * Add an element to the tile.
    *
-   * @param node The node to add to the tile.
+   * @param element The element to add to the tile.
    */
-  public void add(final Node node) {
-    if (node == null) {
+  public void add(final Element element) {
+    if (element == null) {
       return;
     }
 
-    this.nodes.add(node);
-
-    this.getChildren().add(node);
+    this.elements.add(element);
   }
 
   /**
-   * Get a list of nodes contained within the tile.
+   * Get a list of elements contained within the tile.
    *
-   * @return A list of nodes contained within the tile.
+   * @return A list of elements contained within the tile.
    */
-  public List<Node> nodes() {
-    return this.nodes;
+  public List<Element> elements() {
+    return this.elements;
+  }
+
+  public void show() {
+    for (Element element: this.elements) {
+      this.getChildren().add(element.render());
+    }
+  }
+
+  public void hide() {
+    this.getChildren().clear();
   }
 }

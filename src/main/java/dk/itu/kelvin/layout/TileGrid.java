@@ -3,12 +3,6 @@
  */
 package dk.itu.kelvin.layout;
 
-// General utilities
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 // JavaFX application utilities
 import javafx.application.Platform;
 
@@ -24,6 +18,12 @@ import javafx.geometry.Point2D;
 
 // JavaFX transformations
 import javafx.scene.transform.Affine;
+
+// Utilities
+import dk.itu.kelvin.util.ArrayList;
+import dk.itu.kelvin.util.HashTable;
+import dk.itu.kelvin.util.List;
+import dk.itu.kelvin.util.Map;
 
 /**
  * Tile grid class.
@@ -42,7 +42,7 @@ public final class TileGrid extends Group {
   /**
    * Map of tiles contained within the tile grid.
    */
-  private Map<TileGrid.Anchor, Tile> tiles = new HashMap<>();
+  private Map<TileGrid.Anchor, Tile> tiles = new HashTable<>();
 
   /**
    * Initialize a tile grid.
@@ -116,7 +116,8 @@ public final class TileGrid extends Group {
    * @return A list of tiles contained within the tile grid.
    */
   public List<Tile> tiles() {
-    return new ArrayList<Tile>(this.tiles.values());
+    return new ArrayList<Tile>();
+    // return new ArrayList<Tile>(this.tiles.values());
   }
 
   /**
@@ -125,12 +126,12 @@ public final class TileGrid extends Group {
    * @param tile The tile to add.
    */
   private void render(final Tile tile) {
-    tile.setCache(true);
-    tile.setCacheHint(CacheHint.SPEED);
-
     // Schedule an addition of the tile from the scene graph.
     Platform.runLater(() -> {
       if (!this.getChildren().contains(tile)) {
+        tile.setCache(true);
+        tile.setCacheHint(CacheHint.SPEED);
+
         this.getChildren().add(tile);
       }
     });
@@ -142,11 +143,11 @@ public final class TileGrid extends Group {
    * @param tile The tile to remove.
    */
   private void remove(final Tile tile) {
-    tile.setCache(false);
-
     // Schedule a removal of the tile from the scene graph.
     Platform.runLater(() -> {
       if (this.getChildren().contains(tile)) {
+        tile.setCache(false);
+
         this.getChildren().remove(tile);
       }
     });
