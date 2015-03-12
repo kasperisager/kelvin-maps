@@ -78,6 +78,20 @@ public class ArrayList<E> extends AbstractCollection implements List<E> {
   }
 
   /**
+   * Shift the elements in the array left between the specified indices.
+   *
+   * @see <a href="http://stackoverflow.com/questions/22716581/shift-array-
+   * elements-to-left-in-java">http://stackoverflow.com/questions/22716581/
+   * shift-array-elements-to-left-in-java</a>
+   *
+   * @param index  The index to shift the elements towards.
+   * @param shifts The number of elements to shift.
+   */
+  private void shiftLeft(final int index, final int shifts) {
+    System.arraycopy(this.elements, index + 1, this.elements, index, shifts);
+  }
+
+  /**
    * Return the index of the specified element.
    *
    * @param element The value to look up the index of.
@@ -105,7 +119,7 @@ public class ArrayList<E> extends AbstractCollection implements List<E> {
    * @return      The element if found.
    */
   public final E get(final int index) {
-    if (index > 0 || index >= this.size()) {
+    if (index < 0 || index >= this.size()) {
       return null;
     }
 
@@ -151,12 +165,15 @@ public class ArrayList<E> extends AbstractCollection implements List<E> {
       return null;
     }
 
-    int lastIndex = this.size() - 1;
-    this.swap(index, lastIndex);
+    E element = this.elements[index];
 
-    E element = this.elements[lastIndex];
+    int moved = this.size() - index - 1;
 
-    this.elements[lastIndex] = null;
+    if (moved > 0) {
+      this.shiftLeft(index, moved);
+    }
+
+    this.elements[this.size() - 1] = null;
     this.shrink();
 
     return element;
