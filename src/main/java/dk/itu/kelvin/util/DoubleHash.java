@@ -13,13 +13,71 @@ package dk.itu.kelvin.util;
  */
 public final class DoubleHash implements HashResolver {
   /**
+   * Calculate the next index to step through.
+   *
+   * @param hash        The hash to step over.
+   * @param secondHash  The second hash to use.
+   * @param length      The length of the keys
+   * @param step        The previous step.
+   * @return            The next index to step through.
+   */
+  private int step(
+    final int hash,
+    final int secondHash,
+    final int length,
+    final int step
+  ) {
+    return (hash + step * secondHash) % length;
+  }
+
+  /**
    * Compute a second hash used for the skipping step when probing.
    *
-   * @param hash  The original hash.
-   * @return      A second hash.
+   * @param key The key to hash.
+   * @return    A second hash.
    */
-  private int step(final int hash) {
-    return (hash % 7) + 1;
+  private int secondHash(final int key) {
+    return (key % 7) + 1;
+  }
+
+  /**
+   * Compute a second hash used for the skipping step when probing.
+   *
+   * @param key The key to hash.
+   * @return    A second hash.
+   */
+  private int secondHash(final long key) {
+    return this.secondHash(Long.hashCode(key));
+  }
+
+  /**
+   * Compute a second hash used for the skipping step when probing.
+   *
+   * @param key The key to hash.
+   * @return    A second hash.
+   */
+  private int secondHash(final float key) {
+    return this.secondHash(Float.floatToIntBits(key));
+  }
+
+  /**
+   * Compute a second hash used for the skipping step when probing.
+   *
+   * @param key The key to hash.
+   * @return    A second hash.
+   */
+  private int secondHash(final double key) {
+    return this.secondHash(Double.doubleToLongBits(key));
+  }
+
+  /**
+   * Compute a second hash used for the skipping step when probing.
+   *
+   * @param key The key to hash.
+   * @return    A second hash.
+   */
+  private int secondHash(final Object key) {
+    return this.secondHash(key.hashCode());
   }
 
   /**
@@ -32,11 +90,11 @@ public final class DoubleHash implements HashResolver {
    */
   public int resolve(final int hash, final int key, final int[] keys) {
     int i = hash;
-    int step = this.step(i);
+    int secondHash = this.secondHash(key);
+    int step = 1;
 
-    while (keys[i] != 0) {
-      i += step;
-      i %= keys.length;
+    while (keys[i] != 0 && keys[i] != key) {
+      i = this.step(i, secondHash, keys.length, step);
     }
 
     return i;
@@ -52,11 +110,11 @@ public final class DoubleHash implements HashResolver {
    */
   public int resolve(final int hash, final long key, final long[] keys) {
     int i = hash;
-    int step = this.step(i);
+    int secondHash = this.secondHash(key);
+    int step = 1;
 
-    while (keys[i] != 0L) {
-      i += step;
-      i %= keys.length;
+    while (keys[i] != 0L && keys[i] != key) {
+      i = this.step(i, secondHash, keys.length, step);
     }
 
     return i;
@@ -72,11 +130,11 @@ public final class DoubleHash implements HashResolver {
    */
   public int resolve(final int hash, final float key, final float[] keys) {
     int i = hash;
-    int step = this.step(i);
+    int secondHash = this.secondHash(key);
+    int step = 1;
 
-    while (keys[i] != 0.0f) {
-      i += step;
-      i %= keys.length;
+    while (keys[i] != 0.0f && keys[i] != key) {
+      i = this.step(i, secondHash, keys.length, step);
     }
 
     return i;
@@ -92,11 +150,11 @@ public final class DoubleHash implements HashResolver {
    */
   public int resolve(final int hash, final double key, final double[] keys) {
     int i = hash;
-    int step = this.step(i);
+    int secondHash = this.secondHash(key);
+    int step = 1;
 
-    while (keys[i] != 0.0d) {
-      i += step;
-      i %= keys.length;
+    while (keys[i] != 0.0d && keys[i] != key) {
+      i = this.step(i, secondHash, keys.length, step);
     }
 
     return i;
@@ -112,11 +170,11 @@ public final class DoubleHash implements HashResolver {
    */
   public int resolve(final int hash, final Object key, final Object[] keys) {
     int i = hash;
-    int step = this.step(i);
+    int secondHash = this.secondHash(key);
+    int step = 1;
 
-    while (keys[i] != null) {
-      i += step;
-      i %= keys.length;
+    while (keys[i] != null && !keys[i].equals(key)) {
+      i = this.step(i, secondHash, keys.length, step);
     }
 
     return i;
