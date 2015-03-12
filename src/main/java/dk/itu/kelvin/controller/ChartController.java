@@ -9,9 +9,6 @@ import java.util.Collections;
 // JavaFX application utilities
 import javafx.application.Platform;
 
-// JavaFX scene utilities
-import javafx.scene.CacheHint;
-
 // JavaFX layout
 import javafx.scene.layout.VBox;
 
@@ -186,7 +183,7 @@ public final class ChartController {
 
       // Schedule rendering of the chart nodes.
       Platform.runLater(() -> {
-        // this.canvas.add(chart.nodes());
+        this.canvas.add(this.chart.elements());
 
         this.canvas.pan(
           -this.chart.bounds().getMinX(),
@@ -251,28 +248,6 @@ public final class ChartController {
   }
 
   /**
-   * Set the cache to speed-mode.
-   */
-  private void setCacheSpeed() {
-    if (this.canvas.getCacheHint() == CacheHint.SCALE_AND_ROTATE) {
-      return;
-    }
-
-    this.canvas.setCacheHint(CacheHint.SCALE_AND_ROTATE);
-  }
-
-  /**
-   * Set the cache to quality-mode.
-   */
-  private void setCacheQuality() {
-    if (this.canvas.getCacheHint() == CacheHint.QUALITY) {
-      return;
-    }
-
-    this.canvas.setCacheHint(CacheHint.QUALITY);
-  }
-
-  /**
    * The the initial mouse coordinates for scrolling.
    *
    * @param e Mouse event for capturing mouse location.
@@ -312,8 +287,6 @@ public final class ChartController {
     this.setInitialMouseDrag(e);
     this.setInitialMouseScroll(e);
 
-    this.setCacheSpeed();
-
     this.canvas.requestFocus();
   }
 
@@ -325,8 +298,6 @@ public final class ChartController {
   @FXML
   private void onMouseReleased(final MouseEvent e) {
     this.setInitialMouseScroll(e);
-
-    this.setCacheQuality();
   }
 
   /**
@@ -360,8 +331,6 @@ public final class ChartController {
    */
   @FXML
   private void onMouseDragged(final MouseEvent e) {
-    this.setCacheSpeed();
-
     double x = e.getSceneX();
     double y = e.getSceneY();
 
@@ -372,30 +341,12 @@ public final class ChartController {
   }
 
   /**
-   * On scroll started event.
-   */
-  @FXML
-  private void onScrollStarted() {
-    this.setCacheSpeed();
-  }
-
-  /**
-   * On scroll finished event.
-   */
-  @FXML
-  private void onScrollFinished() {
-    this.setCacheQuality();
-  }
-
-  /**
    * On scroll event.
    *
    * @param e The scroll event.
    */
   @FXML
   private void onScroll(final ScrollEvent e) {
-    this.setCacheSpeed();
-
     double factor = (e.getDeltaY() < 0) ? ZOOM_IN : ZOOM_OUT;
 
     this.canvas.zoom(
@@ -406,51 +357,17 @@ public final class ChartController {
   }
 
   /**
-   * On zoom started event.
-   */
-  @FXML
-  private void onZoomStarted() {
-    this.setCacheSpeed();
-  }
-
-  /**
-   * On zoom finished event.
-   */
-  @FXML
-  private void onZoomFinished() {
-    this.setCacheQuality();
-  }
-
-  /**
    * On zoom event.
    *
    * @param e The zoom event.
    */
   @FXML
   private void onZoom(final ZoomEvent e) {
-    this.setCacheSpeed();
-
     this.canvas.zoom(
       e.getZoomFactor(),
       this.initialMouseScrollX,
       this.initialMouseScrollY
     );
-  }
-
-  /**
-   * On rotation started event.
-   */
-  @FXML
-  private void onRotationStarted() {
-    this.setCacheSpeed();
-  }
-
-  /**
-   * On rotation finished event.
-   */
-  @FXML
-  private void onRotationFinished() {
-    this.setCacheQuality();
   }
 
   /**
