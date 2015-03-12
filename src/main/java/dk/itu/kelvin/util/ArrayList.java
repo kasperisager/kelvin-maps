@@ -4,7 +4,6 @@
 package dk.itu.kelvin.util;
 
 // General utilities
-import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -180,6 +179,30 @@ public class ArrayList<E> extends AbstractCollection implements List<E> {
    * @return An iterator over the elements of the list.
    */
   public final Iterator<E> iterator() {
-    return Arrays.asList(this.elements).iterator();
+    return new Iterator<E>() {
+      /**
+       * Keep track of the position within the array.
+       */
+      private int i = 0;
+
+      /**
+       * Check if there are elements left to iterate over.
+       *
+       * @return  A boolean indicating whether or not there are elements left
+       *          to iterate over.
+       */
+      public boolean hasNext() {
+        return i < ArrayList.this.size();
+      }
+
+      /**
+       * Get the next element.
+       *
+       * @return The next element.
+       */
+      public E next() {
+        return ArrayList.this.get(i++);
+      }
+    };
   }
 }
