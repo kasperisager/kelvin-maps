@@ -24,6 +24,7 @@ public final class WayTest {
    * Test the tagging of ways.
    */
   @Test
+  // Tag method does no longer exist. Must update WayTest.
   public void testTag() {
     // Test that a tag is recognized and added to the Way object.
     Way w3 = new Way(25338049);

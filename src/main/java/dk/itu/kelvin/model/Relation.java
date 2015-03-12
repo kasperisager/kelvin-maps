@@ -97,12 +97,8 @@ public final class Relation extends Element<Group> {
    * @return        The role of the member if found, otherwise null.
    */
   public Role role(final Element element) {
-    if (element == null) {
+    if (element == null || this.elements == null) {
       return null;
-    }
-
-    if (this.elements == null) {
-      this.elements = new HashMap<>();
     }
 
     return this.elements.get(element);

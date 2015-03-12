@@ -9,9 +9,6 @@ import java.util.Collections;
 // JavaFX application utilities
 import javafx.application.Platform;
 
-// JavaFX concurrency utilities
-import javafx.concurrent.Task;
-
 // JavaFX scene utilities
 import javafx.scene.CacheHint;
 
@@ -45,6 +42,9 @@ import javafx.fxml.FXML;
 // Parser
 import dk.itu.kelvin.parser.ChartParser;
 
+// Threading
+import dk.itu.kelvin.thread.TaskQueue;
+
 // Layout
 import dk.itu.kelvin.layout.Canvas;
 
@@ -52,6 +52,10 @@ import dk.itu.kelvin.layout.Canvas;
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Chart;
 import dk.itu.kelvin.model.Element;
+import dk.itu.kelvin.model.Node;
+
+// Stores
+import dk.itu.kelvin.store.AddressStore;
 
 /**
  * Chart controller class.
@@ -110,6 +114,11 @@ public final class ChartController {
   private Chart chart = new Chart();
 
   /**
+   * The addresses map from the parser.
+   */
+  private AddressStore addresses;
+
+  /**
    * PopOver for the config menu.
    */
   private PopOver popOver;
@@ -160,40 +169,35 @@ public final class ChartController {
 
     this.compassArrow.getTransforms().add(this.compassTransform);
 
-    Canvas canvas = this.canvas;
-    Chart chart = this.chart;
+    TaskQueue.run(() -> {
+      ChartParser parser = new ChartParser(this.chart);
 
-    Task task = new Task<Void>() {
-      @Override
-      public Void call() {
-        ChartParser parser = new ChartParser(chart);
-
-        try {
-          parser.read(MAP_INPUT);
-        }
-        catch (Exception ex) {
-          throw new RuntimeException(ex);
-        }
-
-        Collections.sort(chart.elements(), Element.COMPARATOR);
-
-        // Schedule rendering of the chart nodes.
-        Platform.runLater(() -> {
-          // canvas.add(chart.nodes());
-
-          canvas.pan(
-            -chart.bounds().getMinX(),
-            -chart.bounds().getMaxY()
-          );
-        });
-
-        return null;
+      try {
+        parser.read(MAP_INPUT);
       }
-    };
+      catch (Exception ex) {
+        throw new RuntimeException(ex);
+      }
 
-    new Thread(task).start();
+      Collections.sort(this.chart.elements(), Element.COMPARATOR);
+
+      //Get map of all addresses from parser.
+      this.addresses = parser.addresses();
+
+      // Schedule rendering of the chart nodes.
+      Platform.runLater(() -> {
+        // this.canvas.add(chart.nodes());
+
+        this.canvas.pan(
+          -this.chart.bounds().getMinX(),
+          -this.chart.bounds().getMaxY()
+        );
+      });
+    });
 
     this.createPopOver();
+
+    Platform.runLater(() -> this.addressFrom.requestFocus());
   }
 
   /**
@@ -544,7 +548,10 @@ public final class ChartController {
   @FXML
   private void findAddress() {
     Address startAddress = Address.parse(this.addressFrom.getText());
-    System.out.println(startAddress);
+    Node position = this.addresses.find(startAddress);
+    // centerView(position.x(), position.y());
+
+    System.out.println("X: " + position.x() + " " + "Y: " + position.y());
   }
 
   /**
@@ -554,8 +561,13 @@ public final class ChartController {
   private void findRoute() {
     Address startAddress = Address.parse(this.addressFrom.getText());
     Address endAddress = Address.parse(this.addressTo.getText());
-    System.out.println(startAddress);
-    System.out.println(endAddress);
+    Node startPosition = this.addresses.find(startAddress);
+    Node endPosition = this.addresses.find(endAddress);
+
+    System.out.println("X: " + startPosition.x() + " " + "Y: "
+      + startPosition.y());
+    System.out.println("X: " + endPosition.x() + " " + "Y: "
+      + endPosition.y());
   }
 
   /**
