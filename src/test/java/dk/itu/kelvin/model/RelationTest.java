@@ -18,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 /**
- * UnitTest of the Relation class
+ * UnitTest of the Relation class.
  */
 public class RelationTest {
 
@@ -36,7 +36,7 @@ public class RelationTest {
   }
 
   /**
-   *
+   * //TODO
    */
   @Test
   public void testIfElementOrRoleIsNull() {
@@ -87,13 +87,5 @@ public class RelationTest {
     Relation r2 = new Relation(2);
     r2.type(null);
     assertEquals(Relation.Type.NONE, r2.type());
-  }
-
-  /**
-   *
-   */
-  @Test
-  public void testRole() {
-
   }
 }
