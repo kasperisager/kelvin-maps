@@ -7,11 +7,11 @@ package dk.itu.kelvin.util;
 import java.io.Serializable;
 
 /**
- * Abstract collection class.
+ * Dynamic array class.
  *
  * @version 1.0.0
  */
-public abstract class AbstractCollection implements Serializable {
+public abstract class DynamicArray implements Serializable {
   /**
    * Default initial capacity of the internal storage of the collection.
    */
@@ -58,7 +58,7 @@ public abstract class AbstractCollection implements Serializable {
   private int size;
 
   /**
-   * Initialize a new collection with the specified values.
+   * Initialize a dynamic array structure with the specified values.
    *
    * @param capacity          The initial capacity of the collection.
    * @param upperLoadFactor   The upper load factor of the collection.
@@ -66,7 +66,7 @@ public abstract class AbstractCollection implements Serializable {
    * @param lowerLoadFactor   The lower load factor of the collection.
    * @param lowerResizeFactor The lower resize factor of the collection.
    */
-  public AbstractCollection(
+  public DynamicArray(
     final int capacity,
     final float upperLoadFactor,
     final float upperResizeFactor,

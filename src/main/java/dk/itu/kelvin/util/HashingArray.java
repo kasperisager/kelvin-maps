@@ -4,11 +4,11 @@
 package dk.itu.kelvin.util;
 
 /**
- * Hash table class.
+ * Hashing class.
  *
  * @version 1.0.0
  */
-public abstract class AbstractHashCollection extends AbstractCollection {
+public abstract class HashingArray extends DynamicArray {
   /**
    * Primes to use for hashing keys.
    */
@@ -19,17 +19,27 @@ public abstract class AbstractHashCollection extends AbstractCollection {
   };
 
   /**
-   * Initialize a new hash collection with the specified initial capacity.
+   * Initialize a hashing array structure with the specified values.
    *
-   * @param capacity The initial capacity of the hash collection.
+   * @param capacity          The initial capacity of the internal storage.
+   * @param upperLoadFactor   The upper load factor of the internal storage.
+   * @param upperResizeFactor The upper resize factor of the internal storage.
+   * @param lowerLoadFactor   The lower load factor of the internal storage.
+   * @param lowerResizeFactor The lower resize factor of the internal storage.
    */
-  protected AbstractHashCollection(final int capacity) {
+  public HashingArray(
+    final int capacity,
+    final float upperLoadFactor,
+    final float upperResizeFactor,
+    final float lowerLoadFactor,
+    final float lowerResizeFactor
+  ) {
     super(
       capacity,
-      0.5f,   // Upper load factor
-      2f,     // Upper resize factor
-      0.125f, // Lower load factor
-      0.5f    // Lower resize factor
+      upperLoadFactor,
+      upperResizeFactor,
+      lowerLoadFactor,
+      lowerResizeFactor
     );
   }
 

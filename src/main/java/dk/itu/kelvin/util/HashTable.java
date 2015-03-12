@@ -14,8 +14,7 @@ package dk.itu.kelvin.util;
  *
  * @version 1.0.0
  */
-public class HashTable<K, V> extends AbstractHashCollection
-  implements Map<K, V> {
+public class HashTable<K, V> extends AbstractMap<K, V> {
   /**
    * UID for identifying serialized objects.
    */
