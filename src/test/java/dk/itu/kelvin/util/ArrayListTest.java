@@ -5,7 +5,7 @@ package dk.itu.kelvin.util;
 
 // General utilities
 import dk.itu.kelvin.model.Node;
-import dk.itu.kelvin.model.Way;
+
 
 import java.util.Iterator;
 
@@ -15,117 +15,140 @@ import org.junit.Test;
 
 
 // JUnit assertions
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 
 
+/**
+ * Test of the ArrayList class.
+ */
 public final class ArrayListTest {
 
+  /**
+   * Instance variable of ArrayList.
+   */
   private ArrayList a1;
+
+  /**
+   * Instance variable of Nodes.
+   */
   private Node n1;
+
+  /**
+   * Instance variable of Nodes.
+   */
   private Node n2;
+
+  /**
+   * Instance variable of Nodes.
+   */
   private Node n3;
 
   /**
-   * Initialize an array list with the default initial capacity + 2 nodes
+   * Initialize an array list with the default initial capacity and 3 nodes.
    */
   @Before
   public void before() {
-    a1 = new ArrayList();
-    n1 = new Node(10,10,10);
-    n2 = new Node(10,12,12);
-    n3 = new Node(13,12,12);
+    this.a1 = new ArrayList();
+    this.n1 = new Node(10, 10, 10);
+    this.n2 = new Node(10, 12, 12);
+    this.n3 = new Node(13, 12, 12);
   }
 
   /**
-   * Test boolean add element to array list
+   * Test boolean add element to array list.
    */
   @Test
   public void testAddToArray() {
-    assertTrue(a1.add(10));
-    assertFalse(a1.add(null));
-    a1.add(null);
-    assertEquals(1, a1.size());
+    assertTrue(this.a1.add(10));
+    assertFalse(this.a1.add(null));
+    this.a1.add(null);
+    assertEquals(1, this.a1.size());
   }
 
   /**
-   * Test remove node from index 0 and return the removed element.
+   * Test remove node from index 0
+   * and return the removed element
+   * and update index position.
    */
   @Test
   public void testRemoveIndexFromArray() {
-    a1.add(n1);
-    assertEquals(1, a1.size());
-    assertEquals(n1, a1.remove(0));
-    assertEquals(0, a1.size());
+    this.a1.add(this.n1);
+    assertEquals(1, this.a1.size());
+    assertEquals(this.n1, this.a1.remove(0));
+    assertEquals(0, this.a1.size());
 
-    assertEquals(null, a1.remove(-1));
-    assertEquals(null,a1.remove(20));
+    assertEquals(null, this.a1.remove(-1));
+    assertEquals(null, this.a1.remove(20));
 
-    /*a1.add(n1);
-    a1.add(n2);
-    a1.add(n3);
-    assertEquals(n1, a1.get(0));
-    a1.remove(0);
-    assertEquals(n2, a1.get(0));*/
+
+    this.a1.add(this.n1);
+    this.a1.add(this.n2);
+    this.a1.add(this.n3);
+    assertEquals(this.n1, this.a1.get(0));
+    this.a1.remove(0);
+    assertEquals(this.n2, this.a1.get(0));
 
 
 
   }
 
   /**
-   * Test remove a specific node
+   * Test remove a specific node.
    */
   @Test
   public void testRemoveElementFromArray() {
-    a1.add(n1);
-    assertTrue(a1.remove(n1));
-    assertFalse(a1.remove(n2));
-    assertFalse(a1.contains(n1));
-    assertFalse(a1.contains(n2));
-    assertEquals(0, a1.size());
-    a1.add(n2);
-    assertEquals(n2,a1.get(0));
+    this.a1.add(this.n1);
+    assertTrue(this.a1.remove(this.n1));
+    assertFalse(this.a1.remove(this.n2));
+    assertFalse(this.a1.contains(this.n1));
+    assertFalse(this.a1.contains(this.n2));
+    assertEquals(0, this.a1.size());
+    this.a1.add(this.n2);
+    assertEquals(this.n2, this.a1.get(0));
 
   }
 
   /**
-   * Test get element using index
+   * Test get element by index.
    */
   @Test
   public void testGetElementFromIndex() {
-    a1.add(n1);
-    assertEquals(n1, a1.get(0));
-    assertEquals(null, a1.get(-1));
-    assertEquals(null, a1.get(100000));
+    this.a1.add(this.n1);
+    assertEquals(this.n1, this.a1.get(0));
+    assertEquals(null, this.a1.get(-1));
+    assertEquals(null, this.a1.get(100000));
   }
 
   /**
-   * Test c
+   * Tests if array list contains a specific node.
    */
   @Test
   public void testArrayContainsElement() {
-    a1.add(n1);
-    assertTrue(a1.contains(n1));
-    assertFalse(a1.contains(n2));
-    assertFalse(a1.contains(null));
+    this.a1.add(this.n1);
+    assertTrue(this.a1.contains(this.n1));
+    assertFalse(this.a1.contains(this.n2));
+    assertFalse(this.a1.contains(null));
   }
 
   /**
-   *
+   * Tests if the iterator return an iterator over the elements of the list.
    */
   @Test
   public void testIterator() {
-    a1.add(n1);
-    a1.add(n2);
+    this.a1.add(this.n1);
+    this.a1.add(this.n2);
 
-    Iterator<Node> i = a1.iterator();
+    Iterator<Node> i = this.a1.iterator();
 
     int count = 0;
     while (i.hasNext()) {
       Node n = i.next();
-      assertTrue(n.equals(n1) || n.equals(n2));
+      assertTrue(n.equals(this.n1) || n.equals(this.n2));
       count++;
     }
-    assertEquals(count, a1.size());
+    assertEquals(count, this.a1.size());
 
   }
 
