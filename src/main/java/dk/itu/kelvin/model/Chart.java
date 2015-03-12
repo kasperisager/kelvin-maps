@@ -3,10 +3,9 @@
  */
 package dk.itu.kelvin.model;
 
-// General utilities
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+// Utilities
+import dk.itu.kelvin.util.ArrayList;
+import dk.itu.kelvin.util.List;
 
 /**
  * The "Chart" data model describes a chart with elements defined by the OSM
@@ -78,12 +77,14 @@ public final class Chart {
    *
    * @param elements The list of elements to add to the chart.
    */
-  public void elements(final Collection<? extends Element> elements) {
+  public void elements(final List<? extends Element> elements) {
     if (elements == null) {
       return;
     }
 
-    this.elements.addAll(elements);
+    for (Element element: elements) {
+      this.elements.add(element);
+    }
   }
 
   /**
