@@ -6,6 +6,9 @@ package dk.itu.kelvin.util;
 /**
  * Abstract map class.
  *
+ * @param <K> The type of keys stored within the table.
+ * @param <V> The type of values stored within the table.
+ *
  * @version 1.0.0
  */
 public abstract class AbstractMap<K, V> extends HashingArray

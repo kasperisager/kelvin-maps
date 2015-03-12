@@ -9,6 +9,8 @@ import java.util.Iterator;
 /**
  * Abstract list class.
  *
+ * @param <E> The type of elements stored within the list.
+ *
  * @version 1.0.0
  */
 public abstract class AbstractList<E> extends DynamicArray
@@ -39,7 +41,7 @@ public abstract class AbstractList<E> extends DynamicArray
    * @param index  The index to shift the elements towards.
    * @param shifts The number of elements to shift.
    */
-  protected void shiftLeft(
+  protected final void shiftLeft(
     final Object array,
     final int index,
     final int shifts
