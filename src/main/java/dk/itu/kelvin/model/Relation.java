@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 // JavaFX scene utilities
-import groovy.transform.ASTTest;
 import javafx.scene.Group;
 
 // JavaFX shapes

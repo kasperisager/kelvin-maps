@@ -4,23 +4,19 @@
 package dk.itu.kelvin.model;
 
 // General utilities
-import java.util.Map;
 
 // JUnit annotations
 import org.junit.Test;
 
 // JUnit assertions
-import javax.print.DocFlavor;
-
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 /**
  * UnitTest of the Relation class.
  */
-public class RelationTest {
+public final class RelationTest {
 
   /**
    * Tests addition of a new member without a role.
@@ -28,7 +24,7 @@ public class RelationTest {
   @Test
   public void testAddMemberWithoutRole() {
     Relation r1 = new Relation(1);
-    Node n1 = new Node(2, 2 ,2);
+    Node n1 = new Node(2, 2, 2);
     r1.member(n1);
 
     assertEquals(Relation.Role.NONE, r1.role(n1));
@@ -36,7 +32,7 @@ public class RelationTest {
   }
 
   /**
-   * //TODO
+   * //TODO.
    */
   @Test
   public void testIfElementOrRoleIsNull() {
