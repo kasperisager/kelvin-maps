@@ -16,6 +16,12 @@ import javafx.geometry.Bounds;
 // JavaFX transformations
 import javafx.scene.transform.Affine;
 
+// Utilities
+import dk.itu.kelvin.util.List;
+
+// Models
+import dk.itu.kelvin.model.Element;
+
 /**
  * Canvas class.
  *
@@ -56,12 +62,12 @@ public final class Canvas extends Group {
   }
 
   /**
-   * Add a node to the canvas.
+   * Add an element to the canvas.
    *
-   * @param node The node to add to the canvas.
+   * @param element The element to add to the canvas.
    */
-  public void add(final Node node) {
-    Bounds bounds = node.getBoundsInParent();
+  public void add(final Element element) {
+    Bounds bounds = element.render().getBoundsInParent();
 
     int x = (int) (TILE_SIZE * Math.floor(
       Math.round(bounds.getMaxX() / TILE_SIZE)
@@ -74,27 +80,27 @@ public final class Canvas extends Group {
     TileGrid.Anchor anchor = new TileGrid.Anchor(x, y);
 
     if (this.tileGrid.contains(anchor)) {
-      this.tileGrid.get(anchor).add(node);
+      this.tileGrid.get(anchor).add(element);
     }
     else {
       Tile tile = new Tile();
-      tile.add(node);
+      tile.add(element);
       this.tileGrid.add(anchor, tile);
     }
   }
 
   /**
-   * Add a collection of nodes to the canvas.
+   * Add a list of elements to the canvas.
    *
-   * @param nodes The collection of nodes to add to the canvas.
+   * @param elements The list of elements to add to the canvas.
    */
-  public void add(final Collection<Node> nodes) {
-    if (nodes == null) {
+  public void add(final List<Element> elements) {
+    if (elements == null) {
       return;
     }
 
-    for (Node node: nodes) {
-      this.add(node);
+    for (Element element: elements) {
+      this.add(element);
     }
   }
 
