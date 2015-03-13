@@ -8,7 +8,7 @@ package dk.itu.kelvin.util;
  *
  * @version 1.0.0
  */
-public abstract class HashingArray extends DynamicArray {
+public abstract class DynamicHashArray extends DynamicArray {
   /**
    * Primes to use for hashing keys.
    */
@@ -27,7 +27,7 @@ public abstract class HashingArray extends DynamicArray {
    * @param lowerLoadFactor   The lower load factor of the internal storage.
    * @param lowerResizeFactor The lower resize factor of the internal storage.
    */
-  public HashingArray(
+  public DynamicHashArray(
     final int capacity,
     final float upperLoadFactor,
     final float upperResizeFactor,

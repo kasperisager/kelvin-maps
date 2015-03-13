@@ -14,7 +14,7 @@ package dk.itu.kelvin.util;
  *
  * @version 1.0.0
  */
-public class HashTable<K, V> extends AbstractMap<K, V> {
+public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
   /**
    * UID for identifying serialized objects.
    */
@@ -36,13 +36,19 @@ public class HashTable<K, V> extends AbstractMap<K, V> {
   private transient HashResolver resolver = new QuadraticProbe();
 
   /**
-   * Initialize a hash table with the specified initial capacity.
+   * Initialize a tbale with the specified initial capacity.
    *
-   * @param capacity The initial capacity of the hash table.
+   * @param capacity The initial capacity of the table.
    */
   @SuppressWarnings("unchecked")
   public HashTable(final int capacity) {
-    super(capacity);
+    super(
+      capacity,
+      0.5f,   // Upper load factor
+      2f,     // Upper resize factor
+      0.125f, // Lower load factor
+      0.5f    // Lower resize factor
+    );
 
     this.keys = (K[]) new Object[this.capacity()];
     this.values = (V[]) new Object[this.capacity()];

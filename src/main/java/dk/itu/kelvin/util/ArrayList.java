@@ -3,6 +3,9 @@
  */
 package dk.itu.kelvin.util;
 
+// General utilities
+import java.util.Iterator;
+
 /**
  * Array list class.
  *
@@ -10,14 +13,14 @@ package dk.itu.kelvin.util;
  *
  * @version 1.0.0
  */
-public class ArrayList<E> extends AbstractList<E> {
+public class ArrayList<E> extends DynamicArray implements List<E> {
   /**
    * UID for identifying serialized objects.
    */
   private static final long serialVersionUID = 47;
 
   /**
-   * Internal element storage.
+   * internal element storage.
    */
   private E[] elements;
 
@@ -28,9 +31,15 @@ public class ArrayList<E> extends AbstractList<E> {
    */
   @SuppressWarnings("unchecked")
   public ArrayList(final int capacity) {
-    super(capacity);
+    super(
+      capacity,
+      1.0f,   // Upper load factor
+      2.0f,   // Upper resize factor
+      0.25f,  // Lower load factor
+      0.5f    // Lower resize factor
+    );
 
-    this.elements = (E[]) new Object[this.capacity()];
+    this.elements = (E[]) new Object[capacity];
   }
 
   /**
@@ -47,13 +56,27 @@ public class ArrayList<E> extends AbstractList<E> {
    */
   @SuppressWarnings("unchecked")
   protected final void resize(final int capacity) {
-    E[] temp = (E[]) new Object[capacity];
+    E[] elements = (E[]) new Object[capacity];
 
     for (int i = 0; i < this.size(); i++) {
-      temp[i] = this.elements[i];
+      elements[i] = this.elements[i];
     }
 
-    this.elements = temp;
+    this.elements = elements;
+  }
+
+  /**
+   * Shift the elements of the list left between the specified indices.
+   *
+   * @see <a href="http://stackoverflow.com/questions/22716581/shift-array-
+   * elements-to-left-in-java">http://stackoverflow.com/questions/22716581/
+   * shift-array-elements-to-left-in-java</a>
+   *
+   * @param index  The index to shift the elements towards.
+   * @param shifts The number of elements to shift.
+   */
+  private void shiftLeft(final int index, final int shifts) {
+    System.arraycopy( this.elements, index + 1, this.elements, index, shifts);
   }
 
   /**
@@ -135,7 +158,7 @@ public class ArrayList<E> extends AbstractList<E> {
     int moved = this.size() - index - 1;
 
     if (moved > 0) {
-      this.shiftLeft(this.elements, index, moved);
+      this.shiftLeft(index, moved);
     }
 
     this.elements[this.size() - 1] = null;
@@ -153,5 +176,38 @@ public class ArrayList<E> extends AbstractList<E> {
    */
   public final boolean remove(final Object element) {
     return this.remove(this.indexOf(element)) != null;
+  }
+
+  /**
+   * Iterate over the elements of the list.
+   *
+   * @return An iterator over the elements of the list.
+   */
+  public final Iterator<E> iterator() {
+    return new Iterator<E>() {
+      /**
+       * Keep track of the position within the array.
+       */
+      private int i = 0;
+
+      /**
+       * Check if there are elements left to iterate over.
+       *
+       * @return  A boolean indicating whether or not there are elements left
+       *          to iterate over.
+       */
+      public boolean hasNext() {
+        return i < ArrayList.this.size();
+      }
+
+      /**
+       * Get the next element.
+       *
+       * @return The next element.
+       */
+      public E next() {
+        return ArrayList.this.elements[i++];
+      }
+    };
   }
 }
