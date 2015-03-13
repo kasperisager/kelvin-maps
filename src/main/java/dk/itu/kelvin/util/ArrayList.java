@@ -5,6 +5,7 @@ package dk.itu.kelvin.util;
 
 // General utilities
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Array list class.
@@ -206,6 +207,10 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
        * @return The next element.
        */
       public E next() {
+        if (!this.hasNext()) {
+          throw new NoSuchElementException();
+        }
+
         return ArrayList.this.elements[i++];
       }
     };
