@@ -76,7 +76,7 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    * @param shifts The number of elements to shift.
    */
   private void shiftLeft(final int index, final int shifts) {
-    System.arraycopy( this.elements, index + 1, this.elements, index, shifts);
+    System.arraycopy(this.elements, index + 1, this.elements, index, shifts);
   }
 
   /**
