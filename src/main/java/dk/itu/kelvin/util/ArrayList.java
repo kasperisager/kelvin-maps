@@ -4,8 +4,8 @@
 package dk.itu.kelvin.util;
 
 // General utilities
-import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Array list class.
@@ -14,14 +14,14 @@ import java.util.Iterator;
  *
  * @version 1.0.0
  */
-public class ArrayList<E> extends AbstractCollection implements List<E> {
+public class ArrayList<E> extends DynamicArray implements List<E> {
   /**
    * UID for identifying serialized objects.
    */
   private static final long serialVersionUID = 47;
 
   /**
-   * Internal element storage.
+   * internal element storage.
    */
   private E[] elements;
 
@@ -40,7 +40,7 @@ public class ArrayList<E> extends AbstractCollection implements List<E> {
       0.5f    // Lower resize factor
     );
 
-    this.elements = (E[]) new Object[this.capacity()];
+    this.elements = (E[]) new Object[capacity];
   }
 
   /**
@@ -57,25 +57,27 @@ public class ArrayList<E> extends AbstractCollection implements List<E> {
    */
   @SuppressWarnings("unchecked")
   protected final void resize(final int capacity) {
-    E[] temp = (E[]) new Object[capacity];
+    E[] elements = (E[]) new Object[capacity];
 
     for (int i = 0; i < this.size(); i++) {
-      temp[i] = this.elements[i];
+      elements[i] = this.elements[i];
     }
 
-    this.elements = temp;
+    this.elements = elements;
   }
 
   /**
-   * Swap two elements in the array.
+   * Shift the elements of the list left between the specified indices.
    *
-   * @param a The index of the first element.
-   * @param b The index of the second element.
+   * @see <a href="http://stackoverflow.com/questions/22716581/shift-array-
+   * elements-to-left-in-java">http://stackoverflow.com/questions/22716581/
+   * shift-array-elements-to-left-in-java</a>
+   *
+   * @param index  The index to shift the elements towards.
+   * @param shifts The number of elements to shift.
    */
-  private void swap(final int a, final int b) {
-    E temp = this.elements[a];
-    this.elements[a] = this.elements[b];
-    this.elements[b] = temp;
+  private void shiftLeft(final int index, final int shifts) {
+    System.arraycopy(this.elements, index + 1, this.elements, index, shifts);
   }
 
   /**
@@ -106,7 +108,7 @@ public class ArrayList<E> extends AbstractCollection implements List<E> {
    * @return      The element if found.
    */
   public final E get(final int index) {
-    if (index > 0 || index >= this.size()) {
+    if (index < 0 || index >= this.size()) {
       return null;
     }
 
@@ -152,12 +154,15 @@ public class ArrayList<E> extends AbstractCollection implements List<E> {
       return null;
     }
 
-    int lastIndex = this.size() - 1;
-    this.swap(index, lastIndex);
+    E element = this.elements[index];
 
-    E element = this.elements[lastIndex];
+    int moved = this.size() - index - 1;
 
-    this.elements[lastIndex] = null;
+    if (moved > 0) {
+      this.shiftLeft(index, moved);
+    }
+
+    this.elements[this.size() - 1] = null;
     this.shrink();
 
     return element;
@@ -180,6 +185,34 @@ public class ArrayList<E> extends AbstractCollection implements List<E> {
    * @return An iterator over the elements of the list.
    */
   public final Iterator<E> iterator() {
-    return Arrays.asList(this.elements).iterator();
+    return new Iterator<E>() {
+      /**
+       * Keep track of the position within the array.
+       */
+      private int i = 0;
+
+      /**
+       * Check if there are elements left to iterate over.
+       *
+       * @return  A boolean indicating whether or not there are elements left
+       *          to iterate over.
+       */
+      public boolean hasNext() {
+        return i < ArrayList.this.size();
+      }
+
+      /**
+       * Get the next element.
+       *
+       * @return The next element.
+       */
+      public E next() {
+        if (!this.hasNext()) {
+          throw new NoSuchElementException();
+        }
+
+        return ArrayList.this.elements[i++];
+      }
+    };
   }
 }
