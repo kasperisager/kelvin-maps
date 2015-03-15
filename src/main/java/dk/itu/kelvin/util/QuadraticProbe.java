@@ -93,7 +93,7 @@ public final class QuadraticProbe implements HashResolver {
     int i = hash;
     int step = 1;
 
-    while (keys[i] != 0.0d && keys[i] == key) {
+    while (keys[i] != 0.0d && keys[i] != key) {
       i = this.step(i, keys.length, step++);
     }
 
@@ -112,7 +112,7 @@ public final class QuadraticProbe implements HashResolver {
     int i = hash;
     int step = 1;
 
-    while (keys[i] != null && keys[i].equals(key)) {
+    while (keys[i] != null && !keys[i].equals(key)) {
       i = this.step(i, keys.length, step++);
     }
 

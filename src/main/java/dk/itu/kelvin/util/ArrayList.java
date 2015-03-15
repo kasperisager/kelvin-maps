@@ -26,6 +26,13 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
   private E[] elements;
 
   /**
+   * Initialize an array list with the default initial capacity.
+   */
+  public ArrayList() {
+    this(2);
+  }
+
+  /**
    * Initialize an array list with the specified initial capacity.
    *
    * @param capacity The initial capacity of the array list.
@@ -44,10 +51,14 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
   }
 
   /**
-   * Initialize an array list with the default initial capacity.
+   * Initialize an array list using the elements of an existing collection.
+   *
+   * @param collection  The collection whose elements to initialize the list
+   *                    with.
    */
-  public ArrayList() {
-    this(2);
+  public ArrayList(final Collection<? extends E> collection) {
+    this(collection.size());
+    this.addAll(collection);
   }
 
   /**
@@ -130,7 +141,8 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    * Add an element to the list.
    *
    * @param element The element to add to the list.
-   * @return        {@code true}
+   * @return        A boolean indicating whether or not the list changed as a
+   *                result of the call.
    */
   public final boolean add(final E element) {
     if (element == null) {
@@ -141,6 +153,27 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
     this.grow();
 
     return true;
+  }
+
+  /**
+   * Add a collection of elements to the list.
+   *
+   * @param elements  The elements to add to the list.
+   * @return          A boolean indicating whether or not the list changed as a
+   *                  result of the call.
+   */
+  public final boolean addAll(final Collection<? extends E> elements) {
+    if (elements == null || elements.isEmpty()) {
+      return false;
+    }
+
+    boolean changed = false;
+
+    for (E element: elements) {
+      changed = this.add(element) || changed;
+    }
+
+    return changed;
   }
 
   /**
@@ -198,7 +231,7 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
        *          to iterate over.
        */
       public boolean hasNext() {
-        return i < ArrayList.this.size();
+        return this.i < ArrayList.this.size();
       }
 
       /**
@@ -211,7 +244,7 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
           throw new NoSuchElementException();
         }
 
-        return ArrayList.this.elements[i++];
+        return ArrayList.this.elements[this.i++];
       }
     };
   }
