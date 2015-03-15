@@ -3,9 +3,6 @@
  */
 package dk.itu.kelvin.layout;
 
-// General utilities
-import java.util.Collection;
-
 // JavaFX scene utilities
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -17,6 +14,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.transform.Affine;
 
 // Utilities
+import dk.itu.kelvin.util.Collection;
 import dk.itu.kelvin.util.List;
 
 // Models
@@ -90,11 +88,11 @@ public final class Canvas extends Group {
   }
 
   /**
-   * Add a list of elements to the canvas.
+   * Add a collection of elements to the canvas.
    *
-   * @param elements The list of elements to add to the canvas.
+   * @param elements The collection of elements to add to the canvas.
    */
-  public void add(final List<Element> elements) {
+  public void add(final Collection<Element> elements) {
     if (elements == null) {
       return;
     }

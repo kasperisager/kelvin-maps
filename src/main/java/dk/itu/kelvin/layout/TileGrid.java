@@ -7,7 +7,6 @@ package dk.itu.kelvin.layout;
 import javafx.application.Platform;
 
 // JavaFX scene utilities
-import javafx.scene.CacheHint;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 
@@ -19,8 +18,16 @@ import javafx.geometry.Point2D;
 // JavaFX transformations
 import javafx.scene.transform.Affine;
 
+// JavaFX beans
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+
+// Threading
+import dk.itu.kelvin.thread.TaskQueue;
+
 // Utilities
 import dk.itu.kelvin.util.ArrayList;
+import dk.itu.kelvin.util.Collection;
 import dk.itu.kelvin.util.HashTable;
 import dk.itu.kelvin.util.List;
 import dk.itu.kelvin.util.Map;
@@ -44,6 +51,10 @@ public final class TileGrid extends Group {
    */
   private Map<TileGrid.Anchor, Tile> tiles = new HashTable<>();
 
+  private ChangeListener<? super Number> listener = (ob, ov, nv) -> {
+    TileGrid.this.layoutTiles();
+  };
+
   /**
    * Initialize a tile grid.
    *
@@ -52,18 +63,17 @@ public final class TileGrid extends Group {
   public TileGrid(final Affine affine) {
     this.affine = affine;
 
-    // Schedule the initial layout of the tiles.
-    Platform.runLater(() -> {
-      this.layoutTiles();
-    });
+    this.addListeners();
+  }
 
-    this.affine.txProperty().addListener((ob, ov, nv) -> {
-      this.layoutTiles();
-    });
+  private synchronized void addListeners() {
+    this.affine.txProperty().addListener(this.listener);
+    this.affine.tyProperty().addListener(this.listener);
+  }
 
-    this.affine.tyProperty().addListener((ob, ov, nv) -> {
-      this.layoutTiles();
-    });
+  private synchronized void removeListeners() {
+    this.affine.txProperty().removeListener(this.listener);
+    this.affine.tyProperty().removeListener(this.listener);
   }
 
   /**
@@ -111,49 +121,6 @@ public final class TileGrid extends Group {
   }
 
   /**
-   * Get a list of tiles contained within the tile grid.
-   *
-   * @return A list of tiles contained within the tile grid.
-   */
-  public List<Tile> tiles() {
-    return new ArrayList<Tile>();
-    // return new ArrayList<Tile>(this.tiles.values());
-  }
-
-  /**
-   * Add a tile to the tile grid scene graph.
-   *
-   * @param tile The tile to add.
-   */
-  private void render(final Tile tile) {
-    // Schedule an addition of the tile from the scene graph.
-    Platform.runLater(() -> {
-      if (!this.getChildren().contains(tile)) {
-        tile.setCache(true);
-        tile.setCacheHint(CacheHint.SPEED);
-
-        this.getChildren().add(tile);
-      }
-    });
-  }
-
-  /**
-   * Remove a tile from the tile grid scene graph.
-   *
-   * @param tile The tile to remove.
-   */
-  private void remove(final Tile tile) {
-    // Schedule a removal of the tile from the scene graph.
-    Platform.runLater(() -> {
-      if (this.getChildren().contains(tile)) {
-        tile.setCache(false);
-
-        this.getChildren().remove(tile);
-      }
-    });
-  }
-
-  /**
    * Check if a given tile is within the visible bounds of the tile grid.
    *
    * @param tile  The tile to check the visibility of.
@@ -187,15 +154,33 @@ public final class TileGrid extends Group {
   /**
    * Add the visible tiles to the tile grid.
    */
-  private void layoutTiles() {
-    for (Tile tile: this.tiles()) {
-      if (this.withinBounds(tile)) {
-        this.render(tile);
+  private synchronized void layoutTiles() {
+    this.removeListeners();
+
+    TaskQueue.run(() -> {
+      for (Tile tile: this.tiles.values()) {
+        if (this.withinBounds(tile)) {
+          // Schedule an addition of the tile from the scene graph.
+          Platform.runLater(() -> {
+            if (!this.getChildren().contains(tile)) {
+              this.getChildren().add(tile);
+            }
+          });
+        }
+        else {
+          // Schedule a removal of the tile from the scene graph.
+          Platform.runLater(() -> {
+            if (this.getChildren().contains(tile)) {
+              this.getChildren().remove(tile);
+            }
+          });
+        }
       }
-      else {
-        this.remove(tile);
-      }
-    }
+
+      Platform.runLater(() -> {
+        this.addListeners();
+      });
+    });
   }
 
   /**
