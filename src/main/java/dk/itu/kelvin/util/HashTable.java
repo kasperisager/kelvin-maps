@@ -188,7 +188,7 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
    *
    * @return A collection of the values contained within the table.
    */
-  public Collection<V> values() {
+  public final Collection<V> values() {
     List<V> values = new ArrayList<>(this.size());
 
     for (V value: this.values) {
