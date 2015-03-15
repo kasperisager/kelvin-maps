@@ -257,12 +257,12 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
     /**
      * The key of the entry.
      */
-    final K key;
+    private final K key;
 
     /**
      * The value of the entry.
      */
-    final V value;
+    private final V value;
 
     /**
      * Initialize a new entry with the specified key and value.

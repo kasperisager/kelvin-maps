@@ -10,6 +10,8 @@ import java.util.NoSuchElementException;
 /**
  * Hash set class.
  *
+ * @param <E> The type of elements stored within the set.
+ *
  * @version 1.0.0
  */
 public class HashSet<E> extends DynamicHashArray implements Set<E> {
@@ -91,7 +93,7 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
    * @param element The element to look up the index of.
    * @return        The index of the specified elements.
    */
-  public int indexOf(final Object element) {
+  private int indexOf(final Object element) {
     return this.resolver.resolve(this.hash(element), element, this.elements);
   }
 
@@ -211,10 +213,16 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
 
         n++;
 
-        // While we haven't found a non-null item, increase i.
-        while (HashSet.this.elements[this.i++] == null);
+        while (true) {
+          if (HashSet.this.elements[this.i] != null) {
+            break;
+          }
+          else {
+            this.i++;
+          }
+        }
 
-        return HashSet.this.elements[this.i - 1];
+        return HashSet.this.elements[this.i];
       }
     };
   }
