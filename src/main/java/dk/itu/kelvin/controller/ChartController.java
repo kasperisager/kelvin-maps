@@ -176,7 +176,7 @@ public final class ChartController {
         throw new RuntimeException(ex);
       }
 
-      Collections.sort(this.chart.elements(), Element.COMPARATOR);
+      // Collections.sort(this.chart.elements(), Element.COMPARATOR);
 
       //Get map of all addresses from parser.
       this.addresses = parser.addresses();
@@ -187,7 +187,7 @@ public final class ChartController {
 
         this.canvas.pan(
           -this.chart.bounds().getMinX(),
-          -this.chart.bounds().getMaxY()
+          -this.chart.bounds().getMinY()
         );
       });
     });
