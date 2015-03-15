@@ -68,4 +68,11 @@ public interface Map<K, V> {
    * @return    The removed value if fonund.
    */
   V remove(final Object key);
+
+  /**
+   * Get a collection of the values contained within the map.
+   *
+   * @return A collection of the values contained within the map.
+   */
+  Collection<V> values();
 }
