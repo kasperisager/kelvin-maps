@@ -387,7 +387,7 @@ public final class ChartParser {
    */
   public void endDocument() {
     this.chart.elements(this.ways.values());
-    // this.chart.elements(this.relations.values());
+    this.chart.elements(this.relations.values());
     // this.chart.elements(this.land.coastlines());
   }
 
