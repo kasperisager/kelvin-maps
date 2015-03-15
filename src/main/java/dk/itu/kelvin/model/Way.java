@@ -3,16 +3,16 @@
  */
 package dk.itu.kelvin.model;
 
-// General utilities
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 // JavaFX shapes
 import javafx.scene.shape.Polyline;
 
 // JavaFX paint
 import javafx.scene.paint.Color;
+
+// Utilities
+import dk.itu.kelvin.util.ArrayList;
+import dk.itu.kelvin.util.List;
+import dk.itu.kelvin.util.Map;
 
 /**
  * A way is an ordered list of 2 to 2,000 nodes.
