@@ -30,9 +30,18 @@ public interface Collection<E> extends Iterable<E> {
    *
    * @param element The element to add to the collection.
    * @return        A boolean indicating whether or not the collection changed
-   *                because of the call.
+   *                as a result of the call.
    */
   boolean add(final E element);
+
+  /**
+   * Add a collection of elements to the collection.
+   *
+   * @param elements  The elements to add to the collection.
+   * @return          A boolean indicating whether or not the collection changed
+   *                  as a result of the call.
+   */
+  boolean addAll(final Collection<? extends E> elements);
 
   /**
    * Check if the specified element exists within the collection.

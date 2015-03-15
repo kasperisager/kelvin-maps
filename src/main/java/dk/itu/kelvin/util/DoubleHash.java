@@ -37,7 +37,7 @@ public final class DoubleHash implements HashResolver {
    * @return    A second hash.
    */
   private int secondHash(final int key) {
-    return (key % 7) + 1;
+    return (key % 31) + 1;
   }
 
   /**
@@ -94,7 +94,7 @@ public final class DoubleHash implements HashResolver {
     int step = 1;
 
     while (keys[i] != 0 && keys[i] != key) {
-      i = this.step(i, secondHash, keys.length, step);
+      i = this.step(i, secondHash, keys.length, step++);
     }
 
     return i;
@@ -114,7 +114,7 @@ public final class DoubleHash implements HashResolver {
     int step = 1;
 
     while (keys[i] != 0L && keys[i] != key) {
-      i = this.step(i, secondHash, keys.length, step);
+      i = this.step(i, secondHash, keys.length, step++);
     }
 
     return i;
@@ -134,7 +134,7 @@ public final class DoubleHash implements HashResolver {
     int step = 1;
 
     while (keys[i] != 0.0f && keys[i] != key) {
-      i = this.step(i, secondHash, keys.length, step);
+      i = this.step(i, secondHash, keys.length, step++);
     }
 
     return i;
@@ -154,7 +154,7 @@ public final class DoubleHash implements HashResolver {
     int step = 1;
 
     while (keys[i] != 0.0d && keys[i] != key) {
-      i = this.step(i, secondHash, keys.length, step);
+      i = this.step(i, secondHash, keys.length, step++);
     }
 
     return i;
@@ -174,7 +174,7 @@ public final class DoubleHash implements HashResolver {
     int step = 1;
 
     while (keys[i] != null && !keys[i].equals(key)) {
-      i = this.step(i, secondHash, keys.length, step);
+      i = this.step(i, secondHash, keys.length, step++);
     }
 
     return i;
