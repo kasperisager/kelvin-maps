@@ -36,7 +36,14 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
   private transient HashResolver resolver = new QuadraticProbe();
 
   /**
-   * Initialize a tbale with the specified initial capacity.
+   * Initialize a hash table with the default initial capacity.
+   */
+  public HashTable() {
+    this(16);
+  }
+
+  /**
+   * Initialize a table with the specified initial capacity.
    *
    * @param capacity The initial capacity of the table.
    */
@@ -55,13 +62,6 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
   }
 
   /**
-   * Initialize a hash table with the default initial capacity.
-   */
-  public HashTable() {
-    this(16);
-  }
-
-  /**
    * Resize the internal storage of the table to the specified capacity.
    *
    * @param capacity The new capacity of the internal storage of the table.
@@ -69,16 +69,16 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
   protected final void resize(final int capacity) {
     HashTable<K, V> temp = new HashTable<>(capacity);
 
-    // For each of the entries in the current store, put them in the temporary
-    // store, effectively recomputing their hashes.
+    // For each of the entries in the current table, put them in the temporary
+    // table, effectively recomputing their hashes.
     for (int i = 0; i < this.capacity(); i++) {
       if (this.keys[i] != null) {
         temp.put(this.keys[i], this.values[i]);
       }
     }
 
-    // Point the entries of the current store to the entries of the temporary,
-    // rehashed store.
+    // Point the entries of the current table to the entries of the temporary,
+    // rehashed table.
     this.keys = temp.keys;
     this.values = temp.values;
   }
@@ -184,17 +184,113 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
   }
 
   /**
+   * Get a set of the keys contained within the table.
+   *
+   * <p>
+   * Unlike Java's Collections, the returned set is neither backed by the map
+   * nor is the map backed by the set. The object references are however the
+   * same, so changes to the elements of the set will propagate to the map and
+   * vice-versa.
+   *
+   * @return A set of the keys contained within the table.
+   */
+  public final Set<K> keySet() {
+    Set<K> keySet = new HashSet<>(this.size());
+
+    for (int i = 0; i < this.capacity(); i++) {
+      if (this.keys[i] != null) {
+        keySet.add(this.keys[i]);
+      }
+    }
+
+    return keySet;
+  }
+
+  /**
    * Get a collection of the values contained within the table.
+   *
+   * <p>
+   * Unlike Java's Collections, the returned collection is neither backed by the
+   * map nor is the map backed by the collection. The object references are
+   * however the same, so changes to the elements of the collection will
+   * propagate to the map and vice-versa.
    *
    * @return A collection of the values contained within the table.
    */
   public final Collection<V> values() {
     List<V> values = new ArrayList<>(this.size());
 
-    for (V value: this.values) {
-      values.add(value);
+    for (int i = 0; i < this.capacity(); i++) {
+      if (this.keys[i] != null) {
+        values.add(this.values[i]);
+      }
     }
 
     return values;
+  }
+
+  /**
+   * Get a set of entries contained within the map.
+   *
+   * <p>
+   * Unlike Java's Collections, the returned set is neither backed by the map
+   * nor is the map backed by the set.
+   *
+   * @return A set of entries contained within the map.
+   */
+  public final Set<Map.Entry<K, V>> entrySet() {
+    Set<Map.Entry<K, V>> entrySet = new HashSet<>(this.size());
+
+    for (int i = 0; i < this.capacity(); i++) {
+      if (this.keys[i] != null) {
+        entrySet.add(new Entry<K, V>(this.keys[i], this.values[i]));
+      }
+    }
+
+    return entrySet;
+  }
+
+  /**
+   * The {@link Entry} class describes an entry within a hash table.
+   */
+  public static final class Entry<K, V> implements Map.Entry<K, V> {
+    /**
+     * The key of the entry.
+     */
+    private final K key;
+
+    /**
+     * The value of the entry.
+     */
+    private final V value;
+
+    /**
+     * Initialize a new entry with the specified key and value.
+     *
+     * @param key   The key of the entry.
+     * @param value The value of the entry.
+     */
+    public Entry(final K key, final V value) {
+      this.key = key;
+      this.value = value;
+    }
+
+    /**
+     * Get the key of the entry.
+     *
+     * @return The key of the entry.
+     */
+    public K getKey() {
+      return this.key;
+    }
+
+    /**
+     * Get the value of the entry.
+     *
+     * @return The value of the entry.
+     */
+    public V getValue() {
+      return this.value;
+    }
   }
 }
