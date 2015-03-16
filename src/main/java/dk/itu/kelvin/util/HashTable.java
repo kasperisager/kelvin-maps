@@ -90,6 +90,10 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
    * @return    The index of the specified key.
    */
   private int indexOf(final Object key) {
+    if (key == null) {
+      return -1;
+    }
+
     return this.resolver.resolve(this.hash(key), key, this.keys);
   }
 
@@ -100,6 +104,10 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
    * @return    The value if found.
    */
   public final V get(final Object key) {
+    if (key == null) {
+      return null;
+    }
+
     return this.values[this.indexOf(key)];
   }
 
@@ -111,6 +119,10 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
    *            specified key.
    */
   public final boolean containsKey(final Object key) {
+    if (key == null) {
+      return false;
+    }
+
     return this.get(key) != null;
   }
 
@@ -122,6 +134,10 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
    *              specified value.
    */
   public final boolean containsValue(final Object value) {
+    if (value == null) {
+      return false;
+    }
+
     for (V found: this.values) {
       if (value.equals(found)) {
         return true;
@@ -139,6 +155,10 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
    * @return      The previous value associated with the key if found.
    */
   public final V put(final K key, final V value) {
+    if (key == null) {
+      return null;
+    }
+
     if (value == null) {
       this.remove(key);
       return null;
