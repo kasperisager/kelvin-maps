@@ -3,8 +3,6 @@
  */
 package dk.itu.kelvin.controller;
 
-import java.util.ArrayList;
-
 // General utilities
 import java.util.Collections;
 
@@ -37,10 +35,15 @@ import javafx.scene.control.TextField;
 
 // Controls FX
 import org.controlsfx.control.PopOver;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 
 // FXML utilities
 import javafx.fxml.FXML;
+
+// Utilities
+import java.util.ArrayList;
+import java.util.List;
 
 // Parser
 import dk.itu.kelvin.parser.ChartParser;
@@ -122,14 +125,14 @@ public final class ChartController {
   private AddressStore addresses;
 
   /**
-   *
-   */
-  private ArrayList<String> addressStrings = new ArrayList<>();
-
-  /**
    * PopOver for the config menu.
    */
   private PopOver popOver;
+
+  /**
+   * The dynamic autocomplete results
+   */
+  private List<String> suggestions = new ArrayList<>();
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -190,13 +193,7 @@ public final class ChartController {
 
       //Get map of all addresses from parser.
       this.addresses = parser.addresses();
-
-      // Temporary fix.
-      // Adds all addresses as strings to a list.
-      for (Address a : this.addresses.keySet()) {
-          this.addressStrings.add(a.toString());
-          System.out.println(a.toString());
-      }
+      System.out.println("Ready!");
 
       // Schedule rendering of the chart nodes.
       Platform.runLater(() -> {
@@ -210,36 +207,31 @@ public final class ChartController {
     });
 
     this.createPopOver();
-    //this.autoComplete();
 
     Platform.runLater(() -> this.addressFrom.requestFocus());
-  }
 
-  /**
-   * Creates the key for autocomplete search.
-   */
-  public void searchKey() {
-    ArrayList<String> l = new ArrayList<>();
-    if (this.addressFrom.getLength() > 2) {
-      for (int i = 0; i < this.addressStrings.size(); i++) {
-        if (this.addressStrings.get(i).contains(this.addressFrom.getText())) {
-          l.add(this.addressStrings.get(i));
-        }
-        if (l.size() > 5) {
-          break;
+    new AutoCompletionBinding<String>() {
+      @Override
+      public void dispose() {
+        return;
+      }
+
+      @Override
+      protected void completeUserInput(String completion) {
+        if (ChartController.this.addressFrom.getLength() > 2) {
+          for (Address a : ChartController.this.addresses.keySet()) {
+            if (a.toString().contains(ChartController.this.addressFrom.getText())) {
+              System.out.println(a.toString());
+              ChartController.this.suggestions.add(a.toString());
+            }
+
+            if (ChartController.this.suggestions.size() > 5) {
+              break;
+            }
+          }
         }
       }
-    }
-    this.autoComplete(l);
-  }
-
-  /**
-   * Binding autocomplete functionality to the two textfields.
-   * @param l the list with suggestions.
-   */
-  public void autoComplete(final ArrayList<String> l) {
-    TextFields.bindAutoCompletion(this.addressFrom, l);
-    TextFields.bindAutoCompletion(this.addressTo, l);
+    };
   }
 
   /**

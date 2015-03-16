@@ -137,4 +137,5 @@ public final class Node extends Element<Label> {
 
     return this.fx;
   }
+
 }

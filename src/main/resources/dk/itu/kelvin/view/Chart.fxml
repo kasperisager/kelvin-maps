@@ -75,9 +75,7 @@
           styleClass="first"
           prefWidth="9999"
           fx:id="addressFrom"
-          onKeyPressed="#searchKey"
           onAction="#findAddress"
-
         />
 
         <Button
