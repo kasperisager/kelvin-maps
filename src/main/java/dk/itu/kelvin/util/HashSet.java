@@ -94,6 +94,10 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
    * @return        The index of the specified elements.
    */
   private int indexOf(final Object element) {
+    if (element == null) {
+      return -1;
+    }
+
     return this.resolver.resolve(this.hash(element), element, this.elements);
   }
 
@@ -105,6 +109,10 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
    *                specified element.
    */
   public final boolean contains(final Object element) {
+    if (element == null) {
+      return false;
+    }
+
     return this.elements[this.indexOf(element)] != null;
   }
 
@@ -162,6 +170,10 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
    *                element to remove.
    */
   public final boolean remove(final Object element) {
+    if (element == null) {
+      return false;
+    }
+
     if (!this.contains(element)) {
       return false;
     }
@@ -184,7 +196,7 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
       /**
        * Keep track of the position within the array.
        */
-      private int i = 0;
+      private int i = -1;
 
       /**
        * Keep track of how many elements we've iterated over.
@@ -213,13 +225,8 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
 
         n++;
 
-        while (true) {
-          if (HashSet.this.elements[this.i] != null) {
-            break;
-          }
-          else {
-            this.i++;
-          }
+        while (HashSet.this.elements[++this.i] == null) {
+          continue;
         }
 
         return HashSet.this.elements[this.i];
