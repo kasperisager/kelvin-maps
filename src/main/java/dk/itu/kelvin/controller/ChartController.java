@@ -59,7 +59,6 @@ import dk.itu.kelvin.model.Node;
 
 // Stores
 import dk.itu.kelvin.store.AddressStore;
-import org.controlsfx.control.textfield.AutoCompletionBinding;
 
 /**
  * Chart controller class.
