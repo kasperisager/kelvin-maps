@@ -43,16 +43,8 @@
     onMouseDragged="#onMouseDragged"
     onMouseReleased="#onMouseReleased"
 
-    onScrollStarted="#onScrollStarted"
-    onScrollFinished="#onScrollFinished"
     onScroll="#onScroll"
-
-    onZoomStarted="#onZoomStarted"
-    onZoomFinished="#onZoomFinished"
     onZoom="#onZoom"
-
-    onRotationStarted="#onRotationStarted"
-    onRotationFinished="#onRotationFinished"
     onRotate="#onRotate"
 
     onKeyPressed="#onKeyPressed"
@@ -76,12 +68,14 @@
           prefWidth="9999"
           fx:id="addressFrom"
           onAction="#findAddress"
+
         />
 
         <Button
           text="&#xf4a4;"
           styleClass="icon, last"
           onAction="#findAddress"
+          focusTraversable="false"
         >
           <tooltip>
             <Tooltip text="Search for address"/>
@@ -104,6 +98,7 @@
           text="&#xf30f;"
           styleClass="icon, last"
           onAction="#findRoute"
+          focusTraversable="false"
         >
           <tooltip>
             <Tooltip text="Get directions"/>

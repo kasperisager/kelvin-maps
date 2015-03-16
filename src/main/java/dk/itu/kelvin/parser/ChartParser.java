@@ -3,10 +3,6 @@
  */
 package dk.itu.kelvin.parser;
 
-// General utilities
-import java.util.HashMap;
-import java.util.Map;
-
 // Net utilities
 import java.net.URL;
 
@@ -18,7 +14,12 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+// Utilities
+import dk.itu.kelvin.util.HashTable;
+import dk.itu.kelvin.util.Map;
+
 // Storage
+import dk.itu.kelvin.store.AddressStore;
 import dk.itu.kelvin.store.ElementStore;
 
 // Models
@@ -29,6 +30,7 @@ import dk.itu.kelvin.model.Land;
 import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.Way;
+import dk.itu.kelvin.model.Address;
 
 /**
  * Parser class.
@@ -47,14 +49,19 @@ public final class ChartParser {
   private ElementStore<Node> nodes = new ElementStore<>();
 
   /**
+   *
+   */
+  private AddressStore addresses = new AddressStore();
+
+  /**
    * Map way IDs to ways.
    */
-  private Map<Long, Way> ways = new HashMap<>();
+  private Map<Long, Way> ways = new HashTable<>();
 
   /**
    * Map relation IDs to relations.
    */
-  private Map<Long, Relation> relations = new HashMap<>();
+  private Map<Long, Relation> relations = new HashTable<>();
 
   /**
    * Land element.
@@ -67,12 +74,25 @@ public final class ChartParser {
   private Element element;
 
   /**
+   * The currently active address object.
+   */
+  private Address address;
+
+  /**
    * Initialize a new chart parser.
    *
    * @param chart The chart to add the parsed elements to.
    */
   public ChartParser(final Chart chart) {
     this.chart = chart;
+  }
+
+  /**
+   *  Get the addresses field.
+   * @return the addresses field.
+   */
+  public AddressStore addresses() {
+    return this.addresses;
   }
 
   /**
@@ -197,6 +217,11 @@ public final class ChartParser {
 
     this.nodes.put(node.id(), node);
 
+    if (this.address != null) {
+      this.addresses.put(this.address, node);
+      this.address = null;
+    }
+
     this.clearElement();
   }
 
@@ -273,6 +298,30 @@ public final class ChartParser {
       case "layer":
         this.element.layer(Integer.parseInt(v));
         break;
+      case "addr:city":
+        if (this.address == null) {
+          this.address = new Address();
+        }
+        this.address.city(v);
+        break;
+      case "addr:housenumber":
+        if (this.address == null) {
+          this.address = new Address();
+        }
+        this.address.number(v);
+        break;
+      case "addr:postcode":
+        if (this.address == null) {
+          this.address = new Address();
+        }
+        this.address.postcode(v);
+        break;
+      case "addr:street":
+        if (this.address == null) {
+          this.address = new Address();
+        }
+        this.address.street(v);
+        break;
       default:
         this.element.tag(k, v);
     }
@@ -339,7 +388,7 @@ public final class ChartParser {
   public void endDocument() {
     this.chart.elements(this.ways.values());
     this.chart.elements(this.relations.values());
-    this.chart.elements(this.land.coastlines());
+    // this.chart.elements(this.land.coastlines());
   }
 
   /**
