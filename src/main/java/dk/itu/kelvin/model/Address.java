@@ -297,11 +297,11 @@ public final class Address {
   }
 
   /**
-   * Check if the current Node equals the specified object.
+   * Check if the current Address equals the specified object.
    *
    * @param object  The reference object with which to compare.
-   * @return        Boolean indicating whether or not the Node is equal to the
-   *                specified object.
+   * @return        Boolean indicating whether or not the Address is equal to
+   *                the specified object.
    */
   @Override
   public boolean equals(final Object object) {
@@ -355,13 +355,31 @@ public final class Address {
   public int hashCode() {
     if (this.hash == 0) {
       long bits = 7L;
-      bits = 31L * bits + ((this.city != null) ? this.city.hashCode() : 0);
-      bits = 31L * bits + ((this.number != null) ? this.number.hashCode() : 0);
-      bits = 31L * bits + ((this.floor != null) ? this.floor.hashCode() : 0);
-      bits = 31L * bits + ((this.door != null) ? this.door.hashCode() : 0);
-      bits = 31L * bits + ((this.postcode != null)
-      ? this.postcode.hashCode() : 0);
-      bits = 31L * bits + ((this.street != null) ? this.street.hashCode() : 0);
+
+      bits = 31L * bits + (
+        (this.city != null) ? this.city.hashCode() : 0
+      );
+
+      bits = 31L * bits + (
+        (this.number != null) ? this.number.hashCode() : 0
+      );
+
+      bits = 31L * bits + (
+        (this.floor != null) ? this.floor.hashCode() : 0
+      );
+
+      bits = 31L * bits + (
+        (this.door != null) ? this.door.hashCode() : 0
+      );
+
+      bits = 31L * bits + (
+        (this.postcode != null) ? this.postcode.hashCode() : 0
+      );
+
+      bits = 31L * bits + (
+        (this.street != null) ? this.street.hashCode() : 0
+      );
+
       this.hash = (int) (bits ^ (bits >> 32));
     }
 

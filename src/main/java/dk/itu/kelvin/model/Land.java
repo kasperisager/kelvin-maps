@@ -131,7 +131,7 @@ public final class Land extends Element<Group> {
    * Enumerator describing the intersections between coastlines and the land
    * bounds.
    */
-  private enum Intersection {
+  private static enum Intersection {
     /** Intersection of bounds and start node. */
     START,
 
