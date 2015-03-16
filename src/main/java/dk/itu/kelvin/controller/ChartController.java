@@ -13,6 +13,7 @@ import javafx.application.Platform;
 import javafx.scene.CacheHint;
 
 // JavaFX layout
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 // JavaFX shapes
@@ -34,6 +35,7 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.TextField;
 
 // Controls FX
+import javafx.util.Duration;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
@@ -169,7 +171,7 @@ public final class ChartController {
    */
   @FXML
   private VBox checkboxVBox;
-
+  private PopOver autocPopOver;
   /**
    * Initialize the controller.
    *
@@ -210,28 +212,57 @@ public final class ChartController {
 
     Platform.runLater(() -> this.addressFrom.requestFocus());
 
-    new AutoCompletionBinding<String>() {
-      @Override
-      public void dispose() {
-        return;
+    setAutoComplete(this.addressFrom);
+    setAutoComplete(this.addressTo);
+  }
+
+  /**
+   * sets autocomplete for textfields.
+   * @param tf textfield.
+   */
+  private void setAutoComplete(TextField tf){
+    tf.setOnKeyTyped((event) -> {
+      if (autocPopOver != null) {
+        autocPopOver.hide(new Duration(1000.0));
       }
+      autocPopOver = new PopOver();
 
-      @Override
-      protected void completeUserInput(String completion) {
-        if (ChartController.this.addressFrom.getLength() > 2) {
-          for (Address a : ChartController.this.addresses.keySet()) {
-            if (a.toString().contains(ChartController.this.addressFrom.getText())) {
-              System.out.println(a.toString());
-              ChartController.this.suggestions.add(a.toString());
-            }
+      suggestions.clear();
+      if (tf.getLength() > 0) {
+        for (Address a : this.addresses.keySet()) {
+          if (a.toString().toLowerCase().contains(tf.getText().toLowerCase())) {
+            System.out.println(a.toString());
+            this.suggestions.add(a.toString());
+          }
 
-            if (ChartController.this.suggestions.size() > 5) {
-              break;
-            }
+          if (this.suggestions.size() > 5) {
+            break;
           }
         }
       }
-    };
+      if (suggestions.size() > 0) {
+        VBox suggestionsVBox = new VBox(suggestions.size());
+        suggestionsVBox.setPrefWidth(400);
+        for (String suggestion : suggestions) {
+          Label l = new Label(suggestion);
+          l.getStyleClass().add("hover-highlight");
+          l.setOnMouseClicked((event2 -> {
+            tf.setText(l.getText());
+            autocPopOver.hide();
+          }));
+          System.out.println(suggestion);
+          suggestionsVBox.getChildren().add(l);
+        }
+        autocPopOver.setDetachable(false);
+        autocPopOver.setContentNode(suggestionsVBox);
+        autocPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
+        autocPopOver.setCornerRadius(2);
+        autocPopOver.setArrowSize(6);
+        autocPopOver.setAutoHide(true);
+        autocPopOver.show(tf, -5);
+      }
+    });
+
   }
 
   /**
