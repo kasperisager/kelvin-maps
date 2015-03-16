@@ -68,4 +68,44 @@ public interface Map<K, V> {
    * @return    The removed value if fonund.
    */
   V remove(final Object key);
+
+  /**
+   * Get a set of the keys contained within the map.
+   *
+   * @return A set of the keys contained within the map.
+   */
+  Set<K> keySet();
+
+  /**
+   * Get a collection of the values contained within the map.
+   *
+   * @return A collection of the values contained within the map.
+   */
+  Collection<V> values();
+
+  /**
+   * Get a set of entries contained within the map.
+   *
+   * @return A set of entries contained within the map.
+   */
+  Set<Map.Entry<K, V>> entrySet();
+
+  /**
+   * The {@link Entry} class describes an entry within a map.
+   */
+  public interface Entry<K, V> {
+    /**
+     * Get the key of the entry.
+     *
+     * @return The key of the entry.
+     */
+    K getKey();
+
+    /**
+     * Get the value of the entry.
+     *
+     * @return The value of the entry.
+     */
+    V getValue();
+  }
 }
