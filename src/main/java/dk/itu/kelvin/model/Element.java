@@ -5,14 +5,16 @@ package dk.itu.kelvin.model;
 
 // General utilities
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 
 // I/O utilities
 import java.io.Serializable;
 
 // JavaFX scene utilities
 import javafx.scene.Node;
+
+// Utilities
+import dk.itu.kelvin.util.HashTable;
+import dk.itu.kelvin.util.Map;
 
 /**
  * Interface that all elements of a chart must follow.
@@ -106,7 +108,7 @@ public abstract class Element<T extends Node> implements Serializable {
     }
 
     if (this.tags == null) {
-      this.tags = new HashMap<>();
+      this.tags = new HashTable<>();
     }
 
     return this.tags.put(key, value);
@@ -119,7 +121,7 @@ public abstract class Element<T extends Node> implements Serializable {
    */
   public final Map<String, String> tags() {
     if (this.tags == null) {
-      this.tags = new HashMap<>();
+      this.tags = new HashTable<>();
     }
 
     return this.tags;

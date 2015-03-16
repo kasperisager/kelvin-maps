@@ -3,10 +3,6 @@
  */
 package dk.itu.kelvin.parser;
 
-// General utilities
-import java.util.HashMap;
-import java.util.Map;
-
 // Net utilities
 import java.net.URL;
 
@@ -18,7 +14,12 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+// Utilities
+import dk.itu.kelvin.util.HashTable;
+import dk.itu.kelvin.util.Map;
+
 // Storage
+import dk.itu.kelvin.store.AddressStore;
 import dk.itu.kelvin.store.ElementStore;
 
 // Models
@@ -30,9 +31,6 @@ import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Address;
-
-// Stores
-import dk.itu.kelvin.store.AddressStore;
 
 /**
  * Parser class.
@@ -58,12 +56,12 @@ public final class ChartParser {
   /**
    * Map way IDs to ways.
    */
-  private Map<Long, Way> ways = new HashMap<>();
+  private Map<Long, Way> ways = new HashTable<>();
 
   /**
    * Map relation IDs to relations.
    */
-  private Map<Long, Relation> relations = new HashMap<>();
+  private Map<Long, Relation> relations = new HashTable<>();
 
   /**
    * Land element.
@@ -390,7 +388,7 @@ public final class ChartParser {
   public void endDocument() {
     this.chart.elements(this.ways.values());
     this.chart.elements(this.relations.values());
-    this.chart.elements(this.land.coastlines());
+    // this.chart.elements(this.land.coastlines());
   }
 
   /**

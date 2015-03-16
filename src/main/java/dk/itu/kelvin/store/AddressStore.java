@@ -3,8 +3,8 @@
  */
 package dk.itu.kelvin.store;
 
-// General utilities
-import java.util.HashMap;
+// Utilities
+import dk.itu.kelvin.util.HashTable;
 
 // Models
 import dk.itu.kelvin.model.Node;
@@ -13,7 +13,7 @@ import dk.itu.kelvin.model.Address;
 /**
  * A class to store all addresses from the OSM file.
  */
-public final class AddressStore extends HashMap<Address, Node> {
+public final class AddressStore extends HashTable<Address, Node> {
 
   /**
    * Sort the map for faster searches.

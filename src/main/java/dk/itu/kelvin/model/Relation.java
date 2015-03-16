@@ -4,11 +4,10 @@
 package dk.itu.kelvin.model;
 
 // General utilities
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+// JavaFX application utilities
+import javafx.application.Platform;
 
 // JavaFX scene utilities
 import javafx.scene.Group;
@@ -16,6 +15,18 @@ import javafx.scene.Group;
 // JavaFX shapes
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Shape;
+
+// JavaFX paint
+import javafx.scene.paint.Color;
+
+// Utilities
+import dk.itu.kelvin.util.ArrayList;
+import dk.itu.kelvin.util.HashTable;
+import dk.itu.kelvin.util.List;
+import dk.itu.kelvin.util.Map;
+
+// Threading
+import dk.itu.kelvin.thread.TaskQueue;
 
 /**
  * A relation is an ordered list of one or more members (nodes, ways, or even
@@ -33,6 +44,7 @@ public final class Relation extends Element<Group> {
   /**
    * The JavaFX representation of the relation.
    *
+   * <p>
    * This field is transient as it is simply used for caching the rendered
    * JavaFX scene graph node. We therefore don't want to store it when
    * serializing the element.
@@ -129,7 +141,7 @@ public final class Relation extends Element<Group> {
     }
 
     if (this.elements == null) {
-      this.elements = new HashMap<>();
+      this.elements = new HashTable<>();
     }
 
     this.elements.put(element, role);
@@ -170,7 +182,13 @@ public final class Relation extends Element<Group> {
 
           switch (value) {
             case "multipolygon":
-              group.getChildren().add(this.multipolygon());
+              TaskQueue.run(() -> {
+                Shape shape = this.multipolygon();
+
+                Platform.runLater(() -> {
+                  group.getChildren().add(shape);
+                });
+              });
               break;
             default:
               // Do nothing.
@@ -279,6 +297,9 @@ public final class Relation extends Element<Group> {
       }
     }
 
+    // We're done with u.
+    u = null;
+
     // RG-2: Reset the polygon counter to 0.
     List<Shape> p = new ArrayList<>();
 
@@ -331,6 +352,9 @@ public final class Relation extends Element<Group> {
       p.add(polygon);
     }
 
+    // We're done with a.
+    a = null;
+
     // MC-1 has been skipped as it's assumed that no polygons intersect. We have
     // faith in OpenStreetMap contributors.
 
@@ -342,6 +366,11 @@ public final class Relation extends Element<Group> {
       polygon = Shape.union(polygon, shape);
     }
 
+    // We're done with p.
+    p = null;
+
+    polygon.setFill(Color.TRANSPARENT);
+    polygon.setStroke(Color.TRANSPARENT);
     polygon.getStyleClass().add("member");
 
     return polygon;
