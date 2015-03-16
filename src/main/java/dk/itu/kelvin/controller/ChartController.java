@@ -188,7 +188,7 @@ public final class ChartController {
       Platform.runLater(() -> {
         // this.canvas.add(chart.nodes());
 
-        this.canvas.pan(
+        this   .canvas.pan(
           -this.chart.bounds().getMinX(),
           -this.chart.bounds().getMaxY()
         );
