@@ -95,12 +95,12 @@ allprojects {
   // Force rendering on the GPU.
   tasks.withType(JavaExec) {
     jvmArgs = [
-      "-Dprism.forceGPU=true",
-      "-Dprism.dirtyopts=false",
-      "-Dprism.order=es2",
+      /* "-Dprism.forceGPU=true", */
+      /* "-Dprism.dirtyopts=false", */
+      /* "-Dprism.order=es2", */
       /* "-Dprism.order=sw", */
       /* "-Dprism.order=j2d", */
-      "-Dprism.verbose=true"
+      /* "-Dprism.verbose=true" */
     ]
   }
 }
