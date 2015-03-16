@@ -4,12 +4,7 @@
 package dk.itu.kelvin.layout;
 
 // JavaFX scene utilities
-import javafx.scene.CacheHint;
 import javafx.scene.Group;
-
-// Utilities
-import dk.itu.kelvin.util.ArrayList;
-import dk.itu.kelvin.util.List;
 
 // Models
 import dk.itu.kelvin.model.Element;

@@ -3,9 +3,6 @@
  */
 package dk.itu.kelvin.controller;
 
-// General utilities
-import java.util.Collections;
-
 // JavaFX application utilities
 import javafx.application.Platform;
 
@@ -48,7 +45,6 @@ import dk.itu.kelvin.layout.Canvas;
 // Models
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Chart;
-import dk.itu.kelvin.model.Element;
 import dk.itu.kelvin.model.Node;
 
 // Stores

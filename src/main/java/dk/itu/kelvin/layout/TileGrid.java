@@ -20,16 +20,12 @@ import javafx.scene.transform.Affine;
 
 // JavaFX beans
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
 // Threading
 import dk.itu.kelvin.thread.TaskQueue;
 
 // Utilities
-import dk.itu.kelvin.util.ArrayList;
-import dk.itu.kelvin.util.Collection;
 import dk.itu.kelvin.util.HashTable;
-import dk.itu.kelvin.util.List;
 import dk.itu.kelvin.util.Map;
 
 /**
@@ -51,6 +47,9 @@ public final class TileGrid extends Group {
    */
   private Map<TileGrid.Anchor, Tile> tiles = new HashTable<>();
 
+  /**
+   * Layout listener.
+   */
   private ChangeListener<? super Number> listener = (ob, ov, nv) -> {
     TileGrid.this.layoutTiles();
   };
@@ -66,11 +65,17 @@ public final class TileGrid extends Group {
     this.addListeners();
   }
 
+  /**
+   * Attach layout listeners to the tile grid.
+   */
   private synchronized void addListeners() {
     this.affine.txProperty().addListener(this.listener);
     this.affine.tyProperty().addListener(this.listener);
   }
 
+  /**
+   * Detach layout listeners from the tile grid.
+   */
   private synchronized void removeListeners() {
     this.affine.txProperty().removeListener(this.listener);
     this.affine.tyProperty().removeListener(this.listener);

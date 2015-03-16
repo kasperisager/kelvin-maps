@@ -5,7 +5,6 @@ package dk.itu.kelvin.layout;
 
 // JavaFX scene utilities
 import javafx.scene.Group;
-import javafx.scene.Node;
 
 // JavaFX geometry
 import javafx.geometry.Bounds;
@@ -15,7 +14,6 @@ import javafx.scene.transform.Affine;
 
 // Utilities
 import dk.itu.kelvin.util.Collection;
-import dk.itu.kelvin.util.List;
 
 // Models
 import dk.itu.kelvin.model.Element;
