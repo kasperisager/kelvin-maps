@@ -119,7 +119,12 @@ public final class TaskQueue {
       @Override
       public Void call() {
         // Run the task.
-        task.run();
+        try {
+          task.run();
+        }
+        catch (Exception ex) {
+          ex.printStackTrace();
+        }
 
         // We're done here.
         return null;
