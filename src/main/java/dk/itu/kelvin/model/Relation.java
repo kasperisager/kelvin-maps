@@ -136,7 +136,7 @@ public final class Relation extends Element<Group> {
   }
 
   /**
-   * Shorthand for adding a element to the relation without a role.
+   * Shorthand for adding an element to the relation without a role.
    *
    * @param element The element to add to the relation.
    */
