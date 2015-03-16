@@ -163,19 +163,19 @@ public final class ChartController {
   private VBox checkboxVBox;
 
   /**
-   * The VBox containing route description
+   * The VBox containing route description.
    */
   @FXML
   private VBox directionsVBox;
 
   /**
-   * The VBox containing a ScrollPane
+   * The VBox containing a ScrollPane.
    */
   @FXML
   private VBox directionsScrollPane;
 
   /**
-   * The VBox surrounding all compass elements
+   * The VBox surrounding all compass elements.
    */
   @FXML
   private VBox compassVBox;
@@ -241,11 +241,11 @@ public final class ChartController {
     poi.setOnAction((event) -> {
       if (!this.checkboxVBox.isVisible()) {
         this.checkboxVBox.setVisible(true);
-        moveCompass(200);
+        this.moveCompass(200);
       }
       else {
         this.checkboxVBox.setVisible(false);
-        moveCompass(0);
+        this.moveCompass(0);
       }
       this.popOver.hide();
     });
@@ -593,11 +593,11 @@ public final class ChartController {
     System.out.println("X: " + endPosition.x() + " " + "Y: "
       + endPosition.y());
     */
-    moveCompass(400);
-    directionsScrollPane.setVisible(true);
+    this.moveCompass(400);
+    this.directionsScrollPane.setVisible(true);
     int stack = 30;
-    for(int i=0; i<stack; i++){
-      HBox hbox=new HBox(2);
+    for (int i = 0; i < stack; i++) {
+      HBox hbox = new HBox(2);
       hbox.getStyleClass().add("bottomBorder");
       hbox.setPrefWidth(500);
       Label icon = new Label("\uf10c");
@@ -608,33 +608,33 @@ public final class ChartController {
       Label label = new Label("Turn right at next left");
 
       hbox.getChildren().addAll(icon, label);
-      directionsVBox.getChildren().add(hbox);
+      this.directionsVBox.getChildren().add(hbox);
 
     }
   }
 
   /**
-   * Hides the route description VBox
+   * Hides the route description VBox.
    */
-  public void hideDirections(){
+  public void hideDirections() {
     this.directionsScrollPane.setVisible(false);
-    moveCompass(0);
+    this.moveCompass(0);
   }
 
   /**
-   * Hides the Points of Interest VBox
+   * Hides the Points of Interest VBox.
    */
-  public void hidePOI(){
+  public void hidePOI() {
     this.checkboxVBox.setVisible(false);
-    moveCompass(0);
+    this.moveCompass(0);
   }
 
   /**
-   * Moves the compass VBox relative to BOTTOM_LEFT
-   * @param x how much to move compass along x-axis [px]
+   * Moves the compass VBox relative to BOTTOM_LEFT.
+   * @param x how much to move compass along x-axis [px].
    */
-  public void moveCompass(double x){
-    compassVBox.setTranslateX(x);
+  public void moveCompass(final double x) {
+    this.compassVBox.setTranslateX(x);
   }
 
   /**
