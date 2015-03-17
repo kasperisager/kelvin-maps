@@ -12,6 +12,7 @@
 
 @color-black: #000;
 @color-white: #fff;
+@color-gray: #8C8C8C;
 
 // Root --------------------------------------------------------------------- //
 
@@ -54,6 +55,10 @@
 @backgroundColor-base--button: @backgroundColor-base--input;
 @borderRadius-base--button: @borderRadius-base--input;
 @effect-base--button: @effect-base--input;
+
+// Label ------------------------------------------------------------------- //
+@padding-base--label: 5px;
+@fontSize-base--label: 16px;
 
 // Hover
 @textFill-hover--button: #333;
@@ -242,6 +247,12 @@
     }
   }
 }
+// Labels ------------------------------------------------------------------- //
+
+.label {
+  -fx-padding: @padding-base--label;
+  -fx-font-size: @fontSize-base--label;
+}
 
 // Menus -------------------------------------------------------------------- //
 
@@ -341,4 +352,29 @@
 
 .u-padded {
   -fx-padding: 10px;
+}
+
+// About PopOver ------------------------------------------------------------ //
+
+.aboutVBox {
+  .header{
+    -fx-font-size:25px;
+    -fx-padding: 10px;
+  }
+  .label {
+    -fx-font-size:20px;
+    -fx-padding: 7px;
+  }
+}
+
+// Route description -------------------------------------------------------- //
+.header{
+  -fx-font-size:18px;
+  -fx-font-weight: bolder;
+  -fx-padding: 7px;
+}
+.bottomBorder{
+  -fx-border-insets: 0 0 1 0;
+  -fx-border-width: 0 0 1 0;
+  -fx-border-color: @color-gray;
 }

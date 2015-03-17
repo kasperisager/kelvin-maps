@@ -6,7 +6,11 @@ package dk.itu.kelvin.controller;
 // JavaFX application utilities
 import javafx.application.Platform;
 
+// JavaFX scene utilities
+import javafx.geometry.Pos;
+
 // JavaFX layout
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 // JavaFX shapes
@@ -26,6 +30,7 @@ import javafx.scene.transform.Affine;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 
 // Controls FX
 import org.controlsfx.control.PopOver;
@@ -153,6 +158,24 @@ public final class ChartController {
   private VBox checkboxVBox;
 
   /**
+   * The VBox containing route description.
+   */
+  @FXML
+  private VBox directionsVBox;
+
+  /**
+   * The VBox containing a ScrollPane.
+   */
+  @FXML
+  private VBox directionsScrollPane;
+
+  /**
+   * The VBox surrounding all compass elements.
+   */
+  @FXML
+  private VBox compassVBox;
+
+  /**
    * Initialize the controller.
    *
    * @throws Exception In case of an error. Duh.
@@ -213,9 +236,11 @@ public final class ChartController {
     poi.setOnAction((event) -> {
       if (!this.checkboxVBox.isVisible()) {
         this.checkboxVBox.setVisible(true);
+        this.moveCompass(200);
       }
       else {
         this.checkboxVBox.setVisible(false);
+        this.moveCompass(0);
       }
       this.popOver.hide();
     });
@@ -472,6 +497,7 @@ public final class ChartController {
    */
   @FXML
   private void findRoute() {
+    /*
     Address startAddress = Address.parse(this.addressFrom.getText());
     Address endAddress = Address.parse(this.addressTo.getText());
     Node startPosition = this.addresses.find(startAddress);
@@ -481,6 +507,49 @@ public final class ChartController {
       + startPosition.y());
     System.out.println("X: " + endPosition.x() + " " + "Y: "
       + endPosition.y());
+    */
+    this.moveCompass(400);
+    this.directionsScrollPane.setVisible(true);
+    int stack = 30;
+    for (int i = 0; i < stack; i++) {
+      HBox hbox = new HBox(2);
+      hbox.getStyleClass().add("bottomBorder");
+      hbox.setPrefWidth(500);
+      Label icon = new Label("\uf10c");
+      icon.getStyleClass().add("icon");
+      icon.setPrefWidth(40);
+      icon.setAlignment(Pos.CENTER);
+
+      Label label = new Label("Turn right at next left");
+
+      hbox.getChildren().addAll(icon, label);
+      this.directionsVBox.getChildren().add(hbox);
+
+    }
+  }
+
+  /**
+   * Hides the route description VBox.
+   */
+  public void hideDirections() {
+    this.directionsScrollPane.setVisible(false);
+    this.moveCompass(0);
+  }
+
+  /**
+   * Hides the Points of Interest VBox.
+   */
+  public void hidePOI() {
+    this.checkboxVBox.setVisible(false);
+    this.moveCompass(0);
+  }
+
+  /**
+   * Moves the compass VBox relative to BOTTOM_LEFT.
+   * @param x how much to move compass along x-axis [px].
+   */
+  public void moveCompass(final double x) {
+    this.compassVBox.setTranslateX(x);
   }
 
   /**
