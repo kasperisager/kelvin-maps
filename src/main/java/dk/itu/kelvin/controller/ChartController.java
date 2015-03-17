@@ -222,7 +222,7 @@ public final class ChartController {
    * @param tf textfield.
    */
   private void setAutoComplete(final TextField tf) {
-    tf.setOnKeyTyped((event) -> {
+    tf.setOnKeyReleased((event) -> {
       if (this.autocPopOver != null) {
         this.autocPopOver.hide(new Duration(1000.0));
       }
