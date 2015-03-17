@@ -74,7 +74,7 @@ public final class Main extends Application {
 
     try {
       this.scene = new Scene(
-        (new FXMLLoader()).load(this.getClass().getResource(MAIN_VIEW))
+        (new FXMLLoader(this.getClass().getResource(MAIN_VIEW))).load()
       );
     }
     catch (Exception ex) {

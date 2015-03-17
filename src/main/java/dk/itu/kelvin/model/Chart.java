@@ -3,10 +3,10 @@
  */
 package dk.itu.kelvin.model;
 
-// General utilities
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+// Utilities
+import dk.itu.kelvin.util.ArrayList;
+import dk.itu.kelvin.util.Collection;
+import dk.itu.kelvin.util.List;
 
 /**
  * The "Chart" data model describes a chart with elements defined by the OSM
@@ -74,39 +74,18 @@ public final class Chart {
   }
 
   /**
-   * Add a list of elements to the chart.
+   * Add a collection of elements to the chart.
    *
-   * @param elements The list of elements to add to the chart.
+   * @param elements The collection of elements to add to the chart.
    */
   public void elements(final Collection<? extends Element> elements) {
     if (elements == null) {
       return;
     }
 
-    this.elements.addAll(elements);
-  }
-
-  /**
-   * Return the elements of the chart as a list of JavaFX nodes.
-   *
-   * Java unfortunately lacks multiple inheritance and JavaFX specifies Node as
-   * an abstract class. Since elements of the chart extend different base
-   * classes depending on their purpose (some shapes, others groups of shapes),
-   * it's not possible to also extend the abstract Node class.
-   *
-   * We therefore assume that all elements extend some sort of Node-based class,
-   * which allows us to simply cast the elements to JavaFX nodes.
-   *
-   * @return A list of JavaFX nodes created from the elements of the chart.
-   */
-  public List<javafx.scene.Node> nodes() {
-    List<javafx.scene.Node> nodes = new ArrayList<>();
-
-    for (Element element: this.elements) {
-      nodes.add(element.render());
+    for (Element element: elements) {
+      this.elements.add(element);
     }
-
-    return nodes;
   }
 
   /**

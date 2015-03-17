@@ -86,6 +86,25 @@ task docs(type: Javadoc) {
   source = sourceSets.main.allJava
 }
 
+allprojects {
+  // Yell out when encountering deprecation and unchecked warnings.
+  tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
+  }
+
+  // Force rendering on the GPU.
+  tasks.withType(JavaExec) {
+    jvmArgs = [
+      /* "-Dprism.forceGPU=true", */
+      /* "-Dprism.dirtyopts=false", */
+      /* "-Dprism.order=es2", */
+      /* "-Dprism.order=sw", */
+      /* "-Dprism.order=j2d", */
+      /* "-Dprism.verbose=true" */
+    ]
+  }
+}
+
 // Main class to run.
 mainClassName = mainClass
 
