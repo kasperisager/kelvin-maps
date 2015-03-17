@@ -225,6 +225,11 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
       private int i = 0;
 
       /**
+       * Keep track of the last element that was returned.
+       */
+      private int last = -1;
+
+      /**
        * Check if there are elements left to iterate over.
        *
        * @return  A boolean indicating whether or not there are elements left
@@ -244,7 +249,22 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
           throw new NoSuchElementException();
         }
 
-        return ArrayList.this.elements[this.i++];
+        this.last = this.i++;
+
+        return ArrayList.this.elements[this.last];
+      }
+
+      /**
+       * The the last returned element.
+       */
+      public void remove() {
+        if (this.last < 0) {
+          throw new IllegalStateException();
+        }
+
+        ArrayList.this.remove(this.last);
+        this.i = this.last;
+        this.last = -1;
       }
     };
   }
