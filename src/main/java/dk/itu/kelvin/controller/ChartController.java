@@ -176,7 +176,7 @@ public final class ChartController {
   private HBox compassVBox;
 
   /**
-   * Indicator for scale
+   * Indicator for scale.
    */
   @FXML
   private Label scaleIndicatorLabel;
@@ -583,8 +583,6 @@ public final class ChartController {
   @FXML
   private void routeByCar() {
     System.out.println("Route by car");
-    setScaleText("100 km");
-    setScaleLenght(300);
   }
 
   /**
@@ -595,10 +593,19 @@ public final class ChartController {
     System.out.println("Route by foot");
   }
 
-  private void setScaleText(String text) {
+  /**
+   * Sets the text of scaleIndicator.
+   * @param text the text to be set in scale.
+   */
+  private void setScaleText(final String text) {
     this.scaleIndicatorLabel.setText(text);
   }
-  private void setScaleLenght(double lenght) {
-    this.scaleIndicatorLabel.setPrefWidth(lenght);
+
+  /**
+   * Sets the length of the scaleIndicator.
+   * @param length how wide the scale is [px].
+   */
+  private void setScaleLenght(final double length) {
+    this.scaleIndicatorLabel.setPrefWidth(length);
   }
 }
