@@ -32,7 +32,7 @@ public final class Geometry {
    * This algorithm is based on an implementation of the line-line intersection
    * algorithm by Alexander Hristov.
    *
-   * @see <a href="http://goo.gl/f7uPdH">Line–line intersection</a>
+   * @see <a href="http://goo.gl/f7uPdH">Line-line intersection</a>
    * @see <a href="http://goo.gl/Z7cksG">Intersection of lines in 2D</a>
    *
    * @param p1  The starting point of the first line.
