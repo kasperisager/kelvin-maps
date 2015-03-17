@@ -1,7 +1,7 @@
-package dk.itu.kelvin.util;
 /**
  * Copyright (C) 2015 The Authors.
  */
+package dk.itu.kelvin.util;
 
 // General utilities
 import java.util.Iterator;
@@ -15,12 +15,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-
 /**
  * UnitTest of the HashSet class which is part of the util classes.
  */
 public final class HashSetTest {
-
   /**
    * A HashSet which we use in almost every testcases.
    */
@@ -37,7 +35,6 @@ public final class HashSetTest {
   @Before
   public void before() {
     this.h1 = new HashSet<>();
-
     this.a1 = new ArrayList<>();
   }
 
@@ -69,7 +66,6 @@ public final class HashSetTest {
     this.h1.addAll(this.a1);
 
     assertTrue(this.h1.contains("ex3"));
-
   }
 
   /**
@@ -107,7 +103,6 @@ public final class HashSetTest {
     // to see if it returns false, as it should.
     assertFalse(this.h1.remove("ex1"));
     assertEquals(1, this.h1.size());
-
   }
 
   /**
@@ -147,4 +142,3 @@ public final class HashSetTest {
     assertEquals(count, this.h1.size());
   }
 }
-
