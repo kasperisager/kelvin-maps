@@ -275,45 +275,63 @@
     </rowConstraints>
   </GridPane>
 </VBox>
-  <VBox
+  <HBox
     alignment="BOTTOM_LEFT"
     pickOnBounds="false"
-    fillWidth="false"
     fx:id="compassVBox"
-  >
+    >
     <children>
-      <StackPane>
+      <VBox
+        alignment="BOTTOM_LEFT"
+        pickOnBounds="false"
+        fillWidth="false"
+      >
         <children>
-          <VBox alignment="CENTER" styleClass="compass">
-            <children>
-              <Path fx:id="compassArrow" styleClass="compass-arrow">
-                <elements>
-                  <MoveTo x="0" y="6" />
-                  <LineTo x="4" y="0" />
-                  <LineTo x="8" y="6" />
-                  <LineTo x="0" y="6" />
-                </elements>
-              </Path>
+            <StackPane>
+              <children>
+                <VBox alignment="CENTER" styleClass="compass">
+                  <children>
+                    <Path fx:id="compassArrow" styleClass="compass-arrow">
+                      <elements>
+                        <MoveTo x="0" y="6" />
+                        <LineTo x="4" y="0" />
+                        <LineTo x="8" y="6" />
+                        <LineTo x="0" y="6" />
+                      </elements>
+                    </Path>
 
-              <Circle radius="30" styleClass="compass-disc" />
-            </children>
-          </VBox>
+                    <Circle radius="30" styleClass="compass-disc" />
+                  </children>
+                </VBox>
 
-          <VBox alignment="CENTER" styleClass="compass-reset">
-            <Button
-              text="&#xf366;"
-              styleClass="icon"
-              onAction="#compassReset"
-            >
-              <tooltip>
-                <Tooltip text="Reset compass"/>
-              </tooltip>
-            </Button>
-          </VBox>
-        </children>
-      </StackPane>
+                <VBox alignment="CENTER" styleClass="compass-reset">
+                  <Button
+                    text="&#xf366;"
+                    styleClass="icon"
+                    onAction="#compassReset"
+                  >
+                    <tooltip>
+                      <Tooltip text="Reset compass"/>
+                    </tooltip>
+                  </Button>
+                </VBox>
+              </children>
+            </StackPane>
+          </children>
+        </VBox>
     </children>
-  </VBox>
+
+    <children>
+
+          <Label
+            styleClass="scaleIndicator"
+            fx:id="scaleIndicatorLabel"
+            >
+            10 km
+          </Label>
+    </children>
+  </HBox>
+
 
   <VBox
     spacing="10"
