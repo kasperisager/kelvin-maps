@@ -38,27 +38,28 @@ public final class Geometry {
    * segments.html">http://www.ahristov.com/tutorial/geometry-games/intersection
    * -segments.html</a>
    *
-   * @param x1  Starting point of segment 1.
-   * @param y1  Starting point of segment 1.
-   * @param x2  Ending point of segment 1.
-   * @param y2  Ending point of segment 1.
-   * @param x3  Starting point of segment 2.
-   * @param y3  Starting point of segment 2.
-   * @param x4  Ending point of segment 2.
-   * @param y4  Ending point of segment 2.
+   * @param p1  The starting point of the first line.
+   * @param p2  The ending point of the first line.
+   * @param p3  The starting point of the second line.
+   * @param p4  The ending point of the second line.
    * @return    Point where the segments intersect, or {@code null} if they
    *            don't.
    */
-  private static Point intersection(
-    final float x1,
-    final float y1,
-    final float x2,
-    final float y2,
-    final float x3,
-    final float y3,
-    final float x4,
-    final float y4
+  public static Point intersection(
+    final Point p1,
+    final Point p2,
+    final Point p3,
+    final Point p4
   ) {
+    float x1 = p1.x();
+    float y1 = p1.y();
+    float x2 = p2.x();
+    float y2 = p2.y();
+    float x3 = p3.x();
+    float y3 = p3.y();
+    float x4 = p4.x();
+    float y4 = p4.y();
+
     // Calculate the denominator of the line segments.
     float d = ((x1 - x2) * (y3 - y4)) - ((y1 - y2) * (x3 - x4));
 
@@ -96,16 +97,7 @@ public final class Geometry {
    * @return  Point where the segments intersect, or {@code null} if they don't.
    */
   public static Point intersection(final Line a, final Line b) {
-    return Geometry.intersection(
-      a.start().x(),
-      a.start().y(),
-      a.end().x(),
-      a.end().y(),
-      b.start().x(),
-      b.start().y(),
-      b.end().x(),
-      b.end().y()
-    );
+    return Geometry.intersection(a.start(), a.end(), b.start(), b.end());
   }
 
   /**
@@ -194,7 +186,7 @@ public final class Geometry {
     private final Point end;
 
     /**
-     * Initialize a line
+     * Initialize a line.
      *
      * @param start The starting point of the line.
      * @param end   The ending point of the line.
