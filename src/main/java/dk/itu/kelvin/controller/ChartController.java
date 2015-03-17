@@ -37,8 +37,6 @@ import javafx.scene.control.TextField;
 // Controls FX
 import javafx.util.Duration;
 import org.controlsfx.control.PopOver;
-import org.controlsfx.control.textfield.AutoCompletionBinding;
-import org.controlsfx.control.textfield.TextFields;
 
 // FXML utilities
 import javafx.fxml.FXML;
@@ -132,7 +130,11 @@ public final class ChartController {
   private PopOver popOver;
 
   /**
-   * The dynamic autocomplete results
+   * Auto-complete popover for textfields.
+   */
+  private PopOver autocPopOver;
+  /**
+   * The dynamic autocomplete results.
    */
   private List<String> suggestions = new ArrayList<>();
 
@@ -171,10 +173,9 @@ public final class ChartController {
    */
   @FXML
   private VBox checkboxVBox;
-  private PopOver autocPopOver;
+
   /**
    * Initialize the controller.
-   *
    * @throws Exception In case of an error. Duh.
    */
   public void initialize() throws Exception {
@@ -212,22 +213,22 @@ public final class ChartController {
 
     Platform.runLater(() -> this.addressFrom.requestFocus());
 
-    setAutoComplete(this.addressFrom);
-    setAutoComplete(this.addressTo);
+      this.setAutoComplete(this.addressFrom);
+      this.setAutoComplete(this.addressTo);
   }
 
   /**
    * sets autocomplete for textfields.
    * @param tf textfield.
    */
-  private void setAutoComplete(TextField tf){
+  private void setAutoComplete(final TextField tf) {
     tf.setOnKeyTyped((event) -> {
-      if (autocPopOver != null) {
-        autocPopOver.hide(new Duration(1000.0));
+      if (this.autocPopOver != null) {
+        this.autocPopOver.hide(new Duration(1000.0));
       }
-      autocPopOver = new PopOver();
+      this.autocPopOver = new PopOver();
 
-      suggestions.clear();
+      this.suggestions.clear();
       if (tf.getLength() > 0) {
         for (Address a : this.addresses.keySet()) {
           if (a.toString().toLowerCase().contains(tf.getText().toLowerCase())) {
@@ -240,26 +241,27 @@ public final class ChartController {
           }
         }
       }
-      if (suggestions.size() > 0) {
-        VBox suggestionsVBox = new VBox(suggestions.size());
+      if (this.suggestions.size() > 0) {
+        VBox suggestionsVBox = new VBox(this.suggestions.size());
         suggestionsVBox.setPrefWidth(400);
-        for (String suggestion : suggestions) {
+        for (String suggestion : this.suggestions) {
           Label l = new Label(suggestion);
+          l.setPrefWidth(400);
           l.getStyleClass().add("hover-highlight");
           l.setOnMouseClicked((event2 -> {
             tf.setText(l.getText());
-            autocPopOver.hide();
+            this.autocPopOver.hide();
           }));
           System.out.println(suggestion);
           suggestionsVBox.getChildren().add(l);
         }
-        autocPopOver.setDetachable(false);
-        autocPopOver.setContentNode(suggestionsVBox);
-        autocPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
-        autocPopOver.setCornerRadius(2);
-        autocPopOver.setArrowSize(6);
-        autocPopOver.setAutoHide(true);
-        autocPopOver.show(tf, -5);
+        this.autocPopOver.setDetachable(false);
+        this.autocPopOver.setContentNode(suggestionsVBox);
+        this.autocPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
+        this.autocPopOver.setCornerRadius(2);
+        this.autocPopOver.setArrowSize(6);
+        this.autocPopOver.setAutoHide(true);
+        this.autocPopOver.show(tf, -5);
       }
     });
 
