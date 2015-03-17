@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 
 /**
- * Test of the ArrayList class.
+ * Test of ArrayList class.
  */
 public final class ArrayListTest {
 

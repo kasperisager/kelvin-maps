@@ -18,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 
 
 /**
- * Test of AbstractCollection class.
+ * Test of HashTable class.
  */
 public final class HashTableTest {
 
