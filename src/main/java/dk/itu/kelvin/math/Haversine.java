@@ -24,6 +24,22 @@ public final class Haversine {
   public static final float R = 6372.8f;
 
   /**
+   * Don't allow instantiation of the class.
+   *
+   * <p>
+   * Since the class only contains static fields and methods, we never want to
+   * instantiate the class. We therefore define a private constructor so that
+   * noone can create instances of the class other than the class itself.
+   *
+   * <p>
+   * NB: This does not make the class a singleton. In fact, there never exists
+   * an instance of the class since not even the class instantiates itself.
+   */
+  private Haversine() {
+    super();
+  }
+
+  /**
    * Calculate the distance between the specified coordinates.
    *
    * @param lat1  The latitude of the first coordinate.
@@ -42,9 +58,9 @@ public final class Haversine {
     double dLon = Math.toRadians(lon2 - lon1);
 
     double a = (
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.sin(dLon / 2) * Math.sin(dLon / 2) *
-      Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+      Math.sin(dLat / 2) * Math.sin(dLat / 2)
+    + Math.sin(dLon / 2) * Math.sin(dLon / 2)
+    * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
     );
 
     double c = 2 * Math.asin(Math.sqrt(a));
