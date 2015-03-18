@@ -3,11 +3,11 @@
  */
 package dk.itu.kelvin.model;
 
-// I/O utilities
-import java.io.Serializable;
-
 // JavaFX shapes
 import javafx.scene.shape.Rectangle;
+
+// JavaFX paint
+import javafx.scene.paint.Color;
 
 /**
  * A bounding box describes the bounds of a chart.
@@ -15,18 +15,31 @@ import javafx.scene.shape.Rectangle;
  * @see <a href="http://wiki.openstreetmap.org/wiki/Bounding_Box">
  *      http://wiki.openstreetmap.org/wiki/Bounding_Box</a>
  */
-public final class BoundingBox extends Rectangle implements Serializable {
+public final class BoundingBox extends Element<Rectangle> {
   /**
    * UID for identifying serialized objects.
    */
   private static final long serialVersionUID = 19;
 
   /**
-   * Initialize a new empty bounding box.
+   * The left coordinate of the bounds.
    */
-  public BoundingBox() {
-    super(0, 0, -1, -1);
-  }
+  private float left;
+
+  /**
+   * The bottom coordinate of the bounds.
+   */
+  private float bottom;
+
+  /**
+   * The right coordinate of the bounds.
+   */
+  private float right;
+
+  /**
+   * The top coordinate of the bounds.
+   */
+  private float top;
 
   /**
    * Initialize a new bounding box.
@@ -42,42 +55,115 @@ public final class BoundingBox extends Rectangle implements Serializable {
     final float right,
     final float top
   ) {
-    super(left, top, Math.abs(right - left), Math.abs(top - bottom));
+    this.left = left;
+    this.bottom = bottom;
+    this.right = right;
+    this.top = top;
   }
 
   /**
-   * Get the smallest x-coodinate of the bounds.
+   * Get the left coordinate of the bounds.
    *
-   * @return The smallest x-coordinate of the bounds.
+   * @return The left coordinate of the bounds.
    */
-  public double getMinX() {
-    return this.getX();
+  public float left() {
+    return this.left;
   }
 
   /**
-   * Get the largest x-coordinate of the bounds.
+   * Get the bottom coordinate of the bounds.
    *
-   * @return The largest x-coordinate of the bounds.
+   * @return The bottom coordinate of the bounds.
    */
-  public double getMaxX() {
-    return this.getX() + this.getWidth();
+  public float bottom() {
+    return this.bottom;
   }
 
   /**
-   * Get the smallest y-coordinate of the bounds.
+   * Get the right coordinate of the bounds.
    *
-   * @return The smallest y-coordinate of the bounds.
+   * @return The right coordinate of the bounds.
    */
-  public double getMinY() {
-    return this.getY();
+  public float right() {
+    return this.right;
   }
 
   /**
-   * Get the largest y-coordinate of the bounds.
+   * Get the top coordinate of the bounds.
    *
-   * @return The largest y-coordinate of the bounds.
+   * @return The top coordinate of the bounds.
    */
-  public double getMaxY() {
-    return this.getY() + this.getHeight();
+  public float top() {
+    return this.top;
+  }
+
+  /**
+   * Check if the bounds contains the specified point.
+   *
+   * @param x The x-coordinate of the point.
+   * @param y The y-coordinate of the point.
+   * @return  A boolean indicating whether or not the bounds contain the
+   *          specified point.
+   */
+  public boolean contains(final float x, final float y) {
+    Rectangle rectangle = this.render();
+
+    return rectangle.contains(rectangle.parentToLocal(x, y));
+  }
+
+  /**
+   * Check if the bounds contains the specified {@link Node}.
+   *
+   * @param node  The node to check containment of.
+   * @return      A boolean indicating whether or not the bounds contain the
+   *              specified node.
+   */
+  public boolean contains(final Node node) {
+    if (node == null) {
+      return false;
+    }
+
+    return this.contains(node.x(), node.y());
+  }
+
+  /**
+   * Check if the bounds contain the specified {@link Way}.
+   *
+   * @param way The way to check containment of.
+   * @return    A boolean indicating whether or not the bounds contain the
+   *            specified way.
+   */
+  public boolean contains(final Way way) {
+    if (way == null) {
+      return false;
+    }
+
+    return (
+      this.contains(way.start().x(), way.start().y())
+      &&
+      this.contains(way.end().x(), way.end().y())
+    );
+  }
+
+  /**
+   * Get the JavaFX representation of the bounds.
+   *
+   * @return The JavaFX representation of the bounds.
+   */
+  public Rectangle render() {
+    Rectangle rectangle = new Rectangle(
+      this.left,
+      this.top,
+      Math.abs(this.right - this.left),
+      Math.abs(this.top - this.bottom)
+    );
+
+    // Ensure that the bounds of the bounding box are calculated correctly. This
+    // is only the case if both a stroke and a fill is set, otherwise
+    // calculation of bounds will be off.
+    rectangle.setStroke(Color.BLACK);
+    rectangle.setFill(Color.BLACK);
+
+    return rectangle;
   }
 }

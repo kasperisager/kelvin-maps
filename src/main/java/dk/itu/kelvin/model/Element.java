@@ -17,7 +17,7 @@ import dk.itu.kelvin.util.HashTable;
 import dk.itu.kelvin.util.Map;
 
 /**
- * Interface that all elements of a chart must follow.
+ * Abstract base class that all OSM Elements must extend.
  *
  * @see <a href="http://wiki.openstreetmap.org/wiki/Element">
  * http://wiki.openstreetmap.org/wiki/Element</a>
@@ -52,13 +52,9 @@ public abstract class Element<T extends Node> implements Serializable {
   };
 
   /**
-   * The ID of the node.
-   */
-  private long id;
-
-  /**
    * A map of tags associated with the element.
    *
+   * <p>
    * The map is initialized on-demand when first accessed to avoid allocating
    * memory to empty maps.
    */
@@ -67,6 +63,7 @@ public abstract class Element<T extends Node> implements Serializable {
   /**
    * Drawing order of the element.
    *
+   * <p>
    * The order is initialized on-demand when first accessed to avoid allocating
    * memory to never-used orders.
    */
@@ -76,24 +73,6 @@ public abstract class Element<T extends Node> implements Serializable {
    * Drawing layer of the element.
    */
   private int layer;
-
-  /**
-   * Initialize an element.
-   *
-   * @param id The ID of the element.
-   */
-  public Element(final long id) {
-    this.id = id;
-  }
-
-  /**
-   * Get the ID of the element.
-   *
-   * @return The ID of the element.
-   */
-  public final long id() {
-    return this.id;
-  }
 
   /**
    * Add a tag to the element.
@@ -174,6 +153,7 @@ public abstract class Element<T extends Node> implements Serializable {
   /**
    * Get a JavaFX representation of the element.
    *
+   * <p>
    * This method can be called from the JavaFX thread whenever it wants to
    * draw the element.
    *

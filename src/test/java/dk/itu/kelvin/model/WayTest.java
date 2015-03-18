@@ -27,7 +27,7 @@ public final class WayTest {
   // Tag method does no longer exist. Must update WayTest.
   public void testTag() {
     // Test that a tag is recognized and added to the Way object.
-    Way w3 = new Way(25338049);
+    Way w3 = new Way();
     w3.tag("building", null);
     assertEquals(0, w3.tags().size());
     assertFalse(w3.tags().containsKey("building"));
@@ -45,18 +45,18 @@ public final class WayTest {
    */
   @Test
   public void testOrder() {
-    Way w1 = new Way(25338049);
+    Way w1 = new Way();
     assertEquals(Element.Order.DEFAULT, w1.order());
     w1.order(Element.Order.NATURAL_WATER);
     assertEquals(Element.Order.NATURAL_WATER, w1.order());
 
-    Way w2 = new Way(15338049);
+    Way w2 = new Way();
     w2.order(Element.Order.HIGHWAY);
 
-    Way w3 = new Way(25338045);
+    Way w3 = new Way();
     w3.order(Element.Order.HIGHWAY);
 
-    Way w4 = new Way(24838049);
+    Way w4 = new Way();
     w4.order(Element.Order.HIGHWAY_MOTORWAY);
 
     // < 0 first object's order is smaller than the second obejct's order.
@@ -65,7 +65,6 @@ public final class WayTest {
     assertTrue(Element.compare(w1, w3) < 0);
     assertTrue(Element.compare(w4, w2) > 0);
     assertTrue(Element.compare(w2, w3) == 0);
-
   }
 
   /**
@@ -73,16 +72,16 @@ public final class WayTest {
    */
   @Test
   public void testLayer() {
-    Way w1 = new Way(35338049);
+    Way w1 = new Way();
     w1.layer(-2);
 
-    Way w2 = new Way(45338049);
+    Way w2 = new Way();
     w2.layer(0);
 
-    Way w3 = new Way(25338009);
+    Way w3 = new Way();
     w3.layer(2);
 
-    Way w4 = new Way(65338049);
+    Way w4 = new Way();
     w4.layer(2);
 
     assertTrue(Element.compare(w1, w2) < 0);
@@ -90,19 +89,19 @@ public final class WayTest {
     assertTrue(Element.compare(w3, w2) > 0);
     assertTrue(Element.compare(w3, w4) == 0);
 
-    Way n5 = new Way(35338049);
+    Way n5 = new Way();
     n5.order(Element.Order.HIGHWAY);
     n5.layer(0);
 
-    Way n6 = new Way(26338049);
+    Way n6 = new Way();
     n6.order(Element.Order.HIGHWAY);
     n6.layer(1);
 
-    Way n7 = new Way(75338049);
+    Way n7 = new Way();
     n7.order(Element.Order.HIGHWAY_MOTORWAY);
     n7.layer(-2);
 
-    Way n8 = new Way(25330009);
+    Way n8 = new Way();
     n8.order(Element.Order.HIGHWAY_MOTORWAY);
     n8.layer(-2);
 
@@ -116,11 +115,11 @@ public final class WayTest {
    */
   @Test
   public void testClosed() {
-    Way w1 = new Way(15838049);
-    Node n1 = new Node(1112550893, 55.1198149F, 12.1159972F);
-    Node n2 = new Node(1212550893, 56.2298149F, 17.2259972F);
-    Node n3 = new Node(1312550893, 57.3398149F, 18.3359972F);
-    Node n4 = new Node(1112550893, 55.1198149F, 12.1159972F);
+    Way w1 = new Way();
+    Node n1 = new Node(55.1198149F, 12.1159972F);
+    Node n2 = new Node(56.2298149F, 17.2259972F);
+    Node n3 = new Node(57.3398149F, 18.3359972F);
+    Node n4 = new Node(55.1198149F, 12.1159972F);
     w1.node(n1);
     w1.node(n2);
     w1.node(n3);
@@ -128,11 +127,11 @@ public final class WayTest {
 
     assertTrue(w1.closed());
 
-    Way w2 = new Way(15838049);
-    Node n5 = new Node(1112550893, 55.1198149F, 12.1159972F);
-    Node n6 = new Node(1212550893, 56.2298149F, 17.2259972F);
-    Node n7 = new Node(1312550893, 57.3398149F, 18.3359972F);
-    Node n8 = new Node(1312550893, 55.4498149F, 12.4459972F);
+    Way w2 = new Way();
+    Node n5 = new Node(55.1198149F, 12.1159972F);
+    Node n6 = new Node(56.2298149F, 17.2259972F);
+    Node n7 = new Node(57.3398149F, 18.3359972F);
+    Node n8 = new Node(55.4498149F, 12.4459972F);
     w2.node(n5);
     w2.node(n6);
     w2.node(n7);
@@ -149,21 +148,21 @@ public final class WayTest {
   @Test
   public void testStartsIn() {
     // Way w1 and Way w2 starts in the same coordinates.
-    Way w1 = new Way(15838049);
-    Node n1 = new Node(1112550893, 55.1198149F, 12.1159972F);
-    Node n2 = new Node(1212550893, 56.2298149F, 17.2259972F);
-    Node n3 = new Node(1312550893, 57.3398149F, 18.3359972F);
-    Node n4 = new Node(1412550893, 55.1198149F, 12.1159972F);
+    Way w1 = new Way();
+    Node n1 = new Node(55.1198149F, 12.1159972F);
+    Node n2 = new Node(56.2298149F, 17.2259972F);
+    Node n3 = new Node(57.3398149F, 18.3359972F);
+    Node n4 = new Node(55.1198149F, 12.1159972F);
     w1.node(n1);
     w1.node(n2);
     w1.node(n3);
     w1.node(n4);
 
-    Way w2 = new Way(15838049);
-    Node n5 = new Node(1112550893, 55.1198149F, 12.1159972F);
-    Node n6 = new Node(1612550893, 56.2298149F, 17.2259972F);
-    Node n7 = new Node(1712550893, 57.3398149F, 18.3359972F);
-    Node n8 = new Node(1812550893, 55.4498149F, 12.4459972F);
+    Way w2 = new Way();
+    Node n5 = new Node(55.1198149F, 12.1159972F);
+    Node n6 = new Node(56.2298149F, 17.2259972F);
+    Node n7 = new Node(57.3398149F, 18.3359972F);
+    Node n8 = new Node(55.4498149F, 12.4459972F);
     w2.node(n5);
     w2.node(n6);
     w2.node(n7);
@@ -172,11 +171,11 @@ public final class WayTest {
     assertTrue(w1.startsIn(w2));
     assertFalse(w1.startsIn(null));
 
-    Way w3 = new Way(15838049);
-    Node n9 = new Node(1112550893, 59.1198149F, 18.1159972F);
-    Node n10 = new Node(1612550893, 56.2298149F, 17.2259972F);
-    Node n11 = new Node(1712550893, 57.3398149F, 18.3359972F);
-    Node n12 = new Node(1112550893, 55.1198149F, 12.1159972F);
+    Way w3 = new Way();
+    Node n9 = new Node(59.1198149F, 18.1159972F);
+    Node n10 = new Node(56.2298149F, 17.2259972F);
+    Node n11 = new Node(57.3398149F, 18.3359972F);
+    Node n12 = new Node(55.1198149F, 12.1159972F);
     w3.node(n9);
     w3.node(n10);
     w3.node(n11);
@@ -194,18 +193,18 @@ public final class WayTest {
   @Test
   public void testEndsIn() {
     // Way w1 and Way w2 starts in the same coordinates.
-    Way w1 = new Way(15838049);
-    Node n1 = new Node(1112550893, 55.1198149F, 12.1159972F);
-    Node n2 = new Node(1212550893, 56.2298149F, 17.2259972F);
-    Node n3 = new Node(1312550893, 57.3398149F, 18.3359972F);
+    Way w1 = new Way();
+    Node n1 = new Node(55.1198149F, 12.1159972F);
+    Node n2 = new Node(56.2298149F, 17.2259972F);
+    Node n3 = new Node(57.3398149F, 18.3359972F);
     w1.node(n1);
     w1.node(n2);
     w1.node(n3);
 
-    Way w2 = new Way(15838049);
-    Node n4 = new Node(1312550893, 57.3398149F, 18.3359972F);
-    Node n5 = new Node(1612550893, 56.2298149F, 17.2259972F);
-    Node n6 = new Node(1712550893, 50.3398149F, 10.3359972F);
+    Way w2 = new Way();
+    Node n4 = new Node(57.3398149F, 18.3359972F);
+    Node n5 = new Node(56.2298149F, 17.2259972F);
+    Node n6 = new Node(50.3398149F, 10.3359972F);
     w2.node(n4);
     w2.node(n5);
     w2.node(n6);
@@ -216,11 +215,11 @@ public final class WayTest {
     assertFalse(w2.endsIn(w1));
     assertFalse(w1.endsIn(null));
 
-    Way w3 = new Way(15838049);
-    Node n9 = new Node(1512550893, 59.1198149F, 18.1159972F);
-    Node n10 = new Node(1612550893, 56.2298149F, 17.2259972F);
-    Node n11 = new Node(1712550893, 50.3398149F, 10.3359972F);
-    Node n12 = new Node(1312550893, 57.3398149F, 18.3359972F);
+    Way w3 = new Way();
+    Node n9 = new Node(59.1198149F, 18.1159972F);
+    Node n10 = new Node(56.2298149F, 17.2259972F);
+    Node n11 = new Node(50.3398149F, 10.3359972F);
+    Node n12 = new Node(57.3398149F, 18.3359972F);
     w3.node(n9);
     w3.node(n10);
     w3.node(n11);
@@ -236,17 +235,17 @@ public final class WayTest {
   @Test
   public void testNodes() {
     List<Node> nodes = new ArrayList<Node>();
-    Node n1 = new Node(1512550893, 59.1198149F, 18.1159972F);
-    Node n2 = new Node(1612550893, 56.2298149F, 17.2259972F);
-    Node n3 = new Node(1712550893, 50.3398149F, 10.3359972F);
-    Node n4 = new Node(1112550893, 57.3398149F, 18.3359972F);
+    Node n1 = new Node(59.1198149F, 18.1159972F);
+    Node n2 = new Node(56.2298149F, 17.2259972F);
+    Node n3 = new Node(50.3398149F, 10.3359972F);
+    Node n4 = new Node(57.3398149F, 18.3359972F);
 
     nodes.add(n1);
     nodes.add(n2);
     nodes.add(n3);
     nodes.add(n4);
 
-    Way w1 = new Way(1112550893);
+    Way w1 = new Way();
     w1.nodes(null);
     assertEquals(0, w1.nodes().size());
 
@@ -263,13 +262,13 @@ public final class WayTest {
    */
   @Test
   public void testAppend() {
-    Way w1 = new Way(1112550893);
-    Way w2 = new Way(1112550893);
+    Way w1 = new Way();
+    Way w2 = new Way();
 
-    Node n1 = new Node(1512550893, 59.1198149F, 18.1159972F);
-    Node n2 = new Node(1612550893, 56.2298149F, 17.2259972F);
-    Node n3 = new Node(1712550893, 50.3398149F, 10.3359972F);
-    Node n4 = new Node(1112550893, 57.3398149F, 18.3359972F);
+    Node n1 = new Node(59.1198149F, 18.1159972F);
+    Node n2 = new Node(56.2298149F, 17.2259972F);
+    Node n3 = new Node(50.3398149F, 10.3359972F);
+    Node n4 = new Node(57.3398149F, 18.3359972F);
 
     w1.node(n1);
     w1.node(n2);
@@ -293,31 +292,31 @@ public final class WayTest {
    */
   @Test
   public void testIntersect() {
-    Way w1 = new Way(1112550893);
-    Node n1 = new Node(1112550893, 55.6758261F, 12.5831593F);
-    Node n2 = new Node(1212550893, 55.6753869F, 12.5850681F);
-    Node n3 = new Node(1312550893, 55.6752059F, 12.5849356F);
-    Node n4 = new Node(1412550893, 55.6756510F, 12.5830358F);
+    Way w1 = new Way();
+    Node n1 = new Node(55.6758261F, 12.5831593F);
+    Node n2 = new Node(55.6753869F, 12.5850681F);
+    Node n3 = new Node(55.6752059F, 12.5849356F);
+    Node n4 = new Node(55.6756510F, 12.5830358F);
     w1.node(n1);
     w1.node(n2);
     w1.node(n3);
     w1.node(n4);
 
-    Way w2 = new Way(1212550893);
-    Node n5 = new Node(1512550893, 55.6758241F, 12.5831493F);
-    Node n6 = new Node(1612550893, 55.6753869F, 12.5850681F);
-    Node n7 = new Node(1712550893, 55.6752059F, 12.5849356F);
-    Node n8 = new Node(1812550893, 55.6756510F, 12.5830358F);
+    Way w2 = new Way();
+    Node n5 = new Node(55.6758241F, 12.5831493F);
+    Node n6 = new Node(55.6753869F, 12.5850681F);
+    Node n7 = new Node(55.6752059F, 12.5849356F);
+    Node n8 = new Node(55.6756510F, 12.5830358F);
     w2.node(n5);
     w2.node(n6);
     w2.node(n7);
     w2.node(n8);
 
-    Way w3 = new Way(1312550893);
-    Node n9 = new Node(1912550893, 50.6758241F, 10.5831493F);
-    Node n10 = new Node(1922550893, 50.6753869F, 10.5850681F);
-    Node n11 = new Node(1932550893, 50.6752059F, 10.5849356F);
-    Node n12 = new Node(1942550893, 50.6756510F, 10.5830358F);
+    Way w3 = new Way();
+    Node n9 = new Node(50.6758241F, 10.5831493F);
+    Node n10 = new Node(50.6753869F, 10.5850681F);
+    Node n11 = new Node(50.6752059F, 10.5849356F);
+    Node n12 = new Node(50.6756510F, 10.5830358F);
     w3.node(n9);
     w3.node(n10);
     w3.node(n11);
@@ -332,31 +331,31 @@ public final class WayTest {
    */
   @Test
   public void testContains() {
-    Way w1 = new Way(1112550893);
-    Node n1 = new Node(1112550893, 56.6758261F, 12.5831593F);
-    Node n2 = new Node(1212550893, 52.6753869F, 12.5831593F);
-    Node n3 = new Node(1312550893, 52.6753869F, 18.5849356F);
-    Node n4 = new Node(1412550893, 56.6758261F, 18.5830358F);
+    Way w1 = new Way();
+    Node n1 = new Node(56.6758261F, 12.5831593F);
+    Node n2 = new Node(52.6753869F, 12.5831593F);
+    Node n3 = new Node(52.6753869F, 18.5849356F);
+    Node n4 = new Node(56.6758261F, 18.5830358F);
     w1.node(n1);
     w1.node(n2);
     w1.node(n3);
     w1.node(n4);
 
-    Way w2 = new Way(1212550893);
-    Node n5 = new Node(1512550893, 55.6758241F, 12.1831493F);
-    Node n6 = new Node(1612550893, 53.6753869F, 12.1831493F);
-    Node n7 = new Node(1712550893, 53.6753869F, 15.5849356F);
-    Node n8 = new Node(1812550893, 55.6758241F, 15.5849356F);
+    Way w2 = new Way();
+    Node n5 = new Node(55.6758241F, 12.1831493F);
+    Node n6 = new Node(53.6753869F, 12.1831493F);
+    Node n7 = new Node(53.6753869F, 15.5849356F);
+    Node n8 = new Node(55.6758241F, 15.5849356F);
     w2.node(n5);
     w2.node(n6);
     w2.node(n7);
     w2.node(n8);
 
-    Way w3 = new Way(1312550893);
-    Node n9 = new Node(1912550893, 55.6758241F, 11.5831493F);
-    Node n10 = new Node(1922550893, 53.6753869F, 11.5850681F);
-    Node n11 = new Node(1932550893, 53.6753869F, 11.5849356F);
-    Node n12 = new Node(1942550893, 55.6758241F, 11.5830358F);
+    Way w3 = new Way();
+    Node n9 = new Node(55.6758241F, 11.5831493F);
+    Node n10 = new Node(53.6753869F, 11.5850681F);
+    Node n11 = new Node(53.6753869F, 11.5849356F);
+    Node n12 = new Node(55.6758241F, 11.5830358F);
     w3.node(n9);
     w3.node(n10);
     w3.node(n11);
@@ -365,5 +364,4 @@ public final class WayTest {
     assertTrue(w1.contains(w2));
     assertFalse(w1.contains(w3));
   }
-
 }
