@@ -9,17 +9,17 @@
 <MenuBar
   fx:controller="dk.itu.kelvin.controller.MenuController"
   xmlns:fx="http://javafx.com/fxml"
-
+  fx:id="mainMenuBar"
   useSystemMenuBar="true"
 >
   <menus>
     <Menu text="File">
       <items>
         <MenuItem text="Open file" onAction="#pickFile"/>
-        <MenuItem text="Save as .bin"/>
-        <MenuItem text="Load last .bin"/>
-        <MenuItem text="Reset to default"/>
-        <MenuItem text="Exit"/>
+        <MenuItem text="Save as .bin" onAction="#saveBin"/>
+        <MenuItem text="Load last .bin" onAction="#loadBin"/>
+        <MenuItem text="Load default .bin" onAction="#defaultBin"/>
+        <MenuItem text="Exit" onAction="#close"/>
       </items>
     </Menu>
     <Menu text="View">
@@ -31,8 +31,9 @@
     </Menu>
     <Menu text="Help">
       <items>
-        <MenuItem text="User manual"/>
-        <MenuItem text="About"/>
+        <MenuItem text="Reset everything to default" onAction="#resetAll"/>
+        <MenuItem text="User manual" onAction="#showManual"/>
+        <MenuItem text="About" onAction="#showAbout"/>
       </items>
     </Menu>
   </menus>

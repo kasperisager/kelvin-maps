@@ -5,6 +5,8 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
 <!-- JavaFX controls -->
 <?import javafx.scene.control.Button?>
@@ -12,6 +14,8 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Label?>
 
 <!-- JavaFX shapes -->
 <?import javafx.scene.shape.Circle?>
@@ -24,6 +28,7 @@
 
 <!-- Layout -->
 <?import dk.itu.kelvin.layout.Canvas?>
+
 
 <StackPane
   fx:controller="dk.itu.kelvin.controller.ChartController"
@@ -149,12 +154,38 @@
       </children>
     </HBox>
 
+  <GridPane
+    VBox.vgrow="SOMETIMES"
+    >
     <VBox
       styleClass="config-box"
       fx:id="checkboxVBox"
       prefWidth="150"
-      maxWidth="150"
-    >
+      layoutX="0"
+      layoutY="0"
+      maxWidth="200"
+      >
+      <children>
+        <HBox>
+          <children>
+            <Label
+              prefWidth="200"
+              styleClass="header"
+              alignment="CENTER"
+              >
+              Points of Interest
+            </Label>
+          </children>
+          <children>
+            <Button
+              styleClass="icon"
+              text="&#xf12a;"
+              onAction="#hidePOI"
+              >
+            </Button>
+          </children>
+        </HBox>
+      </children>
       <children>
         <CheckBox text="Parking" prefWidth="200"/>
       </children>
@@ -198,46 +229,109 @@
         <CheckBox text="Telephone" prefWidth="200"/>
       </children>
     </VBox>
-  </VBox>
 
-  <VBox
+    <VBox
+      visible="false"
+      styleClass="config-box"
+      fx:id="directionsScrollPane"
+      prefWidth="400"
+      layoutX="0"
+      layoutY="0"
+      VBox.vgrow="SOMETIMES"
+      >
+      <children>
+        <HBox>
+          <Label
+            prefWidth="345"
+            styleClass="header"
+            alignment="CENTER"
+            >
+            Directions
+          </Label>
+          <Button
+            alignment="TOP_RIGHT"
+            styleClass="icon"
+            text="&#xf12a;"
+            onAction="#hideDirections"
+            >
+          </Button>
+        </HBox>
+      </children>
+      <children>
+        <ScrollPane
+          VBox.vgrow="SOMETIMES"
+          hbarPolicy="NEVER"
+          >
+          <VBox
+            fx:id="directionsVBox"
+            >
+          </VBox>
+        </ScrollPane>
+      </children>
+    </VBox>
+    <rowConstraints>
+      <RowConstraints minHeight="10.0" percentHeight="100"  />
+
+    </rowConstraints>
+  </GridPane>
+</VBox>
+  <HBox
     alignment="BOTTOM_LEFT"
     pickOnBounds="false"
-    fillWidth="false"
-  >
+    fx:id="compassVBox"
+    >
     <children>
-      <StackPane>
+      <VBox
+        alignment="BOTTOM_LEFT"
+        pickOnBounds="false"
+        fillWidth="false"
+      >
         <children>
-          <VBox alignment="CENTER" styleClass="compass">
-            <children>
-              <Path fx:id="compassArrow" styleClass="compass-arrow">
-                <elements>
-                  <MoveTo x="0" y="6" />
-                  <LineTo x="4" y="0" />
-                  <LineTo x="8" y="6" />
-                  <LineTo x="0" y="6" />
-                </elements>
-              </Path>
+            <StackPane>
+              <children>
+                <VBox alignment="CENTER" styleClass="compass">
+                  <children>
+                    <Path fx:id="compassArrow" styleClass="compass-arrow">
+                      <elements>
+                        <MoveTo x="0" y="6" />
+                        <LineTo x="4" y="0" />
+                        <LineTo x="8" y="6" />
+                        <LineTo x="0" y="6" />
+                      </elements>
+                    </Path>
 
-              <Circle radius="30" styleClass="compass-disc" />
-            </children>
-          </VBox>
+                    <Circle radius="30" styleClass="compass-disc" />
+                  </children>
+                </VBox>
 
-          <VBox alignment="CENTER" styleClass="compass-reset">
-            <Button
-              text="&#xf366;"
-              styleClass="icon"
-              onAction="#compassReset"
-            >
-              <tooltip>
-                <Tooltip text="Reset compass"/>
-              </tooltip>
-            </Button>
-          </VBox>
-        </children>
-      </StackPane>
+                <VBox alignment="CENTER" styleClass="compass-reset">
+                  <Button
+                    text="&#xf366;"
+                    styleClass="icon"
+                    onAction="#compassReset"
+                  >
+                    <tooltip>
+                      <Tooltip text="Reset compass"/>
+                    </tooltip>
+                  </Button>
+                </VBox>
+              </children>
+            </StackPane>
+          </children>
+        </VBox>
     </children>
-  </VBox>
+
+    <children>
+
+          <Label
+            styleClass="scaleIndicator"
+            fx:id="scaleIndicatorLabel"
+            >
+            10 km
+          </Label>
+    </children>
+  </HBox>
+
 
   <VBox
     spacing="10"
