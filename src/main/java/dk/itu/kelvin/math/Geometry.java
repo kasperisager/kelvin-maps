@@ -52,8 +52,8 @@ public final class Geometry {
    */
   public static Point intersection(final Line a, final Line b) {
     float d = (
-      (a.start.x - a.end.x) * (b.start.y - b.end.y) -
-      (a.start.y - a.end.y) * (b.start.x - b.end.x)
+      (a.start.x - a.end.x) * (b.start.y - b.end.y)
+    - (a.start.y - a.end.y) * (b.start.x - b.end.x)
     );
 
     if (Epsilon.equals(d, 0.0f)) {
@@ -61,13 +61,13 @@ public final class Geometry {
     }
 
     double px = (
-      (b.end.x - b.start.x) * (a.start.y - b.start.y) -
-      (b.end.y - b.start.y) * (a.start.x - b.start.x)
+      (b.end.x - b.start.x) * (a.start.y - b.start.y)
+    - (b.end.y - b.start.y) * (a.start.x - b.start.x)
     ) / d;
 
     double py = (
-      (a.end.x - a.start.x) * (a.start.y - b.start.y) -
-      (a.end.y - a.start.y) * (a.start.x - b.start.x)
+      (a.end.x - a.start.x) * (a.start.y - b.start.y)
+    - (a.end.y - a.start.y) * (a.start.x - b.start.x)
     ) / d;
 
     if (
@@ -483,21 +483,21 @@ public final class Geometry {
      */
     public Bounds(final Line line) {
       if (line.start.x > line.end.x) {
-        this.right = line.end().x();
-        this.left = line.start().x();
+        this.right = line.end.x;
+        this.left = line.start.x;
       }
       else {
-        this.right = line.start().x();
-        this.left = line.end().x();
+        this.right = line.start.x;
+        this.left = line.end.x;
       }
 
       if (line.start.y > line.end.y) {
-        this.top = line.start().y();
-        this.bottom = line.end().y();
+        this.top = line.start.y;
+        this.bottom = line.end.y;
       }
       else {
-        this.top = line.end().y();
-        this.bottom = line.start().y();
+        this.top = line.end.y;
+        this.bottom = line.start.y;
       }
     }
 
@@ -507,11 +507,11 @@ public final class Geometry {
      * @param rectangle The rectangle whose bounds to initialize.
      */
     public Bounds(final Rectangle rectangle) {
-      this.left = rectangle.position().x();
-      this.right = this.left + rectangle.width();
+      this.left = rectangle.position.x;
+      this.right = this.left + rectangle.width;
 
-      this.top = rectangle.position().y();
-      this.bottom = this.top + rectangle.height();
+      this.top = rectangle.position.y;
+      this.bottom = this.top + rectangle.height;
     }
 
     /**
