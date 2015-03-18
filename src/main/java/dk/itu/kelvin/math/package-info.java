@@ -1,5 +1,4 @@
 /**
- * <p>
  * Copyright &copy; 2015 The Authors.
  *
  * <p>
@@ -23,4 +22,4 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-package dk.itu.kelvin.store;
+package dk.itu.kelvin.math;

@@ -3,16 +3,14 @@
  */
 package dk.itu.kelvin.controller;
 
-// General utilities
-import java.util.Collections;
-
 // JavaFX application utilities
 import javafx.application.Platform;
 
 // JavaFX scene utilities
-import javafx.scene.CacheHint;
+import javafx.geometry.Pos;
 
 // JavaFX layout
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 // JavaFX shapes
@@ -32,6 +30,7 @@ import javafx.scene.transform.Affine;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 
 // Controls FX
 import org.controlsfx.control.PopOver;
@@ -51,7 +50,6 @@ import dk.itu.kelvin.layout.Canvas;
 // Models
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Chart;
-import dk.itu.kelvin.model.Element;
 import dk.itu.kelvin.model.Node;
 
 // Stores
@@ -160,6 +158,30 @@ public final class ChartController {
   private VBox checkboxVBox;
 
   /**
+   * The VBox containing route description.
+   */
+  @FXML
+  private VBox directionsVBox;
+
+  /**
+   * The VBox containing a ScrollPane.
+   */
+  @FXML
+  private VBox directionsScrollPane;
+
+  /**
+   * The VBox surrounding all compass elements.
+   */
+  @FXML
+  private HBox compassVBox;
+
+  /**
+   * Indicator for scale.
+   */
+  @FXML
+  private Label scaleIndicatorLabel;
+
+  /**
    * Initialize the controller.
    *
    * @throws Exception In case of an error. Duh.
@@ -179,18 +201,18 @@ public final class ChartController {
         throw new RuntimeException(ex);
       }
 
-      Collections.sort(this.chart.elements(), Element.COMPARATOR);
+      // Collections.sort(this.chart.elements(), Element.COMPARATOR);
 
       //Get map of all addresses from parser.
       this.addresses = parser.addresses();
 
       // Schedule rendering of the chart nodes.
       Platform.runLater(() -> {
-        // this.canvas.add(chart.nodes());
+        this.canvas.add(this.chart.elements());
 
         this.canvas.pan(
           -this.chart.bounds().getMinX(),
-          -this.chart.bounds().getMaxY()
+          -this.chart.bounds().getMinY()
         );
       });
     });
@@ -220,9 +242,11 @@ public final class ChartController {
     poi.setOnAction((event) -> {
       if (!this.checkboxVBox.isVisible()) {
         this.checkboxVBox.setVisible(true);
+        this.moveCompass(200);
       }
       else {
         this.checkboxVBox.setVisible(false);
+        this.moveCompass(0);
       }
       this.popOver.hide();
     });
@@ -248,28 +272,6 @@ public final class ChartController {
         this.toggleButton.setSelected(false);
       }
     });
-  }
-
-  /**
-   * Set the cache to speed-mode.
-   */
-  private void setCacheSpeed() {
-    if (this.canvas.getCacheHint() == CacheHint.SCALE_AND_ROTATE) {
-      return;
-    }
-
-    this.canvas.setCacheHint(CacheHint.SCALE_AND_ROTATE);
-  }
-
-  /**
-   * Set the cache to quality-mode.
-   */
-  private void setCacheQuality() {
-    if (this.canvas.getCacheHint() == CacheHint.QUALITY) {
-      return;
-    }
-
-    this.canvas.setCacheHint(CacheHint.QUALITY);
   }
 
   /**
@@ -312,8 +314,6 @@ public final class ChartController {
     this.setInitialMouseDrag(e);
     this.setInitialMouseScroll(e);
 
-    this.setCacheSpeed();
-
     this.canvas.requestFocus();
   }
 
@@ -325,8 +325,6 @@ public final class ChartController {
   @FXML
   private void onMouseReleased(final MouseEvent e) {
     this.setInitialMouseScroll(e);
-
-    this.setCacheQuality();
   }
 
   /**
@@ -360,8 +358,6 @@ public final class ChartController {
    */
   @FXML
   private void onMouseDragged(final MouseEvent e) {
-    this.setCacheSpeed();
-
     double x = e.getSceneX();
     double y = e.getSceneY();
 
@@ -372,30 +368,12 @@ public final class ChartController {
   }
 
   /**
-   * On scroll started event.
-   */
-  @FXML
-  private void onScrollStarted() {
-    this.setCacheSpeed();
-  }
-
-  /**
-   * On scroll finished event.
-   */
-  @FXML
-  private void onScrollFinished() {
-    this.setCacheQuality();
-  }
-
-  /**
    * On scroll event.
    *
    * @param e The scroll event.
    */
   @FXML
   private void onScroll(final ScrollEvent e) {
-    this.setCacheSpeed();
-
     double factor = (e.getDeltaY() < 0) ? ZOOM_IN : ZOOM_OUT;
 
     this.canvas.zoom(
@@ -406,51 +384,17 @@ public final class ChartController {
   }
 
   /**
-   * On zoom started event.
-   */
-  @FXML
-  private void onZoomStarted() {
-    this.setCacheSpeed();
-  }
-
-  /**
-   * On zoom finished event.
-   */
-  @FXML
-  private void onZoomFinished() {
-    this.setCacheQuality();
-  }
-
-  /**
    * On zoom event.
    *
    * @param e The zoom event.
    */
   @FXML
   private void onZoom(final ZoomEvent e) {
-    this.setCacheSpeed();
-
     this.canvas.zoom(
       e.getZoomFactor(),
       this.initialMouseScrollX,
       this.initialMouseScrollY
     );
-  }
-
-  /**
-   * On rotation started event.
-   */
-  @FXML
-  private void onRotationStarted() {
-    this.setCacheSpeed();
-  }
-
-  /**
-   * On rotation finished event.
-   */
-  @FXML
-  private void onRotationFinished() {
-    this.setCacheQuality();
   }
 
   /**
@@ -559,6 +503,7 @@ public final class ChartController {
    */
   @FXML
   private void findRoute() {
+    /*
     Address startAddress = Address.parse(this.addressFrom.getText());
     Address endAddress = Address.parse(this.addressTo.getText());
     Node startPosition = this.addresses.find(startAddress);
@@ -568,6 +513,49 @@ public final class ChartController {
       + startPosition.y());
     System.out.println("X: " + endPosition.x() + " " + "Y: "
       + endPosition.y());
+    */
+    this.moveCompass(400);
+    this.directionsScrollPane.setVisible(true);
+    int stack = 30;
+    for (int i = 0; i < stack; i++) {
+      HBox hbox = new HBox(2);
+      hbox.getStyleClass().add("bottomBorder");
+      hbox.setPrefWidth(500);
+      Label icon = new Label("\uf10c");
+      icon.getStyleClass().add("icon");
+      icon.setPrefWidth(40);
+      icon.setAlignment(Pos.CENTER);
+
+      Label label = new Label("Turn right at next left");
+
+      hbox.getChildren().addAll(icon, label);
+      this.directionsVBox.getChildren().add(hbox);
+
+    }
+  }
+
+  /**
+   * Hides the route description VBox.
+   */
+  public void hideDirections() {
+    this.directionsScrollPane.setVisible(false);
+    this.moveCompass(0);
+  }
+
+  /**
+   * Hides the Points of Interest VBox.
+   */
+  public void hidePOI() {
+    this.checkboxVBox.setVisible(false);
+    this.moveCompass(0);
+  }
+
+  /**
+   * Moves the compass VBox relative to BOTTOM_LEFT.
+   * @param x how much to move compass along x-axis [px].
+   */
+  public void moveCompass(final double x) {
+    this.compassVBox.setTranslateX(x);
   }
 
   /**
@@ -603,5 +591,21 @@ public final class ChartController {
   @FXML
   private void routeByFoot() {
     System.out.println("Route by foot");
+  }
+
+  /**
+   * Sets the text of scaleIndicator.
+   * @param text the text to be set in scale.
+   */
+  private void setScaleText(final String text) {
+    this.scaleIndicatorLabel.setText(text);
+  }
+
+  /**
+   * Sets the length of the scaleIndicator.
+   * @param length how wide the scale is [px].
+   */
+  private void setScaleLenght(final double length) {
+    this.scaleIndicatorLabel.setPrefWidth(length);
   }
 }

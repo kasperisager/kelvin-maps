@@ -93,7 +93,11 @@ public final class DoubleHash implements HashResolver {
     int secondHash = this.secondHash(key);
     int step = 1;
 
-    while (keys[i] != 0 && keys[i] != key) {
+    while (keys[i] != 0) {
+      if (keys[i] == key) {
+        break;
+      }
+
       i = this.step(i, secondHash, keys.length, step++);
     }
 
@@ -113,7 +117,11 @@ public final class DoubleHash implements HashResolver {
     int secondHash = this.secondHash(key);
     int step = 1;
 
-    while (keys[i] != 0L && keys[i] != key) {
+    while (keys[i] != 0L) {
+      if (keys[i] == key) {
+        break;
+      }
+
       i = this.step(i, secondHash, keys.length, step++);
     }
 
@@ -133,7 +141,11 @@ public final class DoubleHash implements HashResolver {
     int secondHash = this.secondHash(key);
     int step = 1;
 
-    while (keys[i] != 0.0f && keys[i] != key) {
+    while (keys[i] != 0.0f) {
+      if (keys[i] == key) {
+        break;
+      }
+
       i = this.step(i, secondHash, keys.length, step++);
     }
 
@@ -153,7 +165,11 @@ public final class DoubleHash implements HashResolver {
     int secondHash = this.secondHash(key);
     int step = 1;
 
-    while (keys[i] != 0.0d && keys[i] != key) {
+    while (keys[i] != 0.0d) {
+      if (keys[i] == key) {
+        break;
+      }
+
       i = this.step(i, secondHash, keys.length, step++);
     }
 
@@ -173,7 +189,11 @@ public final class DoubleHash implements HashResolver {
     int secondHash = this.secondHash(key);
     int step = 1;
 
-    while (keys[i] != null && !keys[i].equals(key)) {
+    while (keys[i] != null) {
+      if (keys[i].equals(key)) {
+        break;
+      }
+
       i = this.step(i, secondHash, keys.length, step++);
     }
 

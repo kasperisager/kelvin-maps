@@ -21,6 +21,7 @@ public final class Node extends Element<Label> {
   /**
    * The JavaFX representation of the node.
    *
+   * <p>
    * This field is transient as it is simply used for caching the rendered
    * JavaFX scene graph node. We therefore don't want to store it when
    * serializing the element.
@@ -30,7 +31,7 @@ public final class Node extends Element<Label> {
   /**
    * Cache the hash of the node.
    */
-  private int hash;
+  private transient int hash;
 
   /**
    * X-coordinate of the node.

@@ -3,10 +3,6 @@
  */
 package dk.itu.kelvin.model;
 
-// Java utilities
-import java.util.List;
-import java.util.ArrayList;
-
 // JUnit annotations
 import org.junit.Test;
 
@@ -14,6 +10,10 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+
+// Utilities
+import dk.itu.kelvin.util.ArrayList;
+import dk.itu.kelvin.util.List;
 
 /**
  * Way unit tests class.
