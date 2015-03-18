@@ -49,6 +49,6 @@ public final class Haversine {
 
     double c = 2 * Math.asin(Math.sqrt(a));
 
-    return (float) R * c;
+    return (float) (R * c);
   }
 }
