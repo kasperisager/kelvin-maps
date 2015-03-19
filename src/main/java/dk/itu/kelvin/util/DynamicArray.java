@@ -7,7 +7,15 @@ package dk.itu.kelvin.util;
 import java.io.Serializable;
 
 /**
- * Dynamic array class.
+ * <h2>..add description</h2>
+ * <p>
+ * DynamicArray is abstract class for keeping track of array size in extending
+ * classes, it also has values for when the arrays should resize and to what
+ * capacity.
+ *
+ * DynamicArray has a single constructor, that specifies a capacity, and
+ *
+ *
  *
  * @version 1.0.0
  */
