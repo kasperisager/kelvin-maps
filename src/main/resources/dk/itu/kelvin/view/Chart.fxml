@@ -156,14 +156,16 @@
 
   <GridPane
     VBox.vgrow="SOMETIMES"
+    fx:id="propertiesGridPane"
     >
     <VBox
       styleClass="config-box"
       fx:id="checkboxVBox"
-      prefWidth="150"
+      prefWidth="200"
       layoutX="0"
       layoutY="0"
       maxWidth="200"
+      visible="false"
       >
       <children>
         <HBox>
@@ -231,7 +233,6 @@
     </VBox>
 
     <VBox
-      visible="false"
       styleClass="config-box"
       fx:id="directionsScrollPane"
       prefWidth="400"

@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import javafx.geometry.Pos;
 
 // JavaFX layout
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -176,12 +177,20 @@ public final class ChartController {
   private Label scaleIndicatorLabel;
 
   /**
+   * GridPane surrounding the big properties boxes
+   * containing route description and point of interest
+   */
+  @FXML
+  private GridPane propertiesGridPane;
+
+  /**
    * Initialize the controller.
    *
    * @throws Exception In case of an error. Duh.
    */
   public void initialize() throws Exception {
-    this.checkboxVBox.setVisible(false);
+    this.propertiesGridPane.getChildren().remove(checkboxVBox);
+    this.propertiesGridPane.getChildren().remove(directionsScrollPane);
 
     this.compassArrow.getTransforms().add(this.compassTransform);
 
@@ -232,10 +241,11 @@ public final class ChartController {
     poi.setOnAction((event) -> {
       if (!this.checkboxVBox.isVisible()) {
         this.checkboxVBox.setVisible(true);
+        this.propertiesGridPane.getChildren().add(checkboxVBox);
         this.moveCompass(200);
-      }
-      else {
+      } else {
         this.checkboxVBox.setVisible(false);
+        this.propertiesGridPane.getChildren().remove(checkboxVBox);
         this.moveCompass(0);
       }
       this.popOver.hide();
@@ -505,7 +515,7 @@ public final class ChartController {
       + endPosition.y());
     */
     this.moveCompass(400);
-    this.directionsScrollPane.setVisible(true);
+    this.propertiesGridPane.getChildren().add(directionsScrollPane);
     int stack = 30;
     for (int i = 0; i < stack; i++) {
       HBox hbox = new HBox(2);
@@ -528,7 +538,7 @@ public final class ChartController {
    * Hides the route description VBox.
    */
   public void hideDirections() {
-    this.directionsScrollPane.setVisible(false);
+    this.propertiesGridPane.getChildren().remove(directionsScrollPane);
     this.moveCompass(0);
   }
 
@@ -537,6 +547,7 @@ public final class ChartController {
    */
   public void hidePOI() {
     this.checkboxVBox.setVisible(false);
+    this.propertiesGridPane.getChildren().remove(checkboxVBox);
     this.moveCompass(0);
   }
 
