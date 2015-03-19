@@ -42,16 +42,6 @@ public final class Relation extends Element<Group> {
   private static final long serialVersionUID = 48;
 
   /**
-   * The JavaFX representation of the relation.
-   *
-   * <p>
-   * This field is transient as it is simply used for caching the rendered
-   * JavaFX scene graph node. We therefore don't want to store it when
-   * serializing the element.
-   */
-  private transient Group fx;
-
-  /**
    * The members of the relation mapped to their roles.
    *
    * The map is initialized on-demand when first accessed to avoid allocating
@@ -157,10 +147,6 @@ public final class Relation extends Element<Group> {
    * @return The JavaFX representation of the relation.
    */
   public Group render() {
-    if (this.fx != null) {
-      return this.fx;
-    }
-
     Group group = new Group();
 
     for (Map.Entry<String, String> tag: this.tags().entrySet()) {
@@ -201,9 +187,7 @@ public final class Relation extends Element<Group> {
       }
     }
 
-    this.fx = group;
-
-    return this.fx;
+    return group;
   }
 
   /**

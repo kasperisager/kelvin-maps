@@ -78,9 +78,12 @@ public final class Node extends Element<Label> {
 
     return (
       this.order() == node.order()
-      && this.layer() == node.layer()
-      && this.x == node.x()
-      && this.y == node.y()
+      &&
+      this.layer() == node.layer()
+      &&
+      this.x == node.x()
+      &&
+      this.y == node.y()
     );
   }
 

@@ -186,7 +186,7 @@ public final class ChartController {
     this.compassArrow.getTransforms().add(this.compassTransform);
 
     TaskQueue.run(() -> {
-      ChartParser parser = new ChartParser(this.chart);
+      ChartParser parser = new ChartParser();
 
       try {
         parser.read(MAP_INPUT);
@@ -194,6 +194,14 @@ public final class ChartController {
       catch (Exception ex) {
         throw new RuntimeException(ex);
       }
+
+      Platform.runLater(() -> {
+        this.chart.add(parser.ways().values());
+        this.chart.add(parser.relations().values());
+
+        this.chart.add(parser.land());
+        this.chart.add(parser.bounds());
+      });
 
       //Get map of all addresses from parser.
       this.addresses = parser.addresses();
