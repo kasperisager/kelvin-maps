@@ -16,14 +16,15 @@ import javafx.scene.transform.Affine;
 import dk.itu.kelvin.util.Collection;
 
 // Models
+import dk.itu.kelvin.model.BoundingBox;
 import dk.itu.kelvin.model.Element;
 
 /**
- * Canvas class.
+ * Chart class.
  *
  * @version 1.0.0
  */
-public final class Canvas extends Group {
+public final class Chart extends Group {
   /**
    * The size of each tile within the tile grid.
    */
@@ -45,22 +46,51 @@ public final class Canvas extends Group {
   private Affine transform = new Affine();
 
   /**
-   * The tile grid containing all the elements within the canvas.
+   * The bounds of the chart.
+   */
+  private BoundingBox bounds;
+
+  /**
+   * The tile grid containing all the elements within the chart.
    */
   private TileGrid tileGrid = new TileGrid(this.transform);
 
   /**
-   * Initialize the canvas.
+   * Initialize the chart.
    */
-  public Canvas() {
+  public Chart() {
     this.getTransforms().add(this.transform);
     this.getChildren().add(this.tileGrid);
   }
 
   /**
-   * Add an element to the canvas.
+   * Get the bounds of the chart.
    *
-   * @param element The element to add to the canvas.
+   * @return The bounds of the chart.
+   */
+  public BoundingBox bounds() {
+    return this.bounds;
+  }
+
+  /**
+   * Set the bounds of the chart.
+   *
+   * @param bounds The bounds of the chart.
+   */
+  public void bounds(final BoundingBox bounds) {
+    if (bounds == null) {
+      return;
+    }
+
+    this.bounds = bounds;
+
+    this.pan(-bounds.left(), -bounds.top());
+  }
+
+  /**
+   * Add an element to the chart.
+   *
+   * @param element The element to add to the chart.
    */
   public void add(final Element element) {
     Bounds bounds = element.render().getBoundsInParent();
@@ -86,9 +116,9 @@ public final class Canvas extends Group {
   }
 
   /**
-   * Add a collection of elements to the canvas.
+   * Add a collection of elements to the chart.
    *
-   * @param elements The collection of elements to add to the canvas.
+   * @param elements The collection of elements to add to the chart.
    */
   public void add(final Collection<Element> elements) {
     if (elements == null) {
@@ -101,7 +131,7 @@ public final class Canvas extends Group {
   }
 
   /**
-   * Zoom the canvas.
+   * Zoom the chart.
    *
    * @param factor  The factor with which to zoom.
    * @param x       The x-coordinate of the pivot point.
@@ -122,7 +152,7 @@ public final class Canvas extends Group {
   }
 
   /**
-   * Zoom the canvas, using the center of the scene as the pivot point.
+   * Zoom the chart, using the center of the scene as the pivot point.
    *
    * @param factor The factor with which to zoom.
    */
@@ -135,7 +165,7 @@ public final class Canvas extends Group {
   }
 
   /**
-   * Pan the canvas.
+   * Pan the chart.
    *
    * @param x The amount to pan on the x-axis.
    * @param y The amount to pan on the y-axis.
@@ -145,7 +175,7 @@ public final class Canvas extends Group {
   }
 
   /**
-   * Rotate the canvas.
+   * Rotate the chart.
    *
    * @param angle The angle of the rotation.
    * @param x     The x-coordinate of the pivot point.
@@ -156,7 +186,7 @@ public final class Canvas extends Group {
   }
 
   /**
-   * Rotate the canvas, using the center of the scene as the pivot point.
+   * Rotate the chart, using the center of the scene as the pivot point.
    *
    * @param angle The angle of the rotation.
    */

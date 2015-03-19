@@ -6,6 +6,9 @@ package dk.itu.kelvin.parser;
 // Net utilities
 import java.net.URL;
 
+// JavaFX application utilities
+import javafx.application.Platform;
+
 // SAX utilities
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
@@ -13,6 +16,10 @@ import org.xml.sax.XMLReader;
 // SAX helpers
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
+
+// Math
+import dk.itu.kelvin.math.Projection;
+import dk.itu.kelvin.math.MercatorProjection;
 
 // Utilities
 import dk.itu.kelvin.util.HashTable;
@@ -24,13 +31,15 @@ import dk.itu.kelvin.store.ElementStore;
 
 // Models
 import dk.itu.kelvin.model.BoundingBox;
-import dk.itu.kelvin.model.Chart;
 import dk.itu.kelvin.model.Element;
 import dk.itu.kelvin.model.Land;
 import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Address;
+
+// Layout
+import dk.itu.kelvin.layout.Chart;
 
 /**
  * Parser class.
@@ -42,6 +51,11 @@ public final class ChartParser {
    * The chart to add parsed elements to.
    */
   private Chart chart;
+
+  /**
+   * Projection to use for the parsed coordinates.
+   */
+  private Projection projection = new MercatorProjection();
 
   /**
    * Store nodes.
@@ -66,12 +80,17 @@ public final class ChartParser {
   /**
    * Land element.
    */
-  private Land land = new Land();
+  private Land land;
 
   /**
    * The currently active element.
    */
   private Element element;
+
+  /**
+   * The currently active element ID.
+   */
+  private long elementId;
 
   /**
    * The currently active address object.
@@ -176,6 +195,7 @@ public final class ChartParser {
    */
   private void clearElement() {
     this.element = null;
+    this.elementId = 0L;
   }
 
   /**
@@ -185,11 +205,13 @@ public final class ChartParser {
    */
   private void startBounds(final Attributes attributes) {
     this.chart.bounds(new BoundingBox(
-      Chart.lonToX(this.getFloat(attributes, "minlon")),
-      Chart.latToY(this.getFloat(attributes, "minlat")),
-      Chart.lonToX(this.getFloat(attributes, "maxlon")),
-      Chart.latToY(this.getFloat(attributes, "maxlat"))
+      this.projection.lonToX(this.getFloat(attributes, "minlon")),
+      this.projection.latToY(this.getFloat(attributes, "minlat")),
+      this.projection.lonToX(this.getFloat(attributes, "maxlon")),
+      this.projection.latToY(this.getFloat(attributes, "maxlat"))
     ));
+
+    this.land = new Land(this.chart.bounds());
   }
 
   /**
@@ -199,10 +221,11 @@ public final class ChartParser {
    */
   private void startNode(final Attributes attributes) {
     this.element = new Node(
-      this.getLong(attributes, "id"),
-      Chart.lonToX(this.getFloat(attributes, "lon")),
-      Chart.latToY(this.getFloat(attributes, "lat"))
+      this.projection.lonToX(this.getFloat(attributes, "lon")),
+      this.projection.latToY(this.getFloat(attributes, "lat"))
     );
+
+    this.elementId = this.getLong(attributes, "id");
   }
 
   /**
@@ -215,7 +238,7 @@ public final class ChartParser {
 
     Node node = (Node) this.element;
 
-    this.nodes.put(node.id(), node);
+    this.nodes.put(this.elementId, node);
 
     if (this.address != null) {
       this.addresses.put(this.address, node);
@@ -231,7 +254,8 @@ public final class ChartParser {
    * @param attributes Element attributes.
    */
   private void startWay(final Attributes attributes) {
-    this.element = new Way(this.getLong(attributes, "id"));
+    this.element = new Way();
+    this.elementId = this.getLong(attributes, "id");
   }
 
   /**
@@ -242,10 +266,7 @@ public final class ChartParser {
       return;
     }
 
-    Way way = (Way) this.element;
-
-    this.ways.put(way.id(), way);
-
+    this.ways.put(this.elementId, (Way) this.element);
     this.clearElement();
   }
 
@@ -255,9 +276,8 @@ public final class ChartParser {
    * @param attributes Element attributes.
    */
   public void startRelation(final Attributes attributes) {
-    this.element = new Relation(
-      Long.parseLong(attributes.getValue("id"))
-    );
+    this.element = new Relation();
+    this.elementId = this.getLong(attributes, "id");
   }
 
   /**
@@ -268,10 +288,7 @@ public final class ChartParser {
       return;
     }
 
-    Relation relation = (Relation) this.element;
-
-    this.relations.put(relation.id(), relation);
-
+    this.relations.put(this.elementId, (Relation) this.element);
     this.clearElement();
   }
 
@@ -343,9 +360,7 @@ public final class ChartParser {
       return;
     }
 
-    Way way = (Way) this.element;
-
-    way.node(node);
+    ((Way) this.element).node(node);
   }
 
   /**
@@ -386,9 +401,9 @@ public final class ChartParser {
    * End a document.
    */
   public void endDocument() {
-    this.chart.elements(this.ways.values());
-    this.chart.elements(this.relations.values());
-    // this.chart.elements(this.land.coastlines());
+    this.chart.add(this.land);
+    // this.chart.add(this.ways.values());
+    // this.chart.add(this.relations.values());
   }
 
   /**
@@ -489,7 +504,9 @@ public final class ChartParser {
      * The end of the document has been reached; hurray!
      */
     public void endDocument() {
-      ChartParser.this.endDocument();
+      Platform.runLater(() -> {
+        ChartParser.this.endDocument();
+      });
     }
   }
 }

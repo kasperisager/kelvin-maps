@@ -17,14 +17,13 @@ import static org.junit.Assert.assertNotEquals;
  * UnitTest of the Relation class.
  */
 public final class RelationTest {
-
   /**
    * Tests addition of a new member without a role.
    */
   @Test
   public void testAddMemberWithoutRole() {
-    Relation r1 = new Relation(1);
-    Node n1 = new Node(2, 2, 2);
+    Relation r1 = new Relation();
+    Node n1 = new Node(2, 2);
     r1.member(n1);
 
     assertEquals(Relation.Role.NONE, r1.role(n1));
@@ -36,8 +35,8 @@ public final class RelationTest {
    */
   @Test
   public void testIfElementOrRoleIsNull() {
-    Relation r1 = new Relation(10);
-    Way w1 = new Way(1);
+    Relation r1 = new Relation();
+    Way w1 = new Way();
     r1.member(w1, Relation.Role.INNER);
     assertEquals(Relation.Role.INNER, r1.role(w1));
     assertNotEquals(Relation.Role.NONE, r1.role(null));
@@ -52,10 +51,10 @@ public final class RelationTest {
    */
   @Test
   public void testRelationListOfMembers() {
-    Relation r1 = new Relation(1);
-    Node n1 = new Node(3, 3, 3);
-    Node n2 = new Node(4, 4, 4);
-    Node n3 = new Node(5, 5, 5);
+    Relation r1 = new Relation();
+    Node n1 = new Node(3, 3);
+    Node n2 = new Node(4, 4);
+    Node n3 = new Node(5, 5);
 
     r1.member(n1);
     r1.member(n2);
@@ -66,7 +65,7 @@ public final class RelationTest {
     assertTrue(r1.members().contains(n2));
     assertTrue(r1.members().contains(n3));
 
-    Relation r2 = new Relation(2);
+    Relation r2 = new Relation();
     assertEquals(0, r2.members().size());
 
   }
@@ -76,11 +75,11 @@ public final class RelationTest {
    */
   @Test
   public void testType() {
-    Relation r1 = new Relation(1);
+    Relation r1 = new Relation();
     r1.type(Relation.Type.ROUTE);
     assertEquals(Relation.Type.ROUTE, r1.type());
 
-    Relation r2 = new Relation(2);
+    Relation r2 = new Relation();
     r2.type(null);
     assertEquals(Relation.Type.NONE, r2.type());
   }
