@@ -6,9 +6,6 @@ package dk.itu.kelvin.layout;
 // JavaFX scene utilities
 import javafx.scene.Group;
 
-// JavaFX geometry
-import javafx.geometry.Bounds;
-
 // JavaFX transformations
 import javafx.scene.transform.Affine;
 
@@ -47,6 +44,9 @@ public final class Chart extends Group {
    */
   private BoundingBox bounds;
 
+  /**
+   * Land polygons.
+   */
   private TileGrid land = new TileGrid(this.transform);
 
   /**
@@ -54,6 +54,9 @@ public final class Chart extends Group {
    */
   private TileGrid elements = new TileGrid(this.transform);
 
+  /**
+   * Meta layer.
+   */
   private TileGrid meta = new TileGrid(this.transform);
 
   /**
@@ -79,17 +82,33 @@ public final class Chart extends Group {
 
     this.bounds = bounds;
 
-    this.pan(-bounds.left(), -bounds.top());
+    this.pan(-this.bounds.left(), -this.bounds.top());
+    this.setClip(this.bounds.render());
   }
 
+  /**
+   * Add a land polygon to the chart.
+   *
+   * @param land The land polygon to add to the chart.
+   */
   public void add(final Land land) {
     this.land.add(land);
   }
 
+  /**
+   * Add a node element to the chart.
+   *
+   * @param node The node element to add to the chart.
+   */
   public void add(final Node node) {
     this.meta.add(node);
   }
 
+  /**
+   * Add an element to the chart.
+   *
+   * @param element The element to add to the chart.
+   */
   public void add(final Element element) {
     this.elements.add(element);
   }
@@ -97,6 +116,7 @@ public final class Chart extends Group {
   /**
    * Add a collection of elements to the chart.
    *
+   * @param <E>      The type of element the collection contains.
    * @param elements The collection of elements to add to the chart.
    */
   public <E extends Element> void add(final Collection<E> elements) {

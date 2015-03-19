@@ -6,9 +6,6 @@ package dk.itu.kelvin.parser;
 // Net utilities
 import java.net.URL;
 
-// JavaFX application utilities
-import javafx.application.Platform;
-
 // SAX utilities
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
@@ -20,10 +17,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 // Math
 import dk.itu.kelvin.math.Projection;
 import dk.itu.kelvin.math.MercatorProjection;
-
-// Utilities
-import dk.itu.kelvin.util.HashTable;
-import dk.itu.kelvin.util.Map;
 
 // Storage
 import dk.itu.kelvin.store.AddressStore;
@@ -94,22 +87,47 @@ public final class ChartParser {
    */
   private Address address;
 
+  /**
+   * Get the parsed bounds.
+   *
+   * @return The parsed bounds.
+   */
   public BoundingBox bounds() {
     return this.bounds;
   }
 
+  /**
+   * Get the parsed land polygons.
+   *
+   * @return The parsed land polygons.
+   */
   public Land land() {
     return this.land;
   }
 
+  /**
+   * Get the parsed node elements.
+   *
+   * @return The parsed node elements.
+   */
   public ElementStore<Node> nodes() {
     return this.nodes;
   }
 
+  /**
+   * Get the parsed way elements.
+   *
+   * @return The parsed way elements.
+   */
   public ElementStore<Way> ways() {
     return this.ways;
   }
 
+  /**
+   * Get the parsed relation elements.
+   *
+   * @return The parsed relation elements.
+   */
   public ElementStore<Relation> relations() {
     return this.relations;
   }

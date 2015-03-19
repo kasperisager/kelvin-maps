@@ -92,6 +92,7 @@ public final class TileGrid extends Group {
   /**
    * Add an element to the tile grid.
    *
+   * @param <E>     The type of the element.
    * @param element The element to add to the tile grid.
    */
   public <E extends Element> void add(final E element) {
