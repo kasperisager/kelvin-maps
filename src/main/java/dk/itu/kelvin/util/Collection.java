@@ -4,7 +4,7 @@
 package dk.itu.kelvin.util;
 
 /**
- * <h2>Collection interface.</h2>
+ * <h2>General simplified implementation of Collection interface</h2>
  * <p>
  * The root interface in the {@code collection hierarchy}. A collection
  * represents a group of objects, known as it's {@code elements}. Some
