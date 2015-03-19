@@ -189,46 +189,15 @@
         </HBox>
       </children>
       <children>
-        <CheckBox text="Parking" prefWidth="200"/>
-      </children>
-      <children>
-        <CheckBox text="Restaurant" prefWidth="200"/>
-      </children>
-      <children>
-        <CheckBox text="Fast Food" prefWidth="200"/>
-      </children>
-      <children>
-        <CheckBox text="Toilets" prefWidth="200"/>
-      </children>
-      <children>
-        <CheckBox text="Cafe" prefWidth="200"/>
-      </children>
-      <children>
-        <CheckBox text="Pub" prefWidth="200"/>
-      </children>
-      <children>
-        <CheckBox text="Recycling" prefWidth="200"/>
-      </children>
-      <children>
-        <CheckBox text="Bar" prefWidth="200"/>
-      </children>
-      <children>
-        <CheckBox text="Compressed Air" prefWidth="200"/>
-      </children>
-      <children>
-        <CheckBox text="Post Box" prefWidth="200"/>
-      </children>
-      <children>
-        <CheckBox text="Taxi" prefWidth="200"/>
-      </children>
-      <children>
-        <CheckBox text="BBQ" prefWidth="200"/>
-      </children>
-      <children>
-        <CheckBox text="Solarium" prefWidth="200"/>
-      </children>
-      <children>
-        <CheckBox text="Telephone" prefWidth="200"/>
+        <ScrollPane
+          VBox.vgrow="SOMETIMES"
+          hbarPolicy="NEVER"
+          >
+          <VBox
+            fx:id="poiVBox"
+            >
+          </VBox>
+        </ScrollPane>
       </children>
     </VBox>
 
