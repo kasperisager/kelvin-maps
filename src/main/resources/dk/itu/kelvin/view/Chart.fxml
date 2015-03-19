@@ -27,7 +27,7 @@
 <?import javafx.scene.text.Text?>
 
 <!-- Layout -->
-<?import dk.itu.kelvin.layout.Canvas?>
+<?import dk.itu.kelvin.layout.Chart?>
 
 
 <StackPane
@@ -54,7 +54,7 @@
 
     onKeyPressed="#onKeyPressed"
   >
-    <Canvas fx:id="canvas" />
+    <Chart fx:id="chart" />
   </Pane>
 
   <VBox

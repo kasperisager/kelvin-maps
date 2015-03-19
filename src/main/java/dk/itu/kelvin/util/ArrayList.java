@@ -78,17 +78,37 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
   }
 
   /**
-   * Shift the elements of the list left between the specified indices.
+   * Shift the elements of the list left of the specified index.
    *
    * @see <a href="http://stackoverflow.com/questions/22716581/shift-array-
    * elements-to-left-in-java">http://stackoverflow.com/questions/22716581/
    * shift-array-elements-to-left-in-java</a>
    *
-   * @param index  The index to shift the elements towards.
-   * @param shifts The number of elements to shift.
+   * @param index The index to shift the elements towards.
    */
-  private void shiftLeft(final int index, final int shifts) {
+  private void shiftLeft(final int index) {
+    int shifts = this.size() - index - 1;
+
+    if (shifts <= 0) {
+      return;
+    }
+
     System.arraycopy(this.elements, index + 1, this.elements, index, shifts);
+  }
+
+  /**
+   * Shift the elements of the list right between the specified indices.
+   *
+   * @see <a href="http://stackoverflow.com/questions/22716581/shift-array-
+   * elements-to-left-in-java">http://stackoverflow.com/questions/22716581/
+   * shift-array-elements-to-left-in-java</a>
+   *
+   * @param index The index to shift the elements away from.
+   */
+  private void shiftRight(final int index) {
+    int shifts = this.size() - index;
+
+    System.arraycopy(this.elements, index, this.elements, index + 1, shifts);
   }
 
   /**
@@ -156,6 +176,30 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
   }
 
   /**
+   * Add an element to the list at the specified index.
+   *
+   * <p>
+   * If an element already exists at the specified index, the old element will
+   * be shifted one index to the right alongside subsequent elements.
+   *
+   * @param index   The index at which to add the element.
+   * @param element The element to add to the list.
+   * @return        A boolean indicating whether or not the list changed as a
+   *                result of the call.
+   */
+  public final boolean add(final int index, final E element) {
+    if (element == null) {
+      return false;
+    }
+
+    this.shiftRight(index);
+    this.elements[index] = element;
+    this.grow();
+
+    return true;
+  }
+
+  /**
    * Add a collection of elements to the list.
    *
    * @param elements  The elements to add to the list.
@@ -179,6 +223,10 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
   /**
    * Remove an element from the list.
    *
+   * <p>
+   * When removing an element, any subsequent elements to the right of the
+   * removed element will be shifted one index to the left.
+   *
    * @param index The index of the element to remove.
    * @return      The removed element.
    */
@@ -189,12 +237,7 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
 
     E element = this.elements[index];
 
-    int moved = this.size() - index - 1;
-
-    if (moved > 0) {
-      this.shiftLeft(index, moved);
-    }
-
+    this.shiftLeft(index);
     this.elements[this.size() - 1] = null;
     this.shrink();
 

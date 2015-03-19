@@ -29,6 +29,16 @@ public interface List<E> extends Collection<E> {
   E get(final int index);
 
   /**
+   * Add an element to the list at the specified index.
+   *
+   * @param index   The index at which to add the element.
+   * @param element The element to add to the list.
+   * @return        A boolean indicating whether or not the list changed as a
+   *                result of the call.
+   */
+  boolean add(final int index, final E element);
+
+  /**
    * Remove an element from the list.
    *
    * @param index The index of the element to remove.

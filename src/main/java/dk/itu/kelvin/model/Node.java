@@ -19,21 +19,6 @@ public final class Node extends Element<Label> {
   private static final long serialVersionUID = 19;
 
   /**
-   * The JavaFX representation of the node.
-   *
-   * <p>
-   * This field is transient as it is simply used for caching the rendered
-   * JavaFX scene graph node. We therefore don't want to store it when
-   * serializing the element.
-   */
-  private transient Label fx;
-
-  /**
-   * Cache the hash of the node.
-   */
-  private transient int hash;
-
-  /**
    * X-coordinate of the node.
    */
   private float x;
@@ -46,12 +31,10 @@ public final class Node extends Element<Label> {
   /**
    * Initialize a node.
    *
-   * @param id  The ID of the node.
-   * @param x   The x-coordinate of the node.
-   * @param y   The y-coordinate of the node.
+   * @param x The x-coordinate of the node.
+   * @param y The y-coordinate of the node.
    */
-  public Node(final long id, final float x, final float y) {
-    super(id);
+  public Node(final float x, final float y) {
     this.x = x;
     this.y = y;
   }
@@ -94,8 +77,7 @@ public final class Node extends Element<Label> {
     Node node = (Node) object;
 
     return (
-      this.id() == node.id()
-      && this.order() == node.order()
+      this.order() == node.order()
       && this.layer() == node.layer()
       && this.x == node.x()
       && this.y == node.y()
@@ -109,17 +91,13 @@ public final class Node extends Element<Label> {
    */
   @Override
   public int hashCode() {
-    if (this.hash == 0) {
-      long bits = 7L;
-      bits = 31L * bits + this.id();
-      bits = 31L * bits + (long) this.order().ordinal();
-      bits = 31L * bits + (long) this.layer();
-      bits = 31L * bits + Double.doubleToLongBits(this.x);
-      bits = 31L * bits + Double.doubleToLongBits(this.y);
-      this.hash = (int) (bits ^ (bits >> 32));
-    }
+    long bits = 7L;
+    bits = 31L * bits + (long) this.order().ordinal();
+    bits = 31L * bits + (long) this.layer();
+    bits = 31L * bits + Double.doubleToLongBits(this.x);
+    bits = 31L * bits + Double.doubleToLongBits(this.y);
 
-    return this.hash;
+    return (int) (bits ^ (bits >> 32));
   }
 
   /**
@@ -128,14 +106,8 @@ public final class Node extends Element<Label> {
    * @return The JavaFX representation of the node.
    */
   public Label render() {
-    if (this.fx != null) {
-      return this.fx;
-    }
-
     Label label = new Label();
 
-    this.fx = label;
-
-    return this.fx;
+    return label;
   }
 }

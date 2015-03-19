@@ -68,15 +68,6 @@ public final class Relation extends Element<Group> {
   private Type type;
 
   /**
-   * Initialize a relation with an ID.
-   *
-   * @param id The ID of the relation.
-   */
-  public Relation(final long id) {
-    super(id);
-  }
-
-  /**
    * Get the type of the relation.
    *
    * @return The type of the relation.

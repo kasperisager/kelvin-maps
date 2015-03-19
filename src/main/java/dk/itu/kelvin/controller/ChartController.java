@@ -45,11 +45,10 @@ import dk.itu.kelvin.parser.ChartParser;
 import dk.itu.kelvin.thread.TaskQueue;
 
 // Layout
-import dk.itu.kelvin.layout.Canvas;
+import dk.itu.kelvin.layout.Chart;
 
 // Models
 import dk.itu.kelvin.model.Address;
-import dk.itu.kelvin.model.Chart;
 import dk.itu.kelvin.model.Node;
 
 // Stores
@@ -107,11 +106,6 @@ public final class ChartController {
   private Affine compassTransform = new Affine();
 
   /**
-   * The Chart model instance.
-   */
-  private Chart chart = new Chart();
-
-  /**
    * The addresses map from the parser.
    */
   private AddressStore addresses;
@@ -122,10 +116,10 @@ public final class ChartController {
   private PopOver popOver;
 
   /**
-   * The Canvas element to add all the Chart elements to.
+   * The Chart element to add all the elements to.
    */
   @FXML
-  private Canvas canvas;
+  private Chart chart;
 
   /**
    * The compass arrow.
@@ -201,20 +195,8 @@ public final class ChartController {
         throw new RuntimeException(ex);
       }
 
-      // Collections.sort(this.chart.elements(), Element.COMPARATOR);
-
       //Get map of all addresses from parser.
       this.addresses = parser.addresses();
-
-      // Schedule rendering of the chart nodes.
-      Platform.runLater(() -> {
-        this.canvas.add(this.chart.elements());
-
-        this.canvas.pan(
-          -this.chart.bounds().getMinX(),
-          -this.chart.bounds().getMinY()
-        );
-      });
     });
 
     this.createPopOver();
@@ -314,7 +296,7 @@ public final class ChartController {
     this.setInitialMouseDrag(e);
     this.setInitialMouseScroll(e);
 
-    this.canvas.requestFocus();
+    this.chart.requestFocus();
   }
 
   /**
@@ -347,7 +329,7 @@ public final class ChartController {
     this.setInitialMouseScroll(e);
 
     if (e.getClickCount() == 2) {
-      this.canvas.zoom(Math.pow(ZOOM_IN, 15), e.getSceneX(), e.getSceneY());
+      this.chart.zoom(Math.pow(ZOOM_IN, 15), e.getSceneX(), e.getSceneY());
     }
   }
 
@@ -361,7 +343,7 @@ public final class ChartController {
     double x = e.getSceneX();
     double y = e.getSceneY();
 
-    this.canvas.pan(x - this.initialMouseDragX, y - this.initialMouseDragY);
+    this.chart.pan(x - this.initialMouseDragX, y - this.initialMouseDragY);
 
     this.setInitialMouseScroll(e);
     this.setInitialMouseDrag(e);
@@ -376,7 +358,7 @@ public final class ChartController {
   private void onScroll(final ScrollEvent e) {
     double factor = (e.getDeltaY() < 0) ? ZOOM_IN : ZOOM_OUT;
 
-    this.canvas.zoom(
+    this.chart.zoom(
       factor,
       this.initialMouseScrollX,
       this.initialMouseScrollY
@@ -390,7 +372,7 @@ public final class ChartController {
    */
   @FXML
   private void onZoom(final ZoomEvent e) {
-    this.canvas.zoom(
+    this.chart.zoom(
       e.getZoomFactor(),
       this.initialMouseScrollX,
       this.initialMouseScrollY
@@ -404,7 +386,7 @@ public final class ChartController {
    */
   @FXML
   private void onRotate(final RotateEvent e) {
-    this.canvas.rotate(
+    this.chart.rotate(
       e.getAngle(),
       this.initialMouseScrollX,
       this.initialMouseScrollY
@@ -423,44 +405,44 @@ public final class ChartController {
       case UP:
       case K:
       case W:
-        this.canvas.pan(0, 15);
+        this.chart.pan(0, 15);
         e.consume();
         break;
       case DOWN:
       case J:
       case S:
-        this.canvas.pan(0, -15);
+        this.chart.pan(0, -15);
         e.consume();
         break;
       case RIGHT:
       case L:
       case D:
-        this.canvas.pan(-15, 0);
+        this.chart.pan(-15, 0);
         e.consume();
         break;
       case LEFT:
       case H:
       case A:
-        this.canvas.pan(15, 0);
+        this.chart.pan(15, 0);
         e.consume();
         break;
       case PLUS:
       case EQUALS:
-        this.canvas.zoom(Math.pow(ZOOM_IN, 8));
+        this.chart.zoom(Math.pow(ZOOM_IN, 8));
         e.consume();
         break;
       case MINUS:
       case UNDERSCORE:
-        this.canvas.zoom(Math.pow(ZOOM_OUT, 8));
+        this.chart.zoom(Math.pow(ZOOM_OUT, 8));
         e.consume();
         break;
       case Q:
-        this.canvas.rotate(-10);
+        this.chart.rotate(-10);
         this.compassTransform.prependRotation(-10, 4, 40);
         e.consume();
         break;
       case E:
-        this.canvas.rotate(10);
+        this.chart.rotate(10);
         this.compassTransform.prependRotation(10, 4, 40);
         e.consume();
         break;
@@ -474,7 +456,7 @@ public final class ChartController {
    */
   @FXML
   private void zoomIn() {
-    this.canvas.zoom(Math.pow(ZOOM_IN, 8));
+    this.chart.zoom(Math.pow(ZOOM_IN, 8));
   }
 
   /**
@@ -482,7 +464,7 @@ public final class ChartController {
    */
   @FXML
   private void zoomOut() {
-    this.canvas.zoom(Math.pow(ZOOM_OUT, 8));
+    this.chart.zoom(Math.pow(ZOOM_OUT, 8));
   }
 
   /**

@@ -27,16 +27,6 @@ public final class Way extends Element<Polyline> {
   private static final long serialVersionUID = 67;
 
   /**
-   * The JavaFX representation of the way.
-   *
-   * <p>
-   * This field is transient as it is simply used for caching the rendered
-   * JavaFX scene graph node. We therefore don't want to store it when
-   * serializing the element.
-   */
-  private transient Polyline fx;
-
-  /**
    * List of nodes contained within the way.
    *
    * <p>
@@ -44,15 +34,6 @@ public final class Way extends Element<Polyline> {
    * memory to empty lists.
    */
   private List<Node> nodes;
-
-  /**
-   * Initialize a way.
-   *
-   * @param id The ID of the way.
-   */
-  public Way(final long id) {
-    super(id);
-  }
 
   /**
    * Get the initial node of the way.
@@ -127,7 +108,8 @@ public final class Way extends Element<Polyline> {
 
     return (
       this.start().equals(way.start())
-      || this.start().equals(way.end())
+      ||
+      this.start().equals(way.end())
     );
   }
 
@@ -146,7 +128,8 @@ public final class Way extends Element<Polyline> {
 
     return (
       this.end().equals(way.start())
-      || this.end().equals(way.end())
+      ||
+      this.end().equals(way.end())
     );
   }
 
@@ -216,10 +199,6 @@ public final class Way extends Element<Polyline> {
    * @return The JavaFX representation of the way.
    */
   public Polyline render() {
-    if (this.fx != null) {
-      return this.fx;
-    }
-
     Polyline polyline = new Polyline();
 
     // Don't use antialiasing for performance reasons.
@@ -231,7 +210,6 @@ public final class Way extends Element<Polyline> {
     polyline.setStroke(Color.TRANSPARENT);
     polyline.setFill(Color.TRANSPARENT);
 
-    // this.getStyleClass().add("way");
     for (Map.Entry<String, String> tag: this.tags().entrySet()) {
       String key = tag.getKey();
       String value = tag.getValue();
@@ -259,9 +237,7 @@ public final class Way extends Element<Polyline> {
       polyline.getPoints().add((double) node.y());
     }
 
-    this.fx = polyline;
-
-    return this.fx;
+    return polyline;
   }
 
   /**
@@ -276,8 +252,10 @@ public final class Way extends Element<Polyline> {
       return false;
     }
 
-    return this.render().intersects(
-      this.render().parentToLocal(way.render().getBoundsInParent())
+    Polyline polyline = this.render();
+
+    return polyline.intersects(
+      polyline.parentToLocal(way.render().getBoundsInParent())
     );
   }
 
@@ -293,11 +271,13 @@ public final class Way extends Element<Polyline> {
       return false;
     }
 
+    Polyline polyline = this.render();
+
     return (
-      this.render().contains(this.render().parentToLocal(
+      polyline.contains(polyline.parentToLocal(
         way.start().x(), way.start().y())
       )
-      && this.render().contains(this.render().parentToLocal(
+      && polyline.contains(polyline.parentToLocal(
         way.end().x(), way.end().y())
       )
     );
