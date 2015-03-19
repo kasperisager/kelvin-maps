@@ -35,9 +35,12 @@ public final class Geometry {
   public static boolean intersects(final Bounds a, final Bounds b) {
     return (
       a.left <= b.right
-      && a.right >= b.left
-      && a.top <= b.bottom
-      && a.bottom >= b.top
+      &&
+      a.right >= b.left
+      &&
+      a.top <= b.bottom
+      &&
+      a.bottom >= b.top
     );
   }
 
@@ -113,8 +116,9 @@ public final class Geometry {
    * @param b The second point.
    * @return  The distance between points {@code a} and {@code b}.
    */
-  // private static float distance(final Point a, final Point b) {
-  // }
+  private static float distance(final Point a, final Point b) {
+    return (float) Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+  }
 
   /**
    * The {@link Point} class describes a coordinate in 2-dimensional space.
@@ -225,9 +229,9 @@ public final class Geometry {
      *
      * @return The length of the line.
      */
-    // public float length() {
-    //   return Geometry.distance(this.start, this.end);
-    // }
+    public float length() {
+      return Geometry.distance(this.start, this.end);
+    }
 
     /**
      * Check if the line is vertical.

@@ -277,7 +277,8 @@ public final class Way extends Element<Polyline> {
       polyline.contains(polyline.parentToLocal(
         way.start().x(), way.start().y())
       )
-      && polyline.contains(polyline.parentToLocal(
+      &&
+      polyline.contains(polyline.parentToLocal(
         way.end().x(), way.end().y())
       )
     );

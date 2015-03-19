@@ -6,9 +6,6 @@ package dk.itu.kelvin.parser;
 // Net utilities
 import java.net.URL;
 
-// JavaFX application utilities
-import javafx.application.Platform;
-
 // SAX utilities
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
@@ -20,10 +17,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 // Math
 import dk.itu.kelvin.math.Projection;
 import dk.itu.kelvin.math.MercatorProjection;
-
-// Utilities
-import dk.itu.kelvin.util.HashTable;
-import dk.itu.kelvin.util.Map;
 
 // Storage
 import dk.itu.kelvin.store.AddressStore;
@@ -38,9 +31,6 @@ import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Address;
 
-// Layout
-import dk.itu.kelvin.layout.Chart;
-
 /**
  * Parser class.
  *
@@ -48,14 +38,19 @@ import dk.itu.kelvin.layout.Chart;
  */
 public final class ChartParser {
   /**
-   * The chart to add parsed elements to.
-   */
-  private Chart chart;
-
-  /**
    * Projection to use for the parsed coordinates.
    */
   private Projection projection = new MercatorProjection();
+
+  /**
+   * Bounding box.
+   */
+  private BoundingBox bounds;
+
+  /**
+   * Land element.
+   */
+  private Land land;
 
   /**
    * Store nodes.
@@ -63,24 +58,19 @@ public final class ChartParser {
   private ElementStore<Node> nodes = new ElementStore<>();
 
   /**
-   *
+   * Store ways.
+   */
+  private ElementStore<Way> ways = new ElementStore<>();
+
+  /**
+   * Store relations.
+   */
+  private ElementStore<Relation> relations = new ElementStore<>();
+
+  /**
+   * Store addresses.
    */
   private AddressStore addresses = new AddressStore();
-
-  /**
-   * Map way IDs to ways.
-   */
-  private Map<Long, Way> ways = new HashTable<>();
-
-  /**
-   * Map relation IDs to relations.
-   */
-  private Map<Long, Relation> relations = new HashTable<>();
-
-  /**
-   * Land element.
-   */
-  private Land land;
 
   /**
    * The currently active element.
@@ -98,12 +88,48 @@ public final class ChartParser {
   private Address address;
 
   /**
-   * Initialize a new chart parser.
+   * Get the parsed bounds.
    *
-   * @param chart The chart to add the parsed elements to.
+   * @return The parsed bounds.
    */
-  public ChartParser(final Chart chart) {
-    this.chart = chart;
+  public BoundingBox bounds() {
+    return this.bounds;
+  }
+
+  /**
+   * Get the parsed land polygons.
+   *
+   * @return The parsed land polygons.
+   */
+  public Land land() {
+    return this.land;
+  }
+
+  /**
+   * Get the parsed node elements.
+   *
+   * @return The parsed node elements.
+   */
+  public ElementStore<Node> nodes() {
+    return this.nodes;
+  }
+
+  /**
+   * Get the parsed way elements.
+   *
+   * @return The parsed way elements.
+   */
+  public ElementStore<Way> ways() {
+    return this.ways;
+  }
+
+  /**
+   * Get the parsed relation elements.
+   *
+   * @return The parsed relation elements.
+   */
+  public ElementStore<Relation> relations() {
+    return this.relations;
   }
 
   /**
@@ -204,14 +230,14 @@ public final class ChartParser {
    * @param attributes Element attributes.
    */
   private void startBounds(final Attributes attributes) {
-    this.chart.bounds(new BoundingBox(
+    this.bounds = new BoundingBox(
       this.projection.lonToX(this.getFloat(attributes, "minlon")),
       this.projection.latToY(this.getFloat(attributes, "minlat")),
       this.projection.lonToX(this.getFloat(attributes, "maxlon")),
       this.projection.latToY(this.getFloat(attributes, "maxlat"))
-    ));
+    );
 
-    this.land = new Land(this.chart.bounds());
+    this.land = new Land(this.bounds);
   }
 
   /**
@@ -398,15 +424,6 @@ public final class ChartParser {
   }
 
   /**
-   * End a document.
-   */
-  public void endDocument() {
-    this.chart.add(this.land);
-    // this.chart.add(this.ways.values());
-    // this.chart.add(this.relations.values());
-  }
-
-  /**
    * Custom SAX event handler.
    *
    * This class is simply a proxy between the SAX parser and the ChartParser
@@ -479,6 +496,7 @@ public final class ChartParser {
      * @param qName     The qualified name (with prefix), or the empty string if
      *                  qualified names are not available.
      */
+    @Override
     public void endElement(
       final String uri,
       final String localName,
@@ -498,15 +516,6 @@ public final class ChartParser {
         default:
           // Do nothing.
       }
-    }
-
-    /**
-     * The end of the document has been reached; hurray!
-     */
-    public void endDocument() {
-      Platform.runLater(() -> {
-        ChartParser.this.endDocument();
-      });
     }
   }
 }

@@ -6,9 +6,6 @@ package dk.itu.kelvin.layout;
 // JavaFX scene utilities
 import javafx.scene.Group;
 
-// JavaFX geometry
-import javafx.geometry.Bounds;
-
 // JavaFX transformations
 import javafx.scene.transform.Affine;
 
@@ -18,6 +15,8 @@ import dk.itu.kelvin.util.Collection;
 // Models
 import dk.itu.kelvin.model.BoundingBox;
 import dk.itu.kelvin.model.Element;
+import dk.itu.kelvin.model.Node;
+import dk.itu.kelvin.model.Land;
 
 /**
  * Chart class.
@@ -25,11 +24,6 @@ import dk.itu.kelvin.model.Element;
  * @version 1.0.0
  */
 public final class Chart extends Group {
-  /**
-   * The size of each tile within the tile grid.
-   */
-  private static final int TILE_SIZE = 256;
-
   /**
    * Maximum zoom factor.
    */
@@ -51,40 +45,63 @@ public final class Chart extends Group {
   private BoundingBox bounds;
 
   /**
+   * Land polygons.
+   */
+  private TileGrid land = new TileGrid(this.transform);
+
+  /**
    * The tile grid containing all the elements within the chart.
    */
-  private TileGrid tileGrid = new TileGrid(this.transform);
+  private TileGrid elements = new TileGrid(this.transform);
+
+  /**
+   * Meta layer.
+   */
+  private TileGrid meta = new TileGrid(this.transform);
 
   /**
    * Initialize the chart.
    */
   public Chart() {
     this.getTransforms().add(this.transform);
-    this.getChildren().add(this.tileGrid);
+
+    this.getChildren().add(this.land);
+    this.getChildren().add(this.elements);
+    this.getChildren().add(this.meta);
   }
 
   /**
-   * Get the bounds of the chart.
+   * Add bounds to the chart.
    *
-   * @return The bounds of the chart.
+   * @param bounds The bounds to add to the chart.
    */
-  public BoundingBox bounds() {
-    return this.bounds;
-  }
-
-  /**
-   * Set the bounds of the chart.
-   *
-   * @param bounds The bounds of the chart.
-   */
-  public void bounds(final BoundingBox bounds) {
+  public void add(final BoundingBox bounds) {
     if (bounds == null) {
       return;
     }
 
     this.bounds = bounds;
 
-    this.pan(-bounds.left(), -bounds.top());
+    this.pan(-this.bounds.left(), -this.bounds.top());
+    this.setClip(this.bounds.render());
+  }
+
+  /**
+   * Add a land polygon to the chart.
+   *
+   * @param land The land polygon to add to the chart.
+   */
+  public void add(final Land land) {
+    this.land.add(land);
+  }
+
+  /**
+   * Add a node element to the chart.
+   *
+   * @param node The node element to add to the chart.
+   */
+  public void add(final Node node) {
+    this.meta.add(node);
   }
 
   /**
@@ -93,34 +110,16 @@ public final class Chart extends Group {
    * @param element The element to add to the chart.
    */
   public void add(final Element element) {
-    Bounds bounds = element.render().getBoundsInParent();
-
-    int x = (int) (TILE_SIZE * Math.floor(
-      Math.round(bounds.getMaxX() / TILE_SIZE)
-    ));
-
-    int y = (int) (TILE_SIZE * Math.floor(
-      Math.round(bounds.getMaxY() / TILE_SIZE)
-    ));
-
-    TileGrid.Anchor anchor = new TileGrid.Anchor(x, y);
-
-    if (this.tileGrid.contains(anchor)) {
-      this.tileGrid.get(anchor).add(element);
-    }
-    else {
-      Tile tile = new Tile();
-      tile.add(element);
-      this.tileGrid.add(anchor, tile);
-    }
+    this.elements.add(element);
   }
 
   /**
    * Add a collection of elements to the chart.
    *
+   * @param <E>      The type of element the collection contains.
    * @param elements The collection of elements to add to the chart.
    */
-  public void add(final Collection<Element> elements) {
+  public <E extends Element> void add(final Collection<E> elements) {
     if (elements == null) {
       return;
     }

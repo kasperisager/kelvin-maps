@@ -13,7 +13,6 @@ import javafx.scene.Scene;
 // JavaFX geometry
 import javafx.geometry.Bounds;
 import javafx.geometry.BoundingBox;
-import javafx.geometry.Point2D;
 
 // JavaFX transformations
 import javafx.scene.transform.Affine;
@@ -28,6 +27,9 @@ import dk.itu.kelvin.thread.TaskQueue;
 import dk.itu.kelvin.util.HashTable;
 import dk.itu.kelvin.util.Map;
 
+// Models
+import dk.itu.kelvin.model.Element;
+
 /**
  * Tile grid class.
  *
@@ -35,8 +37,14 @@ import dk.itu.kelvin.util.Map;
  */
 public final class TileGrid extends Group {
   /**
+   * The size of each tile within the tile grid.
+   */
+  private static final int TILE_SIZE = 256;
+
+  /**
    * The affine transformation associated with the tile grid.
    *
+   * <p>
    * Whenever this transformation changes, the tile grid will adjust its tiles
    * accordingly.
    */
@@ -45,13 +53,13 @@ public final class TileGrid extends Group {
   /**
    * Map of tiles contained within the tile grid.
    */
-  private Map<TileGrid.Anchor, Tile> tiles = new HashTable<>();
+  private Map<Anchor, Tile> tiles = new HashTable<>();
 
   /**
    * Layout listener.
    */
-  private ChangeListener<? super Number> listener = (ob, ov, nv) -> {
-    TileGrid.this.layoutTiles();
+  private ChangeListener<? super Number> layoutListener = (ob, ov, nv) -> {
+    this.layoutTiles();
   };
 
   /**
@@ -69,60 +77,45 @@ public final class TileGrid extends Group {
    * Attach layout listeners to the tile grid.
    */
   private synchronized void addListeners() {
-    this.affine.txProperty().addListener(this.listener);
-    this.affine.tyProperty().addListener(this.listener);
+    this.affine.txProperty().addListener(this.layoutListener);
+    this.affine.tyProperty().addListener(this.layoutListener);
   }
 
   /**
    * Detach layout listeners from the tile grid.
    */
   private synchronized void removeListeners() {
-    this.affine.txProperty().removeListener(this.listener);
-    this.affine.tyProperty().removeListener(this.listener);
+    this.affine.txProperty().removeListener(this.layoutListener);
+    this.affine.tyProperty().removeListener(this.layoutListener);
   }
 
   /**
-   * Add a tile to the tile grid.
+   * Add an element to the tile grid.
    *
-   * @param anchor  The anchor associated with the tile.
-   * @param tile    The tile to add.
+   * @param <E>     The type of the element.
+   * @param element The element to add to the tile grid.
    */
-  public void add(final Anchor anchor, final Tile tile) {
-    if (tile == null || anchor == null) {
-      return;
+  public <E extends Element> void add(final E element) {
+    Bounds bounds = element.render().getBoundsInParent();
+
+    int x = (int) (TILE_SIZE * Math.floor(
+      Math.round(bounds.getMaxX() / TILE_SIZE)
+    ));
+
+    int y = (int) (TILE_SIZE * Math.floor(
+      Math.round(bounds.getMaxY() / TILE_SIZE)
+    ));
+
+    Anchor anchor = new Anchor(x, y);
+
+    if (this.tiles.containsKey(anchor)) {
+      this.tiles.get(anchor).add(element);
     }
-
-    this.tiles.put(anchor, tile);
-  }
-
-  /**
-   * Get the tile at the specified anchor if it eixsts.
-   *
-   * @param anchor  The anchor to get the tile for.
-   * @return        The tile at the specified anchor if it exists, otherwise
-   *                null.
-   */
-  public Tile get(final Anchor anchor) {
-    if (anchor == null) {
-      return null;
+    else {
+      Tile tile = new Tile();
+      tile.add(element);
+      this.tiles.put(anchor, tile);
     }
-
-    return this.tiles.get(anchor);
-  }
-
-  /**
-   * Check if the tile grid contains the specified anchor.
-   *
-   * @param anchor  The anchor to check for.
-   * @return        A boolean indicating whether or not the anchor is contained
-   *                within the tile grid.
-   */
-  public boolean contains(final Anchor anchor) {
-    if (anchor == null) {
-      return false;
-    }
-
-    return this.tiles.containsKey(anchor);
   }
 
   /**
@@ -191,7 +184,17 @@ public final class TileGrid extends Group {
   /**
    * An anchor is a reference point for a tile in a tile grid.
    */
-  public static class Anchor extends Point2D {
+  private static final class Anchor {
+    /**
+     * The x-coordinate of the anchor.
+     */
+    private int x;
+
+    /**
+     * The y-coordinate of the anchor.
+     */
+    private int y;
+
     /**
      * Initialize a tile achor.
      *
@@ -199,7 +202,64 @@ public final class TileGrid extends Group {
      * @param y The y-coordiante of the anchor.
      */
     public Anchor(final int x, final int y) {
-      super((double) x, (double) y);
+      this.x = x;
+      this.y = y;
+    }
+
+    /**
+     * Check if the current anchor equals the specified object.
+     *
+     * @param object  The reference object with which to compare.
+     * @return        Boolean indicating whether or not the anchor is equal to
+     *                the specified object.
+     */
+    @Override
+    public boolean equals(final Object object) {
+      if (object == null || !(object instanceof Anchor)) {
+        return false;
+      }
+
+      if (this == object) {
+        return true;
+      }
+
+      Anchor anchor = (Anchor) object;
+
+      return this.x == anchor.x && this.y == anchor.y;
+    }
+
+    /**
+     * Compute the hashcode of the anchor.
+     *
+     * @return The computed hashcode of the anchor.
+     */
+    @Override
+    public int hashCode() {
+      long bits = 7L;
+      bits = 31L * bits + this.x;
+      bits = 31L * bits + this.y;
+
+      return (int) (bits ^ (bits >> 32));
+    }
+  }
+
+  /**
+   * Tile class.
+   *
+   * @version 1.0.0
+   */
+  private static final class Tile extends Group {
+    /**
+     * Add an element to the tile.
+     *
+     * @param element The element to add to the tile.
+     */
+    public void add(final Element element) {
+      if (element == null) {
+        return;
+      }
+
+      this.getChildren().add(element.render());
     }
   }
 }
