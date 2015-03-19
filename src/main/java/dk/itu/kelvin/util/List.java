@@ -6,6 +6,7 @@ package dk.itu.kelvin.util;
 /**
  * <h2>List interface.</h2>
  *
+ *
  * @param <E> The type of elements stored within the list.
  *
  * @version 1.0.0
