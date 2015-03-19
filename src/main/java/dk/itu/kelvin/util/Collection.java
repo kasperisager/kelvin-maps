@@ -16,12 +16,13 @@ package dk.itu.kelvin.util;
  * <p>
  * All general-purpose {@code Collection} implementation classes (which
  * typically implement Collection indirectly through one of its
- * {@code subinterfaces}) should provide three "standard" constructors: a void
+ * {@code subinterfaces}) should provide two "standard" constructors: a void
  * (no arguments) constructor, which creates an empty collection, and a
  * constructor with a single argument of type {@code Collection}, which creates
- * a new collection with the same elements as its argument, and a contructor
- * with a single argument of type {@code int}, which creates a new collection
- * with an initial capacity of it's argument.
+ * a new collection with the same elements as its argument.
+ * Some implementing classes has an additional constructor with a single
+ * argument of type {@code int}, which creates a new collection with an initial
+ * capacity of it's argument.
  *
  * <p>
  * In effect, the second constructor allows the user to copy any collection,
@@ -33,8 +34,7 @@ package dk.itu.kelvin.util;
  * size of the array, so that unnecessary time isn't used resizing the array.
  *
  * Some collection implementations have restrictions on the elements that they
- * may contain. For example, some implementations like {@link ArrayList}
- * prohibit null elements.
+ * may contain. No implementing classes allow {@code null} elements.
  *
  * @param <E> The type of elements stored within the collection.
  *
