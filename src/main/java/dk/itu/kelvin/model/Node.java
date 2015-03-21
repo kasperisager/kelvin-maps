@@ -113,4 +113,5 @@ public final class Node extends Element<Label> {
 
     return label;
   }
+
 }

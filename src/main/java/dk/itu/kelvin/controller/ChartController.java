@@ -34,10 +34,16 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 
 // Controls FX
+import javafx.util.Duration;
 import org.controlsfx.control.PopOver;
 
 // FXML utilities
 import javafx.fxml.FXML;
+
+// Utilities
+import java.util.ArrayList;
+import java.util.List;
+
 
 // Parser
 import dk.itu.kelvin.parser.ChartParser;
@@ -117,7 +123,16 @@ public final class ChartController {
   private PopOver popOver;
 
   /**
-   * The Chart element to add all the elements to.
+   * Auto-complete popover for textfields.
+   */
+  private PopOver autocPopOver;
+  /**
+   * The dynamic autocomplete results.
+   */
+  private List<String> suggestions = new ArrayList<>();
+
+  /**
+   * The Canvas element to add all the Chart elements to.
    */
   @FXML
   private Chart chart;
@@ -185,7 +200,6 @@ public final class ChartController {
 
   /**
    * Initialize the controller.
-   *
    * @throws Exception In case of an error. Duh.
    */
   public void initialize() throws Exception {
@@ -199,11 +213,20 @@ public final class ChartController {
 
       try {
         parser.read(MAP_INPUT);
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         throw new RuntimeException(ex);
       }
 
+      /**
+       * Results doesn't get sorted
+       */
+      //Collections.sort(this.chart.elements(), Element.COMPARATOR);
+
+      //Get map of all addresses from parser.
+      this.addresses = parser.addresses();
+      System.out.println("Ready!");
+
+      // Schedule rendering of the chart nodes.
       Platform.runLater(() -> {
         this.chart.add(parser.ways().values());
         this.chart.add(parser.relations().values());
@@ -219,6 +242,57 @@ public final class ChartController {
     this.createPopOver();
 
     Platform.runLater(() -> this.addressFrom.requestFocus());
+
+      this.setAutoComplete(this.addressFrom);
+      this.setAutoComplete(this.addressTo);
+  }
+
+  /**
+   * sets autocomplete for textfields.
+   * @param tf textfield.
+   */
+  private void setAutoComplete(final TextField tf) {
+    tf.setOnKeyReleased((event) -> {
+      if (this.autocPopOver != null) {
+        this.autocPopOver.hide(new Duration(1000.0));
+      }
+      this.autocPopOver = new PopOver();
+
+      this.suggestions.clear();
+      if (tf.getLength() > 0) {
+        for (Address a : this.addresses.keySet()) {
+          if (a.toString().toLowerCase().contains(tf.getText().toLowerCase())) {
+            this.suggestions.add(a.toString());
+          }
+
+          if (this.suggestions.size() > 5) {
+            break;
+          }
+        }
+      }
+      if (this.suggestions.size() > 0) {
+        VBox suggestionsVBox = new VBox(this.suggestions.size());
+        suggestionsVBox.setPrefWidth(400);
+        for (String suggestion : this.suggestions) {
+          Label l = new Label(suggestion);
+          l.setPrefWidth(400);
+          l.getStyleClass().add("hover-highlight");
+          l.setOnMouseClicked((event2 -> {
+            tf.setText(l.getText());
+            this.autocPopOver.hide();
+          }));
+          suggestionsVBox.getChildren().add(l);
+        }
+        this.autocPopOver.setDetachable(false);
+        this.autocPopOver.setContentNode(suggestionsVBox);
+        this.autocPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
+        this.autocPopOver.setCornerRadius(2);
+        this.autocPopOver.setArrowSize(6);
+        this.autocPopOver.setAutoHide(true);
+        this.autocPopOver.show(tf, -5);
+      }
+    });
+
   }
 
   /**
@@ -491,11 +565,12 @@ public final class ChartController {
    */
   @FXML
   private void findAddress() {
-    Address startAddress = Address.parse(this.addressFrom.getText());
-    Node position = this.addresses.find(startAddress);
-    // centerView(position.x(), position.y());
+    if (!this.addressFrom.getText().trim().equals("")) {
+      Address startAddress = Address.parse(this.addressFrom.getText());
+      Node position = this.addresses.find(startAddress);
 
-    System.out.println("X: " + position.x() + " " + "Y: " + position.y());
+      System.out.println("X: " + position.x() + " " + "Y: " + position.y());
+    }
   }
 
   /**
@@ -503,17 +578,20 @@ public final class ChartController {
    */
   @FXML
   private void findRoute() {
-    /*
-    Address startAddress = Address.parse(this.addressFrom.getText());
-    Address endAddress = Address.parse(this.addressTo.getText());
-    Node startPosition = this.addresses.find(startAddress);
-    Node endPosition = this.addresses.find(endAddress);
+    if (!this.addressFrom.getText().trim().equals("")
+      && !this.addressTo.getText().trim().equals("")) {
+      Address startAddress = Address.parse(this.addressFrom.getText());
+      Address endAddress = Address.parse(this.addressTo.getText());
+      Node startPosition = this.addresses.find(startAddress);
+      Node endPosition = this.addresses.find(endAddress);
 
-    System.out.println("X: " + startPosition.x() + " " + "Y: "
-      + startPosition.y());
-    System.out.println("X: " + endPosition.x() + " " + "Y: "
-      + endPosition.y());
-    */
+      System.out.println("X: " + startPosition.x() + " " + "Y: "
+        + startPosition.y());
+      System.out.println("X: " + endPosition.x() + " " + "Y: "
+        + endPosition.y());
+
+    }
+
     this.propertiesGridPane.getChildren().add(this.directionsScrollPane);
     this.moveCompass(400);
 

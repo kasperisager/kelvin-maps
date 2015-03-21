@@ -73,7 +73,6 @@
           prefWidth="9999"
           fx:id="addressFrom"
           onAction="#findAddress"
-
         />
 
         <Button

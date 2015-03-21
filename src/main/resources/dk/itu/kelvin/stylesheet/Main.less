@@ -186,6 +186,15 @@
   -fx-effect: @effect-base--textField;
 }
 
+// Autocomplete Popup ------------------------------------------------------- //
+.auto-complete-popup .list-cell{
+  -fx-background-color: transparent;
+}
+
+/* .auto-complete-popup .clipped-container{
+  -fx-background-color: green;
+} */
+
 // Buttons ------------------------------------------------------------------ //
 
 .button,
@@ -387,4 +396,8 @@
   -fx-border-color: @color-gray;
   -fx-background-color: rgba(98,98,98,0.3);
   -fx-translate-y: -16px;
+}
+
+.hover-highlight:hover{
+  -fx-background-color: @backgroundColor-hover--configBoxCheckBox;
 }
