@@ -32,6 +32,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
+import javafx.scene.control.CheckBox;
 
 // Controls FX
 import javafx.util.Duration;
@@ -168,6 +169,12 @@ public final class ChartController {
   private VBox checkboxVBox;
 
   /**
+   * The poi elements VBox.
+   */
+  @FXML
+  private VBox poiVBox;
+
+  /**
    * The VBox containing route description.
    */
   @FXML
@@ -197,6 +204,13 @@ public final class ChartController {
    */
   @FXML
   private GridPane propertiesGridPane;
+
+  /**
+   * Tags for cartographic elements.
+   */
+  private String[] tags = {"Parking", "Cafe", "Restaurant", "Fast Food",
+    "Toilets", "Pub", "Recycling", "Bar", "Compressed Air", "Post Box",
+    "Taxi", "BBQ", "Solarium", "Telephone"};
 
   /**
    * Initialize the controller.
@@ -239,6 +253,7 @@ public final class ChartController {
       this.addresses = parser.addresses();
     });
 
+    this.createPOI();
     this.createPopOver();
 
     Platform.runLater(() -> this.addressFrom.requestFocus());
@@ -292,6 +307,21 @@ public final class ChartController {
         this.autocPopOver.show(tf, -5);
       }
     });
+
+  }
+  /**
+   * Initialises the checkboxes of for Points Of Interest.
+   */
+  private void createPOI() {
+
+    for (String s : this.tags) {
+      CheckBox cb = new CheckBox(s);
+      cb.setPrefWidth(200);
+
+      //add CheckBox event listener and update shown labels
+
+      this.poiVBox.getChildren().add(cb);
+    }
 
   }
 
