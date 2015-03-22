@@ -3,6 +3,9 @@
  */
 package dk.itu.kelvin.controller;
 
+// JavaFX utilities
+import javafx.util.Duration;
+
 // JavaFX application utilities
 import javafx.application.Platform;
 
@@ -34,17 +37,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.scene.control.CheckBox;
 
-// Controls FX
-import javafx.util.Duration;
-import org.controlsfx.control.PopOver;
+// JavaFX geometry
+import javafx.geometry.Bounds;
 
 // FXML utilities
 import javafx.fxml.FXML;
 
+// Controls FX
+import org.controlsfx.control.PopOver;
+
 // Utilities
 import java.util.ArrayList;
 import java.util.List;
-
 
 // Parser
 import dk.itu.kelvin.parser.ChartParser;
@@ -87,6 +91,17 @@ public final class ChartController {
    * Default zoom out factor.
    */
   private static final double ZOOM_OUT = 1 / ZOOM_IN;
+
+  /**
+   * Don't show auto completion when the entered input contains less that this
+   * number of characters.
+   */
+  private static final int AUTOCOMPLETE_CUTOFF = 2;
+
+  /**
+   * Max number of items to show in the auto completion menu.
+   */
+  private static final int AUTOCOMPLETE_MAX_ITEMS = 5;
 
   /**
    * Mouse X coordinate for dragging.
@@ -258,8 +273,15 @@ public final class ChartController {
 
     Platform.runLater(() -> this.addressFrom.requestFocus());
 
-      this.setAutoComplete(this.addressFrom);
-      this.setAutoComplete(this.addressTo);
+    this.autocPopOver = new PopOver();
+    this.autocPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
+    this.autocPopOver.setCornerRadius(2);
+    this.autocPopOver.setArrowSize(0);
+    this.autocPopOver.setAutoHide(true);
+    this.autocPopOver.setDetachable(false);
+
+    this.setAutoComplete(this.addressFrom);
+    this.setAutoComplete(this.addressTo);
   }
 
   /**
@@ -268,43 +290,51 @@ public final class ChartController {
    */
   private void setAutoComplete(final TextField tf) {
     tf.setOnKeyReleased((event) -> {
-      if (this.autocPopOver != null) {
-        this.autocPopOver.hide(new Duration(1000.0));
-      }
-      this.autocPopOver = new PopOver();
-
       this.suggestions.clear();
-      if (tf.getLength() > 0) {
-        for (Address a : this.addresses.keySet()) {
+
+      if (tf.getLength() > AUTOCOMPLETE_CUTOFF) {
+        for (Address a: this.addresses.keySet()) {
           if (a.toString().toLowerCase().contains(tf.getText().toLowerCase())) {
             this.suggestions.add(a.toString());
           }
 
-          if (this.suggestions.size() > 5) {
+          if (this.suggestions.size() > AUTOCOMPLETE_MAX_ITEMS) {
             break;
           }
         }
       }
-      if (this.suggestions.size() > 0) {
-        VBox suggestionsVBox = new VBox(this.suggestions.size());
-        suggestionsVBox.setPrefWidth(400);
-        for (String suggestion : this.suggestions) {
-          Label l = new Label(suggestion);
-          l.setPrefWidth(400);
-          l.getStyleClass().add("hover-highlight");
-          l.setOnMouseClicked((event2 -> {
-            tf.setText(l.getText());
-            this.autocPopOver.hide();
-          }));
-          suggestionsVBox.getChildren().add(l);
-        }
-        this.autocPopOver.setDetachable(false);
-        this.autocPopOver.setContentNode(suggestionsVBox);
-        this.autocPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
-        this.autocPopOver.setCornerRadius(2);
-        this.autocPopOver.setArrowSize(6);
-        this.autocPopOver.setAutoHide(true);
-        this.autocPopOver.show(tf, -5);
+
+      if (this.suggestions.size() <= 0) {
+        this.autocPopOver.hide(Duration.ONE);
+        return;
+      }
+
+      Bounds bounds = tf.localToScreen(tf.getBoundsInParent());
+
+      VBox suggestionsVBox = new VBox(this.suggestions.size());
+      suggestionsVBox.setPrefWidth(bounds.getWidth() + 27);
+
+      for (String suggestion: this.suggestions) {
+        Button l = new Button(suggestion);
+
+        l.setPrefWidth(bounds.getWidth() + 27);
+        l.setOnMouseClicked((event2 -> {
+          tf.setText(l.getText());
+          this.autocPopOver.hide(Duration.ONE);
+        }));
+
+        suggestionsVBox.getChildren().add(l);
+      }
+
+      this.autocPopOver.setContentNode(suggestionsVBox);
+
+      if (!this.autocPopOver.isShowing()) {
+        this.autocPopOver.show(
+          tf,
+          bounds.getMinX() + 14, // 14 = font size
+          bounds.getMinY() + bounds.getHeight(),
+          Duration.ONE
+        );
       }
     });
 
