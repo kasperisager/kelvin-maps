@@ -3,6 +3,9 @@
  */
 package dk.itu.kelvin.controller;
 
+// JavaFX utilities
+import javafx.util.Duration;
+
 // JavaFX application utilities
 import javafx.application.Platform;
 
@@ -34,17 +37,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.scene.control.CheckBox;
 
-// Controls FX
-import javafx.util.Duration;
-import org.controlsfx.control.PopOver;
+// JavaFX geometry
+import javafx.geometry.Bounds;
 
 // FXML utilities
 import javafx.fxml.FXML;
 
+// Controls FX
+import org.controlsfx.control.PopOver;
+
 // Utilities
 import java.util.ArrayList;
 import java.util.List;
-
 
 // Parser
 import dk.itu.kelvin.parser.ChartParser;
@@ -269,11 +273,13 @@ public final class ChartController {
   private void setAutoComplete(final TextField tf) {
     tf.setOnKeyReleased((event) -> {
       if (this.autocPopOver != null) {
-        this.autocPopOver.hide(new Duration(1000.0));
+        this.autocPopOver.hide(Duration.ONE);
       }
+
       this.autocPopOver = new PopOver();
 
       this.suggestions.clear();
+
       if (tf.getLength() > 0) {
         for (Address a : this.addresses.keySet()) {
           if (a.toString().toLowerCase().contains(tf.getText().toLowerCase())) {
@@ -285,26 +291,38 @@ public final class ChartController {
           }
         }
       }
+
       if (this.suggestions.size() > 0) {
+        Bounds bounds = tf.localToScreen(tf.getBoundsInParent());
+
         VBox suggestionsVBox = new VBox(this.suggestions.size());
-        suggestionsVBox.setPrefWidth(400);
-        for (String suggestion : this.suggestions) {
-          Label l = new Label(suggestion);
-          l.setPrefWidth(400);
-          l.getStyleClass().add("hover-highlight");
-          l.setOnMouseClicked((event2 -> {
+        suggestionsVBox.setPrefWidth(bounds.getWidth() + 27);
+
+        this.autocPopOver.setDetachable(false);
+
+        for (String suggestion: this.suggestions) {
+          Button l = new Button(suggestion);
+
+          l.setPrefWidth(bounds.getWidth() + 27);
+          l.setOnAction((event2 -> {
             tf.setText(l.getText());
-            this.autocPopOver.hide();
+            this.autocPopOver.hide(Duration.ONE);
           }));
+
           suggestionsVBox.getChildren().add(l);
         }
-        this.autocPopOver.setDetachable(false);
+
         this.autocPopOver.setContentNode(suggestionsVBox);
         this.autocPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
         this.autocPopOver.setCornerRadius(2);
-        this.autocPopOver.setArrowSize(6);
+        this.autocPopOver.setArrowSize(0);
         this.autocPopOver.setAutoHide(true);
-        this.autocPopOver.show(tf, -5);
+        this.autocPopOver.show(
+          tf,
+          bounds.getMinX() + 14, // 14 = font size
+          bounds.getMinY() + bounds.getHeight(),
+          Duration.ONE
+        );
       }
     });
 

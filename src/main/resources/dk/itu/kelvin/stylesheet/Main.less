@@ -56,17 +56,18 @@
 @borderRadius-base--button: @borderRadius-base--input;
 @effect-base--button: @effect-base--input;
 
-// Label ------------------------------------------------------------------- //
-@padding-base--label: 5px;
-@fontSize-base--label: 16px;
-
 // Hover
 @textFill-hover--button: #333;
 
 // Pressed
 @textFill-pressed--button: @color-black;
 
+// Label ------------------------------------------------------------------- //
+
+@fontSize-base--label: @fontSize-base--input;
+
 // Checkboxes --------------------------------------------------------------- //
+
 @backgroundColor-base--checkBoxBox: @color-white;
 @borderRadius-base--checkBoxBox: @borderRadius-base;
 @borderColor-base-checkBoxBox: #999;
@@ -186,15 +187,6 @@
   -fx-effect: @effect-base--textField;
 }
 
-// Autocomplete Popup ------------------------------------------------------- //
-.auto-complete-popup .list-cell{
-  -fx-background-color: transparent;
-}
-
-/* .auto-complete-popup .clipped-container{
-  -fx-background-color: green;
-} */
-
 // Buttons ------------------------------------------------------------------ //
 
 .button,
@@ -248,6 +240,7 @@
   }
 
   .button {
+    -fx-padding: 5px;
     -fx-alignment: BASELINE_LEFT;
     -fx-effect: none;
 
@@ -256,10 +249,10 @@
     }
   }
 }
+
 // Labels ------------------------------------------------------------------- //
 
 .label {
-  -fx-padding: @padding-base--label;
   -fx-font-size: @fontSize-base--label;
 }
 
@@ -396,8 +389,4 @@
   -fx-border-color: @color-gray;
   -fx-background-color: rgba(98,98,98,0.3);
   -fx-translate-y: -16px;
-}
-
-.hover-highlight:hover{
-  -fx-background-color: @backgroundColor-hover--configBoxCheckBox;
 }
