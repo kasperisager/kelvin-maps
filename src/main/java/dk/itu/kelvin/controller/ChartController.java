@@ -292,13 +292,13 @@ public final class ChartController {
     tf.setOnKeyReleased((event) -> {
       this.suggestions.clear();
 
-      if (tf.getLength() > 2) {
+      if (tf.getLength() > AUTOCOMPLETE_CUTOFF) {
         for (Address a: this.addresses.keySet()) {
           if (a.toString().toLowerCase().contains(tf.getText().toLowerCase())) {
             this.suggestions.add(a.toString());
           }
 
-          if (this.suggestions.size() > 5) {
+          if (this.suggestions.size() > AUTOCOMPLETE_MAX_ITEMS) {
             break;
           }
         }
