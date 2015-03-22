@@ -93,6 +93,17 @@ public final class ChartController {
   private static final double ZOOM_OUT = 1 / ZOOM_IN;
 
   /**
+   * Don't show auto completion when the entered input contains less that this
+   * number of characters.
+   */
+  private static final int AUTOCOMPLETE_CUTOFF = 2;
+
+  /**
+   * Max number of items to show in the auto completion menu.
+   */
+  private static final int AUTOCOMPLETE_MAX_ITEMS = 5;
+
+  /**
    * Mouse X coordinate for dragging.
    */
   private double initialMouseDragX;
@@ -262,8 +273,15 @@ public final class ChartController {
 
     Platform.runLater(() -> this.addressFrom.requestFocus());
 
-      this.setAutoComplete(this.addressFrom);
-      this.setAutoComplete(this.addressTo);
+    this.autocPopOver = new PopOver();
+    this.autocPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
+    this.autocPopOver.setCornerRadius(2);
+    this.autocPopOver.setArrowSize(0);
+    this.autocPopOver.setAutoHide(true);
+    this.autocPopOver.setDetachable(false);
+
+    this.setAutoComplete(this.addressFrom);
+    this.setAutoComplete(this.addressTo);
   }
 
   /**
@@ -272,16 +290,10 @@ public final class ChartController {
    */
   private void setAutoComplete(final TextField tf) {
     tf.setOnKeyReleased((event) -> {
-      if (this.autocPopOver != null) {
-        this.autocPopOver.hide(Duration.ONE);
-      }
-
-      this.autocPopOver = new PopOver();
-
       this.suggestions.clear();
 
-      if (tf.getLength() > 0) {
-        for (Address a : this.addresses.keySet()) {
+      if (tf.getLength() > 2) {
+        for (Address a: this.addresses.keySet()) {
           if (a.toString().toLowerCase().contains(tf.getText().toLowerCase())) {
             this.suggestions.add(a.toString());
           }
@@ -292,31 +304,31 @@ public final class ChartController {
         }
       }
 
-      if (this.suggestions.size() > 0) {
-        Bounds bounds = tf.localToScreen(tf.getBoundsInParent());
+      if (this.suggestions.size() <= 0) {
+        this.autocPopOver.hide(Duration.ONE);
+        return;
+      }
 
-        VBox suggestionsVBox = new VBox(this.suggestions.size());
-        suggestionsVBox.setPrefWidth(bounds.getWidth() + 27);
+      Bounds bounds = tf.localToScreen(tf.getBoundsInParent());
 
-        this.autocPopOver.setDetachable(false);
+      VBox suggestionsVBox = new VBox(this.suggestions.size());
+      suggestionsVBox.setPrefWidth(bounds.getWidth() + 27);
 
-        for (String suggestion: this.suggestions) {
-          Button l = new Button(suggestion);
+      for (String suggestion: this.suggestions) {
+        Button l = new Button(suggestion);
 
-          l.setPrefWidth(bounds.getWidth() + 27);
-          l.setOnAction((event2 -> {
-            tf.setText(l.getText());
-            this.autocPopOver.hide(Duration.ONE);
-          }));
+        l.setPrefWidth(bounds.getWidth() + 27);
+        l.setOnMouseClicked((event2 -> {
+          tf.setText(l.getText());
+          this.autocPopOver.hide(Duration.ONE);
+        }));
 
-          suggestionsVBox.getChildren().add(l);
-        }
+        suggestionsVBox.getChildren().add(l);
+      }
 
-        this.autocPopOver.setContentNode(suggestionsVBox);
-        this.autocPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
-        this.autocPopOver.setCornerRadius(2);
-        this.autocPopOver.setArrowSize(0);
-        this.autocPopOver.setAutoHide(true);
+      this.autocPopOver.setContentNode(suggestionsVBox);
+
+      if (!this.autocPopOver.isShowing()) {
         this.autocPopOver.show(
           tf,
           bounds.getMinX() + 14, // 14 = font size
