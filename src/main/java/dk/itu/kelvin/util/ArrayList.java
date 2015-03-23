@@ -4,6 +4,7 @@
 package dk.itu.kelvin.util;
 
 // General utilities
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -253,6 +254,21 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    */
   public final boolean remove(final Object element) {
     return this.remove(this.indexOf(element)) != null;
+  }
+
+  /**
+   * Trim the size of the internal storage to the actual size of the list.
+   */
+  public final void trimToSize() {
+    // Bail out if we've already reached the capacity of the internal storage.
+    // In this case there won't be anything to trim.
+    if (this.elements.length >= this.size()) {
+      return;
+    }
+
+    // We add an extra slot for the next element addition since we call
+    // shrink() after having added an element to the array.
+    this.elements = Arrays.copyOf(this.elements, this.size() + 1);
   }
 
   /**
