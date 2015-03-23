@@ -187,6 +187,23 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
   }
 
   /**
+   * Get an array of elements contained within the set.
+   *
+   * @return An array of elements contained within the set.
+   */
+  public final Object[] toArray() {
+    Object[] temp = new Object[this.size()];
+
+    Iterator<E> it = this.iterator();
+
+    for (int i = 0; i < this.size(); i++) {
+      temp[i] = it.next();
+    }
+
+    return temp;
+  }
+
+  /**
    * Iterate over the elements of the set.
    *
    * @return An iterator over the elements of the set.

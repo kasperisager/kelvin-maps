@@ -141,7 +141,7 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    */
   public final E get(final int index) {
     if (index < 0 || index >= this.size()) {
-      return null;
+      throw new ArrayIndexOutOfBoundsException();
     }
 
     return this.elements[index];
@@ -155,6 +155,10 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    *                specified element.
    */
   public final boolean contains(final Object element) {
+    if (element == null) {
+      return false;
+    }
+
     return this.indexOf(element) != -1;
   }
 
@@ -189,6 +193,10 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    *                result of the call.
    */
   public final boolean add(final int index, final E element) {
+    if (index < 0 || index >= this.size()) {
+      throw new ArrayIndexOutOfBoundsException();
+    }
+
     if (element == null) {
       return false;
     }
@@ -222,6 +230,29 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
   }
 
   /**
+   * Replace the element at the specified index with another element.
+   *
+   * @param index   The index of the element to replace.
+   * @param element The element to add to the specified index.
+   * @return        The element previously at the specified index if any.
+   */
+  public final E set(final int index, final E element) {
+    if (index < 0 || index >= this.size()) {
+      throw new ArrayIndexOutOfBoundsException();
+    }
+
+    if (element == null) {
+      return null;
+    }
+
+    E old = this.elements[index];
+
+    this.elements[index] = element;
+
+    return old;
+  }
+
+  /**
    * Remove an element from the list.
    *
    * <p>
@@ -233,7 +264,7 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    */
   public final E remove(final int index) {
     if (index < 0 || index >= this.size()) {
-      return null;
+      throw new ArrayIndexOutOfBoundsException();
     }
 
     E element = this.elements[index];
@@ -254,6 +285,19 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    */
   public final boolean remove(final Object element) {
     return this.remove(this.indexOf(element)) != null;
+  }
+
+  /**
+   * Get an array containing the elements of the list.
+   *
+   * <p>
+   * The returned array will contain no references to the original elements and
+   * is therefore safe for modification.
+   *
+   * @return An array containing the elements of the list.
+   */
+  public final Object[] toArray() {
+    return Arrays.copyOf(this.elements, this.size());
   }
 
   /**

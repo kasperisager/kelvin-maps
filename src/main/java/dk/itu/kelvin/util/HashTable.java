@@ -155,12 +155,7 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
    * @return      The previous value associated with the key if found.
    */
   public final V put(final K key, final V value) {
-    if (key == null) {
-      return null;
-    }
-
-    if (value == null) {
-      this.remove(key);
+    if (key == null || value == null) {
       return null;
     }
 
