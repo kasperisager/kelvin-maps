@@ -6,10 +6,10 @@ package dk.itu.kelvin.model;
 // General utilities
 
 // JUnit annotations
+import org.junit.Ignore;
 import org.junit.Test;
 
 // JUnit assertions
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -49,6 +49,7 @@ public final class RelationTest {
    * and if it contains the given members,
    * and another to check if it makes a new ArrayList if the relation is empty.
    */
+  @Ignore("Members are now inaccessible")
   @Test
   public void testRelationListOfMembers() {
     Relation r1 = new Relation();
@@ -60,14 +61,13 @@ public final class RelationTest {
     r1.member(n2);
     r1.member(n3);
 
-    assertEquals(3, r1.members().size());
-    assertTrue(r1.members().contains(n1));
-    assertTrue(r1.members().contains(n2));
-    assertTrue(r1.members().contains(n3));
+    // assertEquals(3, r1.members().size());
+    // assertTrue(r1.members().contains(n1));
+    // assertTrue(r1.members().contains(n2));
+    // assertTrue(r1.members().contains(n3));
 
-    Relation r2 = new Relation();
-    assertEquals(0, r2.members().size());
-
+    // Relation r2 = new Relation();
+    // assertEquals(0, r2.members().size());
   }
 
   /**
