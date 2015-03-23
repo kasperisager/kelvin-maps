@@ -261,21 +261,17 @@ public abstract class Element<T extends Node> implements Serializable {
         return null;
       }
 
-      try {
-        return Order.valueOf(String.format(
-          "%s_%s",
-          key.toUpperCase(),
-          value.toUpperCase()
-        ));
-      }
-      catch (Exception ex1) {
-        try {
-          return Order.valueOf(key.toUpperCase());
-        }
-        catch (Exception ex2) {
-          return null;
+      for (Order order: Order.values()) {
+        if (
+          order.toString().equalsIgnoreCase(String.format("%s_%s", key, value))
+          ||
+          order.toString().equalsIgnoreCase(key)
+        ) {
+          return order;
         }
       }
+
+      return null;
     }
   }
 }

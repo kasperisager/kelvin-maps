@@ -98,19 +98,6 @@ public final class Relation extends Element<Group> {
   }
 
   /**
-   * Get a list of all members of the relation.
-   *
-   * @return A list of members of the relation.
-   */
-  public List<Element> members() {
-    if (this.elements == null) {
-      return new ArrayList<Element>();
-    }
-
-    return new ArrayList<Element>(this.elements.keySet());
-  }
-
-  /**
    * Add an element with a role to the relation.
    *
    * @param element The element to add to the relation.
@@ -162,9 +149,11 @@ public final class Relation extends Element<Group> {
               TaskQueue.run(() -> {
                 Shape shape = this.multipolygon();
 
-                Platform.runLater(() -> {
-                  group.getChildren().add(shape);
-                });
+                if (shape != null) {
+                  Platform.runLater(() -> {
+                    group.getChildren().add(shape);
+                  });
+                }
               });
               break;
             default:
@@ -215,12 +204,16 @@ public final class Relation extends Element<Group> {
    * @return A shape created from all the members of the relation.
    */
   private Shape multipolygon() {
+    if (this.elements == null || this.elements.isEmpty()) {
+      return null;
+    }
+
     // RA-1: Assemble all ways that are members of the relation. Mark them as
     // "unassigned", and reset the current ring count to 0.
     List<Way> u = new ArrayList<>();
     List<Way> a = new ArrayList<>();
 
-    for (Element element: this.members()) {
+    for (Element element: this.elements.keySet()) {
       u.add((Way) element);
     }
 
@@ -374,12 +367,17 @@ public final class Relation extends Element<Group> {
      * @return      The enumerator element if found, otherwise NONE;
      */
     public static Role fromString(final String value) {
-      try {
-        return Role.valueOf(value.toUpperCase());
+      if (value == null) {
+        return null;
       }
-      catch (Exception ex) {
-        return NONE;
+
+      for (Role role: Role.values()) {
+        if (role.toString().equalsIgnoreCase(value)) {
+          return role;
+        }
       }
+
+      return null;
     }
   }
 
@@ -430,12 +428,17 @@ public final class Relation extends Element<Group> {
      * @return      The enumerator element if found, otherwise NONE;
      */
     public static Type fromString(final String value) {
-      try {
-        return Type.valueOf(value.toUpperCase());
+      if (value == null) {
+        return null;
       }
-      catch (Exception ex) {
-        return NONE;
+
+      for (Type type: Type.values()) {
+        if (type.toString().equalsIgnoreCase(value)) {
+          return type;
+        }
       }
+
+      return null;
     }
   }
 }
