@@ -21,6 +21,11 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
   private static final long serialVersionUID = 55;
 
   /**
+   * The hash collision resolver to use.
+   */
+  private static final HashResolver RESOLVER = new QuadraticProbe();
+
+  /**
    * Internal key storage.
    */
   private K[] keys;
@@ -29,11 +34,6 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
    * Internal value storage.
    */
   private V[] values;
-
-  /**
-   * The hash collision resolver to use.
-   */
-  private transient HashResolver resolver = new QuadraticProbe();
 
   /**
    * Initialize a hash table with the default initial capacity.
@@ -94,7 +94,7 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
       return -1;
     }
 
-    return this.resolver.resolve(this.hash(key), key, this.keys);
+    return RESOLVER.resolve(this.hash(key), key, this.keys);
   }
 
   /**
