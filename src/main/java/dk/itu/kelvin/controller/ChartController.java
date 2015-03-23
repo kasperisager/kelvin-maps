@@ -625,11 +625,28 @@ public final class ChartController {
    */
   @FXML
   private void findAddress() {
-    if (!this.addressFrom.getText().trim().equals("")) {
-      Address startAddress = Address.parse(this.addressFrom.getText());
-      Node position = this.addresses.find(startAddress);
+    String input = this.addressFrom.getText();
 
-      System.out.println("X: " + position.x() + " " + "Y: " + position.y());
+    if (input == null) {
+      return;
+    }
+
+    input = input.trim();
+
+    if (input.isEmpty()) {
+      return;
+    }
+
+    Address startAddress = Address.parse(this.addressFrom.getText());
+
+    if (startAddress == null) {
+      return;
+    }
+
+    Node node = this.addresses.find(startAddress);
+
+    if (node != null) {
+      this.chart.center(node);
     }
   }
 
