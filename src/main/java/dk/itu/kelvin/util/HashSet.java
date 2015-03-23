@@ -21,14 +21,14 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
   private static final long serialVersionUID = 591;
 
   /**
+   * The hash collision resolver to use.
+   */
+  private static final HashResolver resolver = new QuadraticProbe();
+
+  /**
    * Internal element storage.
    */
   private E[] elements;
-
-  /**
-   * The hash collision resolver to use.
-   */
-  private transient HashResolver resolver = new QuadraticProbe();
 
   /**
    * Initialize a hash set with the default initial capacity.
@@ -98,7 +98,7 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
       return -1;
     }
 
-    return this.resolver.resolve(this.hash(element), element, this.elements);
+    return HashSet.resolver.resolve(this.hash(element), element, this.elements);
   }
 
   /**
