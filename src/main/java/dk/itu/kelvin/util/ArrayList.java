@@ -288,6 +288,20 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
   }
 
   /**
+   * Remove all elements from the list.
+   *
+   * <p>
+   * <b>NB:</b> Unlike Java's Collections, this operation will actually reset
+   * the internal storage of the list to its initial capacity instead of simply
+   * nullifying all elements.
+   */
+  @SuppressWarnings("unchecked")
+  public final void clear() {
+    this.elements = (E[]) new Object[this.initialCapacity()];
+    this.reset();
+  }
+
+  /**
    * Get an array containing the elements of the list.
    *
    * <p>

@@ -187,6 +187,20 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
   }
 
   /**
+   * Remove all elements from the set.
+   *
+   * <p>
+   * <b>NB:</b> Unlike Java's Collections, this operation will actually reset
+   * the internal storage of the set to its initial capacity instead of simply
+   * nullifying all elements.
+   */
+  @SuppressWarnings("unchecked")
+  public final void clear() {
+    this.elements = (E[]) new Object[this.initialCapacity()];
+    this.reset();
+  }
+
+  /**
    * Get an array of elements contained within the set.
    *
    * @return An array of elements contained within the set.

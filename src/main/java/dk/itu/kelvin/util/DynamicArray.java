@@ -48,6 +48,14 @@ public abstract class DynamicArray implements Serializable {
   private float lowerResizeFactor;
 
   /**
+   * The initial capacity of the internal storage of the collection.
+   *
+   * <p>
+   * This is used when resetting the internal storage of the collection.
+   */
+  private final int initialCapacity;
+
+  /**
    * The capacity of the internal storage of the collection.
    */
   private int capacity;
@@ -73,6 +81,7 @@ public abstract class DynamicArray implements Serializable {
     final float lowerLoadFactor,
     final float lowerResizeFactor
   ) {
+    this.initialCapacity = capacity;
     this.capacity = capacity;
     this.upperLoadFactor = upperLoadFactor;
     this.upperResizeFactor = upperResizeFactor;
@@ -96,6 +105,15 @@ public abstract class DynamicArray implements Serializable {
    */
   public final boolean isEmpty() {
     return this.size == 0;
+  }
+
+  /**
+   * Get the initial capacity of the internal storage of the collection.
+   *
+   * @return The initial capacity of the internal storage of the collection.
+   */
+  protected final int initialCapacity() {
+    return this.initialCapacity;
   }
 
   /**
@@ -141,6 +159,15 @@ public abstract class DynamicArray implements Serializable {
       this.resize(capacity);
       this.capacity = capacity;
     }
+  }
+
+  /**
+   * Reset the size of the collection to 0 and the capacity to the initial
+   * capacity set when initializing the collection.
+   */
+  protected final void reset() {
+    this.size = 0;
+    this.capacity = this.initialCapacity;
   }
 
   /**

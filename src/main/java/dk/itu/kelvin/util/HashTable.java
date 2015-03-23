@@ -199,6 +199,21 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
   }
 
   /**
+   * Remove all elements from the table.
+   *
+   * <p>
+   * <b>NB:</b> Unlike Java's Collections, this operation will actually reset
+   * the internal storage of the table to its initial capacity instead of simply
+   * nullifying all elements.
+   */
+  @SuppressWarnings("unchecked")
+  public final void clear() {
+    this.keys = (K[]) new Object[this.initialCapacity()];
+    this.values = (V[]) new Object[this.initialCapacity()];
+    this.reset();
+  }
+
+  /**
    * Get a set of the keys contained within the table.
    *
    * <p>
