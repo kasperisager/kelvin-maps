@@ -39,6 +39,9 @@ import java.util.NoSuchElementException;
  * The ArrayList has an initial capacity of 2 unless an entire collection or
  * specific capacity is specified.
  *
+ *
+ * Remember new add, clear, trimToSize methods
+ *
  * @param <E> The type of elements stored within the list.
  *
  * @version 1.0.0

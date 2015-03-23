@@ -4,7 +4,9 @@
 package dk.itu.kelvin.util;
 
 /**
- * Hash table class.
+ * <h2>Hash table class.</h2>
+ * <p>
+ *
  *
  * @see <a href="http://algs4.cs.princeton.edu/34hash/">
  *      http://algs4.cs.princeton.edu/34hash/</a>
