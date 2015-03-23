@@ -646,7 +646,7 @@ public final class ChartController {
     Node node = this.addresses.find(startAddress);
 
     if (node != null) {
-      this.chart.center(node);
+      this.chart.center(node, 2.5);
     }
   }
 
