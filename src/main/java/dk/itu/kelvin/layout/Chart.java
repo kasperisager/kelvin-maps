@@ -6,9 +6,6 @@ package dk.itu.kelvin.layout;
 // JavaFX scene utilities
 import javafx.scene.Group;
 
-// JavaFX
-import javafx.scene.control.Label;
-
 // JavaFX geometry
 import javafx.geometry.Bounds;
 
