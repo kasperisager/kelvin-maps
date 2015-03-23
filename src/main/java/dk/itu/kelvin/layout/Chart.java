@@ -6,6 +6,9 @@ package dk.itu.kelvin.layout;
 // JavaFX scene utilities
 import javafx.scene.Group;
 
+// JavaFX
+import javafx.scene.control.Label;
+
 // JavaFX geometry
 import javafx.geometry.Bounds;
 
@@ -131,6 +134,31 @@ public final class Chart extends Group {
   public void pan(final double x, final double y) {
     this.setTranslateX(this.getTranslateX() + x);
     this.setTranslateY(this.getTranslateY() + y);
+  }
+
+  /**
+   * Center the chart on the specified scene coordinate.
+   *
+   * @param x The x-coordinate to center on.
+   * @param y The y-coordinate to center on.
+   */
+  public void center(final double x, final double y) {
+    this.pan(
+      -(x - this.getScene().getWidth() / 2),
+      -(y - this.getScene().getHeight() / 2)
+    );
+  }
+
+  /**
+   * Center the chart on the specified node.
+   *
+   * @param node The node to center on.
+   */
+  public void center(final Node node) {
+    this.center(
+      this.localToScene(node.x(), node.y()).getX(),
+      this.localToScene(node.x(), node.y()).getY()
+    );
   }
 
   /**
