@@ -14,17 +14,10 @@ import javafx.scene.Scene;
 import javafx.geometry.Bounds;
 import javafx.geometry.BoundingBox;
 
-// JavaFX transformations
-import javafx.scene.transform.Affine;
-
-// JavaFX beans
-import javafx.beans.value.ChangeListener;
-
-// Threading
-import dk.itu.kelvin.thread.TaskQueue;
-
 // Utilities
+import dk.itu.kelvin.util.ArrayList;
 import dk.itu.kelvin.util.HashTable;
+import dk.itu.kelvin.util.List;
 import dk.itu.kelvin.util.Map;
 
 // Models
@@ -42,52 +35,9 @@ public final class TileGrid extends Group {
   private static final int TILE_SIZE = 256;
 
   /**
-   * The affine transformation associated with the tile grid.
-   *
-   * <p>
-   * Whenever this transformation changes, the tile grid will adjust its tiles
-   * accordingly.
-   */
-  private Affine affine;
-
-  /**
    * Map of tiles contained within the tile grid.
    */
   private Map<Anchor, Tile> tiles = new HashTable<>();
-
-  /**
-   * Layout listener.
-   */
-  private ChangeListener<? super Number> layoutListener = (ob, ov, nv) -> {
-    this.layoutTiles();
-  };
-
-  /**
-   * Initialize a tile grid.
-   *
-   * @param affine The affine transformation associated with the tile grid.
-   */
-  public TileGrid(final Affine affine) {
-    this.affine = affine;
-
-    this.addListeners();
-  }
-
-  /**
-   * Attach layout listeners to the tile grid.
-   */
-  private synchronized void addListeners() {
-    this.affine.txProperty().addListener(this.layoutListener);
-    this.affine.tyProperty().addListener(this.layoutListener);
-  }
-
-  /**
-   * Detach layout listeners from the tile grid.
-   */
-  private synchronized void removeListeners() {
-    this.affine.txProperty().removeListener(this.layoutListener);
-    this.affine.tyProperty().removeListener(this.layoutListener);
-  }
 
   /**
    * Add an element to the tile grid.
@@ -152,33 +102,25 @@ public final class TileGrid extends Group {
   /**
    * Add the visible tiles to the tile grid.
    */
-  private synchronized void layoutTiles() {
-    this.removeListeners();
-
-    TaskQueue.run(() -> {
-      for (Tile tile: this.tiles.values()) {
-        if (this.withinBounds(tile)) {
-          // Schedule an addition of the tile from the scene graph.
-          Platform.runLater(() -> {
-            if (!this.getChildren().contains(tile)) {
-              this.getChildren().add(tile);
-            }
-          });
-        }
-        else {
-          // Schedule a removal of the tile from the scene graph.
-          Platform.runLater(() -> {
-            if (this.getChildren().contains(tile)) {
-              this.getChildren().remove(tile);
-            }
-          });
-        }
+  public synchronized void layoutTiles() {
+    for (Tile tile: this.tiles.values()) {
+      if (this.withinBounds(tile)) {
+        // Schedule an addition of the tile from the scene graph.
+        Platform.runLater(() -> {
+          if (!this.getChildren().contains(tile)) {
+            this.getChildren().add(tile);
+          }
+        });
       }
-
-      Platform.runLater(() -> {
-        this.addListeners();
-      });
-    });
+      else {
+        // Schedule a removal of the tile from the scene graph.
+        Platform.runLater(() -> {
+          if (this.getChildren().contains(tile)) {
+            this.getChildren().remove(tile);
+          }
+        });
+      }
+    }
   }
 
   /**
@@ -250,6 +192,11 @@ public final class TileGrid extends Group {
    */
   private static final class Tile extends Group {
     /**
+     * List of elements contained within the tile.
+     */
+    private List<Element> elements;
+
+    /**
      * Add an element to the tile.
      *
      * @param element The element to add to the tile.
@@ -259,7 +206,11 @@ public final class TileGrid extends Group {
         return;
       }
 
-      this.getChildren().add(element.render());
+      if (this.elements == null) {
+        this.elements = new ArrayList<>();
+      }
+
+      this.elements.add(element);
     }
   }
 }

@@ -6,8 +6,8 @@ package dk.itu.kelvin.layout;
 // JavaFX scene utilities
 import javafx.scene.Group;
 
-// JavaFX transformations
-import javafx.scene.transform.Affine;
+// JavaFX geometry
+import javafx.geometry.Bounds;
 
 // Utilities
 import dk.itu.kelvin.util.Collection;
@@ -35,11 +35,6 @@ public final class Chart extends Group {
   private static final double MIN_ZOOM_FACTOR = 0.5;
 
   /**
-   * Affine transformation instance.
-   */
-  private Affine transform = new Affine();
-
-  /**
    * The bounds of the chart.
    */
   private BoundingBox bounds;
@@ -47,24 +42,22 @@ public final class Chart extends Group {
   /**
    * Land polygons.
    */
-  private TileGrid land = new TileGrid(this.transform);
+  private Group land = new Group();
 
   /**
    * The tile grid containing all the elements within the chart.
    */
-  private TileGrid elements = new TileGrid(this.transform);
+  private TileGrid elements = new TileGrid();
 
   /**
    * Meta layer.
    */
-  private TileGrid meta = new TileGrid(this.transform);
+  private TileGrid meta = new TileGrid();
 
   /**
    * Initialize the chart.
    */
   public Chart() {
-    this.getTransforms().add(this.transform);
-
     this.getChildren().add(this.land);
     this.getChildren().add(this.elements);
     this.getChildren().add(this.meta);
@@ -92,7 +85,7 @@ public final class Chart extends Group {
    * @param land The land polygon to add to the chart.
    */
   public void add(final Land land) {
-    this.land.add(land);
+    this.land.getChildren().add(land.render());
   }
 
   /**
@@ -130,6 +123,17 @@ public final class Chart extends Group {
   }
 
   /**
+   * Pan the chart.
+   *
+   * @param x The amount to pan on the x-axis.
+   * @param y The amount to pan on the y-axis.
+   */
+  public void pan(final double x, final double y) {
+    this.setTranslateX(this.getTranslateX() + x);
+    this.setTranslateY(this.getTranslateY() + y);
+  }
+
+  /**
    * Zoom the chart.
    *
    * @param factor  The factor with which to zoom.
@@ -137,17 +141,31 @@ public final class Chart extends Group {
    * @param y       The y-coordinate of the pivot point.
    */
   public void zoom(final double factor, final double x, final double y) {
-    double newZoomFactor = this.transform.getMxx() * factor;
+    double oldScale = this.getScaleX();
+    double newScale = oldScale * factor;
 
-    if (factor > 1 && newZoomFactor >= MAX_ZOOM_FACTOR) {
+    if (factor > 1 && newScale >= MAX_ZOOM_FACTOR) {
       return;
     }
 
-    if (factor < 1 && newZoomFactor <= MIN_ZOOM_FACTOR) {
+    if (factor < 1 && newScale <= MIN_ZOOM_FACTOR) {
       return;
     }
 
-    this.transform.prependScale(factor, factor, x, y);
+    this.setScaleX(newScale);
+    this.setScaleY(newScale);
+
+    // Calculate the difference between the new and the old scale.
+    double f = (newScale / oldScale) - 1;
+
+    // Get the layout bounds of the chart in local coordinates.
+    Bounds bounds = this.localToScene(this.getLayoutBounds());
+
+    double dx = x - (bounds.getMinX() + bounds.getWidth() / 2);
+    double dy = y - (bounds.getMinY() + bounds.getHeight() / 2);
+
+    this.setTranslateX(this.getTranslateX() - f * dx);
+    this.setTranslateY(this.getTranslateY() - f * dy);
   }
 
   /**
@@ -164,16 +182,6 @@ public final class Chart extends Group {
   }
 
   /**
-   * Pan the chart.
-   *
-   * @param x The amount to pan on the x-axis.
-   * @param y The amount to pan on the y-axis.
-   */
-  public void pan(final double x, final double y) {
-    this.transform.prependTranslation(x, y);
-  }
-
-  /**
    * Rotate the chart.
    *
    * @param angle The angle of the rotation.
@@ -181,7 +189,26 @@ public final class Chart extends Group {
    * @param y     The y-coordinate of the pivot point.
    */
   public void rotate(final double angle, final double x, final double y) {
-    this.transform.prependRotation(angle, x, y);
+    double oldAngle = this.getRotate();
+    double newAngle = oldAngle + angle;
+
+    this.setRotate(newAngle);
+
+    Bounds bounds = this.localToScene(this.getLayoutBounds());
+
+    double dx = x - (bounds.getMinX() + bounds.getWidth() / 2);
+    double dy = y - (bounds.getMinY() + bounds.getHeight() / 2);
+    double dt = Math.toRadians(newAngle - oldAngle);
+
+    this.setTranslateX(
+      this.getTranslateX()
+    + (dx - dx * Math.cos(dt) + dy * Math.sin(dt))
+    );
+
+    this.setTranslateY(
+      this.getTranslateY()
+    + (dy - dx * Math.sin(dt) - dy * Math.cos(dt))
+    );
   }
 
   /**
