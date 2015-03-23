@@ -23,7 +23,7 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
   /**
    * The hash collision resolver to use.
    */
-  private static final HashResolver resolver = new QuadraticProbe();
+  private static final HashResolver RESOLVER = new QuadraticProbe();
 
   /**
    * Internal element storage.
@@ -98,7 +98,7 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
       return -1;
     }
 
-    return HashSet.resolver.resolve(this.hash(element), element, this.elements);
+    return RESOLVER.resolve(this.hash(element), element, this.elements);
   }
 
   /**

@@ -23,7 +23,7 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
   /**
    * The hash collision resolver to use.
    */
-  private static final HashResolver resolver = new QuadraticProbe();
+  private static final HashResolver RESOLVER = new QuadraticProbe();
 
   /**
    * Internal key storage.
@@ -94,7 +94,7 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
       return -1;
     }
 
-    return HashTable.resolver.resolve(this.hash(key), key, this.keys);
+    return RESOLVER.resolve(this.hash(key), key, this.keys);
   }
 
   /**
