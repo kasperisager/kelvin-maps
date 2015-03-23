@@ -59,8 +59,14 @@ checkstyle {
 }
 
 jar {
-  // Include all source code in assembled JAR.
-  from sourceSets.main.allSource
+  from {
+    // Include all source code in assembled JAR.
+    sourceSets.main.allSource
+
+    configurations.compile.collect {
+      it.isDirectory() ? it : zipTree(it)
+    }
+  }
 
   manifest {
     attributes "Main-Class": mainClass
