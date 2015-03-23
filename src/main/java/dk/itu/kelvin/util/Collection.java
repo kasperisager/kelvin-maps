@@ -60,4 +60,15 @@ public interface Collection<E> extends Iterable<E> {
    *                contained the element to remove.
    */
   boolean remove(final Object element);
+
+  /**
+   * Get an array containing the elements of the collection.
+   *
+   * <p>
+   * The returned array will contain no references to the original elements and
+   * is therefore safe for modification.
+   *
+   * @return An array containing the elements of the collection.
+   */
+  Object[] toArray();
 }

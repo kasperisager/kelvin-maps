@@ -39,6 +39,15 @@ public interface List<E> extends Collection<E> {
   boolean add(final int index, final E element);
 
   /**
+   * Replace the element at the specified index with another element.
+   *
+   * @param index   The index of the element to replace.
+   * @param element The element to add to the specified index.
+   * @return        The element previously at the specified index if any.
+   */
+  E set(final int index, final E element);
+
+  /**
    * Remove an element from the list.
    *
    * @param index The index of the element to remove.
