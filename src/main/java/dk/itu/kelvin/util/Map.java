@@ -70,6 +70,11 @@ public interface Map<K, V> {
   V remove(final Object key);
 
   /**
+   * Remove all key/value pairs from the map.
+   */
+  void clear();
+
+  /**
    * Get a set of the keys contained within the map.
    *
    * @return A set of the keys contained within the map.

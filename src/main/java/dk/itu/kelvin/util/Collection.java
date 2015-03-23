@@ -62,6 +62,11 @@ public interface Collection<E> extends Iterable<E> {
   boolean remove(final Object element);
 
   /**
+   * Remove all elements from the collection.
+   */
+  void clear();
+
+  /**
    * Get an array containing the elements of the collection.
    *
    * <p>
