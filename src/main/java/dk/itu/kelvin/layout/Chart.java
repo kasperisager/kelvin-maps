@@ -147,6 +147,18 @@ public final class Chart extends Group {
   }
 
   /**
+   * Center the chart on the specified scene coordinate.
+   *
+   * @param x The x-coordinate to center on.
+   * @param y The y-coordinate to center on.
+   */
+  public void center(final double x, final double y, final double scale) {
+    this.setScaleX(scale);
+    this.setScaleY(scale);
+    this.center(x, y);
+  }
+
+  /**
    * Center the chart on the specified node.
    *
    * @param node The node to center on.
@@ -156,6 +168,17 @@ public final class Chart extends Group {
       this.localToScene(node.x(), node.y()).getX(),
       this.localToScene(node.x(), node.y()).getY()
     );
+  }
+
+  /**
+   * Center the chart on the specified node.
+   *
+   * @param node The node to center on.
+   */
+  public void center(final Node node, final double scale) {
+    this.setScaleX(scale);
+    this.setScaleY(scale);
+    this.center(node);
   }
 
   /**
@@ -232,7 +255,7 @@ public final class Chart extends Group {
 
     this.setTranslateY(
       this.getTranslateY()
-    + (dy - dx * Math.sin(dt) - dy * Math.cos(dt))
+        + (dy - dx * Math.sin(dt) - dy * Math.cos(dt))
     );
   }
 
