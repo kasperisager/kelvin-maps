@@ -14,12 +14,6 @@ import javafx.scene.Scene;
 import javafx.geometry.Bounds;
 import javafx.geometry.BoundingBox;
 
-// JavaFX beans
-import javafx.beans.value.ChangeListener;
-
-// Threading
-import dk.itu.kelvin.thread.TaskQueue;
-
 // Utilities
 import dk.itu.kelvin.util.ArrayList;
 import dk.itu.kelvin.util.HashTable;
