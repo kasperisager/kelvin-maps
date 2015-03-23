@@ -165,7 +165,7 @@ public final class ChartParser {
    * @return            The value if found, otherwise null.
    */
   private String getString(final Attributes attributes, final String value) {
-    return attributes.getValue(value);
+    return attributes.getValue(value).intern();
   }
 
   /**
