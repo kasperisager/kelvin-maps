@@ -14,12 +14,29 @@ import java.util.Comparator;
  */
 public final class Collections {
   /**
+   * Don't allow instantiation of the class.
+   *
+   * <p>
+   * Since the class only contains static fields and methods, we never want to
+   * instantiate the class. We therefore define a private constructor so that
+   * noone can create instances of the class other than the class itself.
+   *
+   * <p>
+   * NB: This does not make the class a singleton. In fact, there never exists
+   * an instance of the class since not even the class instantiates itself.
+   */
+  private Collections() {
+    super();
+  }
+
+  /**
    * Sort a list of comparable elements.
    *
    * <p>
    * The list will be sorted in-place.
    *
-   * @param list The list of comparable elements to sort.
+   * @param <T>   The type of elements to sort.
+   * @param list  The list of comparable elements to sort.
    */
   @SuppressWarnings("unchecked")
   public static <T extends Comparable<? super T>> void sort(
@@ -40,6 +57,7 @@ public final class Collections {
    * <p>
    * The list will be sorted in-place.
    *
+   * @param <T>         The type of elements to sort.
    * @param list        The list of elements to sort.
    * @param comparator  The comparator to use for sorting the list.
    */
