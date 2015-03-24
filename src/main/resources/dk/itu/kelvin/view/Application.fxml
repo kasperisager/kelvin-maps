@@ -19,7 +19,8 @@
         <Label
           fx:id="loadIcon"
           styleClass="icon, load-icon"
-          text="&#xf29d;">
+          text="&#xf29d;"
+          alignment="CENTER">
         </Label>
       </children>
     </StackPane>

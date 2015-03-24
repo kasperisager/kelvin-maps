@@ -33,7 +33,7 @@ public final class ApplicationController {
   /**
    * The rotate animation.
    */
-  RotateTransition rt;
+  private RotateTransition rt;
 
   /**
    * Borderpane element.
@@ -58,8 +58,9 @@ public final class ApplicationController {
    */
   public void initialize() {
     ApplicationController.instance(this);
-    rt = new RotateTransition(Duration.millis(1000), this.loadIcon);
-    rotateIcon();
+    ApplicationController.instance().rt
+    = new RotateTransition(Duration.millis(10000), this.loadIcon);
+    ApplicationController.instance().rotateIcon();
   }
 
   /**
@@ -103,9 +104,10 @@ public final class ApplicationController {
    * To rotate the load icon.
    */
   public void rotateIcon() {
-    rt.setByAngle(360);
-    rt.setCycleCount(RotateTransition.INDEFINITE);
-    rt.play();
+    ApplicationController.instance().rt.setByAngle(360);
+    ApplicationController.instance()
+    .rt.setCycleCount(RotateTransition.INDEFINITE);
+    ApplicationController.instance().rt.play();
   }
 
   /**
@@ -113,7 +115,8 @@ public final class ApplicationController {
    */
   public static void removeIcon() {
     ApplicationController.instance().rt.stop();
-    ApplicationController.instance().stackPane.getChildren().remove(ApplicationController.instance().loadIcon);
+    ApplicationController.instance().stackPane
+    .getChildren().remove(ApplicationController.instance().loadIcon);
   }
 
 }

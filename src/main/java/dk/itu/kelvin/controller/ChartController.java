@@ -279,7 +279,6 @@ public final class ChartController {
 
       //Get map of all addresses from parser.
       this.addresses = parser.addresses();
-      System.out.println("Ready!");
     });
 
     this.createPOI();
