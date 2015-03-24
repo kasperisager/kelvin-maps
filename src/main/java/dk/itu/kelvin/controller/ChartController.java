@@ -142,6 +142,7 @@ public final class ChartController {
    * Auto-complete popover for textfields.
    */
   private PopOver autocPopOver;
+
   /**
    * The dynamic autocomplete results.
    */
@@ -647,6 +648,7 @@ public final class ChartController {
 
     if (node != null) {
       this.chart.center(node, 2.5);
+      this.chart.setPointer(node);
     }
   }
 
