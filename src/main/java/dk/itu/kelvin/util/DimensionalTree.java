@@ -29,6 +29,11 @@ public final class DimensionalTree<E> {
   private final int dimensions;
 
   /**
+   * The point at which to stop subdividing the tree.
+   */
+  private final int cutoff;
+
+  /**
    * The root node of the dimensional tree.
    */
   private final Node root;
@@ -37,13 +42,17 @@ public final class DimensionalTree<E> {
    * Initialize a dimensional tree.
    *
    * @param elements    The elements to store in the tree.
+   * @param cutoff      The point at which to stop subdividing the tree.
    * @param comparators The comparators for each of the dimensions in the tree.
    */
+  @SafeVarargs
   @SuppressWarnings("unchecked")
   public DimensionalTree(
     final Collection<E> elements,
+    final int cutoff,
     final Comparator<E>... comparators
   ) {
+    this.cutoff = cutoff;
     this.comparators = comparators;
     this.dimensions = this.comparators.length;
 
@@ -53,6 +62,21 @@ public final class DimensionalTree<E> {
       0,                        // Starting index
       elements.size() - 1       // Ending index
     );
+  }
+
+  /**
+   * Initialize a dimensional tree without a cutoff.
+   *
+   * @param elements    The elements to store in the tree.
+   * @param comparators The comparators for each of the dimensions in the tree.
+   */
+  @SafeVarargs
+  @SuppressWarnings("unchecked")
+  public DimensionalTree(
+    final Collection<E> elements,
+    final Comparator<E>... comparators
+  ) {
+    this(elements, 0, comparators);
   }
 
   /**
@@ -66,6 +90,7 @@ public final class DimensionalTree<E> {
    * @return          A treeified node if any non-treeified elements were left
    *                  in the array of elements.
    */
+  @SuppressWarnings("unchecked")
   private Node treeify(
     final E[] elements,
     final int depth,
@@ -81,7 +106,13 @@ public final class DimensionalTree<E> {
 
     // Return a leaf node if we've reached a single element.
     if (length == 0) {
-      return new Node(elements[start + length]);
+      return new Leaf(elements[start]);
+    }
+
+    // If we're within the cufoff length, store all the remaining elements in
+    // a bucket.
+    if (length <= this.cutoff) {
+      return new Bucket(Arrays.copyOfRange(elements, start, end + 1));
     }
 
     // Get the axis to use for the current depth.
@@ -94,49 +125,17 @@ public final class DimensionalTree<E> {
     // Compute the median of the elements.
     int median = start + length / 2;
 
-    return new Node(
+    return new Branch(
       elements[median],
+
+      // Recursively treeify all elements before the median.
       this.treeify(elements, depth + 1, start, median - 1),
+
+      // Recursively treeify all elements after the median.
       this.treeify(elements, depth + 1, median + 1, end)
     );
   }
 
-  /**
-   * Check if the given node contains the specified element.
-   *
-   * @param depth   The current tree depth.
-   * @param node    The node to search through.
-   * @param element The element to search for.
-   * @return        A boolean indicating whether or not the node contains the
-   *                specified element.
-   */
-  private boolean contains(final int depth, final Node node, final E element) {
-    if (node == null || element == null) {
-      return false;
-    }
-
-    // Get the axis to use for the current depth.
-    int axis = depth % this.dimensions;
-
-    // Check if the element is "contained" within the element associated with
-    // the current node.
-    int contains = this.comparators[axis].compare(node.element, element);
-
-    // Look in the left child of the node if the element we're looking for lies
-    // to the left of the element we're currently looking at.
-    if (contains > 0) {
-      return this.contains(depth + 1, node.left, element);
-    }
-
-    // Look in the right child of the node if the element we're looking for lies
-    // to the right of the element we're currently looking at.
-    if (contains < 0) {
-      return this.contains(depth + 1, node.right, element);
-    }
-
-    // Otherwise, we've found the element we're looking for.
-    return true;
-  }
 
   /**
    * Check if the tree contains the specified element.
@@ -150,43 +149,7 @@ public final class DimensionalTree<E> {
       return false;
     }
 
-    return this.contains(0, this.root, element);
-  }
-
-  /**
-   * Look for elements at the specified depth within the given bounds of the
-   * specified node.
-   *
-   * @param depth     The current tree depth.
-   * @param bounds    The bounds to search within.
-   * @param elements  The list of found elements.
-   * @param node      The node to search through.
-   */
-  private void range(
-    final int depth,
-    final Bounds<E>[] bounds,
-    final List<E> elements,
-    final Node node
-  ) {
-    if (node == null) {
-      return;
-    }
-
-    int axis = depth % this.dimensions;
-
-    int contains = bounds[axis].contains(node.element);
-
-    if (contains == 0) {
-      elements.add(node.element);
-    }
-
-    if (contains < 0 || contains == 0) {
-      this.range(depth + 1, bounds, elements, node.left);
-    }
-
-    if (contains > 0 || contains == 0) {
-      this.range(depth + 1, bounds, elements, node.right);
-    }
+    return this.root.contains(0, element);
   }
 
   /**
@@ -197,7 +160,11 @@ public final class DimensionalTree<E> {
    *                specified bounds.
    */
   @SuppressWarnings("unchecked")
-  public List<E> range(final Bounds<E>... bounds) {
+  public Collection<E> range(final Bounds<E>... bounds) {
+    if (bounds == null) {
+      return null;
+    }
+
     if (bounds.length != this.dimensions) {
       throw new RuntimeException(
         "The number of bounds (" + bounds.length + ") must match the number of"
@@ -205,12 +172,9 @@ public final class DimensionalTree<E> {
       );
     }
 
-    // Create a list to hold the elements contained within the bounds.
-    List<E> elements = new ArrayList<>();
+    Collection<E> elements = new ArrayList<>();
 
-    // Look for elements contained within the range starting at the root
-    // element.
-    this.range(0, bounds, elements, this.root);
+    this.root.range(0, elements, bounds);
 
     return elements;
   }
@@ -234,9 +198,38 @@ public final class DimensionalTree<E> {
   /**
    * The {@link Node} class describes a node within a dimensional tree.
    */
-  private final class Node {
+  private abstract class Node {
     /**
-     * The element associated with the node.
+     * Check if the node contains the specified element.
+     *
+     * @param depth   The current tree depth.
+     * @param element The element to look for.
+     * @return        A boolean indicating whether or not the node contains the
+     *                specified element.
+     */
+    public abstract boolean contains(final int depth, final E element);
+
+    /**
+     * Find all elements within the range of the specified bounds.
+     *
+     * @param depth     The current tree depth.
+     * @param elements  The collection to add the found elements to.
+     * @param bounds    The bounds to search for elements within.
+     */
+    public abstract void range(
+      final int depth,
+      final Collection<E> elements,
+      final Bounds<E>[] bounds
+    );
+  }
+
+  /**
+   * A {@link Branch} is a {@link Node} that contains an element and either one
+   * or two children {@link Node Nodes}.
+   */
+  private final class Branch extends Node {
+    /**
+     * The element associated with the branch.
      */
     private final E element;
 
@@ -251,34 +244,223 @@ public final class DimensionalTree<E> {
     private final Node right;
 
     /**
-     * Initialize a new node.
+     * Initialize a new branch.
      *
-     * @param element The element associated with the node.
+     * @param element The element associated with the branch.
      * @param left    The left neighbouring node.
      * @param right   The right neighbouring node.
      */
-    public Node(final E element, final Node left, final Node right) {
+    public Branch(final E element, final Node left, final Node right) {
       this.element = element;
       this.left = left;
       this.right = right;
     }
 
     /**
-     * Initialize a new leaf node.
+     * Check if the branch contains the specified element.
      *
-     * @param element The element associated with the node.
+     * @param depth   The current tree depth.
+     * @param element The element to look for.
+     * @return        A boolean indicating whether or not the branch contains
+     *                the specified element.
      */
-    public Node(final E element) {
-      this(element, null, null);
+    public boolean contains(final int depth, final E element) {
+      if (element == null) {
+        return false;
+      }
+
+      // Get the axis to use for the current depth.
+      int axis = depth % DimensionalTree.this.dimensions;
+
+      // Check if the element is "contained" within the element associated with
+      // the current node.
+      int contains = DimensionalTree.this.comparators[axis].compare(
+        this.element, element
+      );
+
+      // Look in the left child of the node if the element we're looking for
+      // lies to the left of the element we're currently looking at.
+      if (contains > 0) {
+        if (this.left == null) {
+          return false;
+        }
+
+        return this.left.contains(depth + 1, element);
+      }
+
+      // Look in the right child of the node if the element we're looking for
+      // lies to the right of the element we're currently looking at.
+      if (contains < 0) {
+        if (this.right == null) {
+          return false;
+        }
+
+        return this.right.contains(depth + 1, element);
+      }
+
+      // Otherwise, check if we've found a match.
+      return this.element.equals(element);
     }
 
     /**
-     * Check if the node is a leaf.
+     * Find all elements within the range of the specified bounds.
      *
-     * @return A boolean indicating whether or not the node is a leaf.
+     * @param depth     The current tree depth.
+     * @param elements  The collection to add the found elements to.
+     * @param bounds    The bounds to search for elements within.
      */
-    public boolean isLeaf() {
-      return this.left == null && this.right == null;
+    public void range(
+      final int depth,
+      final Collection<E> elements,
+      final Bounds<E>[] bounds
+    ) {
+      int axis = depth % DimensionalTree.this.dimensions;
+
+      int contains = bounds[axis].contains(this.element);
+
+      if (contains < 0 || contains == 0) {
+        if (this.left != null) {
+          this.left.range(depth + 1, elements, bounds);
+        }
+      }
+
+      if (contains > 0 || contains == 0) {
+        if (this.right != null) {
+          this.right.range(depth + 1, elements, bounds);
+        }
+      }
+
+      if (contains == 0) {
+        for (Bounds<E> b: bounds) {
+          if (b.contains(this.element) != 0) {
+            return;
+          }
+        }
+
+        elements.add(this.element);
+      }
+    }
+  }
+
+  /**
+   * A {@link Leaf} is a {@link Node} that contains an element and nothing else.
+   */
+  private final class Leaf extends Node {
+    /**
+     * The element associated with the leaf.
+     */
+    private final E element;
+
+    /**
+     * Initialize a new leaf.
+     *
+     * @param element The element associated with the leaf.
+     */
+    public Leaf(final E element) {
+      this.element = element;
+    }
+
+    /**
+     * Check if the leaf contains the specified element.
+     *
+     * @param depth   The current tree depth.
+     * @param element The element to look for.
+     * @return        A boolean indicating whether or not the leaf contains the
+     *                specified element.
+     */
+    public boolean contains(final int depth, final E element) {
+      if (element == null) {
+        return false;
+      }
+
+      return this.element.equals(element);
+    }
+
+    /**
+     * Find all elements within the range of the specified bounds.
+     *
+     * @param depth     The current tree depth.
+     * @param elements  The collection to add the found elements to.
+     * @param bounds    The bounds to search for elements within.
+     */
+    public void range(
+      final int depth,
+      final Collection<E> elements,
+      final Bounds<E>[] bounds
+    ) {
+      for (Bounds<E> b: bounds) {
+        if (b.contains(this.element) != 0) {
+          return;
+        }
+      }
+
+      elements.add(this.element);
+    }
+  }
+
+  /**
+   * A {@link Bucket} is a {@link Node} that contains a list of elements rather
+   * than just a single element.
+   */
+  private final class Bucket extends Node {
+    /**
+     * The elements associated with the bucket.
+     */
+    private final E[] elements;
+
+    /**
+     * Initialize a new bucket.
+     *
+     * @param elements The elements associated with the bucket.
+     */
+    public Bucket(final E[] elements) {
+      this.elements = elements;
+    }
+
+    /**
+     * Check if the bucket contains the specified element.
+     *
+     * @param depth   The current tree depth.
+     * @param element The element to look for.
+     * @return        A boolean indicating whether or not the bucket contains
+     *                the specified element.
+     */
+    public boolean contains(final int depth, final E element) {
+      if (element == null) {
+        return false;
+      }
+
+      for (E found: this.elements) {
+        if (element.equals(found)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    /**
+     * Find all elements within the range of the specified bounds.
+     *
+     * @param depth     The current tree depth.
+     * @param elements  The collection to add the found elements to.
+     * @param bounds    The bounds to search for elements within.
+     */
+    public void range(
+      final int depth,
+      final Collection<E> elements,
+      final Bounds<E>[] bounds
+    ) {
+      outer:
+      for (E found: this.elements) {
+        for (Bounds<E> b: bounds) {
+          if (b.contains(found) != 0) {
+            continue outer;
+          }
+        }
+
+        elements.add(found);
+      }
     }
   }
 }
