@@ -11,12 +11,16 @@
   fx:id="borderPane"
 >
   <center>
-    <StackPane>
+    <StackPane fx:id="stackPane">
       <children>
         <fx:include fx:id="chart" source="Chart.fxml" />
       </children>
       <children>
-        <Label styleClass="icon load-icon" text="&#xf29c;"></Label>
+        <Label
+          fx:id="loadIcon"
+          styleClass="icon, load-icon"
+          text="&#xf29d;">
+        </Label>
       </children>
     </StackPane>
   </center>

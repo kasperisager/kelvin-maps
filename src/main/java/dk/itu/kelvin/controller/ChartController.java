@@ -240,6 +240,7 @@ public final class ChartController {
    * @throws Exception In case of an error. Duh.
    */
   public void initialize() throws Exception {
+    // Sets the parent element inactive untill loaded.
     this.stackPane.setDisable(true);
     this.propertiesGridPane.getChildren().remove(this.checkboxVBox);
     this.propertiesGridPane.getChildren().remove(this.directionsScrollPane);
@@ -270,6 +271,10 @@ public final class ChartController {
 
         this.chart.add(parser.land());
         this.chart.add(parser.bounds());
+
+        // Sets the chart active after load.
+        this.stackPane.setDisable(false);
+        ApplicationController.removeIcon();
       });
 
       //Get map of all addresses from parser.

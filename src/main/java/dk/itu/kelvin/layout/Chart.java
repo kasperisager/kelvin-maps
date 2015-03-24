@@ -67,6 +67,7 @@ public final class Chart extends Group {
     this.getChildren().add(this.land);
     this.getChildren().add(this.elements);
     this.getChildren().add(this.meta);
+
     this.fromAddress = new Text();
     this.fromAddress.getStyleClass().add("icon");
     this.fromAddress.getStyleClass().add("address-label");
