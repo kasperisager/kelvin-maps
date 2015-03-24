@@ -31,6 +31,7 @@
 
 
 <StackPane
+  fx:id ="stackPane"
   fx:controller="dk.itu.kelvin.controller.ChartController"
   xmlns:fx="http://javafx.com/fxml"
   prefWidth="640"
