@@ -13,6 +13,8 @@
 @color-black: #000;
 @color-white: #fff;
 @color-gray: #8C8C8C;
+@color-red: #fd5754;
+@color-dark-red: #bb403b;
 
 // Root --------------------------------------------------------------------- //
 
@@ -254,6 +256,13 @@
 
 .label {
   -fx-font-size: @fontSize-base--label;
+}
+
+.address-label {
+  -fx-fill: @color-red;
+  -fx-stroke: @color-dark-red;
+  -fx-stroke-width: 0.5;
+  -fx-cursor: hand;
 }
 
 // Menus -------------------------------------------------------------------- //

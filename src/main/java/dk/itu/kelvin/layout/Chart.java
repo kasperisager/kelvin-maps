@@ -5,6 +5,7 @@ package dk.itu.kelvin.layout;
 
 // JavaFX scene utilities
 import javafx.scene.Group;
+import javafx.scene.text.Text;
 
 // JavaFX geometry
 import javafx.geometry.Bounds;
@@ -50,6 +51,11 @@ public final class Chart extends Group {
   private TileGrid elements = new TileGrid();
 
   /**
+   * Label representing the found address.
+   */
+  private Text fromAddress;
+
+  /**
    * Meta layer.
    */
   private TileGrid meta = new TileGrid();
@@ -61,6 +67,12 @@ public final class Chart extends Group {
     this.getChildren().add(this.land);
     this.getChildren().add(this.elements);
     this.getChildren().add(this.meta);
+    this.fromAddress = new Text();
+    this.fromAddress.getStyleClass().add("icon");
+    this.fromAddress.getStyleClass().add("address-label");
+    this.fromAddress.setText("\uf456");
+    this.getChildren().add(this.fromAddress);
+    this.fromAddress.setVisible(false);
   }
 
   /**
@@ -169,6 +181,9 @@ public final class Chart extends Group {
       this.localToScene(node.x(), node.y()).getX(),
       this.localToScene(node.x(), node.y()).getY()
     );
+
+    System.out.println(this.localToScene(node.x(), node.y()).getX());
+    System.out.println(this.localToScene(node.x(), node.y()).getY());
   }
 
   /**
@@ -272,5 +287,15 @@ public final class Chart extends Group {
       this.getScene().getWidth() / 2,
       this.getScene().getHeight() / 2
     );
+  }
+
+  /**
+   * Sets a pointer at the address found.
+   * @param node with the coordinates for the pointer.
+   */
+  public void setPointer(final Node node) {
+    this.fromAddress.setLayoutX(node.x());
+    this.fromAddress.setLayoutY(node.y());
+    this.fromAddress.setVisible(true);
   }
 }
