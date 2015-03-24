@@ -2,8 +2,10 @@
 
 <!-- JavFX layouts -->
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.StackPane?>
+
+<!-- JavaFX controls -->
+<?import javafx.scene.control.Label?>
 
 <BorderPane
   fx:controller="dk.itu.kelvin.controller.ApplicationController"
@@ -29,7 +31,4 @@
   <top>
     <fx:include fx:id="menu" source="Menu.fxml" />
   </top>
-
-
-
 </BorderPane>
