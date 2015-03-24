@@ -608,29 +608,4 @@ public final class ChartController {
   private void setScaleLenght(final double length) {
     this.scaleIndicatorLabel.setPrefWidth(length);
   }
-
-  /**
-   * Calculate the distance between to points
-   */
-  public void calcDistance(double lat1, double lon1, double lat2, double lon2){
-    lat1 = 55.563;
-    lon1 = 12.230;
-    lat2 = 54.769;
-    lon2 = 11.836;
-
-    double R = 6371000; //earth radius in meters
-    double phi1 = lat1 * (Math.PI/ 180);
-    double phi2 = lat2 * (Math.PI/ 180);
-
-    double deltaPhi = (lat2-lat1) * ((float)Math.PI/ 180);
-    double deltaLambda = (lon2-lon1) * ((float)Math.PI/ 180);
-
-    double a = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2) +
-               Math.cos(phi1) * Math.cos(phi2) *
-               Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
-    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-    double d = R * c;
-    System.out.println("Distance to grandma: " + d);
-  }
 }

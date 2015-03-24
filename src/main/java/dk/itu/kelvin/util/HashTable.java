@@ -6,6 +6,35 @@ package dk.itu.kelvin.util;
 /**
  * <h2>Hash table class.</h2>
  * <p>
+ * This class implements a {@code hash table}, which maps {@code keys} to
+ * {@code values}. Any {@code non-null} objects or variables can be used as
+ * a key or as a value.
+ *
+ * <p>
+ * To successfully store and retrieve objects from a hashtable, the objects
+ * used as keys will call respective {@link #hash} methods from
+ * {@link HashResolver}. For HashTable an instance of {@link QuadraticProbe}
+ * is create which implements HashResolver.
+ *
+ * <p>
+ * HashTable has two constructors, one that takes a single argument {@code int}
+ * specifies the initial capacity, and one that takes no arguments and sets
+ * the initial capacity to 16.
+ *
+ * The default {@code load capacity factor} is 0.5 for resizing to a bigger
+ * table, and 0.125 for resizing to a smaller array, respective with a
+ * {@code resize factor} of 2 and 0.5.
+ *
+ * <p>
+ * The initial capacity controls a tradeoff between wasted space and the need
+ * for {@link #resize(int)} operations, which are time-consuming. No resize
+ * operations will ever occur if the initial capacity is greater than the
+ * maximum number of entries the HashTable will contain divided by its load
+ * factor. However, setting the initial capacity too high can waste space.
+ *
+ * <p>
+ * Methods resize, has linear time complexity,
+ * Methods indexOf has constant time complexity
  *
  *
  * @see <a href="http://algs4.cs.princeton.edu/34hash/">
