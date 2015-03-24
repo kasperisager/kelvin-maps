@@ -92,7 +92,7 @@ public final class DimensionalTree<E> {
     Arrays.sort(elements, start, end, this.comparators[axis]);
 
     // Compute the median of the elements.
-    int median = start + (int) Math.floor(length / 2);
+    int median = start + length / 2;
 
     return new Node(
       elements[median],
