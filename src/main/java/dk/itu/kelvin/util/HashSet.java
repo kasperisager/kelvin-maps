@@ -8,7 +8,26 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Hash set class.
+ * <h2></h2>
+ * <p>
+ * This class implements the {@link Set} interface and extends the
+ * {@link DynamicHashArray} It makes no guarantees as to the iteration order
+ * of the set. In particular, it does not guarantee that the order will remain
+ * the same over time. This class doesn't permits the null element.
+ *
+ * <p>
+ * The extension to DynamicHashArray gives methods for computing hash values
+ * and as DynamicHashArray extends {@link DynamicArray} it contains additional
+ * variables and methods for keeping track of array size and capacity, and
+ * information for when the array should resize.
+ *
+ * <p>
+ * Methods {@link #resize(int)} takes linear time complexity, methods
+ * {@link #indexOf(Object)}, {@link #contains} and {@link #iterator()} takes
+ * constant time complexity, methods {@link #add(E)} and
+ * {@link #remove(Object)} takes amortized constant time Constructor
+ * {@link #HashSet(Collection<? extends E>)} and
+ * {@link #addAll(Collection<? extends E>)} takes amortized linear time.
  *
  * @param <E> The type of elements stored within the set.
  *

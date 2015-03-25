@@ -4,7 +4,7 @@
 package dk.itu.kelvin.util;
 
 /**
- * <h2>Hash table class.</h2>
+ * <h2>Modified minimal hash table implementation</h2>
  * <p>
  * This class implements a {@code hash table}, which maps {@code keys} to
  * {@code values}. Any {@code non-null} objects or variables can be used as
@@ -33,8 +33,12 @@ package dk.itu.kelvin.util;
  * factor. However, setting the initial capacity too high can waste space.
  *
  * <p>
- * Methods resize, has linear time complexity,
- * Methods indexOf has constant time complexity
+ * Methods {@link #resize(int)}, {@link #containsValue(Object)},
+ * {@link #keySet()}, {@link #values()} and {@link #entrySet()} takes linear
+ * time complexity, methods {@link #indexOf(Object)}, {@link #get(Object)}
+ * and {@link #containsKey(Object)} takes constant time complexity methods
+ * {@link #put(K, V)} and {@link #remove(Object)} takes amortized constant
+ * time.
  *
  *
  * @see <a href="http://algs4.cs.princeton.edu/34hash/">
@@ -302,7 +306,13 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
   }
 
   /**
+   * <h2>Simple Entry implementation</h2>
+   * <p>
    * The {@link Entry} class describes an entry within a hash table.
+   *
+   * <p>
+   * Methods {@link #getKey()} and {@link #getValue()} takes constant time
+   * complexity.
    */
   public static final class Entry<K, V> implements Map.Entry<K, V> {
     /**
