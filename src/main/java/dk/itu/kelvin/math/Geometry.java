@@ -117,7 +117,7 @@ public final class Geometry {
       return -1;
     }
 
-    return (double) Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+    return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
   }
 
   /**
@@ -390,7 +390,7 @@ public final class Geometry {
      * @return The circumference of the circle.
      */
     public double circumference() {
-      return this.diameter() * (double) Math.PI;
+      return this.diameter() * Math.PI;
     }
 
     /**
@@ -399,7 +399,7 @@ public final class Geometry {
      * @return The area of the circle.
      */
     public double area() {
-      return (double) (Math.pow(this.radius, 2) * Math.PI);
+      return Math.pow(this.radius, 2) * Math.PI;
     }
 
     @Override
