@@ -16,17 +16,17 @@ public final class Epsilon {
   /**
    * Upper bound on the relative error of {@link short} arithmetic.
    */
-  private static final short SHORT = (short) Math.pow(2, -11);
+  private static final short SHORT = (short) 1E-2;
 
   /**
    * Upper bound on the relative error of {@link float} arithmetic.
    */
-  private static final float FLOAT = (float) Math.pow(2, -24);
+  private static final float FLOAT = (float) 1E-4;
 
   /**
    * Upper bound on the relative error of {@link double} arithmetic.
    */
-  private static final double DOUBLE = Math.pow(2, -53);
+  private static final double DOUBLE = (double) 1E-8;
 
   /**
    * Don't allow instantiation of the class.
