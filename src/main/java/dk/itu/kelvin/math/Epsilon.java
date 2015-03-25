@@ -51,7 +51,7 @@ public final class Epsilon {
    * @param b The second number.
    * @return  A boolean indicating whether or not the two numbers are equal.
    */
-  public static boolean equals(final short a, final short b) {
+  public static boolean equal(final short a, final short b) {
     return a == b || Math.abs(a - b) < SHORT;
   }
 
@@ -68,6 +68,18 @@ public final class Epsilon {
   }
 
   /**
+   * Check if a {@link short} is less than or equal to another {@link short}.
+   *
+   * @param a The first number.
+   * @param b The second number.
+   * @return  A boolean indicating whether or not the first number is less than
+   *          or equal to the second number.
+   */
+  public static boolean lessOrEqual(final short a, final short b) {
+    return Epsilon.less(a, b) || Epsilon.equal(a, b);
+  }
+
+  /**
    * Check if a {@link short} is greater than another {@link short}.
    *
    * @param a The first number.
@@ -80,13 +92,25 @@ public final class Epsilon {
   }
 
   /**
+   * Check if a {@link short} is greater than or equal to another {@link short}.
+   *
+   * @param a The first number.
+   * @param b The second number.
+   * @return  A boolean indicating whether or not the first number is greater
+   *          than or equal to the second number.
+   */
+  public static boolean greaterOrEqual(final short a, final short b) {
+    return Epsilon.greater(a, b) || Epsilon.equal(a, b);
+  }
+
+  /**
    * Check if two {@link float floats} are equal.
    *
    * @param a The first number.
    * @param b The second number.
    * @return  A boolean indicating whether or not the two numbers are equal.
    */
-  public static boolean equals(final float a, final float b) {
+  public static boolean equal(final float a, final float b) {
     return a == b || Math.abs(a - b) < FLOAT;
   }
 
@@ -103,6 +127,18 @@ public final class Epsilon {
   }
 
   /**
+   * Check if a {@link float} is less than or equal to another {@link float}.
+   *
+   * @param a The first number.
+   * @param b The second number.
+   * @return  A boolean indicating whether or not the first number is less than
+   *          or equal to the second number.
+   */
+  public static boolean lessOrEqual(final float a, final float b) {
+    return Epsilon.less(a, b) || Epsilon.equal(a, b);
+  }
+
+  /**
    * Check if a {@link float} is greater than another {@link float}.
    *
    * @param a The first number.
@@ -115,13 +151,25 @@ public final class Epsilon {
   }
 
   /**
+   * Check if a {@link float} is greater than or equal to another {@link float}.
+   *
+   * @param a The first number.
+   * @param b The second number.
+   * @return  A boolean indicating whether or not the first number is greater
+   *          than or equal to the second number.
+   */
+  public static boolean greaterOrEqual(final float a, final float b) {
+    return Epsilon.greater(a, b) || Epsilon.equal(a, b);
+  }
+
+  /**
    * Check if two {@link double doubles} are equal.
    *
    * @param a The first number.
    * @param b The second number.
    * @return  A boolean indicating whether or not the two numbers are equal.
    */
-  public static boolean equals(final double a, final double b) {
+  public static boolean equal(final double a, final double b) {
     return a == b || Math.abs(a - b) < DOUBLE;
   }
 
@@ -138,6 +186,18 @@ public final class Epsilon {
   }
 
   /**
+   * Check if a {@link double} is less than or equal to another {@link double}.
+   *
+   * @param a The first number.
+   * @param b The second number.
+   * @return  A boolean indicating whether or not the first number is less than
+   *          or equal to the second number.
+   */
+  public static boolean lessOrEqual(final double a, final double b) {
+    return Epsilon.less(a, b) || Epsilon.equal(a, b);
+  }
+
+  /**
    * Check if a {@link double} is greater than another {@link double}.
    *
    * @param a The first number.
@@ -147,5 +207,18 @@ public final class Epsilon {
    */
   public static boolean greater(final double a, final double b) {
     return a - b > DOUBLE;
+  }
+
+  /**
+   * Check if a {@link double} is greater than or equal to another
+   * {@link double}.
+   *
+   * @param a The first number.
+   * @param b The second number.
+   * @return  A boolean indicating whether or not the first number is greater
+   *          than or equal to the second number.
+   */
+  public static boolean greaterOrEqual(final double a, final double b) {
+    return Epsilon.greater(a, b) || Epsilon.equal(a, b);
   }
 }
