@@ -31,10 +31,14 @@ public final class Geometry {
    * @return  A boolean indicating whether or not the bounds intersect.
    */
   public static boolean intersects(final Bounds a, final Bounds b) {
+    if (a == null || b == null) {
+      return false;
+    }
+
     return (
-      a.left <= b.right && a.right >= b.left
+      a.min.x <= b.max.x && a.max.x >= b.min.x
       &&
-      a.top <= b.bottom && a.bottom >= b.top
+      a.min.y <= b.max.y && a.max.y >= b.min.y
     );
   }
 
@@ -48,6 +52,10 @@ public final class Geometry {
    * @return  Point where the segments intersect, or {@code null} if they don't.
    */
   public static Point intersection(final Line a, final Line b) {
+    if (a == null || b == null) {
+      return null;
+    }
+
     float d = (
       (a.start.x - a.end.x) * (b.start.y - b.end.y)
     - (a.start.y - a.end.y) * (b.start.x - b.end.x)
@@ -108,9 +116,14 @@ public final class Geometry {
    *
    * @param a The first point.
    * @param b The second point.
-   * @return  The distance between points {@code a} and {@code b}.
+   * @return  The distance between points {@code a} and {@code b} or {@code -1}
+   *          if either of them are {@code null}.
    */
   private static float distance(final Point a, final Point b) {
+    if (a == null || b == null) {
+      return -1;
+    }
+
     return (float) Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
   }
 
@@ -196,6 +209,12 @@ public final class Geometry {
      * @param end   The ending point of the line.
      */
     public Line(final Point start, final Point end) {
+      if (start == null || end == null) {
+        throw new RuntimeException(
+          "A valid Line must contain a starting and ending point"
+        );
+      }
+
       this.start = start;
       this.end = end;
     }
@@ -270,6 +289,12 @@ public final class Geometry {
      * @param points The  points contained within the path.
      */
     public Path(final Point[] points) {
+      if (points == null || points.length < 2) {
+        throw new RuntimeException(
+          "A valid Path must contain at least two points"
+        );
+      }
+
       this.points = points;
     }
   }
@@ -300,6 +325,18 @@ public final class Geometry {
      * @param radius The radius of the circle.
      */
     public Circle(final Point center, final float radius) {
+      if (center == null) {
+        throw new RuntimeException(
+          "A valid Circle must contain a center point"
+        );
+      }
+
+      if (radius < 0) {
+        throw new RuntimeException(
+          "A valid Circle cannot have a negative radius"
+        );
+      }
+
       this.center = center;
       this.radius = radius;
     }
@@ -394,6 +431,18 @@ public final class Geometry {
       final float width,
       final float height
     ) {
+      if (position == null) {
+        throw new RuntimeException(
+          "A valid Rectangle must contain a position"
+        );
+      }
+
+      if (width < 0 || height < 0) {
+        throw new RuntimeException(
+          "A valid Rectangle cannot have a negative width or height"
+        );
+      }
+
       this.position = position;
       this.width = width;
       this.height = height;
@@ -455,43 +504,37 @@ public final class Geometry {
    */
   public static final class Bounds {
     /**
-     * The top-most position of the bounds.
+     * The smallest point of the bounds.
      */
-    private final float top;
+    private final Point min;
 
     /**
-     * The right-most position of the bounds.
+     * The largest point of the bounds.
      */
-    private final float right;
-
-    /**
-     * The bottom-most position of the bounds.
-     */
-    private final float bottom;
-
-    /**
-     * The left-most position of the bounds.
-     */
-    private final float left;
+    private final Point max;
 
     /**
      * Initialize a set of bounds.
      *
-     * @param top     The top-most position of the bounds.
-     * @param right   The right-most position of the bounds.
-     * @param bottom  The bottom-most position of the bounds.
-     * @param left    The left-most position of the bounds.
+     * @param min The smallest point of the bounds.
+     * @param max The largest point of the bounds.
      */
-    public Bounds(
-      final float top,
-      final float right,
-      final float bottom,
-      final float left
-    ) {
-      this.top = top;
-      this.right = right;
-      this.bottom = bottom;
-      this.left = left;
+    public Bounds(final Point min, final Point max) {
+      if (min == null || max == null) {
+        throw new RuntimeException(
+          "Valid Bounds must contain a minimum and maximum point"
+        );
+      }
+
+      if (Epsilon.greater(min.x, max.x) || Epsilon.greater(min.y, max.y)) {
+        throw new RuntimeException(
+          "Valid Bounds must contain a minimum point that is smaller than the"
+        + " maximum point"
+        );
+      }
+
+      this.min = min;
+      this.max = max;
     }
 
     /**
@@ -500,23 +543,21 @@ public final class Geometry {
      * @param line The line whose bounds to initialize.
      */
     public Bounds(final Line line) {
-      if (Epsilon.greater(line.start.x, line.end.x)) {
-        this.right = line.end.x;
-        this.left = line.start.x;
-      }
-      else {
-        this.right = line.start.x;
-        this.left = line.end.x;
+      if (line == null) {
+        throw new RuntimeException(
+          "Cannot initialize Bounds without a valid shape"
+        );
       }
 
-      if (Epsilon.greater(line.start.y, line.end.y)) {
-        this.top = line.start.y;
-        this.bottom = line.end.y;
-      }
-      else {
-        this.top = line.end.y;
-        this.bottom = line.start.y;
-      }
+      this.min = new Geometry.Point(
+        Math.min(line.start.x, line.end.x),
+        Math.min(line.start.y, line.end.y)
+      );
+
+      this.max = new Geometry.Point(
+        Math.max(line.start.x, line.end.x),
+        Math.max(line.start.y, line.end.y)
+      );
     }
 
     /**
@@ -525,37 +566,41 @@ public final class Geometry {
      * @param path The path whose bounds to initialize.
      */
     public Bounds(final Path path) {
+      if (path == null) {
+        throw new RuntimeException(
+          "Cannot initialize Bounds without a valid shape"
+        );
+      }
+
       Point first = path.points[0];
 
-      float top = first.y;
-      float right = first.x;
-      float bottom = first.y;
-      float left = first.x;
+      float minX = first.x;
+      float minY = first.y;
+      float maxX = first.x;
+      float maxY = first.y;
 
       for (int i = 1; i < path.points.length; i++) {
         Point point = path.points[i];
 
-        if (Epsilon.greater(point.y, top)) {
-          top = point.y;
+        if (Epsilon.less(point.x, minX)) {
+          minX = point.x;
         }
 
-        if (Epsilon.greater(point.x, right)) {
-          right = point.x;
+        if (Epsilon.less(point.y, minY)) {
+          minY = point.y;
         }
 
-        if (Epsilon.less(point.y, bottom)) {
-          bottom = point.y;
+        if (Epsilon.greater(point.x, maxX)) {
+          maxX = point.x;
         }
 
-        if (Epsilon.less(point.x, left)) {
-          left = point.x;
+        if (Epsilon.greater(point.y, maxY)) {
+          maxY = point.y;
         }
       }
 
-      this.top = top;
-      this.right = right;
-      this.bottom = bottom;
-      this.left = left;
+      this.min = new Geometry.Point(minX, minY);
+      this.max = new Geometry.Point(maxX, maxY);
     }
 
     /**
@@ -564,47 +609,35 @@ public final class Geometry {
      * @param rectangle The rectangle whose bounds to initialize.
      */
     public Bounds(final Rectangle rectangle) {
-      this.left = rectangle.position.x;
-      this.right = this.left + rectangle.width;
+      if (rectangle == null) {
+        throw new RuntimeException(
+          "Cannot initialize Bounds without a valid shape"
+        );
+      }
 
-      this.top = rectangle.position.y;
-      this.bottom = this.top + rectangle.height;
+      this.min = rectangle.position;
+      this.max = new Geometry.Point(
+        this.min.x + rectangle.width,
+        this.min.y + rectangle.height
+      );
     }
 
     /**
-     * Get the top-most position of the bounds.
+     * Get the smallest point of the bounds.
      *
-     * @return The top-most position of the bounds.
+     * @return The smallest point of the bounds.
      */
-    public float top() {
-      return this.top;
+    public Point min() {
+      return this.min;
     }
 
     /**
-     * Get the right-most position of the bounds.
+     * Get the largest point of the bounds.
      *
-     * @return The right-most position of the bounds.
+     * @return The largest point of the bounds.
      */
-    public float right() {
-      return this.right;
-    }
-
-    /**
-     * Get the bottom-most position of the bounds.
-     *
-     * @return The bottom-most position of the bounds.
-     */
-    public float bottom() {
-      return this.bottom;
-    }
-
-    /**
-     * Get the left-most position of the bounds.
-     *
-     * @return The left-most position of the bounds.
-     */
-    public float left() {
-      return this.left;
+    public Point max() {
+      return this.max;
     }
 
     /**
@@ -615,20 +648,22 @@ public final class Geometry {
      *              specified point.
      */
     public boolean contains(final Point point) {
+      if (point == null) {
+        return false;
+      }
+
       return (
-        point.x >= this.left && point.x <= this.right
+        point.x >= this.min.x && point.x <= this.max.x
         &&
-        point.y >= this.top && point.y <= this.bottom
+        point.y >= this.min.y && point.y <= this.max.y
       );
     }
 
     @Override
     public String toString() {
       return "Bounds["
-      + "top = " + this.top
-      + ", right = " + this.right
-      + ", bottom = " + this.bottom
-      + ", left = " + this.left
+      + "min = " + this.min
+      + ", max = " + this.max
       + "]";
     }
   }
