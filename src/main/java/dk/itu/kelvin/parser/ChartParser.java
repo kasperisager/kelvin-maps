@@ -328,7 +328,7 @@ public final class ChartParser {
     String v = this.getString(attributes, "v");
 
     if (v.equals("coastline")) {
-      this.land.coastline((Way) this.element);
+      this.land.add((Way) this.element);
     }
 
     if (k.startsWith("addr:") && this.address == null) {

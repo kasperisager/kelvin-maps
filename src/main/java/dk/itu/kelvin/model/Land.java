@@ -50,20 +50,11 @@ public final class Land extends Element<Group> {
   }
 
   /**
-   * Get the bounds of the element.
-   *
-   * @return The bounds of the element.
-   */
-  public BoundingBox bounds() {
-    return this.bounds;
-  }
-
-  /**
    * Add a coastline to the land.
    *
    * @param way The coastline way to add to the land.
    */
-  public void coastline(final Way way) {
+  public void add(final Way way) {
     if (way == null) {
       return;
     }
@@ -98,12 +89,6 @@ public final class Land extends Element<Group> {
    */
   private Geometry.Line[] constructBounds() {
     return new Geometry.Line[] {
-      // Left bounds segment.
-      new Geometry.Line(
-        new Geometry.Point(this.bounds.left(), this.bounds.top()),
-        new Geometry.Point(this.bounds.left(), this.bounds.bottom())
-      ),
-
       // Top bounds segment.
       new Geometry.Line(
         new Geometry.Point(this.bounds.left(), this.bounds.top()),
@@ -119,6 +104,12 @@ public final class Land extends Element<Group> {
       // Bottom bounds segment.
       new Geometry.Line(
         new Geometry.Point(this.bounds.right(), this.bounds.bottom()),
+        new Geometry.Point(this.bounds.left(), this.bounds.bottom())
+      ),
+
+      // Left bounds segment.
+      new Geometry.Line(
+        new Geometry.Point(this.bounds.left(), this.bounds.top()),
         new Geometry.Point(this.bounds.left(), this.bounds.bottom())
       )
     };
@@ -189,16 +180,10 @@ public final class Land extends Element<Group> {
                 n++;
 
                 if (bound == bounds[0]) {
-                  nodes.add(0, new Node(
-                    bound.end().x(),
-                    bound.end().y()
-                  ));
+                  nodes.add(0, new Node(bound.end().x(), bound.end().y()));
                 }
                 else {
-                  nodes.add(0, new Node(
-                    bound.start().x(),
-                    bound.start().y()
-                  ));
+                  nodes.add(0, new Node(bound.start().x(), bound.start().y()));
                 }
 
                 break;
@@ -250,10 +235,7 @@ public final class Land extends Element<Group> {
                 nodes.add(j + 3, node);
                 j++;
 
-                nodes.add(new Node(
-                  bound.end().x(),
-                  bound.end().y()
-                ));
+                nodes.add(new Node(bound.end().x(), bound.end().y()));
 
                 break;
               }
