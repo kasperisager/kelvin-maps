@@ -150,6 +150,16 @@ public final class ChartController {
   private List<String> suggestions = new ArrayList<>();
 
   /**
+   * Vbox containing the suggestion buttons.
+   */
+  private VBox suggestionVBox;
+
+  /**
+   * Pointer for highlighting the autocomplete suggestions.
+   */
+  private int pointer;
+
+  /**
    * The Canvas element to add all the Chart elements to.
    */
   @FXML
@@ -324,10 +334,10 @@ public final class ChartController {
 
       Bounds bounds = tf.localToScreen(tf.getBoundsInParent());
 
-      VBox suggestionsVBox = new VBox(this.suggestions.size());
-      suggestionsVBox.setPrefWidth(bounds.getWidth() + 27);
+      this.suggestionVBox = new VBox(this.suggestions.size());
+      this.suggestionVBox.setPrefWidth(bounds.getWidth() + 27);
 
-      for (String suggestion: this.suggestions) {
+      for (String suggestion : this.suggestions) {
         Button l = new Button(suggestion);
 
         l.setPrefWidth(bounds.getWidth() + 27);
@@ -336,10 +346,16 @@ public final class ChartController {
           this.autocPopOver.hide(Duration.ONE);
         }));
 
-        suggestionsVBox.getChildren().add(l);
+        this.suggestionVBox.getChildren().add(l);
       }
 
-      this.autocPopOver.setContentNode(suggestionsVBox);
+      if (suggestions.size() > 0) {
+        Button s = (Button) this.suggestionVBox.getChildren().get(0);
+        s.getStyleClass().add("highlight");
+        this.pointer = 0;
+      }
+
+      this.autocPopOver.setContentNode(this.suggestionVBox);
 
       if (!this.autocPopOver.isShowing()) {
         this.autocPopOver.show(
@@ -350,8 +366,8 @@ public final class ChartController {
         );
       }
     });
-
   }
+
   /**
    * Initialises the checkboxes of for Points Of Interest.
    */
@@ -570,12 +586,14 @@ public final class ChartController {
       case UP:
       case K:
       case W:
+        this.pointer++;
         this.chart.pan(0, 15);
         e.consume();
         break;
       case DOWN:
       case J:
       case S:
+        this.pointer--;
         this.chart.pan(0, -15);
         e.consume();
         break;
@@ -638,29 +656,38 @@ public final class ChartController {
    */
   @FXML
   private void findAddress() {
-    String input = this.addressFrom.getText();
+    if (autocPopOver.isShowing()) {
+      Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
+      String input = b.getText();
+      addressFrom.setText(b.getText());
 
-    if (input == null) {
-      return;
+      if (input == null) {
+        return;
+      }
+
+      input = input.trim();
+
+      if (input.isEmpty()) {
+        return;
+      }
+
+      Address startAddress = Address.parse(input);
+
+      if (startAddress == null) {
+        return;
+      }
+
+      Node node = this.addresses.find(startAddress);
+
+      if (node != null) {
+        this.chart.center(node, 2.5);
+        this.chart.setPointer(node);
+      }
+
+      autocPopOver.hide();
     }
-
-    input = input.trim();
-
-    if (input.isEmpty()) {
-      return;
-    }
-
-    Address startAddress = Address.parse(this.addressFrom.getText());
-
-    if (startAddress == null) {
-      return;
-    }
-
-    Node node = this.addresses.find(startAddress);
-
-    if (node != null) {
-      this.chart.center(node, 2.5);
-      this.chart.setPointer(node);
+    else {
+      // Dialog "The address does not exist."
     }
   }
 
