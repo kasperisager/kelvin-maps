@@ -3,13 +3,12 @@
  */
 package dk.itu.kelvin.util;
 
-
+// General utilities
 import java.util.Iterator;
 
 // JUnit annotations
 import org.junit.Before;
 import org.junit.Test;
-
 
 // JUnit assertions
 import static org.junit.Assert.assertTrue;
@@ -20,7 +19,6 @@ import static org.junit.Assert.assertEquals;
  * Test of ArrayList class.
  */
 public final class ArrayListTest {
-
   /**
    * Instance variable of ArrayList.
    */
@@ -116,7 +114,6 @@ public final class ArrayListTest {
 
     // add element equals s1 to index 3
     assertTrue(this.a1.add(3, this.s1));
-
   }
 
   /**
@@ -180,7 +177,6 @@ public final class ArrayListTest {
     this.a1.add(this.s2);
     // get access to element using index 0.
     assertEquals(this.s2, this.a1.get(0));
-
   }
 
   /**
@@ -239,7 +235,5 @@ public final class ArrayListTest {
     }
     // does local variable count eqauls the size of the array.
     assertEquals(count, this.a1.size());
-
   }
-
 }
