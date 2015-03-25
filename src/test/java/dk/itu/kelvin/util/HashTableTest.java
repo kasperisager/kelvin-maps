@@ -3,7 +3,6 @@
  */
 package dk.itu.kelvin.util;
 
-
 // JUnit annotations
 import org.junit.Before;
 import org.junit.Test;
@@ -13,12 +12,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 
-
 /**
  * Test of HashTable class.
  */
 public final class HashTableTest {
-
   /**
    * Instance variable of HashTable.
    */
@@ -109,7 +106,6 @@ public final class HashTableTest {
 
     // does the table contain null.
     assertFalse(this.h1.containsValue(null));
-
   }
 
   /**
@@ -173,7 +169,6 @@ public final class HashTableTest {
     assertFalse(this.h1.values().contains(null));
   }
 
-
   /**
    * Test return a collection of the values contained within the table.
    */
@@ -213,10 +208,4 @@ public final class HashTableTest {
     // does the set contain null.
     assertFalse(this.h1.entrySet().contains(null));
   }
-
-
-
-
 }
-
-
