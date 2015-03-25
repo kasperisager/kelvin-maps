@@ -24,7 +24,7 @@ public final class RelationTest {
   public void testAddMemberWithoutRole() {
     Relation r1 = new Relation();
     Node n1 = new Node(2, 2);
-    r1.member(n1);
+    r1.add(n1);
 
     assertEquals(Relation.Role.NONE, r1.role(n1));
     assertEquals(null, r1.role(null));
@@ -37,7 +37,7 @@ public final class RelationTest {
   public void testIfElementOrRoleIsNull() {
     Relation r1 = new Relation();
     Way w1 = new Way();
-    r1.member(w1, Relation.Role.INNER);
+    r1.add(w1, Relation.Role.INNER);
     assertEquals(Relation.Role.INNER, r1.role(w1));
     assertNotEquals(Relation.Role.NONE, r1.role(null));
 
@@ -57,9 +57,9 @@ public final class RelationTest {
     Node n2 = new Node(4, 4);
     Node n3 = new Node(5, 5);
 
-    r1.member(n1);
-    r1.member(n2);
-    r1.member(n3);
+    r1.add(n1);
+    r1.add(n2);
+    r1.add(n3);
 
     // assertEquals(3, r1.members().size());
     // assertTrue(r1.members().contains(n1));
