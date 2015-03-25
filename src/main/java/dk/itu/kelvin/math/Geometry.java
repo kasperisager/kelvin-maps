@@ -52,7 +52,8 @@ public final class Geometry {
   /**
    * Calculate the line-line intersection between the specified line segments.
    *
-   * @see <a href="http://goo.gl/f7uPdH">Line-line intersection</a>
+   * @see <a href="http://en.wikipedia.org/wiki/Line%E2%80%93line_intersection">
+   *      http://en.wikipedia.org/wiki/Line%E2%80%93line_intersection</a>
    *
    * @param a The first line segment.
    * @param b The second line segment.
