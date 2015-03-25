@@ -255,6 +255,26 @@ public final class Geometry {
   }
 
   /**
+   * The {@link Path} class describes a list of connected points that together
+   * form a path.
+   */
+  public static final class Path {
+    /**
+     * The points contained within the path.
+     */
+    private final Point[] points;
+
+    /**
+     * Initialize a path.
+     *
+     * @param points The  points contained within the path.
+     */
+    public Path(final Point[] points) {
+      this.points = points;
+    }
+  }
+
+  /**
    * The {@link Circle} class describes a 2-dimensional geometric shape with a
    * center point and a radius.
    *
@@ -480,7 +500,7 @@ public final class Geometry {
      * @param line The line whose bounds to initialize.
      */
     public Bounds(final Line line) {
-      if (line.start.x > line.end.x) {
+      if (Epsilon.greater(line.start.x, line.end.x)) {
         this.right = line.end.x;
         this.left = line.start.x;
       }
@@ -489,7 +509,7 @@ public final class Geometry {
         this.left = line.end.x;
       }
 
-      if (line.start.y > line.end.y) {
+      if (Epsilon.greater(line.start.y, line.end.y)) {
         this.top = line.start.y;
         this.bottom = line.end.y;
       }
@@ -497,6 +517,45 @@ public final class Geometry {
         this.top = line.end.y;
         this.bottom = line.start.y;
       }
+    }
+
+    /**
+     * Initialize the bounds of a {@link Path}.
+     *
+     * @param path The path whose bounds to initialize.
+     */
+    public Bounds(final Path path) {
+      Point first = path.points[0];
+
+      float top = first.y;
+      float right = first.x;
+      float bottom = first.y;
+      float left = first.x;
+
+      for (int i = 1; i < path.points.length; i++) {
+        Point point = path.points[i];
+
+        if (Epsilon.greater(point.y, top)) {
+          top = point.y;
+        }
+
+        if (Epsilon.greater(point.x, right)) {
+          right = point.x;
+        }
+
+        if (Epsilon.less(point.y, bottom)) {
+          bottom = point.y;
+        }
+
+        if (Epsilon.less(point.x, left)) {
+          left = point.x;
+        }
+      }
+
+      this.top = top;
+      this.right = right;
+      this.bottom = bottom;
+      this.left = left;
     }
 
     /**
@@ -561,6 +620,16 @@ public final class Geometry {
         &&
         point.y >= this.top && point.y <= this.bottom
       );
+    }
+
+    @Override
+    public String toString() {
+      return "Bounds["
+      + "top = " + this.top
+      + ", right = " + this.right
+      + ", bottom = " + this.bottom
+      + ", left = " + this.left
+      + "]";
     }
   }
 }
