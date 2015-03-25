@@ -9,6 +9,9 @@ import javafx.scene.shape.Rectangle;
 // JavaFX paint
 import javafx.scene.paint.Color;
 
+// Math
+import dk.itu.kelvin.math.Geometry;
+
 /**
  * A bounding box describes the bounds of a chart.
  *
@@ -22,14 +25,9 @@ public final class BoundingBox extends Element<Rectangle> {
   private static final long serialVersionUID = 19;
 
   /**
-   * The left coordinate of the bounds.
+   * The top coordinate of the bounds.
    */
-  private float left;
-
-  /**
-   * The bottom coordinate of the bounds.
-   */
-  private float bottom;
+  private float top;
 
   /**
    * The right coordinate of the bounds.
@@ -37,55 +35,33 @@ public final class BoundingBox extends Element<Rectangle> {
   private float right;
 
   /**
-   * The top coordinate of the bounds.
+   * The bottom coordinate of the bounds.
    */
-  private float top;
+  private float bottom;
+
+  /**
+   * The left coordinate of the bounds.
+   */
+  private float left;
 
   /**
    * Initialize a new bounding box.
    *
-   * @param left    The left coordinate of the bounds.
-   * @param bottom  The bottom coordinate of the bounds.
-   * @param right   The right coordinate of the bounds.
    * @param top     The top coordinate of the bounds.
+   * @param right   The right coordinate of the bounds.
+   * @param bottom  The bottom coordinate of the bounds.
+   * @param left    The left coordinate of the bounds.
    */
   public BoundingBox(
-    final float left,
-    final float bottom,
+    final float top,
     final float right,
-    final float top
+    final float bottom,
+    final float left
   ) {
-    this.left = left;
-    this.bottom = bottom;
-    this.right = right;
     this.top = top;
-  }
-
-  /**
-   * Get the left coordinate of the bounds.
-   *
-   * @return The left coordinate of the bounds.
-   */
-  public float left() {
-    return this.left;
-  }
-
-  /**
-   * Get the bottom coordinate of the bounds.
-   *
-   * @return The bottom coordinate of the bounds.
-   */
-  public float bottom() {
-    return this.bottom;
-  }
-
-  /**
-   * Get the right coordinate of the bounds.
-   *
-   * @return The right coordinate of the bounds.
-   */
-  public float right() {
-    return this.right;
+    this.right = right;
+    this.bottom = bottom;
+    this.left = left;
   }
 
   /**
@@ -98,6 +74,33 @@ public final class BoundingBox extends Element<Rectangle> {
   }
 
   /**
+   * Get the right coordinate of the bounds.
+   *
+   * @return The right coordinate of the bounds.
+   */
+  public float right() {
+    return this.right;
+  }
+
+  /**
+   * Get the bottom coordinate of the bounds.
+   *
+   * @return The bottom coordinate of the bounds.
+   */
+  public float bottom() {
+    return this.bottom;
+  }
+
+  /**
+   * Get the left coordinate of the bounds.
+   *
+   * @return The left coordinate of the bounds.
+   */
+  public float left() {
+    return this.left;
+  }
+
+  /**
    * Check if the bounds contains the specified point.
    *
    * @param x The x-coordinate of the point.
@@ -106,9 +109,14 @@ public final class BoundingBox extends Element<Rectangle> {
    *          specified point.
    */
   public boolean contains(final float x, final float y) {
-    Rectangle rectangle = this.render();
+    Geometry.Bounds bounds = new Geometry.Bounds(
+      this.top,
+      this.right,
+      this.bottom,
+      this.left
+    );
 
-    return rectangle.contains(rectangle.parentToLocal(x, y));
+    return bounds.contains(new Geometry.Point(x, y));
   }
 
   /**

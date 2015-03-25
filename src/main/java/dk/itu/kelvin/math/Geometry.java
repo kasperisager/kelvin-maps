@@ -34,13 +34,9 @@ public final class Geometry {
    */
   public static boolean intersects(final Bounds a, final Bounds b) {
     return (
-      a.left <= b.right
+      a.left <= b.right && a.right >= b.left
       &&
-      a.right >= b.left
-      &&
-      a.top <= b.bottom
-      &&
-      a.bottom >= b.top
+      a.top <= b.bottom && a.bottom >= b.top
     );
   }
 
@@ -468,7 +464,7 @@ public final class Geometry {
      * @param bottom  The bottom-most position of the bounds.
      * @param left    The left-most position of the bounds.
      */
-    private Bounds(
+    public Bounds(
       final float top,
       final float right,
       final float bottom,
@@ -552,6 +548,21 @@ public final class Geometry {
      */
     public float left() {
       return this.left;
+    }
+
+    /**
+     * Check if the bounds contain the specified point.
+     *
+     * @param point The point to check containment of.
+     * @return      A boolean indicating whether or not the bounds contain the
+     *              specified point.
+     */
+    public boolean contains(final Point point) {
+      return (
+        point.x >= this.left && point.x <= this.right
+        &&
+        point.y >= this.top && point.y <= this.bottom
+      );
     }
   }
 }
