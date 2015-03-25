@@ -53,9 +53,9 @@ public final class ArrayListTest {
   public void before() {
     this.a1 = new ArrayList<>();
     this.h1 = new HashSet<>();
-    this.s1 = new String("ex1");
-    this.s2 = new String("ex2");
-    this.s3 = new String("ex3");
+    this.s1 = "ex1";
+    this.s2 = "ex2";
+    this.s3 = "ex3";
   }
 
   /**

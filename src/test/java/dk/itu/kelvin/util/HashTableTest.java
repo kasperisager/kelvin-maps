@@ -50,10 +50,10 @@ public final class HashTableTest {
   @Before
   public void before() {
     this.h1 = new HashTable<>();
-    this.s1 = new String("ex1");
-    this.s2 = new String("ex2");
-    this.i1 = new Integer(10);
-    this.i2 = new Integer(12);
+    this.s1 = "ex1";
+    this.s2 = "ex2";
+    this.i1 = 10;
+    this.i2 = 12;
   }
 
   /**
