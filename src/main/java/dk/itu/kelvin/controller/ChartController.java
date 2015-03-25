@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 
 // JavaFX layout
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -222,6 +223,12 @@ public final class ChartController {
   private GridPane propertiesGridPane;
 
   /**
+   * The parent element.
+   */
+  @FXML
+  private StackPane stackPane;
+
+  /**
    * Tags for cartographic elements.
    */
   private String[] tags = {"Parking", "Cafe", "Restaurant", "Fast Food",
@@ -233,6 +240,8 @@ public final class ChartController {
    * @throws Exception In case of an error. Duh.
    */
   public void initialize() throws Exception {
+    // Sets the parent element inactive untill loaded.
+    this.stackPane.setDisable(true);
     this.propertiesGridPane.getChildren().remove(this.checkboxVBox);
     this.propertiesGridPane.getChildren().remove(this.directionsScrollPane);
 
@@ -254,7 +263,6 @@ public final class ChartController {
 
       //Get map of all addresses from parser.
       this.addresses = parser.addresses();
-      System.out.println("Ready!");
 
       // Schedule rendering of the chart nodes.
       Platform.runLater(() -> {
@@ -263,6 +271,10 @@ public final class ChartController {
 
         this.chart.add(parser.land());
         this.chart.add(parser.bounds());
+
+        // Sets the chart active after load.
+        this.stackPane.setDisable(false);
+        ApplicationController.removeIcon();
       });
 
       //Get map of all addresses from parser.

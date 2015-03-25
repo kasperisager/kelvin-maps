@@ -3,8 +3,18 @@
  */
 package dk.itu.kelvin.controller;
 
+// JavaFX utilities
+import javafx.util.Duration;
+
 // JavaFX layout
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+
+// JavaFX controls
+import javafx.scene.control.Label;
+
+// JavaFX animations
+import javafx.animation.RotateTransition;
 
 // FXML utilities
 import javafx.fxml.FXML;
@@ -21,16 +31,36 @@ public final class ApplicationController {
   private static ApplicationController instance;
 
   /**
+   * The rotate animation.
+   */
+  private RotateTransition rt;
+
+  /**
    * Borderpane element.
    */
   @FXML
   private BorderPane borderPane;
 
   /**
+   * StackPane element.
+   */
+  @FXML
+  private StackPane stackPane;
+
+  /**
+   * The loading icon.
+   */
+  @FXML
+  private Label loadIcon;
+
+  /**
    * JavaFX constructor for the ApplicationController.
    */
   public void initialize() {
     ApplicationController.instance(this);
+    ApplicationController.instance().rt
+    = new RotateTransition(Duration.millis(10000), this.loadIcon);
+    ApplicationController.instance().rotateIcon();
   }
 
   /**
@@ -69,4 +99,24 @@ public final class ApplicationController {
       getStyleClass());
     }
   }
+
+  /**
+   * To rotate the load icon.
+   */
+  public void rotateIcon() {
+    ApplicationController.instance().rt.setByAngle(360);
+    ApplicationController.instance()
+    .rt.setCycleCount(RotateTransition.INDEFINITE);
+    ApplicationController.instance().rt.play();
+  }
+
+  /**
+   * Stops rotation and removes the icon.
+   */
+  public static void removeIcon() {
+    ApplicationController.instance().rt.stop();
+    ApplicationController.instance().stackPane
+    .getChildren().remove(ApplicationController.instance().loadIcon);
+  }
+
 }

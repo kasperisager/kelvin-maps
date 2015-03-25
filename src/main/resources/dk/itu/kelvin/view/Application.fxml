@@ -2,6 +2,10 @@
 
 <!-- JavFX layouts -->
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+
+<!-- JavaFX controls -->
+<?import javafx.scene.control.Label?>
 
 <BorderPane
   fx:controller="dk.itu.kelvin.controller.ApplicationController"
@@ -9,7 +13,19 @@
   fx:id="borderPane"
 >
   <center>
-    <fx:include fx:id="chart" source="Chart.fxml" />
+    <StackPane fx:id="stackPane">
+      <children>
+        <fx:include fx:id="chart" source="Chart.fxml" />
+      </children>
+      <children>
+        <Label
+          fx:id="loadIcon"
+          styleClass="icon, load-icon"
+          text="&#xf29d;"
+          alignment="CENTER">
+        </Label>
+      </children>
+    </StackPane>
   </center>
 
   <top>
