@@ -291,24 +291,24 @@ public final class Geometry {
   }
 
   /**
-   * The {@link Path} class describes a list of connected points that together
-   * form a path.
+   * The {@link Polyline} class describes a list of connected points that together
+   * form a polyline.
    */
-  public static final class Path {
+  public static final class Polyline {
     /**
-     * The points contained within the path.
+     * The points contained within the polyline.
      */
     private final Point[] points;
 
     /**
-     * Initialize a path.
+     * Initialize a polyline.
      *
-     * @param points The  points contained within the path.
+     * @param points The  points contained within the polyline.
      */
-    public Path(final Point[] points) {
+    public Polyline(final Point[] points) {
       if (points == null || points.length < 2) {
         throw new RuntimeException(
-          "A valid Path must contain at least two points"
+          "A valid Polyline must contain at least two points"
         );
       }
 
@@ -578,26 +578,26 @@ public final class Geometry {
     }
 
     /**
-     * Initialize the bounds of a {@link Path}.
+     * Initialize the bounds of a {@link Polyline}.
      *
-     * @param path The path whose bounds to initialize.
+     * @param polyline The polyline whose bounds to initialize.
      */
-    public Bounds(final Path path) {
-      if (path == null) {
+    public Bounds(final Polyline polyline) {
+      if (polyline == null) {
         throw new RuntimeException(
           "Cannot initialize Bounds without a valid shape"
         );
       }
 
-      Point first = path.points[0];
+      Point first = polyline.points[0];
 
       double minX = first.x;
       double minY = first.y;
       double maxX = first.x;
       double maxY = first.y;
 
-      for (int i = 1; i < path.points.length; i++) {
-        Point point = path.points[i];
+      for (int i = 1; i < polyline.points.length; i++) {
+        Point point = polyline.points[i];
 
         if (Epsilon.less(point.x, minX)) {
           minX = point.x;
