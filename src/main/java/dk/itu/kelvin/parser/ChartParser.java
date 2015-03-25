@@ -231,10 +231,10 @@ public final class ChartParser {
    */
   private void startBounds(final Attributes attributes) {
     this.bounds = new BoundingBox(
-      this.projection.lonToX(this.getFloat(attributes, "minlon")),
-      this.projection.latToY(this.getFloat(attributes, "minlat")),
+      this.projection.latToY(this.getFloat(attributes, "maxlat")),
       this.projection.lonToX(this.getFloat(attributes, "maxlon")),
-      this.projection.latToY(this.getFloat(attributes, "maxlat"))
+      this.projection.latToY(this.getFloat(attributes, "minlat")),
+      this.projection.lonToX(this.getFloat(attributes, "minlon"))
     );
 
     this.land = new Land(this.bounds);
