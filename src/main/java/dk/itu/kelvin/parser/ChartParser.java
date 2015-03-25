@@ -334,7 +334,7 @@ public final class ChartParser {
     this.element.order(Element.Order.fromString(k, v));
 
     if (v.equals("coastline")) {
-      this.land.coastline((Way) this.element);
+      this.land.add((Way) this.element);
     }
 
     switch (k) {
