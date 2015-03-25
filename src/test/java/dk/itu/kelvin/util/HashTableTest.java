@@ -3,9 +3,6 @@
  */
 package dk.itu.kelvin.util;
 
-// General utilities
-import dk.itu.kelvin.model.Node;
-
 
 // JUnit annotations
 import org.junit.Before;
@@ -25,26 +22,38 @@ public final class HashTableTest {
   /**
    * Instance variable of HashTable.
    */
-  private HashTable h1;
+  private HashTable<String, Integer> h1;
 
   /**
-   * Instance variable of Node.
+   * Instance variable of String.
    */
-  private Node n1;
+  private String s1;
 
   /**
-   * Instance variable of Node.
+   * Instance variable of String.
    */
-  private Node n2;
+  private String s2;
+
+  /**
+   * Instance variable of integer.
+   */
+  private Integer i1;
+
+  /**
+   * Instance variable of integer.
+   */
+  private Integer i2;
 
   /**
    * Initialize a HashTable with the default initial capacity and 2 nodes.
    */
   @Before
   public void before() {
-    this.h1 = new HashTable();
-    this.n1 = new Node(10, 10, 10);
-    this.n2 = new Node(12, 12, 12);
+    this.h1 = new HashTable<>();
+    this.s1 = new String("ex1");
+    this.s2 = new String("ex2");
+    this.i1 = new Integer(10);
+    this.i2 = new Integer(12);
   }
 
   /**
@@ -53,19 +62,19 @@ public final class HashTableTest {
   @Test
   public void testPutKeyAndValue() {
     //if value equals null the method return null.
-    assertEquals(null, this.h1.put(1, null));
+    assertEquals(null, this.h1.put(this.s1, null));
 
     // if key equals null the method return null.
-    assertEquals(null, this.h1.put(null, this.n1));
+    assertEquals(null, this.h1.put(null, this.i1));
 
     // if key && value equals null the method return null.
     assertEquals(null, this.h1.put(null, null));
 
     //if key and value are put into the table the method return null.
-    assertEquals(null, this.h1.put(2, this.n1));
+    assertEquals(null, this.h1.put(this.s1, this.i2));
 
-    // if a new value are referred to an existing key - return old value.
-    assertEquals(this.n1, this.h1.put(2, this.n2));
+    // if a new value is referred to an existing key - return old value.
+    assertEquals(this.i2, this.h1.put(this.s1, this.i1));
   }
 
   /**
@@ -74,14 +83,14 @@ public final class HashTableTest {
   @Test
   public void testRemoveValue() {
     // put 2 sets into the table
-    this.h1.put(1, this.n1);
-    this.h1.put(2, this.n2);
+    this.h1.put(this.s1, this.i1);
+    //this.h1.put(this.s2, i2);
 
-    // removes a key which does not exist.
-    assertEquals(null, this.h1.remove(3));
+    // remove a value which does not exist.
+    assertEquals(null, this.h1.remove(this.i2));
 
-    // removes a key which exist and return the removed value.
-    assertEquals(this.n1, this.h1.remove(1));
+    // remove a value which exist and return the removed key.
+    assertEquals(this.i1, this.h1.remove(this.s1));
   }
 
   /**
@@ -90,13 +99,13 @@ public final class HashTableTest {
   @Test
   public void testContainsValue() {
     // put 1 set into the table
-    this.h1.put(1, this.n1);
+    this.h1.put(this.s1, this.i1);
 
     // does the table contain n1.
-    assertTrue(this.h1.containsValue(this.n1));
+    assertTrue(this.h1.containsValue(this.i1));
 
     // does the table contain a non-existing value.
-    assertFalse(this.h1.containsValue(this.n2));
+    assertFalse(this.h1.containsValue(this.i2));
 
     // does the table contain null.
     assertFalse(this.h1.containsValue(null));
@@ -104,21 +113,21 @@ public final class HashTableTest {
   }
 
   /**
-   * Test get a value from the table by its key.
+   * Test get a value by key from the table.
    */
   @Test
-  public void testGetValue() {
+  public void testGetValueByKey() {
     // put 1 set into the table
-    this.h1.put(1, this.n1);
+    this.h1.put(this.s1, this.i1);
 
-    // tries to get value equals null.
+    // tries to get key equals null.
     assertEquals(null, this.h1.get(null));
 
-    // get value from index 1.
-    assertEquals(this.n1 , this.h1.get(1));
+    // get value from key equals s1.
+    assertEquals(this.i1 , this.h1.get(this.s1));
 
     // get value from a non-existing index.
-    assertEquals(null, this.h1.get(12));
+    assertEquals(null, this.h1.get(this.s2));
   }
 
   /**
@@ -127,14 +136,13 @@ public final class HashTableTest {
   @Test
   public void testContainsKey() {
     // put 2 sets into the table
-    this.h1.put(1, this.n1);
-    this.h1.put(2, this.n2);
+    this.h1.put(this.s1, this.i1);
 
-    // does the table contain key equals 1.
-    assertTrue(this.h1.containsKey(1));
+    // does the table contain key equals s1.
+    assertTrue(this.h1.containsKey(this.s1));
 
     // does the table contain a non-existing key.
-    assertFalse(this.h1.containsKey(3));
+    assertFalse(this.h1.containsKey(this.s2));
 
     // does the table contain null.
     assertFalse(this.h1.containsKey(null));
@@ -146,8 +154,8 @@ public final class HashTableTest {
   @Test
   public void testSetOfKeys() {
     // put 2 sets into the table
-    this.h1.put(1, this.n1);
-    this.h1.put(2, this.n2);
+    this.h1.put(this.s1, this.i1);
+    this.h1.put(this.s2, this.i2);
 
     // the set is not empty.
     assertFalse(this.h1.keySet().isEmpty());
@@ -155,8 +163,8 @@ public final class HashTableTest {
     // does the size of the set equals 2.
     assertEquals(2, this.h1.keySet().size());
 
-    // does the keySet contain key equals 1.
-    assertTrue(this.h1.keySet().contains(1));
+    // does the keySet contain key equals s1.
+    assertTrue(this.h1.keySet().contains(this.s1));
 
     // doest the keySet contain a non-existing key.
     assertFalse(this.h1.keySet().contains(3));
@@ -165,22 +173,23 @@ public final class HashTableTest {
     assertFalse(this.h1.values().contains(null));
   }
 
+
   /**
    * Test return a collection of the values contained within the table.
    */
   @Test
   public void testCollectionOfValues() {
     // put 1 set into the table
-    this.h1.put(1, this.n1);
+    this.h1.put(this.s1, this.i1);
 
     // does the size of the set equals 1.
     assertEquals(1 , this.h1.values().size());
 
-    // does the collection contain value equals n1.
-    assertTrue(this.h1.values().contains(this.n1));
+    // does the collection contain value equals i1.
+    assertTrue(this.h1.values().contains(this.i1));
 
     // does the collection contain a non-existing value.
-    assertFalse(this.h1.values().contains(this.n2));
+    assertFalse(this.h1.values().contains(this.i2));
 
     // does the collection contain null.
     assertFalse(this.h1.values().contains(null));
@@ -192,8 +201,8 @@ public final class HashTableTest {
   @Test
   public void testEntrySetOfKeysAndValues() {
     // put 2 sets into the table
-    this.h1.put(1, this.n1);
-    this.h1.put(2, this.n2);
+    this.h1.put(this.s1, this.i1);
+    this.h1.put(this.s2, this.i2);
 
     // the set is not empty.
     assertFalse(this.h1.entrySet().isEmpty());
@@ -204,6 +213,10 @@ public final class HashTableTest {
     // does the set contain null.
     assertFalse(this.h1.entrySet().contains(null));
   }
+
+
+
+
 }
 
 
