@@ -43,7 +43,7 @@ public final class Haversine {
    * @param lat1  The latitude of the first coordinate.
    * @param lon1  The longitude of the first coordinate.
    * @param lat2  The latitude of the second coordinate.
-   * @param lon2  The longitude of the seoncd coordinate.
+   * @param lon2  The longitude of the second coordinate.
    * @return      The distance between the two coordinates in kilometers.
    */
   public static float distance(
