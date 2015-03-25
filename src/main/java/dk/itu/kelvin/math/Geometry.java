@@ -24,7 +24,7 @@ public final class Geometry {
   }
 
   /**
-   * Check if two bounds intersects.
+   * Check if two bounds intersect.
    *
    * @param a The first bounds.
    * @param b The second bounds.
@@ -56,12 +56,21 @@ public final class Geometry {
       return null;
     }
 
+    // Check if the rectangular bounds of the lines intersect before doing any
+    // further computations.
+    if (!Geometry.intersects(new Geometry.Bounds(a), new Geometry.Bounds(b))) {
+      return null;
+    }
+
+    // Compute the denominator.
     float d = (
       (a.start.x - a.end.x) * (b.start.y - b.end.y)
     - (a.start.y - a.end.y) * (b.start.x - b.end.x)
     );
 
-    if (Epsilon.equals(d, 0.0f)) {
+    // If the denominator equals 0, the lines are parallel are do therefore not
+    // intersect.
+    if (Epsilon.equal(d, 0.0f)) {
       return null;
     }
 
@@ -252,7 +261,7 @@ public final class Geometry {
      * @return A boolean indicating whether or not the line is vertical.
      */
     public boolean isVertical() {
-      return Epsilon.equals(this.start.x, this.end.x);
+      return Epsilon.equal(this.start.x, this.end.x);
     }
 
     /**
@@ -261,7 +270,7 @@ public final class Geometry {
      * @return A boolean indicating whether or not the line is horizontal.
      */
     public boolean isHorizontal() {
-      return Epsilon.equals(this.start.y, this.end.y);
+      return Epsilon.equal(this.start.y, this.end.y);
     }
 
     @Override
@@ -652,10 +661,17 @@ public final class Geometry {
         return false;
       }
 
+      float x = point.x;
+      float y = point.y;
+
       return (
-        point.x >= this.min.x && point.x <= this.max.x
+        Epsilon.greaterOrEqual(x, this.min.x)
         &&
-        point.y >= this.min.y && point.y <= this.max.y
+        Epsilon.lessOrEqual(x, this.max.x)
+        &&
+        Epsilon.greaterOrEqual(y, this.min.y)
+        &&
+        Epsilon.lessOrEqual(y, this.max.y)
       );
     }
 
