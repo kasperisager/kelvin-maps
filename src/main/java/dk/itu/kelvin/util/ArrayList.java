@@ -284,7 +284,13 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    *                element to remove.
    */
   public final boolean remove(final Object element) {
-    return this.remove(this.indexOf(element)) != null;
+    int index = this.indexOf(element);
+
+    if (index == -1) {
+      return false;
+    }
+
+    return this.remove(index) != null;
   }
 
   /**
