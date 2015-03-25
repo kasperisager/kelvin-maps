@@ -39,9 +39,13 @@ public final class Geometry {
     }
 
     return (
-      a.min.x <= b.max.x && a.max.x >= b.min.x
+      Epsilon.lessOrEqual(a.min.x, b.max.x)
       &&
-      a.min.y <= b.max.y && a.max.y >= b.min.y
+      Epsilon.greaterOrEqual(a.max.x, b.min.x)
+      &&
+      Epsilon.lessOrEqual(a.min.y, b.max.y)
+      &&
+      Epsilon.greaterOrEqual(a.max.y, b.min.y)
     );
   }
 
@@ -66,7 +70,7 @@ public final class Geometry {
     }
 
     // Compute the denominator.
-    float d = (
+    double d = (
       (a.start.x - a.end.x) * (b.start.y - b.end.y)
     - (a.start.y - a.end.y) * (b.start.x - b.end.x)
     );
@@ -77,46 +81,23 @@ public final class Geometry {
       return null;
     }
 
+    // Compute the x-coordinate of the intersection.
     double px = (
-      (b.end.x - b.start.x) * (a.start.y - b.start.y)
-    - (b.end.y - b.start.y) * (a.start.x - b.start.x)
+      (a.start.x * a.end.y - a.start.y * a.end.x) * (b.start.x - b.end.x)
+    - (b.start.x * b.end.y - b.start.y * b.end.x) * (a.start.x - a.end.x)
     ) / d;
 
+    // Compute the y-coordinate of the intersection.
     double py = (
-      (a.end.x - a.start.x) * (a.start.y - b.start.y)
-    - (a.end.y - a.start.y) * (a.start.x - b.start.x)
+      (a.start.x * a.end.y - a.start.y * a.end.x) * (b.start.y - b.end.y)
+    - (b.start.x * b.end.y - b.start.y * b.end.x) * (a.start.y - a.end.y)
     ) / d;
 
-    if (
-      (Epsilon.less(px, 0.0f) || Epsilon.greater(px, 1.0f))
-      &&
-      (Epsilon.less(py, 0.0f) || Epsilon.greater(py, 1.0f))
-    ) {
-      return null;
-    }
+    Point p = new Point(px, py);
 
-    Point p = new Point(
-      (float) (a.start.x + px * (a.end.x - a.start.x)),
-      (float) (a.start.y + py * (a.end.y - a.start.y))
-    );
-
-    if (
-      Epsilon.less(p.x, Math.min(a.start.x, a.end.x))
-      ||
-      Epsilon.greater(p.x, Math.max(a.start.x, a.end.x))
-      ||
-      Epsilon.less(p.x, Math.min(b.start.x, b.end.x))
-      ||
-      Epsilon.greater(p.x, Math.max(b.start.x, b.end.x))
-      ||
-      Epsilon.less(p.y, Math.min(a.start.y, a.end.y))
-      ||
-      Epsilon.greater(p.y, Math.max(a.start.y, a.end.y))
-      ||
-      Epsilon.less(p.y, Math.min(b.start.y, b.end.y))
-      ||
-      Epsilon.greater(p.y, Math.max(b.start.y, b.end.y))
-    ) {
+    // Check if both lines actually contain the intersection point. If this is
+    // not the case the lines do not intersect within their individual segments.
+    if (!a.contains(p) || !b.contains(p)) {
       return null;
     }
 
@@ -131,12 +112,12 @@ public final class Geometry {
    * @return  The distance between points {@code a} and {@code b} or {@code -1}
    *          if either of them are {@code null}.
    */
-  private static float distance(final Point a, final Point b) {
+  private static double distance(final Point a, final Point b) {
     if (a == null || b == null) {
       return -1;
     }
 
-    return (float) Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+    return (double) Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
   }
 
   /**
@@ -150,12 +131,12 @@ public final class Geometry {
     /**
      * The x-coordinate of the point.
      */
-    private final float x;
+    private final double x;
 
     /**
      * The y-coordinate of the point.
      */
-    private final float y;
+    private final double y;
 
     /**
      * Initialize a point.
@@ -163,7 +144,7 @@ public final class Geometry {
      * @param x The x-coordinate of the point.
      * @param y The y-coordinate of the point.
      */
-    public Point(final float x, final float y) {
+    public Point(final double x, final double y) {
       this.x = x;
       this.y = y;
     }
@@ -173,7 +154,7 @@ public final class Geometry {
      *
      * @return The x-coordinate of the point.
      */
-    public float x() {
+    public double x() {
       return this.x;
     }
 
@@ -182,7 +163,7 @@ public final class Geometry {
      *
      * @return The y-coordinate of the point.
      */
-    public float y() {
+    public double y() {
       return this.y;
     }
 
@@ -254,7 +235,7 @@ public final class Geometry {
      *
      * @return The length of the line.
      */
-    public float length() {
+    public double length() {
       return Geometry.distance(this.start, this.end);
     }
 
@@ -274,6 +255,29 @@ public final class Geometry {
      */
     public boolean isHorizontal() {
       return Epsilon.equal(this.start.y, this.end.y);
+    }
+
+    /**
+     * Check if the line contains the specified point.
+     *
+     * <p>
+     * This operation utilizes the fact that a point, C, will lie on the line
+     * between two other points, A and B, if, and only if, the distance from A
+     * to C plus the distance from C to B equals the distance from A to B.
+     *
+     * @see <a href="http://stackoverflow.com/a/17693146">
+     *      http://stackoverflow.com/a/17693146</a>
+     *
+     * @param point The point to check containment of.
+     * @return      A boolean indicating whether or not the line contains the
+     *              specified point.
+     */
+    public boolean contains(final Point point) {
+      return Epsilon.equal(
+        Geometry.distance(this.start, point)
+      + Geometry.distance(point, this.end),
+        this.length()
+      );
     }
 
     @Override
@@ -328,7 +332,7 @@ public final class Geometry {
     /**
      * The radius of the circle.
      */
-    private final float radius;
+    private final double radius;
 
     /**
      * Initialize a circle.
@@ -336,7 +340,7 @@ public final class Geometry {
      * @param center The center of the circle.
      * @param radius The radius of the circle.
      */
-    public Circle(final Point center, final float radius) {
+    public Circle(final Point center, final double radius) {
       if (center == null) {
         throw new RuntimeException(
           "A valid Circle must contain a center point"
@@ -367,7 +371,7 @@ public final class Geometry {
      *
      * @return The radius of the circle.
      */
-    public float radius() {
+    public double radius() {
       return this.radius;
     }
 
@@ -376,7 +380,7 @@ public final class Geometry {
      *
      * @return The diameter of the circle.
      */
-    public float diameter() {
+    public double diameter() {
       return this.radius * 2;
     }
 
@@ -385,8 +389,8 @@ public final class Geometry {
      *
      * @return The circumference of the circle.
      */
-    public float circumference() {
-      return this.diameter() * (float) Math.PI;
+    public double circumference() {
+      return this.diameter() * (double) Math.PI;
     }
 
     /**
@@ -394,8 +398,8 @@ public final class Geometry {
      *
      * @return The area of the circle.
      */
-    public float area() {
-      return (float) (Math.pow(this.radius, 2) * Math.PI);
+    public double area() {
+      return (double) (Math.pow(this.radius, 2) * Math.PI);
     }
 
     @Override
@@ -424,12 +428,12 @@ public final class Geometry {
     /**
      * The width of the rectangle.
      */
-    private final float width;
+    private final double width;
 
     /**
      * The height of the rectangle.
      */
-    private final float height;
+    private final double height;
 
     /**
      * Initialize a rectangle.
@@ -440,8 +444,8 @@ public final class Geometry {
      */
     public Rectangle(
       final Point position,
-      final float width,
-      final float height
+      final double width,
+      final double height
     ) {
       if (position == null) {
         throw new RuntimeException(
@@ -474,7 +478,7 @@ public final class Geometry {
      *
      * @return The width of the rectangle.
      */
-    public float width() {
+    public double width() {
       return this.width;
     }
 
@@ -483,7 +487,7 @@ public final class Geometry {
      *
      * @return The height of the rectangle.
      */
-    public float height() {
+    public double height() {
       return this.height;
     }
 
@@ -492,7 +496,7 @@ public final class Geometry {
      *
      * @return The area of the rectangle.
      */
-    public float area() {
+    public double area() {
       return this.width * this.height;
     }
 
@@ -586,10 +590,10 @@ public final class Geometry {
 
       Point first = path.points[0];
 
-      float minX = first.x;
-      float minY = first.y;
-      float maxX = first.x;
-      float maxY = first.y;
+      double minX = first.x;
+      double minY = first.y;
+      double maxX = first.x;
+      double maxY = first.y;
 
       for (int i = 1; i < path.points.length; i++) {
         Point point = path.points[i];
@@ -664,17 +668,14 @@ public final class Geometry {
         return false;
       }
 
-      float x = point.x;
-      float y = point.y;
-
       return (
-        Epsilon.greaterOrEqual(x, this.min.x)
+        Epsilon.greaterOrEqual(point.x, this.min.x)
         &&
-        Epsilon.lessOrEqual(x, this.max.x)
+        Epsilon.lessOrEqual(point.x, this.max.x)
         &&
-        Epsilon.greaterOrEqual(y, this.min.y)
+        Epsilon.greaterOrEqual(point.y, this.min.y)
         &&
-        Epsilon.lessOrEqual(y, this.max.y)
+        Epsilon.lessOrEqual(point.y, this.max.y)
       );
     }
 

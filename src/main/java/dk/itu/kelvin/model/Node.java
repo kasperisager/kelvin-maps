@@ -40,6 +40,17 @@ public final class Node extends Element<Label> {
   }
 
   /**
+   * Initialize a node.
+   *
+   * @param x The x-coordinate of the node.
+   * @param y The y-coordinate of the node.
+   */
+  public Node(final double x, final double y) {
+    this.x = (float) x;
+    this.y = (float) y;
+  }
+
+  /**
    * Get the x-coordinate of the node.
    *
    * @return The x-coordinate of the node.

@@ -161,14 +161,7 @@ public final class Land extends Element<Group> {
             Geometry.Line line = this.constructLine(previous1, next);
 
             for (Geometry.Line bound: bounds) {
-              Geometry.Point p;
-
-              if (bound.isVertical()) {
-                p = Geometry.intersection(line, bound);
-              }
-              else {
-                p = Geometry.intersection(bound, line);
-              }
+              Geometry.Point p = Geometry.intersection(bound, line);
 
               if (p != null) {
                 Node node = new Node(p.x(), p.y());
@@ -177,12 +170,7 @@ public final class Land extends Element<Group> {
                 i++;
                 n++;
 
-                if (bound == bounds[0]) {
-                  nodes.add(0, new Node(bound.end().x(), bound.end().y()));
-                }
-                else {
-                  nodes.add(0, new Node(bound.start().x(), bound.start().y()));
-                }
+                nodes.add(0, new Node(bound.start().x(), bound.start().y()));
 
                 break;
               }
@@ -215,17 +203,8 @@ public final class Land extends Element<Group> {
 
             Geometry.Line line = this.constructLine(previous2, next);
 
-            Node intersection = null;
-
             for (Geometry.Line bound: bounds) {
-              Geometry.Point p;
-
-              if (bound.isVertical()) {
-                p = Geometry.intersection(line, bound);
-              }
-              else {
-                p = Geometry.intersection(bound, line);
-              }
+              Geometry.Point p = Geometry.intersection(bound, line);
 
               if (p != null) {
                 Node node = new Node(p.x(), p.y());
