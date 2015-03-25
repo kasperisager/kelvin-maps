@@ -23,13 +23,13 @@ import dk.itu.kelvin.store.AddressStore;
 import dk.itu.kelvin.store.ElementStore;
 
 // Models
+import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.BoundingBox;
 import dk.itu.kelvin.model.Element;
 import dk.itu.kelvin.model.Land;
 import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.Way;
-import dk.itu.kelvin.model.Address;
 
 /**
  * Parser class.
@@ -152,7 +152,7 @@ public final class ChartParser {
 
     XMLReader reader = XMLReaderFactory.createXMLReader();
 
-    reader.setContentHandler(new Handler());
+    reader.setContentHandler(new ContentHandler());
     reader.parse(url.toExternalForm());
   }
 
@@ -219,9 +219,10 @@ public final class ChartParser {
   /**
    * Clean up after ending an element.
    */
-  private void clearElement() {
+  private void clear() {
     this.element = null;
     this.elementId = 0L;
+    this.address = null;
   }
 
   /**
@@ -268,10 +269,7 @@ public final class ChartParser {
 
     if (this.address != null) {
       this.addresses.put(this.address, node);
-      this.address = null;
     }
-
-    this.clearElement();
   }
 
   /**
@@ -293,7 +291,6 @@ public final class ChartParser {
     }
 
     this.ways.put(this.elementId, (Way) this.element);
-    this.clearElement();
   }
 
   /**
@@ -315,11 +312,10 @@ public final class ChartParser {
     }
 
     this.relations.put(this.elementId, (Relation) this.element);
-    this.clearElement();
   }
 
   /**
-   * Start a tag element.
+   * Start a {@code tag} element.
    *
    * @param attributes Element attributes.
    */
@@ -331,47 +327,41 @@ public final class ChartParser {
     String k = this.getString(attributes, "k");
     String v = this.getString(attributes, "v");
 
-    this.element.order(Element.Order.fromString(k, v));
-
     if (v.equals("coastline")) {
       this.land.coastline((Way) this.element);
     }
+
+    if (k.startsWith("addr:") && this.address == null) {
+      this.address = new Address();
+    }
+
+    this.element.order(Element.Order.fromString(k, v));
 
     switch (k) {
       case "layer":
         this.element.layer(Integer.parseInt(v));
         break;
+
       case "addr:city":
-        if (this.address == null) {
-          this.address = new Address();
-        }
         this.address.city(v);
         break;
       case "addr:housenumber":
-        if (this.address == null) {
-          this.address = new Address();
-        }
         this.address.number(v);
         break;
       case "addr:postcode":
-        if (this.address == null) {
-          this.address = new Address();
-        }
         this.address.postcode(v);
         break;
       case "addr:street":
-        if (this.address == null) {
-          this.address = new Address();
-        }
         this.address.street(v);
         break;
+
       default:
         this.element.tag(k, v);
     }
   }
 
   /**
-   * Start an nd element.
+   * Start an {@code nd} element.
    *
    * @param attributes Element attributes.
    */
@@ -429,7 +419,7 @@ public final class ChartParser {
    * This class is simply a proxy between the SAX parser and the ChartParser
    * instance.
    */
-  private class Handler extends DefaultHandler {
+  private class ContentHandler extends DefaultHandler {
     /**
      * Parse an opening element of an OSM XML stream.
      *
@@ -506,12 +496,15 @@ public final class ChartParser {
         // Core elements. Parse the closing tags of the core elements.
         case "node":
           ChartParser.this.endNode();
+          ChartParser.this.clear();
           break;
         case "way":
           ChartParser.this.endWay();
+          ChartParser.this.clear();
           break;
         case "relation":
           ChartParser.this.endRelation();
+          ChartParser.this.clear();
           break;
         default:
           // Do nothing.
