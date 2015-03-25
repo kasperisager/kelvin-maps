@@ -5,8 +5,6 @@ package dk.itu.kelvin.math;
 
 /**
  * Mercator projection class.
- *
- * @version 1.0.0
  */
 public final class MercatorProjection implements Projection {
   /**

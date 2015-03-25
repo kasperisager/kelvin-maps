@@ -69,8 +69,6 @@ import dk.itu.kelvin.store.AddressStore;
 
 /**
  * Chart controller class.
- *
- * @version 1.0.0
  */
 public final class ChartController {
   /**

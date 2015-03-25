@@ -10,10 +10,9 @@ import java.util.regex.Pattern;
 /**
  * Address class.
  *
+ * <p>
  * The class defines a finite state automaton in the form of a set of regular
  * expressions for parsing Danish addresses.
- *
- * @version 1.0.0
  */
 public final class Address {
   /**

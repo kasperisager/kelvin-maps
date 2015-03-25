@@ -21,8 +21,6 @@ import dk.itu.kelvin.model.Land;
 
 /**
  * Chart class.
- *
- * @version 1.0.0
  */
 public final class Chart extends Group {
   /**

@@ -5,8 +5,6 @@ package dk.itu.kelvin.math;
 
 /**
  * Projection interface.
- *
- * @version 1.0.0
  */
 public interface Projection {
   /**

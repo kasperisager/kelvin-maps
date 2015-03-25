@@ -9,8 +9,6 @@ import java.util.Comparator;
 
 /**
  * Collections class.
- *
- * @version 1.0.0
  */
 public final class Collections {
   /**

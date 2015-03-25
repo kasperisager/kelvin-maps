@@ -8,8 +8,6 @@ import java.io.Serializable;
 
 /**
  * Dynamic array class.
- *
- * @version 1.0.0
  */
 public abstract class DynamicArray implements Serializable {
   /**

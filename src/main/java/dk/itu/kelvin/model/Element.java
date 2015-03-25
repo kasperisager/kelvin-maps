@@ -20,7 +20,7 @@ import dk.itu.kelvin.util.Map;
  * Abstract base class that all OSM Elements must extend.
  *
  * @see <a href="http://wiki.openstreetmap.org/wiki/Element">
- * http://wiki.openstreetmap.org/wiki/Element</a>
+ *      http://wiki.openstreetmap.org/wiki/Element</a>
  *
  * @param <T> The type of JavaFX Node that the element represents.
  */
@@ -191,6 +191,7 @@ public abstract class Element<T extends Node> implements Serializable {
   /**
    * Enumerator describing the drawing order of different elements.
    *
+   * <p>
    * The declaration order of the enumerator elements is what determines the
    * drawing order. Elements declared first are thus drawn first and appear
    * below elements declared after.

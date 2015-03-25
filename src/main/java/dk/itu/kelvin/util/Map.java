@@ -8,8 +8,6 @@ package dk.itu.kelvin.util;
  *
  * @param <K> The type of keys stored within the map.
  * @param <V> The type of values stored within the map.
- *
- * @version 1.0.0
  */
 public interface Map<K, V> {
   /**

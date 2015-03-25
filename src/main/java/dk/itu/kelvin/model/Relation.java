@@ -33,7 +33,7 @@ import dk.itu.kelvin.thread.TaskQueue;
  * other relations) that may optionally be assigned a role.
  *
  * @see <a href="http://wiki.openstreetmap.org/wiki/Relation">
- * http://wiki.openstreetmap.org/wiki/Relation</a>
+ *      http://wiki.openstreetmap.org/wiki/Relation</a>
  */
 public final class Relation extends Element<Group> {
   /**
@@ -44,6 +44,7 @@ public final class Relation extends Element<Group> {
   /**
    * The members of the relation mapped to their roles.
    *
+   * <p>
    * The map is initialized on-demand when first accessed to avoid allocating
    * memory to empty maps.
    */
@@ -52,6 +53,7 @@ public final class Relation extends Element<Group> {
   /**
    * The type of the relation.
    *
+   * <p>
    * The type is initialized on-demand when first accessed to avoid allocating
    * memory to relations without a type.
    */
@@ -348,7 +350,7 @@ public final class Relation extends Element<Group> {
    * Available roles of members within the relation.
    *
    * @see <a href="http://wiki.openstreetmap.org/wiki/Relation#Roles">
-   * http://wiki.openstreetmap.org/wiki/Relation#Roles</a>
+   *      http://wiki.openstreetmap.org/wiki/Relation#Roles</a>
    */
   public static enum Role {
     /** No role. */
@@ -385,7 +387,7 @@ public final class Relation extends Element<Group> {
    * Available types of relations.
    *
    * @see <a href="http://wiki.openstreetmap.org/wiki/Types_of_relation">
-   * http://wiki.openstreetmap.org/wiki/Types_of_relation</a>
+   *      http://wiki.openstreetmap.org/wiki/Types_of_relation</a>
    */
   public static enum Type {
     /** No type. */

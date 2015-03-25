@@ -12,8 +12,6 @@ import java.util.NoSuchElementException;
  * Array list class.
  *
  * @param <E> The type of elements stored within the list.
- *
- * @version 1.0.0
  */
 public class ArrayList<E> extends DynamicArray implements List<E> {
   /**

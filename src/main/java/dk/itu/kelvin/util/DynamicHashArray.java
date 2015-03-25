@@ -5,8 +5,6 @@ package dk.itu.kelvin.util;
 
 /**
  * Hashing class.
- *
- * @version 1.0.0
  */
 public abstract class DynamicHashArray extends DynamicArray {
   /**

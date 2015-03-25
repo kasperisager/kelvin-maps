@@ -22,11 +22,8 @@ import org.controlsfx.control.PopOver;
 
 /**
  * MenuBar controller class.
- *
- * @version 1.0.0
  */
 public class MenuController {
-
   /**
    * Current Version number.
    */

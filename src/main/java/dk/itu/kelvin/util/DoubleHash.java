@@ -8,8 +8,6 @@ package dk.itu.kelvin.util;
  *
  * @see <a href="http://en.wikipedia.org/wiki/Double_hashing">
  *      http://en.wikipedia.org/wiki/Double_hashing</a>
- *
- * @version 1.0.0
  */
 public final class DoubleHash implements HashResolver {
   /**

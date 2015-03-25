@@ -11,8 +11,6 @@ package dk.itu.kelvin.math;
  *
  * @see <a href="http://stackoverflow.com/q/356807">
  *      http://stackoverflow.com/q/356807</a>
- *
- * @version 1.0.0
  */
 public final class Epsilon {
   /**

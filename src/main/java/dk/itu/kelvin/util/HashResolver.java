@@ -5,8 +5,6 @@ package dk.itu.kelvin.util;
 
 /**
  * Hash collision resolver interface.
- *
- * @version 1.0.0
  */
 public interface HashResolver {
   /**

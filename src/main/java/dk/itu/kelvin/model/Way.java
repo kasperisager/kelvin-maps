@@ -18,7 +18,7 @@ import dk.itu.kelvin.util.Map;
  * A way is an ordered list of 2 to 2,000 nodes.
  *
  * @see <a href="http://wiki.openstreetmap.org/wiki/Way">
- * http://wiki.openstreetmap.org/wiki/Way</a>
+ *      http://wiki.openstreetmap.org/wiki/Way</a>
  */
 public final class Way extends Element<Polyline> {
   /**

@@ -33,8 +33,6 @@ import dk.itu.kelvin.model.Way;
 
 /**
  * Parser class.
- *
- * @version 1.0.0
  */
 public final class ChartParser {
   /**
@@ -417,6 +415,7 @@ public final class ChartParser {
   /**
    * Custom SAX event handler.
    *
+   * <p>
    * This class is simply a proxy between the SAX parser and the ChartParser
    * instance.
    */

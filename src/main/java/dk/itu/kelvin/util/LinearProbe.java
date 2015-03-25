@@ -8,8 +8,6 @@ package dk.itu.kelvin.util;
  *
  * @see <a href="http://en.wikipedia.org/wiki/Linear_probing">
  *      http://en.wikipedia.org/wiki/Linear_probing</a>
- *
- * @version 1.0.0
  */
 public final class LinearProbe implements HashResolver {
   /**

@@ -21,8 +21,6 @@ import dk.itu.kelvin.math.Geometry;
 
 /**
  * Land class.
- *
- * @version 1.0.0
  */
 public final class Land extends Element<Group> {
   /**

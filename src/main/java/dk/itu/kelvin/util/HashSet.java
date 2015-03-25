@@ -11,8 +11,6 @@ import java.util.NoSuchElementException;
  * Hash set class.
  *
  * @param <E> The type of elements stored within the set.
- *
- * @version 1.0.0
  */
 public class HashSet<E> extends DynamicHashArray implements Set<E> {
   /**

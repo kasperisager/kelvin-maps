@@ -10,7 +10,7 @@ import javafx.scene.control.Label;
  * A node describes a 2-dimensional coordinate within a chart.
  *
  * @see <a href="http://wiki.openstreetmap.org/wiki/Node">
- * http://wiki.openstreetmap.org/wiki/Node</a>
+ *      http://wiki.openstreetmap.org/wiki/Node</a>
  */
 public final class Node extends Element<Label> {
   /**
@@ -113,5 +113,4 @@ public final class Node extends Element<Label> {
 
     return label;
   }
-
 }

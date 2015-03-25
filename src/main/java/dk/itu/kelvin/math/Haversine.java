@@ -11,8 +11,6 @@ package dk.itu.kelvin.math;
  *
  * @see <a href="http://rosettacode.org/wiki/Haversine_formula#Java">
  *      http://rosettacode.org/wiki/Haversine_formula#Java</a>
- *
- * @version 1.0.0
  */
 public final class Haversine {
   /**

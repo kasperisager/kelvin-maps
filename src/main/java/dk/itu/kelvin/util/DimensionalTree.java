@@ -14,8 +14,6 @@ import java.util.Comparator;
  *      http://en.wikipedia.org/wiki/K-d_tree</a>
  *
  * @param <E> The type of elements contained within the tree.
- *
- * @version 1.0.0
  */
 public final class DimensionalTree<E> {
   /**

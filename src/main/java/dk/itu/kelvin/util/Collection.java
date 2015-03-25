@@ -7,8 +7,6 @@ package dk.itu.kelvin.util;
  * Collection interface.
  *
  * @param <E> The type of elements stored within the collection.
- *
- * @version 1.0.0
  */
 public interface Collection<E> extends Iterable<E> {
   /**

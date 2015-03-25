@@ -21,8 +21,6 @@ import javafx.fxml.FXML;
 
 /**
  * Application controller class.
- *
- * @version 1.0.0
  */
 public final class ApplicationController {
   /**

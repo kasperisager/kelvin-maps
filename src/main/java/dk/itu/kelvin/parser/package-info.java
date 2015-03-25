@@ -1,5 +1,4 @@
 /**
- * <p>
  * Copyright &copy; 2015 The Authors.
  *
  * <p>

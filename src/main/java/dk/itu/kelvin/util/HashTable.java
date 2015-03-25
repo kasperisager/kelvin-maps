@@ -11,8 +11,6 @@ package dk.itu.kelvin.util;
  *
  * @param <K> The type of keys stored within the table.
  * @param <V> The type of values stored within the table.
- *
- * @version 1.0.0
  */
 public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
   /**

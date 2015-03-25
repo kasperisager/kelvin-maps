@@ -7,8 +7,6 @@ package dk.itu.kelvin.util;
  * List interface.
  *
  * @param <E> The type of elements stored within the list.
- *
- * @version 1.0.0
  */
 public interface List<E> extends Collection<E> {
   /**

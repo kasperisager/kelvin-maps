@@ -16,8 +16,6 @@ import javafx.concurrent.Task;
 
 /**
  * Task queue class.
- *
- * @version 1.0.0
  */
 public final class TaskQueue {
   static {
