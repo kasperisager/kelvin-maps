@@ -4,6 +4,7 @@
 package dk.itu.kelvin.controller;
 
 // JavaFX utilities
+import javafx.scene.input.*;
 import javafx.util.Duration;
 
 // JavaFX application utilities
@@ -11,6 +12,9 @@ import javafx.application.Platform;
 
 // JavaFX scene utilities
 import javafx.geometry.Pos;
+
+// JavaFX events
+import javafx.event.EventHandler;
 
 // JavaFX layout
 import javafx.scene.layout.GridPane;
@@ -22,11 +26,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Path;
 
 // JavaFX input
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.RotateEvent;
-import javafx.scene.input.ScrollEvent;
-import javafx.scene.input.ZoomEvent;
 
 // JavaFX transformations
 import javafx.scene.transform.Affine;
@@ -335,6 +334,11 @@ public final class ChartController {
       Bounds bounds = tf.localToScreen(tf.getBoundsInParent());
 
       this.suggestionVBox = new VBox(this.suggestions.size());
+      this.suggestionVBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        public void handle(final KeyEvent e) {
+          moveHighlight(e);
+        }
+      });
       this.suggestionVBox.setPrefWidth(bounds.getWidth() + 27);
 
       for (String suggestion : this.suggestions) {
@@ -349,7 +353,7 @@ public final class ChartController {
         this.suggestionVBox.getChildren().add(l);
       }
 
-      if (suggestions.size() > 0) {
+      if (this.suggestions.size() > 0) {
         Button s = (Button) this.suggestionVBox.getChildren().get(0);
         s.getStyleClass().add("highlight");
         this.pointer = 0;
@@ -366,6 +370,23 @@ public final class ChartController {
         );
       }
     });
+  }
+
+  /**
+   * To move the highlight up and down in the suggestion popover.
+   * @param e the keyevent.
+   */
+  public void moveHighlight(final KeyEvent e) {
+    if (e.getCode() == KeyCode.UP && this.pointer > 0) {
+      this.pointer--;
+      e.consume();
+      System.out.println(this.pointer);
+    }
+    if (e.getCode() == (KeyCode.DOWN) && this.pointer < 5) {
+      this.pointer++;
+      e.consume();
+      System.out.println(this.pointer);
+    }
   }
 
   /**
@@ -586,14 +607,12 @@ public final class ChartController {
       case UP:
       case K:
       case W:
-        this.pointer++;
         this.chart.pan(0, 15);
         e.consume();
         break;
       case DOWN:
       case J:
       case S:
-        this.pointer--;
         this.chart.pan(0, -15);
         e.consume();
         break;
@@ -656,10 +675,10 @@ public final class ChartController {
    */
   @FXML
   private void findAddress() {
-    if (autocPopOver.isShowing()) {
+    if (this.autocPopOver.isShowing()) {
       Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
       String input = b.getText();
-      addressFrom.setText(b.getText());
+      this.addressFrom.setText(b.getText());
 
       if (input == null) {
         return;
@@ -684,11 +703,11 @@ public final class ChartController {
         this.chart.setPointer(node);
       }
 
-      autocPopOver.hide();
+      this.autocPopOver.hide();
     }
-    else {
+    /*else {
       // Dialog "The address does not exist."
-    }
+    }*/
   }
 
   /**
