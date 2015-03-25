@@ -110,10 +110,8 @@ public final class BoundingBox extends Element<Rectangle> {
    */
   public boolean contains(final float x, final float y) {
     Geometry.Bounds bounds = new Geometry.Bounds(
-      this.top,
-      this.right,
-      this.bottom,
-      this.left
+      new Geometry.Point(this.left, this.top),
+      new Geometry.Point(this.right, this.bottom)
     );
 
     return bounds.contains(new Geometry.Point(x, y));
