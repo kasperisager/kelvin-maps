@@ -103,7 +103,7 @@ public final class Relation extends Element<Group> {
    * @param element The element to add to the relation.
    * @param role    The role of the element within the relation.
    */
-  public void member(final Element element, final Role role) {
+  public void add(final Element element, final Role role) {
     if (element == null || role == null) {
       return;
     }
@@ -120,12 +120,12 @@ public final class Relation extends Element<Group> {
    *
    * @param element The element to add to the relation.
    */
-  public void member(final Element element) {
+  public void add(final Element element) {
     if (element == null) {
       return;
     }
 
-    this.member(element, Role.NONE);
+    this.add(element, Role.NONE);
   }
 
   /**

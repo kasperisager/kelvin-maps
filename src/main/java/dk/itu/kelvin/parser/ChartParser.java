@@ -401,6 +401,7 @@ public final class ChartParser {
 
     Relation relation = (Relation) this.element;
 
+    // Get the reference ID of the member.
     long ref = this.getLong(attributes, "ref");
 
     // Get the role of the member.
@@ -410,13 +411,13 @@ public final class ChartParser {
 
     switch (this.getString(attributes, "type")) {
       case "node":
-        relation.member(this.nodes.get(ref), role);
+        relation.add(this.nodes.get(ref), role);
         break;
       case "way":
-        relation.member(this.ways.get(ref), role);
+        relation.add(this.ways.get(ref), role);
         break;
       case "relation":
-        relation.member(this.relations.get(ref), role);
+        relation.add(this.relations.get(ref), role);
         break;
       default:
         // Do nothing.
