@@ -3,6 +3,9 @@
  */
 package dk.itu.kelvin.math;
 
+// General utilities
+import java.util.Arrays;
+
 /**
  * Geometry class.
  */
@@ -295,7 +298,7 @@ public final class Geometry {
         );
       }
 
-      this.points = points;
+      this.points = Arrays.copyOf(points, points.length);
     }
   }
 
