@@ -120,10 +120,10 @@ public final class WayTest {
     Node n2 = new Node(56.2298149F, 17.2259972F);
     Node n3 = new Node(57.3398149F, 18.3359972F);
     Node n4 = new Node(55.1198149F, 12.1159972F);
-    w1.node(n1);
-    w1.node(n2);
-    w1.node(n3);
-    w1.node(n4);
+    w1.add(n1);
+    w1.add(n2);
+    w1.add(n3);
+    w1.add(n4);
 
     assertTrue(w1.closed());
 
@@ -132,10 +132,10 @@ public final class WayTest {
     Node n6 = new Node(56.2298149F, 17.2259972F);
     Node n7 = new Node(57.3398149F, 18.3359972F);
     Node n8 = new Node(55.4498149F, 12.4459972F);
-    w2.node(n5);
-    w2.node(n6);
-    w2.node(n7);
-    w2.node(n8);
+    w2.add(n5);
+    w2.add(n6);
+    w2.add(n7);
+    w2.add(n8);
 
     assertFalse(w2.closed());
   }
@@ -153,20 +153,20 @@ public final class WayTest {
     Node n2 = new Node(56.2298149F, 17.2259972F);
     Node n3 = new Node(57.3398149F, 18.3359972F);
     Node n4 = new Node(55.1198149F, 12.1159972F);
-    w1.node(n1);
-    w1.node(n2);
-    w1.node(n3);
-    w1.node(n4);
+    w1.add(n1);
+    w1.add(n2);
+    w1.add(n3);
+    w1.add(n4);
 
     Way w2 = new Way();
     Node n5 = new Node(55.1198149F, 12.1159972F);
     Node n6 = new Node(56.2298149F, 17.2259972F);
     Node n7 = new Node(57.3398149F, 18.3359972F);
     Node n8 = new Node(55.4498149F, 12.4459972F);
-    w2.node(n5);
-    w2.node(n6);
-    w2.node(n7);
-    w2.node(n8);
+    w2.add(n5);
+    w2.add(n6);
+    w2.add(n7);
+    w2.add(n8);
 
     assertTrue(w1.startsIn(w2));
     assertFalse(w1.startsIn(null));
@@ -176,10 +176,10 @@ public final class WayTest {
     Node n10 = new Node(56.2298149F, 17.2259972F);
     Node n11 = new Node(57.3398149F, 18.3359972F);
     Node n12 = new Node(55.1198149F, 12.1159972F);
-    w3.node(n9);
-    w3.node(n10);
-    w3.node(n11);
-    w3.node(n12);
+    w3.add(n9);
+    w3.add(n10);
+    w3.add(n11);
+    w3.add(n12);
 
     // w1 starts in the same coordinates as w3 ends in.
     assertTrue(w1.startsIn(w3));
@@ -197,17 +197,17 @@ public final class WayTest {
     Node n1 = new Node(55.1198149F, 12.1159972F);
     Node n2 = new Node(56.2298149F, 17.2259972F);
     Node n3 = new Node(57.3398149F, 18.3359972F);
-    w1.node(n1);
-    w1.node(n2);
-    w1.node(n3);
+    w1.add(n1);
+    w1.add(n2);
+    w1.add(n3);
 
     Way w2 = new Way();
     Node n4 = new Node(57.3398149F, 18.3359972F);
     Node n5 = new Node(56.2298149F, 17.2259972F);
     Node n6 = new Node(50.3398149F, 10.3359972F);
-    w2.node(n4);
-    w2.node(n5);
-    w2.node(n6);
+    w2.add(n4);
+    w2.add(n5);
+    w2.add(n6);
 
     // w1 ends in the same coordinates as w2 starts in.
     assertTrue(w1.endsIn(w2));
@@ -220,10 +220,10 @@ public final class WayTest {
     Node n10 = new Node(56.2298149F, 17.2259972F);
     Node n11 = new Node(50.3398149F, 10.3359972F);
     Node n12 = new Node(57.3398149F, 18.3359972F);
-    w3.node(n9);
-    w3.node(n10);
-    w3.node(n11);
-    w3.node(n12);
+    w3.add(n9);
+    w3.add(n10);
+    w3.add(n11);
+    w3.add(n12);
 
     // w1 ends in the same coordinates as w3 ends in.
     assertTrue(w1.endsIn(w3));
@@ -246,10 +246,9 @@ public final class WayTest {
     nodes.add(n4);
 
     Way w1 = new Way();
-    w1.nodes(null);
     assertEquals(0, w1.nodes().size());
 
-    w1.nodes(nodes);
+    w1.add(nodes);
     assertEquals(4, w1.nodes().size());
     assertTrue(w1.nodes().contains(n1));
     assertTrue(w1.nodes().contains(n2));
@@ -270,10 +269,10 @@ public final class WayTest {
     Node n3 = new Node(50.3398149F, 10.3359972F);
     Node n4 = new Node(57.3398149F, 18.3359972F);
 
-    w1.node(n1);
-    w1.node(n2);
-    w2.node(n3);
-    w2.node(n4);
+    w1.add(n1);
+    w1.add(n2);
+    w2.add(n3);
+    w2.add(n4);
 
     assertEquals(2, w1.nodes().size());
     w1.append(null);
@@ -297,30 +296,30 @@ public final class WayTest {
     Node n2 = new Node(55.6753869F, 12.5850681F);
     Node n3 = new Node(55.6752059F, 12.5849356F);
     Node n4 = new Node(55.6756510F, 12.5830358F);
-    w1.node(n1);
-    w1.node(n2);
-    w1.node(n3);
-    w1.node(n4);
+    w1.add(n1);
+    w1.add(n2);
+    w1.add(n3);
+    w1.add(n4);
 
     Way w2 = new Way();
     Node n5 = new Node(55.6758241F, 12.5831493F);
     Node n6 = new Node(55.6753869F, 12.5850681F);
     Node n7 = new Node(55.6752059F, 12.5849356F);
     Node n8 = new Node(55.6756510F, 12.5830358F);
-    w2.node(n5);
-    w2.node(n6);
-    w2.node(n7);
-    w2.node(n8);
+    w2.add(n5);
+    w2.add(n6);
+    w2.add(n7);
+    w2.add(n8);
 
     Way w3 = new Way();
     Node n9 = new Node(50.6758241F, 10.5831493F);
     Node n10 = new Node(50.6753869F, 10.5850681F);
     Node n11 = new Node(50.6752059F, 10.5849356F);
     Node n12 = new Node(50.6756510F, 10.5830358F);
-    w3.node(n9);
-    w3.node(n10);
-    w3.node(n11);
-    w3.node(n12);
+    w3.add(n9);
+    w3.add(n10);
+    w3.add(n11);
+    w3.add(n12);
 
     assertFalse(w1.intersects(w3));
     assertFalse(w2.intersects(w3));
@@ -336,30 +335,30 @@ public final class WayTest {
     Node n2 = new Node(52.6753869F, 12.5831593F);
     Node n3 = new Node(52.6753869F, 18.5849356F);
     Node n4 = new Node(56.6758261F, 18.5830358F);
-    w1.node(n1);
-    w1.node(n2);
-    w1.node(n3);
-    w1.node(n4);
+    w1.add(n1);
+    w1.add(n2);
+    w1.add(n3);
+    w1.add(n4);
 
     Way w2 = new Way();
     Node n5 = new Node(55.6758241F, 12.1831493F);
     Node n6 = new Node(53.6753869F, 12.1831493F);
     Node n7 = new Node(53.6753869F, 15.5849356F);
     Node n8 = new Node(55.6758241F, 15.5849356F);
-    w2.node(n5);
-    w2.node(n6);
-    w2.node(n7);
-    w2.node(n8);
+    w2.add(n5);
+    w2.add(n6);
+    w2.add(n7);
+    w2.add(n8);
 
     Way w3 = new Way();
     Node n9 = new Node(55.6758241F, 11.5831493F);
     Node n10 = new Node(53.6753869F, 11.5850681F);
     Node n11 = new Node(53.6753869F, 11.5849356F);
     Node n12 = new Node(55.6758241F, 11.5830358F);
-    w3.node(n9);
-    w3.node(n10);
-    w3.node(n11);
-    w3.node(n12);
+    w3.add(n9);
+    w3.add(n10);
+    w3.add(n11);
+    w3.add(n12);
 
     assertTrue(w1.contains(w2));
     assertFalse(w1.contains(w3));

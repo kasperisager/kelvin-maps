@@ -376,7 +376,7 @@ public final class ChartParser {
       return;
     }
 
-    ((Way) this.element).node(node);
+    ((Way) this.element).add(node);
   }
 
   /**

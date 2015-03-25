@@ -40,7 +40,7 @@ public final class Way extends Element<Polyline> {
    *
    * @return The initial node of the way.
    */
-  protected Node start() {
+  public Node start() {
     if (this.nodes == null) {
       return null;
     }
@@ -53,7 +53,7 @@ public final class Way extends Element<Polyline> {
    *
    * @return The last node of the way.
    */
-  protected Node end() {
+  public Node end() {
     if (this.nodes == null) {
       return null;
     }
@@ -151,7 +151,7 @@ public final class Way extends Element<Polyline> {
    *
    * @param node The node to add to the way.
    */
-  public void node(final Node node) {
+  public void add(final Node node) {
     if (node == null) {
       return;
     }
@@ -168,7 +168,7 @@ public final class Way extends Element<Polyline> {
    *
    * @param nodes The nodes to add to the way.
    */
-  public void nodes(final List<Node> nodes) {
+  public void add(final List<Node> nodes) {
     if (nodes == null || nodes.isEmpty()) {
       return;
     }
@@ -190,7 +190,7 @@ public final class Way extends Element<Polyline> {
       return;
     }
 
-    this.nodes(way.nodes());
+    this.add(way.nodes());
   }
 
   /**
