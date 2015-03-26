@@ -33,7 +33,6 @@ public final class Collections {
    * instantiate the class. We therefore define a private constructor so that
    * noone can create instances of the class other than the class itself.
    *
-   *
    * <p>
    * NB: This does not make the class a singleton. In fact, there never exists
    * an instance of the class since not even the class instantiates itself.

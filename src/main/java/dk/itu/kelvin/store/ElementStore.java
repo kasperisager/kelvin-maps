@@ -10,7 +10,16 @@ import dk.itu.kelvin.util.HashTable;
 import dk.itu.kelvin.model.Element;
 
 /**
- * Element store class.
+ * <h2>HashTable store of elements.</h2>
+ * <p>
+ * Used to store all Node, Way and Relation as HashTables.
+ *
+ * <p>
+ * Elements are stored with an element id as a {@code Long} for {@code key},
+ * the element itself is then stored as {@code E} for {@code value}.
+ *
+ * <p>
+ * Used by ChartParser as the OSM is getting parsed.
  *
  * @param <E> The type of elements contained within the store.
  */
