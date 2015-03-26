@@ -5,6 +5,7 @@ package dk.itu.kelvin.model;
 
 // JUnit annotations
 import org.junit.Test;
+import org.junit.Ignore;
 
 // JUnit assertions
 import static org.junit.Assert.assertEquals;
@@ -46,25 +47,25 @@ public final class WayTest {
   @Test
   public void testOrder() {
     Way w1 = new Way();
-    assertEquals(Element.Order.DEFAULT, w1.order());
-    w1.order(Element.Order.NATURAL_WATER);
-    assertEquals(Element.Order.NATURAL_WATER, w1.order());
+    assertEquals(Way.Order.DEFAULT, w1.order());
+    w1.order(Way.Order.NATURAL_WATER);
+    assertEquals(Way.Order.NATURAL_WATER, w1.order());
 
     Way w2 = new Way();
-    w2.order(Element.Order.HIGHWAY);
+    w2.order(Way.Order.HIGHWAY);
 
     Way w3 = new Way();
-    w3.order(Element.Order.HIGHWAY);
+    w3.order(Way.Order.HIGHWAY);
 
     Way w4 = new Way();
-    w4.order(Element.Order.HIGHWAY_MOTORWAY);
+    w4.order(Way.Order.HIGHWAY_MOTORWAY);
 
     // < 0 first object's order is smaller than the second obejct's order.
     // 0 if there are equal.
     // and > 0 if first is larger than second.
-    assertTrue(Element.compare(w1, w3) < 0);
-    assertTrue(Element.compare(w4, w2) > 0);
-    assertTrue(Element.compare(w2, w3) == 0);
+    assertTrue(Way.compare(w1, w3) < 0);
+    assertTrue(Way.compare(w4, w2) > 0);
+    assertTrue(Way.compare(w2, w3) == 0);
   }
 
   /**
@@ -84,30 +85,29 @@ public final class WayTest {
     Way w4 = new Way();
     w4.layer(2);
 
-    assertTrue(Element.compare(w1, w2) < 0);
-    assertTrue(Element.compare(w1, w3) < 0);
-    assertTrue(Element.compare(w3, w2) > 0);
-    assertTrue(Element.compare(w3, w4) == 0);
+    assertTrue(Way.compare(w1, w2) < 0);
+    assertTrue(Way.compare(w1, w3) < 0);
+    assertTrue(Way.compare(w3, w2) > 0);
+    assertTrue(Way.compare(w3, w4) == 0);
 
     Way n5 = new Way();
-    n5.order(Element.Order.HIGHWAY);
+    n5.order(Way.Order.HIGHWAY);
     n5.layer(0);
 
     Way n6 = new Way();
-    n6.order(Element.Order.HIGHWAY);
+    n6.order(Way.Order.HIGHWAY);
     n6.layer(1);
 
     Way n7 = new Way();
-    n7.order(Element.Order.HIGHWAY_MOTORWAY);
+    n7.order(Way.Order.HIGHWAY_MOTORWAY);
     n7.layer(-2);
 
     Way n8 = new Way();
-    n8.order(Element.Order.HIGHWAY_MOTORWAY);
+    n8.order(Way.Order.HIGHWAY_MOTORWAY);
     n8.layer(-2);
 
-    assertTrue(Element.compare(n5, n6) < 0);
-    assertTrue(Element.compare(n7, n8) == 0);
-
+    assertTrue(Way.compare(n5, n6) < 0);
+    assertTrue(Way.compare(n7, n8) == 0);
   }
 
   /**
@@ -289,6 +289,7 @@ public final class WayTest {
   /**
    * Test wether two roads intersect.
    */
+  @Ignore("Intersection detection has been removed")
   @Test
   public void testIntersect() {
     Way w1 = new Way();
@@ -321,8 +322,8 @@ public final class WayTest {
     w3.add(n11);
     w3.add(n12);
 
-    assertFalse(w1.intersects(w3));
-    assertFalse(w2.intersects(w3));
+    // assertFalse(w1.intersects(w3));
+    // assertFalse(w2.intersects(w3));
   }
 
   /**
