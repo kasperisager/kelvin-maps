@@ -4,7 +4,6 @@
 package dk.itu.kelvin.controller;
 
 // JavaFX utilities
-import javafx.scene.input.*;
 import javafx.util.Duration;
 
 // JavaFX application utilities
@@ -22,7 +21,13 @@ import javafx.scene.layout.VBox;
 // JavaFX shapes
 import javafx.scene.shape.Path;
 
-// JavaFX input
+// JavaFX inputs
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.RotateEvent;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.ZoomEvent;
+
 
 // JavaFX transformations
 import javafx.scene.transform.Affine;
@@ -246,7 +251,7 @@ public final class ChartController {
    * @throws Exception In case of an error. Duh.
    */
   public void initialize() throws Exception {
-    // Sets the parent element inactive untill loaded.
+    // Sets the parent element inactive until loaded.
     this.stackPane.setDisable(true);
     this.propertiesGridPane.getChildren().remove(this.checkboxVBox);
     this.propertiesGridPane.getChildren().remove(this.directionsScrollPane);
@@ -280,6 +285,7 @@ public final class ChartController {
 
         // Sets the chart active after load.
         this.stackPane.setDisable(false);
+        this.addressFrom.requestFocus();
         ApplicationController.removeIcon();
       });
 
@@ -289,8 +295,6 @@ public final class ChartController {
 
     this.createPOI();
     this.createPopOver();
-
-    Platform.runLater(() -> this.addressFrom.requestFocus());
 
     this.autocPopOver = new PopOver();
     this.autocPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
@@ -308,21 +312,26 @@ public final class ChartController {
    * @param tf textfield.
    */
   private void setAutoComplete(final TextField tf) {
-    tf.textProperty().addListener((e2) -> {
+    tf.textProperty().addListener((e) -> {
       this.suggestions.clear();
 
+      // If the input in the textfield is above
+      // The autocomplete_cutoff then add strings to the suggestions arraylist.
       if (tf.getLength() > AUTOCOMPLETE_CUTOFF) {
         for (Address a: this.addresses.keySet()) {
           if (a.toString().toLowerCase().contains(tf.getText().toLowerCase())) {
             this.suggestions.add(a.toString());
           }
 
+          // End the foreach loop
+          // when AutoComplete_max_items limit has been reached.
           if (this.suggestions.size() > AUTOCOMPLETE_MAX_ITEMS) {
             break;
           }
         }
       }
 
+      // Hide the popover if there are no suggestions.
       if (this.suggestions.size() <= 0) {
         this.autocPopOver.hide(Duration.ONE);
         return;
@@ -334,11 +343,12 @@ public final class ChartController {
 
       this.suggestionVBox.setPrefWidth(bounds.getWidth() + 27);
 
+      // Creates and adds buttons to the VBox.
       for (String suggestion : this.suggestions) {
         Button l = new Button(suggestion);
 
         l.setPrefWidth(bounds.getWidth() + 27);
-        l.setOnMouseClicked((event2 -> {
+        l.setOnMouseClicked((e2 -> {
           tf.setText(l.getText());
           this.autocPopOver.hide(Duration.ONE);
           this.findAddress();
@@ -347,22 +357,30 @@ public final class ChartController {
         this.suggestionVBox.getChildren().add(l);
       }
 
+      // The suggestion highlight pointer.
       this.pointer = 0;
+      // Highlights the first suggestion as default.
       Button s = (Button) this.suggestionVBox.getChildren().get(this.pointer);
       s.getStyleClass().add("highlight");
 
-      this.autocPopOver.setContentNode(this.suggestionVBox);
-
+      // Removes the current highlight on mouse enter.
       this.suggestionVBox.setOnMouseEntered((e4 -> {
-        Button hl = (Button) this.suggestionVBox.getChildren().get(this.pointer);
+        Button hl = (Button) this.suggestionVBox
+        .getChildren().get(this.pointer);
         hl.getStyleClass().remove("highlight");
       }));
 
+      // Adds highlight again on mouse exit.
       this.suggestionVBox.setOnMouseExited((e4 -> {
-        Button hl2 = (Button) this.suggestionVBox.getChildren().get(this.pointer);
+        Button hl2 = (Button) this.suggestionVBox
+        .getChildren().get(this.pointer);
         hl2.getStyleClass().add("highlight");
       }));
 
+      // Adds the VBox to the popover.
+      this.autocPopOver.setContentNode(this.suggestionVBox);
+
+      // Makes the popover visible.
       if (!this.autocPopOver.isShowing()) {
         this.autocPopOver.show(
           tf,
@@ -373,14 +391,19 @@ public final class ChartController {
       }
     });
 
+    // Updating the highlight.
     tf.setOnKeyReleased((event -> {
       if (this.suggestions.size() > 0) {
-        this.suggestionVBox.setOnKeyPressed((e) -> {
+        this.suggestionVBox.setOnKeyPressed((e2) -> {
+          // Removes the current highlight.
           Button s = (Button) this.suggestionVBox
           .getChildren().get(this.pointer);
           s.getStyleClass().remove("highlight");
 
-          this.moveHighlight(e);
+          // Moves the pointer and thereby the highlight.
+          this.moveHighlight(e2);
+
+          // Adds a new highlight.
           s = (Button) this.suggestionVBox.getChildren().get(this.pointer);
           s.getStyleClass().add("highlight");
         });
