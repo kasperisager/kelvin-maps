@@ -4,7 +4,18 @@
 package dk.itu.kelvin.util;
 
 /**
- * Quadratic probing algorithm for resolving hash collisions.
+ * <h2>Quadratic probing algorithm for resolving hash collisions.</h2>
+ * <p>
+ * Quadratic probing like other probing algorithms tries to find an empty space
+ * in the {@code keys[] array}, quadratic probe operates by taking the original
+ * hash index and adding successive values of an arbitrary quadratic polynomial
+ * until an open slot is found.
+ *
+ * <p>
+ * This class implements {@link HashResolver}, which contains methods for
+ * solving hash collisions. LinearProbe implements these methods for the
+ * different primitive types and Objects of {@code key} and {@code keys[]},
+ * respectively {@code int, long, float, double and Object}.
  *
  * @see <a href="http://en.wikipedia.org/wiki/Quadratic_probing">
  *      http://en.wikipedia.org/wiki/Quadratic_probing</a>

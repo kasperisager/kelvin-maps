@@ -4,7 +4,20 @@
 package dk.itu.kelvin.util;
 
 /**
- * Double hashing algorithm for resolving hash collisions.
+ * <h2>Double hashing algorithm for resolving hash collisions.</h2>
+ * <p>
+ * Double hash steps through the {@code keys[] array}, however unlike linear
+ * probing and quadratic probing, the interval depends on the data, so that
+ * even values mapping to the same location have different bucket sequences;
+ * this minimizes repeated collisions and the effects of clustering.
+ *
+ * <p>
+ * This class implements {@link HashResolver}, which contains methods for
+ * solving hash collisions. LinearProbe implements these methods for the
+ * different primitive types and Objects of {@code key} and {@code keys[]},
+ * respectively {@code int, long, float, double and Object}.
+ *
+ *
  *
  * @see <a href="http://en.wikipedia.org/wiki/Double_hashing">
  *      http://en.wikipedia.org/wiki/Double_hashing</a>

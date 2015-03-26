@@ -4,7 +4,24 @@
 package dk.itu.kelvin.util;
 
 /**
- * List interface.
+ * <h2>Minimal implementation of List interface</h2>
+ * <p>
+ * An ordered {@link Collection} (also known as a sequence). The user of this
+ * interface has precise control over where in the list each {@code element}
+ * is inserted. The user can access elements by their {@code integer index}
+ * (position in the list), and search for elements in the list, either by
+ * specifying an index position or {@code Object} to search for.
+ *
+ * <p>
+ * Unlike sets, lists typically allow duplicate elements. More formally,
+ * lists typically allow pairs of elements {@code e1} and {@code e2} such
+ * that {@code e1.equals(e2)}, however they don't allow {@code null} elements.
+ *
+ * <p>
+ * The {@code List} interface adds additional methods beyond those specified
+ * in the {@link Collection} interface. Here methods for
+ * {@link #indexOf(Object)}, {@link #get(int)} and {@link #remove(int)} are
+ * added, even though there isn't any implementation of it.
  *
  * @param <E> The type of elements stored within the list.
  */

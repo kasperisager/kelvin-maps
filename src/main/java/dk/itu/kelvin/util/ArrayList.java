@@ -9,7 +9,39 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Array list class.
+ * <h2>Performance optimized minimal ArrayList implementation</h2>
+ * <h3>Implements</h3>
+ * Resizeable array implementation of {@link List} interface. Implements all
+ * optional List operations, and permits all elements not including
+ * {@code null} or {@code collections} that are equal to {@code null}.
+ * In addition to implementing the {@link List} interface this class provides
+ * protected methods for manipulate the size of the array that is used
+ * internally to store the list.
+ *
+ * <h3>Extends</h3>
+ * <p>
+ * The ArrayList extends {@link DynamicArray} that keeps track of the size of
+ * the ArrayList and contains the methods for checking when the array should
+ * resize.
+ *
+ * <h3>Runtime</h3>
+ * <p>
+ * The {@link #get(int)} and {@link #iterator()} operations runs in constant
+ * time. The {@link #add(E)} operation runs in amortized constant time.
+ * The {@link #resize(int)}, {@link #shiftLeft(int, int)} and
+ * {@link #indexOf(Object)} contains operations runs in ~linear time.
+ * The {@link #remove(int)} and {@link #remove(Object)} operations runs in
+ * amortized ~linear time. The {@link #addAll(Collection<? extends E>)}
+ * operation runs in linear time based on the size of the collection to be
+ * added.
+ *
+ * <h3>Notice:</h3>
+ * <p>
+ * The ArrayList has an initial capacity of 2 unless an entire collection or
+ * specific capacity is specified.
+ *
+ *
+ * Remember new add, clear, trimToSize methods
  *
  * @param <E> The type of elements stored within the list.
  */

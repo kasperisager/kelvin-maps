@@ -4,7 +4,17 @@
 package dk.itu.kelvin.util;
 
 /**
- * Hashing class.
+ * <h2>Minimal implementation for calculating hash values.</h2>
+ * <p>
+ * DynamicHashArray provides method {@link #hash(int)} for computing a
+ * {@code hash} from a specific key and returning it as an {@code integer}.
+ * The hash methods allow for different types of key, both primitive and Object
+ * respectively {@code int, long, float, double and Object}.
+ * If key is not an integer, the {@link #hash(int)} is called with
+ * {@code Type.hashcode(key)} as the parameter.
+ *
+ *
+ * @version 1.0.0
  */
 public abstract class DynamicHashArray extends DynamicArray {
   /**

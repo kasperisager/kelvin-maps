@@ -7,7 +7,34 @@ package dk.itu.kelvin.util;
 import java.io.Serializable;
 
 /**
- * Dynamic array class.
+ * <h2>Abstract class for keeping array size and resize properties</h2>
+ * <p>
+ * DynamicArray is abstract class for keeping track of array capacity and
+ * number of elements in extending classes, it also has values for when the
+ * arrays should resize and to what capacity it should resize.
+ *
+ * DynamicArray has a single constructor, {@code capacity} that represents the
+ * size of the array, {@code upperLoadFactor} that specifies a factor for when
+ * the array needs to resize to a bigger array, {@code upperResizeFactor} that
+ * specifies a factor for how many times bigger the new capacity should be,
+ * {@code lowerLoadFactor} that specifies a factor for when the array needs to
+ * resize to a smaller array, {@code lowerResizeFactor} that specifies a factor
+ * for how many times smaller the new capacity should be.
+ *
+ * DynamicArray keeping track of the number of elements in the array, it also
+ * provides methods: {@link #size()} for returning current number of elements
+ * in array, {@link #isEmpty()} for returning whether there is any elements in
+ * the array, {@link #capacity} for returning the current size of the array.
+ *
+ * Additionally there is {@link #grow()} and {@link #shrink()} for growing and
+ * shrinking the array, which is called every time an element is remove or
+ * added from the extending classes.
+ *
+ * {@link #resize(int)} is used by {@link #grow()} and {@link #shrink()} and is
+ * therefore abstract so extending classes needs to write their own
+ * implementation.
+ *
+ * @version 1.0.0
  */
 public abstract class DynamicArray implements Serializable {
   /**
