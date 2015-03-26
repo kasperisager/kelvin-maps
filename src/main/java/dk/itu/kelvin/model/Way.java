@@ -3,6 +3,9 @@
  */
 package dk.itu.kelvin.model;
 
+// General utilities
+import java.util.Comparator;
+
 // JavaFX shapes
 import javafx.scene.shape.Polyline;
 
@@ -27,6 +30,40 @@ public final class Way extends Element<Polyline> {
   private static final long serialVersionUID = 67;
 
   /**
+   * Comparator for comparing the drawing layer and order of two ways.
+   */
+  public static final Comparator<Way> COMPARATOR =
+    new Comparator<Way>() {
+    /**
+     * Compare two ways taking into account their drawing layer and drawing
+     * order.
+     *
+     * @param a The first way.
+     * @param b The second way.
+     * @return  A negative integer, zero, or a positive integer as the first way
+     *          is less than, equal to, or greater than the second way.
+     */
+    @Override
+    public int compare(final Way a, final Way b) {
+      return Way.compare(a, b);
+    }
+  };
+
+  /**
+   * Drawing order of the way.
+   *
+   * <p>
+   * The order is initialized on-demand when first accessed to avoid allocating
+   * memory to never-used orders.
+   */
+  private Order order;
+
+  /**
+   * Drawing layer of the way.
+   */
+  private int layer;
+
+  /**
    * List of nodes contained within the way.
    *
    * <p>
@@ -34,6 +71,50 @@ public final class Way extends Element<Polyline> {
    * memory to empty lists.
    */
   private List<Node> nodes;
+
+  /**
+   * Get the order of the element.
+   *
+   * @return The order of the element.
+   */
+  public final Order order() {
+    if (this.order == null) {
+      return Order.DEFAULT;
+    }
+
+    return this.order;
+  }
+
+  /**
+   * Set the order of the element.
+   *
+   * @param order The order of the element.
+   */
+  public final void order(final Order order) {
+    if (order == null) {
+      return;
+    }
+
+    this.order = order;
+  }
+
+  /**
+   * Get the layer of the element.
+   *
+   * @return The layer of the element.
+   */
+  public final int layer() {
+    return this.layer;
+  }
+
+  /**
+   * Set the layer of the element.
+   *
+   * @param layer The layer of the element.
+   */
+  public final void layer(final int layer) {
+    this.layer = layer;
+  }
 
   /**
    * Get the initial node of the way.
@@ -87,8 +168,8 @@ public final class Way extends Element<Polyline> {
   }
 
   /**
-   * Check if the current way starts in the same node as another way either
-   * ends or starts.
+   * Check if the current way starts in the same node as another way either ends
+   * or starts.
    *
    * @param way The way to check against.
    * @return    Boolean indicating whether or not the current way starts in
@@ -106,31 +187,23 @@ public final class Way extends Element<Polyline> {
       return false;
     }
 
-    return (
-      this.start().equals(way.start())
-      ||
-      this.start().equals(way.end())
-    );
+    return (this.start().equals(way.start()) || this.start().equals(way.end()));
   }
 
   /**
-   * Check if the current way end in the same node as another way either
-   * ends or starts.
+   * Check if the current way end in the same node as another way either ends or
+   * starts.
    *
    * @param way The way to check against.
-   * @return    Boolean indicating whether or not the current way ends in
-   *            either the end or start node of the specified way.
+   * @return    Boolean indicating whether or not the current way ends in either
+   *            the end or start node of the specified way.
    */
   public boolean endsIn(final Way way) {
     if (way == null) {
       return false;
     }
 
-    return (
-      this.end().equals(way.start())
-      ||
-      this.end().equals(way.end())
-    );
+    return (this.end().equals(way.start()) || this.end().equals(way.end()));
   }
 
   /**
@@ -232,31 +305,12 @@ public final class Way extends Element<Polyline> {
       }
     }
 
-    for (Node node: this.nodes()) {
+    for (Node node: this.nodes) {
       polyline.getPoints().add((double) node.x());
       polyline.getPoints().add((double) node.y());
     }
 
     return polyline;
-  }
-
-  /**
-   * Does the current way intersect the specified way?.
-   *
-   * @param way The way to check intersection of.
-   * @return    Boolean indicating whether or not the current way intersects the
-   *            specified way.
-   */
-  public boolean intersects(final Way way) {
-    if (way == null) {
-      return false;
-    }
-
-    Polyline polyline = this.render();
-
-    return polyline.intersects(
-      polyline.parentToLocal(way.render().getBoundsInParent())
-    );
   }
 
   /**
@@ -281,6 +335,119 @@ public final class Way extends Element<Polyline> {
       polyline.contains(polyline.parentToLocal(
         way.end().x(), way.end().y())
       )
+    );
+  }
+
+  /**
+   * Enumerator describing the drawing order of different ways.
+   *
+   * <p>
+   * The declaration order of the enumerator elements is what determines the
+   * drawing order. Elements declared first are thus drawn first and appear
+   * below elements declared after.
+   */
+  public static enum Order {
+    /** Water draw order. */
+    NATURAL_WATER,
+
+    /** Default draw order. */
+    DEFAULT,
+
+    /** Default natural draw order. */
+    NATURAL,
+
+    /** Default landuse draw order. */
+    LANDUSE,
+
+    /** Default waterway draw order. */
+    WATERWAY,
+
+    /** Islands. */
+    PLACE_ISLAND,
+
+    /** Default leisure draw order. */
+    LEISURE,
+
+    /** Default highway draw order. */
+    HIGHWAY,
+
+    /** Building draw order. */
+    BUILDING,
+
+    /** Service highway draw order. */
+    HIGHWAY_SERVICE,
+
+    /** Residential highway draw order. */
+    HIGHWAY_RESIDENTIAL,
+
+    /** Tertiary highway draw order. */
+    HIGHWAY_TERTIARY,
+
+    /** Secondary highway draw order. */
+    HIGHWAY_SECONDARY,
+
+    /** Primary highway draw order. */
+    HIGHWAY_PRIMARY,
+
+    /** Trunk highway draw order. */
+    HIGHWAY_TRUNK,
+
+    /** Motorway highway draw order. */
+    HIGHWAY_MOTORWAY;
+
+    /**
+     * Number of enumerator elements.
+     */
+    public static final int SIZE = Order.values().length;
+
+    /**
+     * Convert a key and value to an enumerator element.
+     *
+     * @param key   The "key" of the enumerator element.
+     * @param value The "value" of the enumerator element.
+     * @return      The enumerator element if found, otherwise null;
+     */
+    public static final Order fromString(final String key, final String value) {
+      if (key == null || value == null) {
+        return null;
+      }
+
+      for (Order order: Order.values()) {
+        if (
+          order.toString().equalsIgnoreCase(String.format("%s_%s", key, value))
+          ||
+          order.toString().equalsIgnoreCase(key)
+        ) {
+          return order;
+        }
+      }
+
+      return null;
+    }
+  }
+
+  /**
+   * Compare two ways taking into account their drawing layer and drawing order.
+   *
+   * @param a The first way.
+   * @param b The second way.
+   * @return  A negative integer, zero, or a positive integer as the first way
+   *          is less than, equal to, or greater than the second way.
+   */
+  public static final int compare(final Way a, final Way b) {
+    if (a == null && b == null) {
+      return 0;
+    }
+    else if (a == null) {
+      return -1;
+    }
+    else if (b == null) {
+      return 1;
+    }
+
+    return Integer.compare(
+      a.order().ordinal() + (Order.SIZE * a.layer()),
+      b.order().ordinal() + (Order.SIZE * b.layer())
     );
   }
 }

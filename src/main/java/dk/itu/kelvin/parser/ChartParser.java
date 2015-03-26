@@ -333,11 +333,15 @@ public final class ChartParser {
       this.address = new Address();
     }
 
-    this.element.order(Element.Order.fromString(k, v));
+    if (this.element instanceof Way) {
+      ((Way) this.element).order(Way.Order.fromString(k, v));
+    }
 
     switch (k) {
       case "layer":
-        this.element.layer(Integer.parseInt(v));
+        if (this.element instanceof Way) {
+          ((Way) this.element).layer(Integer.parseInt(v));
+        }
         break;
 
       case "addr:city":

@@ -87,15 +87,7 @@ public final class Node extends Element<Label> {
 
     Node node = (Node) object;
 
-    return (
-      this.order() == node.order()
-      &&
-      this.layer() == node.layer()
-      &&
-      this.x == node.x()
-      &&
-      this.y == node.y()
-    );
+    return (this.x == node.x() && this.y == node.y());
   }
 
   /**
@@ -106,8 +98,6 @@ public final class Node extends Element<Label> {
   @Override
   public int hashCode() {
     long bits = 7L;
-    bits = 31L * bits + (long) this.order().ordinal();
-    bits = 31L * bits + (long) this.layer();
     bits = 31L * bits + Double.doubleToLongBits(this.x);
     bits = 31L * bits + Double.doubleToLongBits(this.y);
 
