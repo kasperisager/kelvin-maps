@@ -66,6 +66,22 @@ public final class Geometry {
   }
 
   /**
+   * Check if the bounds of two shapes intersect.
+   *
+   * @param a The first shape.
+   * @param b The second shape.
+   * @return  A boolean indicating whether or not the bounds of the shapes
+   *          intersect.
+   */
+  public static boolean intersects(final Shape a, final Shape b) {
+    if (a == null || b == null) {
+      return false;
+    }
+
+    return Geometry.intersects(a.bounds(), b.bounds());
+  }
+
+  /**
    * Calculate the line-line intersection between the specified line segments.
    *
    * @see <a href="http://en.wikipedia.org/wiki/Line%E2%80%93line_intersection">
@@ -82,7 +98,7 @@ public final class Geometry {
 
     // Check if the rectangular bounds of the lines intersect before doing any
     // further computations.
-    if (!Geometry.intersects(new Geometry.Bounds(a), new Geometry.Bounds(b))) {
+    if (!Geometry.intersects(a, b)) {
       return null;
     }
 
@@ -178,6 +194,19 @@ public final class Geometry {
   }
 
   /**
+   * The {@link Shape} interface describes a generic geometric shape with a set
+   * of rectangular bounds.
+   */
+  public interface Shape {
+    /**
+     * Get the bounds of the shape.
+     *
+     * @return The bounds of the shape.
+     */
+    Bounds bounds();
+  }
+
+  /**
    * The {@link Line} class describes a line between two points in 2-dimensional
    * space.
    *
@@ -185,7 +214,7 @@ public final class Geometry {
    * <b>OBS:</b> This class is only meant to be used for intermediate results.
    * It should never be stored anywhere other than a local variable at most.
    */
-  public static final class Line {
+  public static final class Line implements Shape {
     /**
      * The starting point of the line.
      */
@@ -281,6 +310,24 @@ public final class Geometry {
       );
     }
 
+    /**
+     * Get the bounds of the line.
+     *
+     * @return The bounds of the line.
+     */
+    public Bounds bounds() {
+      return new Bounds(
+        new Point(
+          Math.min(this.start.x, this.end.x),
+          Math.min(this.start.y, this.end.y)
+        ),
+        new Point(
+          Math.max(this.start.x, this.end.x),
+          Math.max(this.start.y, this.end.y)
+        )
+      );
+    }
+
     @Override
     public String toString() {
       return "Line["
@@ -298,7 +345,7 @@ public final class Geometry {
    * <b>OBS:</b> This class is only meant to be used for intermediate results.
    * It should never be stored anywhere other than a local variable at most.
    */
-  public static final class Polyline {
+  public static final class Polyline implements Shape {
     /**
      * The points contained within the polyline.
      */
@@ -387,7 +434,7 @@ public final class Geometry {
      */
     public boolean contains(final Point point) {
       for (int i = 0; i < this.points.length - 1;) {
-        Line line = new Geometry.Line(this.points[i++], this.points[i]);
+        Line line = new Line(this.points[i++], this.points[i]);
 
         if (line.contains(point)) {
           return true;
@@ -395,6 +442,42 @@ public final class Geometry {
       }
 
       return false;
+    }
+
+    /**
+     * Get the bounds of the polyline.
+     *
+     * @return The bounds of the polyline.
+     */
+    public Bounds bounds() {
+      Point first = this.points[0];
+
+      double minX = first.x;
+      double minY = first.y;
+      double maxX = first.x;
+      double maxY = first.y;
+
+      for (int i = 1; i < this.points.length; i++) {
+        Point point = this.points[i];
+
+        if (Epsilon.less(point.x, minX)) {
+          minX = point.x;
+        }
+
+        if (Epsilon.less(point.y, minY)) {
+          minY = point.y;
+        }
+
+        if (Epsilon.greater(point.x, maxX)) {
+          maxX = point.x;
+        }
+
+        if (Epsilon.greater(point.y, maxY)) {
+          maxY = point.y;
+        }
+      }
+
+      return new Bounds(new Point(minX, minY), new Point(maxX, maxY));
     }
 
     @Override
@@ -423,7 +506,7 @@ public final class Geometry {
    * <b>OBS:</b> This class is only meant to be used for intermediate results.
    * It should never be stored anywhere other than a local variable at most.
    */
-  public static final class Circle {
+  public static final class Circle implements Shape {
     /**
      * The center of the circle.
      */
@@ -502,6 +585,24 @@ public final class Geometry {
       return Math.pow(this.radius, 2) * Math.PI;
     }
 
+    /**
+     * Get the bounds of the circle.
+     *
+     * @return The bounds of the circle.
+     */
+    public Bounds bounds() {
+      return new Bounds(
+        new Point(
+          this.center.x - this.radius,
+          this.center.y - this.radius
+        ),
+        new Point(
+          this.center.x + this.radius,
+          this.center.y + this.radius
+        )
+      );
+    }
+
     @Override
     public String toString() {
       return "Circle["
@@ -519,7 +620,7 @@ public final class Geometry {
    * <b>OBS:</b> This class is only meant to be used for intermediate results.
    * It should never be stored anywhere other than a local variable at most.
    */
-  public static final class Rectangle {
+  public static final class Rectangle implements Shape {
     /**
      * The position of the rectangle.
      */
@@ -600,6 +701,21 @@ public final class Geometry {
       return this.width * this.height;
     }
 
+    /**
+     * Get the bounds of the rectangle.
+     *
+     * @return The bounds of the rectangle.
+     */
+    public Bounds bounds() {
+      return new Bounds(
+        this.position,
+        new Point(
+          this.position.x + this.width,
+          this.position.y + this.height
+        )
+      );
+    }
+
     @Override
     public String toString() {
       return "Rectangle["
@@ -651,91 +767,6 @@ public final class Geometry {
 
       this.min = min;
       this.max = max;
-    }
-
-    /**
-     * Initialize the bounds of a {@link Line}.
-     *
-     * @param line The line whose bounds to initialize.
-     */
-    public Bounds(final Line line) {
-      if (line == null) {
-        throw new RuntimeException(
-          "Cannot initialize Bounds without a valid shape"
-        );
-      }
-
-      this.min = new Geometry.Point(
-        Math.min(line.start.x, line.end.x),
-        Math.min(line.start.y, line.end.y)
-      );
-
-      this.max = new Geometry.Point(
-        Math.max(line.start.x, line.end.x),
-        Math.max(line.start.y, line.end.y)
-      );
-    }
-
-    /**
-     * Initialize the bounds of a {@link Polyline}.
-     *
-     * @param polyline The polyline whose bounds to initialize.
-     */
-    public Bounds(final Polyline polyline) {
-      if (polyline == null) {
-        throw new RuntimeException(
-          "Cannot initialize Bounds without a valid shape"
-        );
-      }
-
-      Point first = polyline.points[0];
-
-      double minX = first.x;
-      double minY = first.y;
-      double maxX = first.x;
-      double maxY = first.y;
-
-      for (int i = 1; i < polyline.points.length; i++) {
-        Point point = polyline.points[i];
-
-        if (Epsilon.less(point.x, minX)) {
-          minX = point.x;
-        }
-
-        if (Epsilon.less(point.y, minY)) {
-          minY = point.y;
-        }
-
-        if (Epsilon.greater(point.x, maxX)) {
-          maxX = point.x;
-        }
-
-        if (Epsilon.greater(point.y, maxY)) {
-          maxY = point.y;
-        }
-      }
-
-      this.min = new Geometry.Point(minX, minY);
-      this.max = new Geometry.Point(maxX, maxY);
-    }
-
-    /**
-     * Initialize the bounds of a {@link Rectangle}.
-     *
-     * @param rectangle The rectangle whose bounds to initialize.
-     */
-    public Bounds(final Rectangle rectangle) {
-      if (rectangle == null) {
-        throw new RuntimeException(
-          "Cannot initialize Bounds without a valid shape"
-        );
-      }
-
-      this.min = rectangle.position;
-      this.max = new Geometry.Point(
-        this.min.x + rectangle.width,
-        this.min.y + rectangle.height
-      );
     }
 
     /**
