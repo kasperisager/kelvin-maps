@@ -308,7 +308,7 @@ public final class ChartController {
   }
 
   /**
-   * sets autocomplete for textfields.
+   * Sets autocomplete for textfields.
    * @param tf textfield.
    */
   private void setAutoComplete(final TextField tf) {
@@ -324,7 +324,7 @@ public final class ChartController {
           }
 
           // End the foreach loop
-          // when AutoComplete_max_items limit has been reached.
+          // if AutoComplete_max_items limit has been reached.
           if (this.suggestions.size() > AUTOCOMPLETE_MAX_ITEMS) {
             break;
           }
@@ -351,7 +351,12 @@ public final class ChartController {
         l.setOnMouseClicked((e2 -> {
           tf.setText(l.getText());
           this.autocPopOver.hide(Duration.ONE);
-          this.findAddress();
+          if (tf.getId().equals("addressFrom")) {
+            this.findAddress();
+          }
+          else if (tf.getId().equals("addressTo")) {
+            this.findRoute();
+          }
         }));
 
         this.suggestionVBox.getChildren().add(l);
@@ -360,21 +365,16 @@ public final class ChartController {
       // The suggestion highlight pointer.
       this.pointer = 0;
       // Highlights the first suggestion as default.
-      Button s = (Button) this.suggestionVBox.getChildren().get(this.pointer);
-      s.getStyleClass().add("highlight");
+      this.addStyle();
 
       // Removes the current highlight on mouse enter.
       this.suggestionVBox.setOnMouseEntered((e4 -> {
-        Button hl = (Button) this.suggestionVBox
-        .getChildren().get(this.pointer);
-        hl.getStyleClass().remove("highlight");
+        this.removeStyle();
       }));
 
       // Adds highlight again on mouse exit.
       this.suggestionVBox.setOnMouseExited((e4 -> {
-        Button hl2 = (Button) this.suggestionVBox
-        .getChildren().get(this.pointer);
-        hl2.getStyleClass().add("highlight");
+        this.addStyle();
       }));
 
       // Adds the VBox to the popover.
@@ -396,19 +396,32 @@ public final class ChartController {
       if (this.suggestions.size() > 0) {
         this.suggestionVBox.setOnKeyPressed((e2) -> {
           // Removes the current highlight.
-          Button s = (Button) this.suggestionVBox
-          .getChildren().get(this.pointer);
-          s.getStyleClass().remove("highlight");
+          this.removeStyle();
 
           // Moves the pointer and thereby the highlight.
           this.moveHighlight(e2);
 
           // Adds a new highlight.
-          s = (Button) this.suggestionVBox.getChildren().get(this.pointer);
-          s.getStyleClass().add("highlight");
+          this.addStyle();
         });
       }
     }));
+  }
+
+  /**
+   * Add the highlight styleclass to specific button.
+   */
+  public void addStyle() {
+    Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
+    b.getStyleClass().add("highlight");
+  }
+
+  /**
+   * Remove highlight styleclass from a specific button.
+   */
+  public void removeStyle() {
+    Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
+    b.getStyleClass().remove("highlight");
   }
 
   /**
@@ -760,22 +773,52 @@ public final class ChartController {
    */
   @FXML
   private void findRoute() {
-    if (!this.addressFrom.getText().trim().equals("")
-      && !this.addressTo.getText().trim().equals("")) {
-      Address startAddress = Address.parse(this.addressFrom.getText());
-      Address endAddress = Address.parse(this.addressTo.getText());
-      Node startPosition = this.addresses.find(startAddress);
-      Node endPosition = this.addresses.find(endAddress);
+    if (this.autocPopOver.isShowing()) {
+      Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
+      String endInput = b.getText();
+      this.addressTo.setText(b.getText());
 
-      System.out.println("X: " + startPosition.x() + " " + "Y: "
-        + startPosition.y());
-      System.out.println("X: " + endPosition.x() + " " + "Y: "
-        + endPosition.y());
+      String startInput = this.addressFrom.getText();
 
+      if (endInput == null || startInput == null) {
+        return;
+      }
+
+      endInput = endInput.trim();
+      startInput = startInput.trim();
+
+      if (endInput.isEmpty() || startInput.isEmpty()) {
+        return;
+      }
+
+      Address startAddress = Address.parse(startInput);
+      Address endAddress = Address.parse(endInput);
+
+      if (endAddress == null || startAddress == null) {
+        return;
+      }
+
+      Node startNode = this.addresses.find(startAddress);
+      Node endNode = this.addresses.find(endAddress);
+
+      // showRouteOnMap(startAddress, endAddress);
+
+      System.out.println("X: " + startNode.x() + " " + "Y: "
+      + startNode.y());
+      System.out.println("X: " + endNode.x() + " " + "Y: "
+      + endNode.y());
+
+      this.autocPopOver.hide();
     }
+    /*else {
+      // Dialog "The address does not exist."
+    }*/
 
-    this.propertiesGridPane.getChildren().add(this.directionsScrollPane);
-    this.moveCompass(400);
+    if (!this.propertiesGridPane.getChildren()
+        .contains(this.directionsScrollPane)) {
+      this.propertiesGridPane.getChildren().add(this.directionsScrollPane);
+      this.moveCompass(400);
+    }
 
     int stack = 30;
     for (int i = 0; i < stack; i++) {
@@ -791,7 +834,6 @@ public final class ChartController {
 
       hbox.getChildren().addAll(icon, label);
       this.directionsVBox.getChildren().add(hbox);
-
     }
   }
 
@@ -837,6 +879,9 @@ public final class ChartController {
     String to = this.addressTo.getText();
     this.addressFrom.setText(to);
     this.addressTo.setText(from);
+    if (this.autocPopOver.isShowing()) {
+      this.autocPopOver.hide(new Duration(0));
+    }
   }
 
   /**
@@ -870,4 +915,5 @@ public final class ChartController {
   private void setScaleLenght(final double length) {
     this.scaleIndicatorLabel.setPrefWidth(length);
   }
+
 }
