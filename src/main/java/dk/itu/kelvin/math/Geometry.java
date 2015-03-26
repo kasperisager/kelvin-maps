@@ -122,22 +122,6 @@ public final class Geometry {
   }
 
   /**
-   * Calculate the distance between the specified points.
-   *
-   * @param a The first point.
-   * @param b The second point.
-   * @return  The distance between points {@code a} and {@code b} or {@code -1}
-   *          if either of them are {@code null}.
-   */
-  private static double distance(final Point a, final Point b) {
-    if (a == null || b == null) {
-      return -1;
-    }
-
-    return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
-  }
-
-  /**
    * The {@link Point} class describes a coordinate in 2-dimensional space.
    *
    * <p>
