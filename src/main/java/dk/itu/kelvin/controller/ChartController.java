@@ -4,21 +4,14 @@
 package dk.itu.kelvin.controller;
 
 // JavaFX utilities
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.input.*;
 import javafx.util.Duration;
-import javafx.collections.ListChangeListener;
 
 // JavaFX application utilities
 import javafx.application.Platform;
 
 // JavaFX scene utilities
 import javafx.geometry.Pos;
-
-// JavaFX Collections
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 // JavaFX layout
 import javafx.scene.layout.GridPane;
@@ -150,7 +143,7 @@ public final class ChartController {
   /**
    * The dynamic autocomplete results.
    */
-  private ObservableList<String> suggestions = FXCollections.observableArrayList();
+  private List<String> suggestions = new ArrayList<>();
 
   /**
    * Vbox containing the suggestion buttons.
@@ -355,10 +348,20 @@ public final class ChartController {
       }
 
       this.pointer = 0;
-      Button s = (Button) this.suggestionVBox.getChildren().get(pointer);
+      Button s = (Button) this.suggestionVBox.getChildren().get(this.pointer);
       s.getStyleClass().add("highlight");
 
       this.autocPopOver.setContentNode(this.suggestionVBox);
+
+      this.suggestionVBox.setOnMouseEntered((e4 -> {
+        Button hl = (Button) this.suggestionVBox.getChildren().get(this.pointer);
+        hl.getStyleClass().remove("highlight");
+      }));
+
+      this.suggestionVBox.setOnMouseExited((e4 -> {
+        Button hl2 = (Button) this.suggestionVBox.getChildren().get(this.pointer);
+        hl2.getStyleClass().add("highlight");
+      }));
 
       if (!this.autocPopOver.isShowing()) {
         this.autocPopOver.show(
@@ -369,38 +372,38 @@ public final class ChartController {
         );
       }
     });
+
     tf.setOnKeyReleased((event -> {
-      if (suggestions.size() > 0) {
+      if (this.suggestions.size() > 0) {
         this.suggestionVBox.setOnKeyPressed((e) -> {
-          Button s = (Button) this.suggestionVBox.getChildren().get(pointer);
+          Button s = (Button) this.suggestionVBox
+          .getChildren().get(this.pointer);
           s.getStyleClass().remove("highlight");
-          moveHighlight(e);
-          s = (Button) this.suggestionVBox.getChildren().get(pointer);
+
+          this.moveHighlight(e);
+          s = (Button) this.suggestionVBox.getChildren().get(this.pointer);
           s.getStyleClass().add("highlight");
         });
       }
     }));
-
   }
 
   /**
-   * To move the highlight up and down in the suggestion popover.
+   * To move the highlight pointer up and down in the suggestion popover.
    * @param e the keyevent.
    */
   public void moveHighlight(final KeyEvent e) {
     switch (e.getCode()) {
       case UP:
-        if (pointer > 0) {
+        if (this.pointer > 0) {
           this.pointer--;
-          System.out.println(pointer);
         }
         e.consume();
         break;
       case DOWN:
-        if (pointer < suggestions.size()-1) {
+        if (this.pointer < this.suggestions.size() - 1) {
           this.pointer++;
         }
-        System.out.println(pointer);
         e.consume();
         break;
       default:
