@@ -36,8 +36,6 @@ package dk.itu.kelvin.util;
  * Some collection implementations have restrictions on the elements that they
  * may contain. No implementing classes allow {@code null} elements.
  *
- * Remember new toArray and set methods
- *
  * @param <E> The type of elements stored within the collection.
  */
 public interface Collection<E> extends Iterable<E> {

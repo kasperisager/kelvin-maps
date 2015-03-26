@@ -34,13 +34,9 @@ import java.util.NoSuchElementException;
  * {@link #addAll(Collection<? extends E>)} operation runs in linear time based
  * on the size of the collection to be added.
  *
- * <h3>Notice:</h3>
  * <p>
  * The ArrayList has an initial capacity of 2 unless an entire collection or
  * specific capacity is specified.
- *
- *
- * Remember new add, clear, trimToSize methods
  *
  * @param <E> The type of elements stored within the list.
  */
