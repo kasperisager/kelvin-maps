@@ -86,7 +86,7 @@ public final class Chart extends Group {
 
     this.bounds = bounds;
 
-    this.pan(-this.bounds.left(), -this.bounds.top());
+    this.pan(-this.bounds.minX(), -this.bounds.minY());
     this.setClip(this.bounds.render());
   }
 
