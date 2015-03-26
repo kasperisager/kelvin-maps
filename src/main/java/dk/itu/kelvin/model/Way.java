@@ -77,7 +77,7 @@ public final class Way extends Element<Polyline> {
    *
    * @return The order of the element.
    */
-  public final Order order() {
+  public Order order() {
     if (this.order == null) {
       return Order.DEFAULT;
     }
@@ -90,7 +90,7 @@ public final class Way extends Element<Polyline> {
    *
    * @param order The order of the element.
    */
-  public final void order(final Order order) {
+  public void order(final Order order) {
     if (order == null) {
       return;
     }
@@ -103,7 +103,7 @@ public final class Way extends Element<Polyline> {
    *
    * @return The layer of the element.
    */
-  public final int layer() {
+  public int layer() {
     return this.layer;
   }
 
@@ -112,7 +112,7 @@ public final class Way extends Element<Polyline> {
    *
    * @param layer The layer of the element.
    */
-  public final void layer(final int layer) {
+  public void layer(final int layer) {
     this.layer = layer;
   }
 
@@ -407,7 +407,7 @@ public final class Way extends Element<Polyline> {
      * @param value The "value" of the enumerator element.
      * @return      The enumerator element if found, otherwise null;
      */
-    public static final Order fromString(final String key, final String value) {
+    public static Order fromString(final String key, final String value) {
       if (key == null || value == null) {
         return null;
       }
@@ -434,7 +434,7 @@ public final class Way extends Element<Polyline> {
    * @return  A negative integer, zero, or a positive integer as the first way
    *          is less than, equal to, or greater than the second way.
    */
-  public static final int compare(final Way a, final Way b) {
+  public static int compare(final Way a, final Way b) {
     if (a == null && b == null) {
       return 0;
     }

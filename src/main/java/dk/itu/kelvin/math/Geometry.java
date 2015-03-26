@@ -291,8 +291,8 @@ public final class Geometry {
   }
 
   /**
-   * The {@link Polyline} class describes a list of connected points that together
-   * form a polyline.
+   * The {@link Polyline} class describes a list of connected points that
+   * together form a polyline.
    */
   public static final class Polyline {
     /**
