@@ -89,26 +89,26 @@ public final class Land extends Element<Group> {
     return new Geometry.Line[] {
       // Top bounds segment.
       new Geometry.Line(
-        new Geometry.Point(this.bounds.left(), this.bounds.top()),
-        new Geometry.Point(this.bounds.right(), this.bounds.top())
+        new Geometry.Point(this.bounds.maxX(), this.bounds.minY()),
+        new Geometry.Point(this.bounds.minX(), this.bounds.minY())
       ),
 
       // Right bounds segment.
       new Geometry.Line(
-        new Geometry.Point(this.bounds.right(), this.bounds.bottom()),
-        new Geometry.Point(this.bounds.right(), this.bounds.top())
+        new Geometry.Point(this.bounds.maxX(), this.bounds.maxY()),
+        new Geometry.Point(this.bounds.maxX(), this.bounds.minY())
       ),
 
       // Bottom bounds segment.
       new Geometry.Line(
-        new Geometry.Point(this.bounds.right(), this.bounds.bottom()),
-        new Geometry.Point(this.bounds.left(), this.bounds.bottom())
+        new Geometry.Point(this.bounds.minX(), this.bounds.maxY()),
+        new Geometry.Point(this.bounds.maxX(), this.bounds.maxY())
       ),
 
       // Left bounds segment.
       new Geometry.Line(
-        new Geometry.Point(this.bounds.left(), this.bounds.top()),
-        new Geometry.Point(this.bounds.left(), this.bounds.bottom())
+        new Geometry.Point(this.bounds.minX(), this.bounds.minY()),
+        new Geometry.Point(this.bounds.minX(), this.bounds.maxY())
       )
     };
   }

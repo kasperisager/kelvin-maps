@@ -25,79 +25,79 @@ public final class BoundingBox extends Element<Rectangle> {
   private static final long serialVersionUID = 19;
 
   /**
-   * The top coordinate of the bounds.
+   * The smallest x-coordinate of the bounds.
    */
-  private float top;
+  private float minX;
 
   /**
-   * The right coordinate of the bounds.
+   * The smallest y-coordinate of the bounds.
    */
-  private float right;
+  private float minY;
 
   /**
-   * The bottom coordinate of the bounds.
+   * The largest x-coordinate of the bounds.
    */
-  private float bottom;
+  private float maxX;
 
   /**
-   * The left coordinate of the bounds.
+   * The largest y-coordinate of the bounds.
    */
-  private float left;
+  private float maxY;
 
   /**
    * Initialize a new bounding box.
    *
-   * @param top     The top coordinate of the bounds.
-   * @param right   The right coordinate of the bounds.
-   * @param bottom  The bottom coordinate of the bounds.
-   * @param left    The left coordinate of the bounds.
+   * @param minX The smallest x-coordinate of the bounds.
+   * @param minY The smallest y-coordinate of the bounds.
+   * @param maxX The largest x-coordinate of the bounds.
+   * @param maxY The largest y-coordinate of the bounds.
    */
   public BoundingBox(
-    final float top,
-    final float right,
-    final float bottom,
-    final float left
+    final float minX,
+    final float minY,
+    final float maxX,
+    final float maxY
   ) {
-    this.top = top;
-    this.right = right;
-    this.bottom = bottom;
-    this.left = left;
+    this.minX = minX;
+    this.minY = minY;
+    this.maxX = maxX;
+    this.maxY = maxY;
   }
 
   /**
-   * Get the top coordinate of the bounds.
+   * Get the smallest x-coordinate of the bounds.
    *
-   * @return The top coordinate of the bounds.
+   * @return The smallest x-coordinate of the bounds.
    */
-  public float top() {
-    return this.top;
+  public float minX() {
+    return this.minX;
   }
 
   /**
-   * Get the right coordinate of the bounds.
+   * Get the smallest y-coordinate of the bounds.
    *
-   * @return The right coordinate of the bounds.
+   * @return The smallest y-coordinate of the bounds.
    */
-  public float right() {
-    return this.right;
+  public float minY() {
+    return this.minY;
   }
 
   /**
-   * Get the bottom coordinate of the bounds.
+   * Get the largest x-coordinate of the bounds.
    *
-   * @return The bottom coordinate of the bounds.
+   * @return The largest x-coordinate of the bounds.
    */
-  public float bottom() {
-    return this.bottom;
+  public float maxX() {
+    return this.maxX;
   }
 
   /**
-   * Get the left coordinate of the bounds.
+   * Get the largest y-coordinate of the bounds.
    *
-   * @return The left coordinate of the bounds.
+   * @return The largest y-coordinate of the bounds.
    */
-  public float left() {
-    return this.left;
+  public float maxY() {
+    return this.maxY;
   }
 
   /**
@@ -110,8 +110,8 @@ public final class BoundingBox extends Element<Rectangle> {
    */
   public boolean contains(final float x, final float y) {
     Geometry.Bounds bounds = new Geometry.Bounds(
-      new Geometry.Point(this.left, this.top),
-      new Geometry.Point(this.right, this.bottom)
+      new Geometry.Point(this.minX, this.minY),
+      new Geometry.Point(this.maxX, this.maxY)
     );
 
     return bounds.contains(new Geometry.Point(x, y));
@@ -158,10 +158,10 @@ public final class BoundingBox extends Element<Rectangle> {
    */
   public Rectangle render() {
     Rectangle rectangle = new Rectangle(
-      this.left,
-      this.top,
-      Math.abs(this.right - this.left),
-      Math.abs(this.top - this.bottom)
+      this.minX,
+      this.minY,
+      Math.abs(this.maxX - this.minX),
+      Math.abs(this.maxY - this.minY)
     );
 
     // Ensure that the bounds of the bounding box are calculated correctly. This
