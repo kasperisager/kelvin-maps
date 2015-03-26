@@ -12,12 +12,27 @@ import java.util.Comparator;
  */
 public final class Collections {
   /**
+   * <h2></h2>
+   * <p>
+   * The {@link #sort(List)} and {@link #sort(List, Comparator)} uses
+   * {link #Arrays.sort(T[], Comparator)} which is an adapted implementation
+   * from Tim Peters's list sort for Python
+   * (@see <a href="http://en.wikipedia.org/wiki/Timsort">
+   * http://en.wikipedia.org/wiki/Timsort</a>). TimSort is a hybrid sorting
+   * algorithm, derived from merge sort and insertion sort.
+   *
+   * <b>Time Complexity</b>
+   * <p>
+   * Worst case: N log(N), Average case: N log(N), Best case: N
+   *
+   * <p>
    * Don't allow instantiation of the class.
    *
    * <p>
    * Since the class only contains static fields and methods, we never want to
    * instantiate the class. We therefore define a private constructor so that
    * noone can create instances of the class other than the class itself.
+   *
    *
    * <p>
    * NB: This does not make the class a singleton. In fact, there never exists
