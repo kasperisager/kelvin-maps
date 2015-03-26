@@ -27,6 +27,22 @@ public final class Geometry {
   }
 
   /**
+   * Calculate the distance between the specified points.
+   *
+   * @param a The first point.
+   * @param b The second point.
+   * @return  The distance between points {@code a} and {@code b} or {@code -1}
+   *          if either of them are {@code null}.
+   */
+  private static double distance(final Point a, final Point b) {
+    if (a == null || b == null) {
+      return -1;
+    }
+
+    return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+  }
+
+  /**
    * Check if two bounds intersect.
    *
    * @param a The first bounds.
@@ -103,22 +119,6 @@ public final class Geometry {
     }
 
     return p;
-  }
-
-  /**
-   * Calculate the distance between the specified points.
-   *
-   * @param a The first point.
-   * @param b The second point.
-   * @return  The distance between points {@code a} and {@code b} or {@code -1}
-   *          if either of them are {@code null}.
-   */
-  private static double distance(final Point a, final Point b) {
-    if (a == null || b == null) {
-      return -1;
-    }
-
-    return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
   }
 
   /**
@@ -293,6 +293,10 @@ public final class Geometry {
   /**
    * The {@link Polyline} class describes a list of connected points that
    * together form a polyline.
+   *
+   * <p>
+   * <b>OBS:</b> This class is only meant to be used for intermediate results.
+   * It should never be stored anywhere other than a local variable at most.
    */
   public static final class Polyline {
     /**
@@ -313,6 +317,101 @@ public final class Geometry {
       }
 
       this.points = Arrays.copyOf(points, points.length);
+    }
+
+    /**
+     * Get the starting point of the polyline.
+     *
+     * @return The starting point of the polyline.
+     */
+    public Point start() {
+      return this.points[0];
+    }
+
+    /**
+     * Get the ending point of the polyline.
+     *
+     * @return The ending point of the polyline.
+     */
+    public Point end() {
+      return this.points[this.points.length - 1];
+    }
+
+    /**
+     * Check if the polyline is closed.
+     *
+     * @return A boolean indicating whether or not the polyline is closed.
+     */
+    public boolean isClosed() {
+      if (this.points.length == 2) {
+        return false;
+      }
+
+      return (
+        Epsilon.equal(this.start().x, this.end().x)
+        &&
+        Epsilon.equal(this.start().y, this.end().y)
+      );
+    }
+
+    /**
+     * Check if the polyline is open.
+     *
+     * @return A boolean indicating whether or not the polyline is open.
+     */
+    public boolean isOpen() {
+      return !this.isClosed();
+    }
+
+    /**
+     * Get the length of the polyline.
+     *
+     * @return The length of the polyline.
+     */
+    public double length() {
+      double length = 0.0;
+
+      for (int i = 0; i < this.points.length - 1;) {
+        length += Geometry.distance(this.points[i++], this.points[i]);
+      }
+
+      return length;
+    }
+
+    /**
+     * Check if the polyline contains the specified point.
+     *
+     * @param point The point to check containment of.
+     * @return      A boolean indicating whether or not the polyline contains
+     *              the specified point.
+     */
+    public boolean contains(final Point point) {
+      for (int i = 0; i < this.points.length - 1;) {
+        Line line = new Geometry.Line(this.points[i++], this.points[i]);
+
+        if (line.contains(point)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder string = new StringBuilder();
+
+      string.append("Polyline[points = [");
+
+      for (int i = 0; i < this.points.length; i++) {
+        if (i != 0) {
+          string.append(", ");
+        }
+
+        string.append(this.points[i]);
+      }
+
+      return string.append("]]").toString();
     }
   }
 
