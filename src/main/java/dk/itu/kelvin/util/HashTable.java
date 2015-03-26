@@ -4,11 +4,11 @@
 package dk.itu.kelvin.util;
 
 /**
- * <h2>Modified minimal hash table implementation</h2>
+ * Modified minimal hash table implementation.
+ *
  * <p>
- * This class implements a {@code hash table}, which maps {@code keys} to
- * {@code values}. Any {@code non-null} objects or variables can be used as
- * a key or as a value.
+ * This class implements a hash table which maps keys to values. Any non-null
+ * objects or variables can be used as a key or as a value.
  *
  * <p>
  * To successfully store and retrieve objects from a hashtable, the objects
@@ -37,9 +37,8 @@ package dk.itu.kelvin.util;
  * {@link #keySet()}, {@link #values()} and {@link #entrySet()} takes linear
  * time complexity, methods {@link #indexOf(Object)}, {@link #get(Object)}
  * and {@link #containsKey(Object)} takes constant time complexity methods
- * {@link #put(K, V)} and {@link #remove(Object)} takes amortized constant
- * time.
- *
+ * {@link #put(Object, Object)} and {@link #remove(Object)} takes amortized
+ * constant time.
  *
  * @see <a href="http://algs4.cs.princeton.edu/34hash/">
  *      http://algs4.cs.princeton.edu/34hash/</a>
@@ -314,7 +313,8 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
   }
 
   /**
-   * <h2>Simple Entry implementation</h2>
+   * Simple Entry implementation.
+   *
    * <p>
    * The {@link Entry} class describes an entry within a hash table.
    *

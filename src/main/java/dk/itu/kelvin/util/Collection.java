@@ -4,39 +4,36 @@
 package dk.itu.kelvin.util;
 
 /**
- * <h2>General simplified implementation of Collection interface</h2>
- * <p>
- * The root interface in the {@code collection hierarchy}. A collection
- * represents a group of objects, known as it's {@code elements}. Some
- * collections allow duplicate elements, others do not. Some are ordered
- * and some are unordered. The Collection class does not provide direct
- * implementations of it's interface. It provides implementations of
- * more specific subinterfaces like {@link List} and {@link Set}.
+ * General simplified implementation of Collection interface.
  *
  * <p>
- * All general-purpose {@code Collection} implementation classes (which
- * typically implement Collection indirectly through one of its
- * {@code subinterfaces}) should provide two "standard" constructors: a void
- * (no arguments) constructor, which creates an empty collection, and a
- * constructor with a single argument of type {@code Collection}, which creates
- * a new collection with the same elements as its argument.
- * Some implementing classes has an additional constructor with a single
- * argument of type {@code int}, which creates a new collection with an initial
- * capacity of it's argument.
+ * The root interface in the collection hierarchy. A collection represents a
+ * group of objects known as its elements. Some collections allow duplicate
+ * elements while others do not. Some are ordered and some are unordered.
+ *
+ * <p>
+ * All general-purpose {@code Collection} implementations (which typically
+ * implement {@link Collection} indirectly through one of its subinterfaces)
+ * should provide two "standard" constructors: a void (no arguments)
+ * constructor, which creates an empty {@link Collection}, and a constructor
+ * with a single argument of type {@code Collection} which creates a new
+ * {@link Collection} with the same elements as its argument.
+ * Some implementing classes contain an additional constructor with a single
+ * argument of type {@code int}, which creates a new {@link Collection} with an
+ * initial capacity of its argument.
  *
  * <p>
  * In effect, the second constructor allows the user to copy any collection,
  * producing an equivalent collection of the desired implementation type.
  * There is no way to enforce this convention (as interfaces cannot contain
- * constructors) but all of the general-purpose Collection implementations
- * in our own collection implementations comply.
- * The third constructor allows the user to save some time setting an initial
- * size of the array, so that unnecessary time isn't used resizing the array.
+ * constructors) but all of the general-purpose {@link Collection}
+ * implementations in our own collection implementations comply.  The third
+ * constructor allows the user to save some time setting an initial size of the
+ * array, so that unnecessary time isn't used resizing the array.
  *
- * Some collection implementations have restrictions on the elements that they
- * may contain. No implementing classes allow {@code null} elements.
- *
- * Remember new toArray and set methods
+ * <p>
+ * Some {@link Collection} implementations have restrictions on the elements
+ * that they may contain. No implementing classes allow {@code null} elements.
  *
  * @param <E> The type of elements stored within the collection.
  */

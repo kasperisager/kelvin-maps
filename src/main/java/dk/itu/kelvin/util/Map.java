@@ -4,7 +4,8 @@
 package dk.itu.kelvin.util;
 
 /**
- * <h2>Minimal implementation of Map interface</h2>
+ * Minimal implementation of Map interface.
+ *
  * <p>
  * An object that maps keys to values. A map cannot contain duplicate keys and
  * each key can map to at most one value.

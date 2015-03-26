@@ -4,17 +4,17 @@
 package dk.itu.kelvin.util;
 
 /**
- * <h2>Hash collision resolver interface.</h2>
+ * Hash collision resolver interface.
+ *
  * <p>
- * HashResolver provides method {@link #resolve} for resolving hash collisions
- * of different key types primitive and Object, respectively
- * {@code int, long, float, double and Object}.
+ * {@link HashResolver} provides the method {@link #resolve} for resolving hash
+ * collisions of different key types, primitives and {@link Object Objects},
+ * respectively {@code int}, {@link long}, {@link float}, {@link double}, and
+ * {@link Object}.
  *
  * <p>
  * The resolve methods will solve hash collisions of different types of key and
- * keys array.
- *
- * @version 1.0.0
+ * key arrays.
  */
 public interface HashResolver {
   /**

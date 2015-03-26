@@ -4,7 +4,8 @@
 package dk.itu.kelvin.util;
 
 /**
- * <h2>Linear probing algorithm for resolving hash collisions.</h2>
+ * Linear probing algorithm for resolving hash collisions.
+ *
  * <p>
  * Linear steps through the {@code keys[] array} one by one until it finds and
  * empty location, if it reaches the end of the array it goes to the beginning
@@ -14,7 +15,8 @@ package dk.itu.kelvin.util;
  * This class implements {@link HashResolver}, which contains methods for
  * solving hash collisions. LinearProbe implements these methods for the
  * different primitive types and Objects of {@code key} and {@code keys[]},
- * respectively {@code int, long, float, double and Object}.
+ * respectively {@code int}, {@link long}, {@link float}, {@link double}, and
+ * {@link Object}.
  *
  * @see <a href="http://en.wikipedia.org/wiki/Linear_probing">
  *      http://en.wikipedia.org/wiki/Linear_probing</a>

@@ -4,7 +4,8 @@
 package dk.itu.kelvin.util;
 
 /**
- * <h2>Minimal implementation of List interface</h2>
+ * Minimal implementation of List interface.
+ *
  * <p>
  * An ordered {@link Collection} (also known as a sequence). The user of this
  * interface has precise control over where in the list each {@code element}

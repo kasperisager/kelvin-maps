@@ -4,7 +4,8 @@
 package dk.itu.kelvin.util;
 
 /**
- * <h2>Quadratic probing algorithm for resolving hash collisions.</h2>
+ * Quadratic probing algorithm for resolving hash collisions.
+ *
  * <p>
  * Quadratic probing like other probing algorithms tries to find an empty space
  * in the {@code keys[] array}, quadratic probe operates by taking the original

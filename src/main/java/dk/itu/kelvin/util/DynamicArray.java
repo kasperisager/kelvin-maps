@@ -7,34 +7,39 @@ package dk.itu.kelvin.util;
 import java.io.Serializable;
 
 /**
- * <h2>Abstract class for keeping array size and resize properties</h2>
+ * Abstract class for keeping array size and resize properties.
+ *
  * <p>
- * DynamicArray is abstract class for keeping track of array capacity and
- * number of elements in extending classes, it also has values for when the
+ * {@link DynamicArray} is abstract class for keeping track of array capacity
+ * and number of elements in extending classes, it also has values for when the
  * arrays should resize and to what capacity it should resize.
  *
- * DynamicArray has a single constructor, {@code capacity} that represents the
- * size of the array, {@code upperLoadFactor} that specifies a factor for when
- * the array needs to resize to a bigger array, {@code upperResizeFactor} that
- * specifies a factor for how many times bigger the new capacity should be,
- * {@code lowerLoadFactor} that specifies a factor for when the array needs to
- * resize to a smaller array, {@code lowerResizeFactor} that specifies a factor
- * for how many times smaller the new capacity should be.
+ * <p>
+ * {@link DynamicArray} has a single constructor with arguments {@code capacity}
+ * that represents the size of the array, {@code upperLoadFactor} that specifies
+ * a factor for when the array needs to resize to a bigger array,
+ * {@code upperResizeFactor} that specifies a factor for how many times bigger
+ * the new capacity should be, {@code lowerLoadFactor} that specifies a factor
+ * for when the array needs to resize to a smaller array, and
+ * {@code lowerResizeFactor} that specifies a factor for how many times smaller
+ * the new capacity should be.
  *
- * DynamicArray keeping track of the number of elements in the array, it also
- * provides methods: {@link #size()} for returning current number of elements
- * in array, {@link #isEmpty()} for returning whether there is any elements in
- * the array, {@link #capacity} for returning the current size of the array.
+ * <p>
+ * {@link DynamicArray} keeps track of the number of elements in the array and
+ * also provides methods {@link #size()} for returning current number of
+ * elements in array, {@link #isEmpty()} for returning whether there is any
+ * elements in the array, and {@link #capacity} for returning the current size
+ * of the array.
  *
+ * <p>
  * Additionally there is {@link #grow()} and {@link #shrink()} for growing and
- * shrinking the array, which is called every time an element is remove or
- * added from the extending classes.
+ * shrinking the array which are called every time an element is added or
+ * removed, respectively, from the array.
  *
- * {@link #resize(int)} is used by {@link #grow()} and {@link #shrink()} and is
- * therefore abstract so extending classes needs to write their own
- * implementation.
- *
- * @version 1.0.0
+ * <p>
+ * {@link #resize(int)} is used by {@link #grow()} and {@link #shrink()} and are
+ * therefore abstract so extending classes need to write their own
+ * implementations.
  */
 public abstract class DynamicArray implements Serializable {
   /**

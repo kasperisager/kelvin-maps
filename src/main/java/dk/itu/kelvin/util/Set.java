@@ -4,7 +4,8 @@
 package dk.itu.kelvin.util;
 
 /**
- * <h2>Sightly simplified implementation of Set interface</h2>
+ * Sightly simplified implementation of Set interface.
+ *
  * <p>
  * A {@link Collection} that contains no duplicate elements. More formally,
  * sets contain no pair of elements {@code e1} and {@code e2} such that
