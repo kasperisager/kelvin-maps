@@ -4,8 +4,11 @@
 package dk.itu.kelvin.controller;
 
 // JavaFX utilities
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.input.*;
 import javafx.util.Duration;
+import javafx.collections.ListChangeListener;
 
 // JavaFX application utilities
 import javafx.application.Platform;
@@ -13,8 +16,9 @@ import javafx.application.Platform;
 // JavaFX scene utilities
 import javafx.geometry.Pos;
 
-// JavaFX events
-import javafx.event.EventHandler;
+// JavaFX Collections
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 // JavaFX layout
 import javafx.scene.layout.GridPane;
@@ -146,7 +150,7 @@ public final class ChartController {
   /**
    * The dynamic autocomplete results.
    */
-  private List<String> suggestions = new ArrayList<>();
+  private ObservableList<String> suggestions = FXCollections.observableArrayList();
 
   /**
    * Vbox containing the suggestion buttons.
@@ -156,7 +160,7 @@ public final class ChartController {
   /**
    * Pointer for highlighting the autocomplete suggestions.
    */
-  private int pointer;
+  private int pointer = 0;
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -311,7 +315,7 @@ public final class ChartController {
    * @param tf textfield.
    */
   private void setAutoComplete(final TextField tf) {
-    tf.setOnKeyReleased((event) -> {
+    tf.textProperty().addListener((e2) -> {
       this.suggestions.clear();
 
       if (tf.getLength() > AUTOCOMPLETE_CUTOFF) {
@@ -334,11 +338,7 @@ public final class ChartController {
       Bounds bounds = tf.localToScreen(tf.getBoundsInParent());
 
       this.suggestionVBox = new VBox(this.suggestions.size());
-      this.suggestionVBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
-        public void handle(final KeyEvent e) {
-          moveHighlight(e);
-        }
-      });
+
       this.suggestionVBox.setPrefWidth(bounds.getWidth() + 27);
 
       for (String suggestion : this.suggestions) {
@@ -348,16 +348,15 @@ public final class ChartController {
         l.setOnMouseClicked((event2 -> {
           tf.setText(l.getText());
           this.autocPopOver.hide(Duration.ONE);
+          this.findAddress();
         }));
 
         this.suggestionVBox.getChildren().add(l);
       }
 
-      if (this.suggestions.size() > 0) {
-        Button s = (Button) this.suggestionVBox.getChildren().get(0);
-        s.getStyleClass().add("highlight");
-        this.pointer = 0;
-      }
+      this.pointer = 0;
+      Button s = (Button) this.suggestionVBox.getChildren().get(pointer);
+      s.getStyleClass().add("highlight");
 
       this.autocPopOver.setContentNode(this.suggestionVBox);
 
@@ -370,6 +369,18 @@ public final class ChartController {
         );
       }
     });
+    tf.setOnKeyReleased((event -> {
+      if (suggestions.size() > 0) {
+        this.suggestionVBox.setOnKeyPressed((e) -> {
+          Button s = (Button) this.suggestionVBox.getChildren().get(pointer);
+          s.getStyleClass().remove("highlight");
+          moveHighlight(e);
+          s = (Button) this.suggestionVBox.getChildren().get(pointer);
+          s.getStyleClass().add("highlight");
+        });
+      }
+    }));
+
   }
 
   /**
@@ -377,15 +388,23 @@ public final class ChartController {
    * @param e the keyevent.
    */
   public void moveHighlight(final KeyEvent e) {
-    if (e.getCode() == KeyCode.UP && this.pointer > 0) {
-      this.pointer--;
-      e.consume();
-      System.out.println(this.pointer);
-    }
-    if (e.getCode() == (KeyCode.DOWN) && this.pointer < 5) {
-      this.pointer++;
-      e.consume();
-      System.out.println(this.pointer);
+    switch (e.getCode()) {
+      case UP:
+        if (pointer > 0) {
+          this.pointer--;
+          System.out.println(pointer);
+        }
+        e.consume();
+        break;
+      case DOWN:
+        if (pointer < suggestions.size()-1) {
+          this.pointer++;
+        }
+        System.out.println(pointer);
+        e.consume();
+        break;
+      default:
+        break;
     }
   }
 
