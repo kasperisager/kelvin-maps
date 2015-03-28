@@ -138,22 +138,31 @@ public final class Geometry {
   }
 
   /**
-   * The {@link Point} class describes a coordinate in 2-dimensional space.
-   *
-   * <p>
-   * <b>OBS:</b> This class is only meant to be used for intermediate results.
-   * It should never be stored anywhere other than a local variable at most.
+   * The {@link Shape} interface describes a generic geometric shape with a set
+   * of rectangular bounds.
    */
-  public static final class Point {
+  public interface Shape {
+    /**
+     * Get the bounds of the shape.
+     *
+     * @return The bounds of the shape.
+     */
+    Bounds bounds();
+  }
+
+  /**
+   * The {@link Point} class describes a coordinate in 2-dimensional space.
+   */
+  public static class Point implements Shape {
     /**
      * The x-coordinate of the point.
      */
-    private final double x;
+    private double x;
 
     /**
      * The y-coordinate of the point.
      */
-    private final double y;
+    private double y;
 
     /**
      * Initialize a point.
@@ -171,7 +180,7 @@ public final class Geometry {
      *
      * @return The x-coordinate of the point.
      */
-    public double x() {
+    public final double x() {
       return this.x;
     }
 
@@ -180,12 +189,24 @@ public final class Geometry {
      *
      * @return The y-coordinate of the point.
      */
-    public double y() {
+    public final double y() {
       return this.y;
     }
 
+    /**
+     * Get the bounds of the point.
+     *
+     * @return The bounds of the point.
+     */
+    public final Bounds bounds() {
+      return new Bounds(
+        new Point(this.x, this.y),
+        new Point(this.x, this.y)
+      );
+    }
+
     @Override
-    public String toString() {
+    public final String toString() {
       return "Point["
       + "x = " + this.x
       + ", y = " + this.y
@@ -194,36 +215,19 @@ public final class Geometry {
   }
 
   /**
-   * The {@link Shape} interface describes a generic geometric shape with a set
-   * of rectangular bounds.
-   */
-  public interface Shape {
-    /**
-     * Get the bounds of the shape.
-     *
-     * @return The bounds of the shape.
-     */
-    Bounds bounds();
-  }
-
-  /**
    * The {@link Line} class describes a line between two points in 2-dimensional
    * space.
-   *
-   * <p>
-   * <b>OBS:</b> This class is only meant to be used for intermediate results.
-   * It should never be stored anywhere other than a local variable at most.
    */
-  public static final class Line implements Shape {
+  public static class Line implements Shape {
     /**
      * The starting point of the line.
      */
-    private final Point start;
+    private Point start;
 
     /**
      * The ending point of the line.
      */
-    private final Point end;
+    private Point end;
 
     /**
      * Initialize a line.
@@ -247,7 +251,7 @@ public final class Geometry {
      *
      * @return The starting point of the line.
      */
-    public Point start() {
+    public final Point start() {
       return this.start;
     }
 
@@ -256,7 +260,7 @@ public final class Geometry {
      *
      * @return The ending point of the line.
      */
-    public Point end() {
+    public final Point end() {
       return this.end;
     }
 
@@ -265,7 +269,7 @@ public final class Geometry {
      *
      * @return The length of the line.
      */
-    public double length() {
+    public final double length() {
       return Geometry.distance(this.start, this.end);
     }
 
@@ -274,7 +278,7 @@ public final class Geometry {
      *
      * @return A boolean indicating whether or not the line is vertical.
      */
-    public boolean isVertical() {
+    public final boolean isVertical() {
       return Epsilon.equal(this.start.x, this.end.x);
     }
 
@@ -283,7 +287,7 @@ public final class Geometry {
      *
      * @return A boolean indicating whether or not the line is horizontal.
      */
-    public boolean isHorizontal() {
+    public final boolean isHorizontal() {
       return Epsilon.equal(this.start.y, this.end.y);
     }
 
@@ -302,7 +306,7 @@ public final class Geometry {
      * @return      A boolean indicating whether or not the line contains the
      *              specified point.
      */
-    public boolean contains(final Point point) {
+    public final boolean contains(final Point point) {
       return Epsilon.equal(
         Geometry.distance(this.start, point)
       + Geometry.distance(point, this.end),
@@ -315,7 +319,7 @@ public final class Geometry {
      *
      * @return The bounds of the line.
      */
-    public Bounds bounds() {
+    public final Bounds bounds() {
       return new Bounds(
         new Point(
           Math.min(this.start.x, this.end.x),
@@ -329,7 +333,7 @@ public final class Geometry {
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
       return "Line["
       + "start = " + this.start
       + ", end = " + this.end
@@ -340,16 +344,12 @@ public final class Geometry {
   /**
    * The {@link Polyline} class describes a list of connected points that
    * together form a polyline.
-   *
-   * <p>
-   * <b>OBS:</b> This class is only meant to be used for intermediate results.
-   * It should never be stored anywhere other than a local variable at most.
    */
-  public static final class Polyline implements Shape {
+  public static class Polyline implements Shape {
     /**
      * The points contained within the polyline.
      */
-    private final Point[] points;
+    private Point[] points;
 
     /**
      * Initialize a polyline.
@@ -371,7 +371,7 @@ public final class Geometry {
      *
      * @return The starting point of the polyline.
      */
-    public Point start() {
+    public final Point start() {
       return this.points[0];
     }
 
@@ -380,7 +380,7 @@ public final class Geometry {
      *
      * @return The ending point of the polyline.
      */
-    public Point end() {
+    public final Point end() {
       return this.points[this.points.length - 1];
     }
 
@@ -389,7 +389,7 @@ public final class Geometry {
      *
      * @return A boolean indicating whether or not the polyline is closed.
      */
-    public boolean isClosed() {
+    public final boolean isClosed() {
       if (this.points.length == 2) {
         return false;
       }
@@ -406,7 +406,7 @@ public final class Geometry {
      *
      * @return A boolean indicating whether or not the polyline is open.
      */
-    public boolean isOpen() {
+    public final boolean isOpen() {
       return !this.isClosed();
     }
 
@@ -415,7 +415,7 @@ public final class Geometry {
      *
      * @return The length of the polyline.
      */
-    public double length() {
+    public final double length() {
       double length = 0.0;
 
       for (int i = 0; i < this.points.length - 1;) {
@@ -432,7 +432,7 @@ public final class Geometry {
      * @return      A boolean indicating whether or not the polyline contains
      *              the specified point.
      */
-    public boolean contains(final Point point) {
+    public final boolean contains(final Point point) {
       for (int i = 0; i < this.points.length - 1;) {
         Line line = new Line(this.points[i++], this.points[i]);
 
@@ -449,7 +449,7 @@ public final class Geometry {
      *
      * @return The bounds of the polyline.
      */
-    public Bounds bounds() {
+    public final Bounds bounds() {
       Point first = this.points[0];
 
       double minX = first.x;
@@ -481,7 +481,7 @@ public final class Geometry {
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
       StringBuilder string = new StringBuilder();
 
       string.append("Polyline[points = [");
@@ -501,21 +501,17 @@ public final class Geometry {
   /**
    * The {@link Circle} class describes a 2-dimensional geometric shape with a
    * center point and a radius.
-   *
-   * <p>
-   * <b>OBS:</b> This class is only meant to be used for intermediate results.
-   * It should never be stored anywhere other than a local variable at most.
    */
-  public static final class Circle implements Shape {
+  public static class Circle implements Shape {
     /**
      * The center of the circle.
      */
-    private final Point center;
+    private Point center;
 
     /**
      * The radius of the circle.
      */
-    private final double radius;
+    private double radius;
 
     /**
      * Initialize a circle.
@@ -545,7 +541,7 @@ public final class Geometry {
      *
      * @return The center of the circle.
      */
-    public Point center() {
+    public final Point center() {
       return this.center;
     }
 
@@ -554,7 +550,7 @@ public final class Geometry {
      *
      * @return The radius of the circle.
      */
-    public double radius() {
+    public final double radius() {
       return this.radius;
     }
 
@@ -563,7 +559,7 @@ public final class Geometry {
      *
      * @return The diameter of the circle.
      */
-    public double diameter() {
+    public final double diameter() {
       return this.radius * 2;
     }
 
@@ -572,7 +568,7 @@ public final class Geometry {
      *
      * @return The circumference of the circle.
      */
-    public double circumference() {
+    public final double circumference() {
       return this.diameter() * Math.PI;
     }
 
@@ -581,7 +577,7 @@ public final class Geometry {
      *
      * @return The area of the circle.
      */
-    public double area() {
+    public final double area() {
       return Math.pow(this.radius, 2) * Math.PI;
     }
 
@@ -590,7 +586,7 @@ public final class Geometry {
      *
      * @return The bounds of the circle.
      */
-    public Bounds bounds() {
+    public final Bounds bounds() {
       return new Bounds(
         new Point(
           this.center.x - this.radius,
@@ -604,7 +600,7 @@ public final class Geometry {
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
       return "Circle["
       + "center = " + this.center
       + ", radius = " + this.radius
@@ -615,26 +611,22 @@ public final class Geometry {
   /**
    * The {@link Rectangle} class describes a 2-dimensional geometric shape with
    * a starting position and a width and height.
-   *
-   * <p>
-   * <b>OBS:</b> This class is only meant to be used for intermediate results.
-   * It should never be stored anywhere other than a local variable at most.
    */
-  public static final class Rectangle implements Shape {
+  public static class Rectangle implements Shape {
     /**
      * The position of the rectangle.
      */
-    private final Point position;
+    private Point position;
 
     /**
      * The width of the rectangle.
      */
-    private final double width;
+    private double width;
 
     /**
      * The height of the rectangle.
      */
-    private final double height;
+    private double height;
 
     /**
      * Initialize a rectangle.
@@ -670,7 +662,7 @@ public final class Geometry {
      *
      * @return The position of the rectangle.
      */
-    public Point position() {
+    public final Point position() {
       return this.position;
     }
 
@@ -679,7 +671,7 @@ public final class Geometry {
      *
      * @return The width of the rectangle.
      */
-    public double width() {
+    public final double width() {
       return this.width;
     }
 
@@ -688,7 +680,7 @@ public final class Geometry {
      *
      * @return The height of the rectangle.
      */
-    public double height() {
+    public final double height() {
       return this.height;
     }
 
@@ -697,7 +689,7 @@ public final class Geometry {
      *
      * @return The area of the rectangle.
      */
-    public double area() {
+    public final double area() {
       return this.width * this.height;
     }
 
@@ -706,7 +698,7 @@ public final class Geometry {
      *
      * @return The bounds of the rectangle.
      */
-    public Bounds bounds() {
+    public final Bounds bounds() {
       return new Bounds(
         this.position,
         new Point(
@@ -717,7 +709,7 @@ public final class Geometry {
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
       return "Rectangle["
       + "position = " + this.position
       + ", width = " + this.width
@@ -734,16 +726,16 @@ public final class Geometry {
    * <b>OBS:</b> This class is only meant to be used for intermediate results.
    * It should never be stored anywhere other than a local variable at most.
    */
-  public static final class Bounds {
+  public static class Bounds {
     /**
      * The smallest point of the bounds.
      */
-    private final Point min;
+    private Point min;
 
     /**
      * The largest point of the bounds.
      */
-    private final Point max;
+    private Point max;
 
     /**
      * Initialize a set of bounds.
@@ -758,15 +750,14 @@ public final class Geometry {
         );
       }
 
-      if (Epsilon.greater(min.x, max.x) || Epsilon.greater(min.y, max.y)) {
-        throw new RuntimeException(
-          "Valid Bounds must contain a minimum point that is smaller than the"
-        + " maximum point"
-        );
-      }
-
-      this.min = min;
-      this.max = max;
+      this.min = new Point(
+        Math.min(min.x, max.x),
+        Math.min(min.y, max.y)
+      );
+      this.max = new Point(
+        Math.max(min.x, max.x),
+        Math.max(min.y, max.y)
+      );
     }
 
     /**
@@ -774,7 +765,7 @@ public final class Geometry {
      *
      * @return The smallest point of the bounds.
      */
-    public Point min() {
+    public final Point min() {
       return this.min;
     }
 
@@ -783,7 +774,7 @@ public final class Geometry {
      *
      * @return The largest point of the bounds.
      */
-    public Point max() {
+    public final Point max() {
       return this.max;
     }
 
@@ -794,24 +785,16 @@ public final class Geometry {
      * @return      A boolean indicating whether or not the bounds contain the
      *              specified point.
      */
-    public boolean contains(final Point point) {
+    public final boolean contains(final Point point) {
       if (point == null) {
         return false;
       }
 
-      return (
-        Epsilon.greaterOrEqual(point.x, this.min.x)
-        &&
-        Epsilon.lessOrEqual(point.x, this.max.x)
-        &&
-        Epsilon.greaterOrEqual(point.y, this.min.y)
-        &&
-        Epsilon.lessOrEqual(point.y, this.max.y)
-      );
+      return Geometry.intersects(this, point.bounds());
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
       return "Bounds["
       + "min = " + this.min
       + ", max = " + this.max
