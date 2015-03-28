@@ -5,54 +5,49 @@ package dk.itu.kelvin.util;
 
 // General utilities
 import java.util.Arrays;
-import java.util.Comparator;
+
+// Math
+import dk.itu.kelvin.math.Geometry;
+import static dk.itu.kelvin.math.Geometry.Bounds;
+import static dk.itu.kelvin.math.Geometry.Point;
+import static dk.itu.kelvin.math.Geometry.Shape;
 
 /**
- * Dimensional tree class.
- *
- * @see <a href="http://en.wikipedia.org/wiki/K-d_tree">
- *      http://en.wikipedia.org/wiki/K-d_tree</a>
- *
- * @param <E> The type of elements contained within the tree.
+ * Point tree class.
  */
-public final class DimensionalTree<E> {
+public class PointTree<E> implements SpatialIndex<E> {
   /**
-   * Array of comparators for each of the dimensions in the tree.
+   * The maximum size of point buckets.
    */
-  private final Comparator<E>[] comparators;
+  private static final int BUCKET_SIZE = 1000;
 
   /**
-   * Number of dimensions in the tree.
+   * The size of the point tree.
    */
-  private final int dimensions;
+  private int size;
 
   /**
-   * The point at which to stop subdividing the tree.
+   * The element descriptor.
    */
-  private final int cutoff;
+  private Element<E, Point> element;
 
   /**
-   * The root node of the dimensional tree.
+   * The root node of the point tree.
    */
-  private final Node root;
+  private Node root;
 
   /**
-   * Initialize a dimensional tree.
+   * Initialize a new point tree.
    *
-   * @param elements    The elements to store in the tree.
-   * @param cutoff      The point at which to stop subdividing the tree.
-   * @param comparators The comparators for each of the dimensions in the tree.
+   * @param elements  The elements to add to the tree.
+   * @param element   The element descriptor to use.
    */
-  @SafeVarargs
   @SuppressWarnings("unchecked")
-  public DimensionalTree(
+  public PointTree(
     final Collection<E> elements,
-    final int cutoff,
-    final Comparator<E>... comparators
+    final Element<E, Point> element
   ) {
-    this.cutoff = cutoff;
-    this.comparators = comparators;
-    this.dimensions = this.comparators.length;
+    this.element = element;
 
     this.root = this.treeify(
       (E[]) elements.toArray(), // Elements
@@ -63,77 +58,22 @@ public final class DimensionalTree<E> {
   }
 
   /**
-   * Initialize a dimensional tree without a cutoff.
+   * Get the size of the point tree.
    *
-   * @param elements    The elements to store in the tree.
-   * @param comparators The comparators for each of the dimensions in the tree.
+   * @return The size of the point tree.
    */
-  @SafeVarargs
-  @SuppressWarnings("unchecked")
-  public DimensionalTree(
-    final Collection<E> elements,
-    final Comparator<E>... comparators
-  ) {
-    this(elements, 0, comparators);
+  public final int size() {
+    return this.size;
   }
 
   /**
-   * Treeify the given elements at the specified depth between the given
-   * indices.
+   * Check if the point tree is empty.
    *
-   * @param elements  The elements to treeify.
-   * @param depth     The current depth of the tree.
-   * @param start     The starting index of the operation.
-   * @param end       The ending index of the operation.
-   * @return          A treeified node if any non-treeified elements were left
-   *                  in the array of elements.
+   * @return A boolean indicating whether or not the point tree is empty.
    */
-  @SuppressWarnings("unchecked")
-  private Node treeify(
-    final E[] elements,
-    final int depth,
-    final int start,
-    final int end
-  ) {
-    int length = end - start;
-
-    // Bail out if there are no elements left to treeify.
-    if (length < 0) {
-      return null;
-    }
-
-    // Return a leaf node if we've reached a single element.
-    if (length == 0) {
-      return new Leaf(elements[start]);
-    }
-
-    // If we're within the cufoff length, store all the remaining elements in
-    // a bucket.
-    if (length <= this.cutoff) {
-      return new Bucket(Arrays.copyOfRange(elements, start, end + 1));
-    }
-
-    // Get the axis to use for the current depth.
-    int axis = depth % this.dimensions;
-
-    // Sort the element between the specified indices using the comparator
-    // associated with the current axis.
-    Arrays.sort(elements, start, end, this.comparators[axis]);
-
-    // Compute the median of the elements.
-    int median = start + length / 2;
-
-    return new Branch(
-      elements[median],
-
-      // Recursively treeify all elements before the median.
-      this.treeify(elements, depth + 1, start, median - 1),
-
-      // Recursively treeify all elements after the median.
-      this.treeify(elements, depth + 1, median + 1, end)
-    );
+  public final boolean isEmpty() {
+    return this.size == 0;
   }
-
 
   /**
    * Check if the tree contains the specified element.
@@ -157,44 +97,213 @@ public final class DimensionalTree<E> {
    * @return        A list of elements contained within the range of the
    *                specified bounds.
    */
-  @SuppressWarnings("unchecked")
-  public Collection<E> range(final Bounds<E>... bounds) {
+  public <B extends Geometry.Bounds> List<E> range(final B bounds) {
     if (bounds == null) {
       return null;
     }
 
-    if (bounds.length != this.dimensions) {
-      throw new RuntimeException(
-        "The number of bounds (" + bounds.length + ") must match the number of"
-      + " dimensions in the tree (" + this.dimensions + ")"
-      );
+    return this.range(bounds, (element) -> {
+      return true;
+    });
+  }
+
+  /**
+   * Find all elements within the range of the specified bounds.
+   *
+   * @param bounds  The bounds to search for elements within.
+   * @return        A list of elements contained within the range of the
+   *                specified bounds.
+   */
+  public <B extends Geometry.Bounds> List<E> range(
+    final B bounds,
+    final Filter<E> filter
+  ) {
+    if (bounds == null) {
+      return null;
     }
 
-    Collection<E> elements = new ArrayList<>();
+    List<E> elements = new ArrayList<>();
 
-    this.root.range(0, elements, bounds);
+    this.root.range(0, elements, bounds, filter);
 
     return elements;
   }
 
   /**
-   * The {@link Bounds} interface describes the bounds of a range search within
-   * the tree.
+   * Treeify the given elements at the specified depth between the given
+   * indices.
+   *
+   * @param elements  The elements to treeify.
+   * @param depth     The current depth of the tree.
+   * @param start     The starting index of the operation.
+   * @param end       The ending index of the operation.
+   * @return          A treeified node if any non-treeified elements were left
+   *                  in the array of elements.
    */
-  @FunctionalInterface
-  public interface Bounds<E> {
-    /**
-     * Check if the bounds contain the specified element.
-     *
-     * @param element The element to check containment of.
-     * @return        A negative integer, zero, or a positive integer as the
-     *                element is smaller, within, or larger than the bounds.
-     */
-    int contains(final E element);
+  private Node treeify(
+    final E[] elements,
+    final int depth,
+    final int start,
+    final int end
+  ) {
+    int length = end - start;
+
+    // Bail out if there are no elements left to treeify.
+    if (length < 0) {
+      return null;
+    }
+
+    // Return a leaf node if we've reached a single element.
+    if (length == 0) {
+      this.size++;
+      return new Leaf(elements[start]);
+    }
+
+    // If we're within the cufoff length, store all the remaining elements in
+    // a bucket.
+    if (length <= BUCKET_SIZE) {
+      this.size += length;
+      return new Bucket(Arrays.copyOfRange(elements, start, end + 1));
+    }
+
+    // Sort the element between the specified indices using the comparator
+    // associated with the current axis.
+    Arrays.sort(elements, start, end + 1, (a, b) -> {
+      return this.compare(depth, a, b);
+    });
+
+    // Compute the median of the elements.
+    int median = start + length / 2;
+
+    this.size++;
+
+    return new Branch(
+      elements[median],
+
+      // Recursively treeify all elements before the median.
+      this.treeify(elements, depth + 1, start, median - 1),
+
+      // Recursively treeify all elements after the median.
+      this.treeify(elements, depth + 1, median + 1, end)
+    );
   }
 
   /**
-   * The {@link Node} class describes a node within a dimensional tree.
+   * Compare two elements at the specified tree depth.
+   *
+   * @param depth The tree depth.
+   * @param a     The first element.
+   * @param b     The second element.
+   * @return      A negative integer, zero, or a positive integer as the first
+   *              element is smaller, equal to, or larger than the second
+   *              element.
+   */
+  private int compare(final int depth, final E a, final E b) {
+    Point ap = this.element.toShape(a);
+    Point bp = this.element.toShape(b);
+
+    if (depth % 2 == 0) {
+      return Double.compare(ap.x(), bp.x());
+    }
+    else {
+      return Double.compare(ap.y(), bp.y());
+    }
+  }
+
+  /**
+   * Compare an element to a set of bounds at the specified depth.
+   *
+   * @param depth   The tree depth.
+   * @param element The element.
+   * @param bounds  The bounds.
+   * @return        A negative integer, zero, or a positive integer as the
+   *                element is smaller, within, or larger than the bounds.
+   */
+  private <B extends Geometry.Bounds> int compare(
+    final int depth,
+    final E element,
+    final B bounds
+  ) {
+    Point ep = this.element.toShape(element);
+
+    if (depth % 2 == 0) {
+      if (ep.x() > bounds.min().x()) {
+        return -1;
+      }
+
+      if (ep.x() < bounds.max().x()) {
+        return 1;
+      }
+    }
+    else {
+      if (ep.y() > bounds.min().y()) {
+        return -1;
+      }
+
+      if (ep.y() < bounds.max().y()) {
+        return 1;
+      }
+    }
+
+    return 0;
+  }
+
+  /**
+   * Check if an element intersects the specified bounds.
+   *
+   * @param element The element.
+   * @param bounds  The bounds.
+   * @return        A boolean indicating whether or not the element intersects
+   *                the specified bounds.
+   */
+  private <B extends Geometry.Bounds> boolean intersects(
+    final E element,
+    final B bounds
+  ) {
+    return bounds.contains(this.element.toShape(element));
+  }
+
+  /**
+   * The {@link Point} class describes a point within the point tree.
+   *
+   * <p>
+   * It has been subclassed from {@link Geometry.Point} for ease of access and
+   * to allow easy refactoring should this be needed.
+   */
+  public static final class Point extends Geometry.Point {
+    /**
+     * Initialize a new point.
+     *
+     * @param x The x-coordinate of the point.
+     * @param y The y-coordinate of the point.
+     */
+    public Point(final double x, final double y) {
+      super(x, y);
+    }
+  }
+
+  /**
+   * The {@link Bounds} class describes the bounds of range queries with the
+   * point tree.
+   *
+   * <p>
+   * It has been subclassed from {@link Geometry.Bounds} for ease of access and
+   * to allow easy refactoring should this be needed.
+   */
+  public static final class Bounds extends Geometry.Bounds {
+    /**
+     * Initialize a new set of bounds.
+     *
+     * @param min The minimum point of the bounds.
+     * @param max The maximum point of the bounds.
+     */
+    public Bounds(final Point min, final Point max) {
+      super(min, max);
+    }
+  }
+
+  /**
+   * The {@link Node} class describes a node within a point tree.
    */
   private abstract class Node {
     /**
@@ -213,11 +322,13 @@ public final class DimensionalTree<E> {
      * @param depth     The current tree depth.
      * @param elements  The collection to add the found elements to.
      * @param bounds    The bounds to search for elements within.
+     * @param filter    The filter to apply to the range search.
      */
-    public abstract void range(
+    public abstract <B extends Geometry.Bounds> void range(
       final int depth,
       final Collection<E> elements,
-      final Bounds<E>[] bounds
+      final B bounds,
+      final Filter<E> filter
     );
   }
 
@@ -267,18 +378,13 @@ public final class DimensionalTree<E> {
         return false;
       }
 
-      // Get the axis to use for the current depth.
-      int axis = depth % DimensionalTree.this.dimensions;
-
       // Check if the element is "contained" within the element associated with
       // the current node.
-      int contains = DimensionalTree.this.comparators[axis].compare(
-        this.element, element
-      );
+      int contains = PointTree.this.compare(depth, this.element, element);
 
       // Look in the left child of the node if the element we're looking for
       // lies to the left of the element we're currently looking at.
-      if (contains > 0) {
+      if (contains < 0) {
         if (this.left == null) {
           return false;
         }
@@ -288,7 +394,7 @@ public final class DimensionalTree<E> {
 
       // Look in the right child of the node if the element we're looking for
       // lies to the right of the element we're currently looking at.
-      if (contains < 0) {
+      if (contains > 0) {
         if (this.right == null) {
           return false;
         }
@@ -306,35 +412,35 @@ public final class DimensionalTree<E> {
      * @param depth     The current tree depth.
      * @param elements  The collection to add the found elements to.
      * @param bounds    The bounds to search for elements within.
+     * @param filter    The filter to apply to the range search.
      */
-    public void range(
+    public <B extends Geometry.Bounds> void range(
       final int depth,
       final Collection<E> elements,
-      final Bounds<E>[] bounds
+      final B bounds,
+      final Filter<E> filter
     ) {
-      int axis = depth % DimensionalTree.this.dimensions;
-
-      int contains = bounds[axis].contains(this.element);
+      int contains = PointTree.this.compare(depth, this.element, bounds);
 
       if (contains < 0 || contains == 0) {
         if (this.left != null) {
-          this.left.range(depth + 1, elements, bounds);
+          this.left.range(depth + 1, elements, bounds, filter);
         }
       }
 
       if (contains > 0 || contains == 0) {
         if (this.right != null) {
-          this.right.range(depth + 1, elements, bounds);
+          this.right.range(depth + 1, elements, bounds, filter);
         }
       }
 
-      if (contains == 0) {
-        for (Bounds<E> b: bounds) {
-          if (b.contains(this.element) != 0) {
-            return;
-          }
-        }
-
+      if (
+        // Is the element included in the filter?
+        filter.include(this.element)
+        &&
+        // Does the element intersect with the search bounds?
+        PointTree.this.intersects(this.element, bounds)
+      ) {
         elements.add(this.element);
       }
     }
@@ -367,7 +473,7 @@ public final class DimensionalTree<E> {
      *                specified element.
      */
     public boolean contains(final int depth, final E element) {
-      if (element == null) {
+      if (element == null || element == null) {
         return false;
       }
 
@@ -380,19 +486,23 @@ public final class DimensionalTree<E> {
      * @param depth     The current tree depth.
      * @param elements  The collection to add the found elements to.
      * @param bounds    The bounds to search for elements within.
+     * @param filter    The filter to apply to the range search.
      */
-    public void range(
+    public <B extends Geometry.Bounds> void range(
       final int depth,
       final Collection<E> elements,
-      final Bounds<E>[] bounds
+      final B bounds,
+      final Filter<E> filter
     ) {
-      for (Bounds<E> b: bounds) {
-        if (b.contains(this.element) != 0) {
-          return;
-        }
+      if (
+        // Is the element included in the filter?
+        filter.include(this.element)
+        &&
+        // Does the element intersect with the search bounds?
+        PointTree.this.intersects(this.element, bounds)
+      ) {
+        elements.add(this.element);
       }
-
-      elements.add(this.element);
     }
   }
 
@@ -443,21 +553,24 @@ public final class DimensionalTree<E> {
      * @param depth     The current tree depth.
      * @param elements  The collection to add the found elements to.
      * @param bounds    The bounds to search for elements within.
+     * @param filter    The filter to apply to the range search.
      */
-    public void range(
+    public <B extends Geometry.Bounds> void range(
       final int depth,
       final Collection<E> elements,
-      final Bounds<E>[] bounds
+      final B bounds,
+      final Filter<E> filter
     ) {
-      outer:
       for (E found: this.elements) {
-        for (Bounds<E> b: bounds) {
-          if (b.contains(found) != 0) {
-            continue outer;
-          }
+        if (
+          // Is the element included in the filter?
+          filter.include(found)
+          &&
+          // Does the element intersect with the search bounds?
+          PointTree.this.intersects(found, bounds)
+        ) {
+          elements.add(found);
         }
-
-        elements.add(found);
       }
     }
   }
