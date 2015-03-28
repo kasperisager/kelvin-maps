@@ -3,9 +3,6 @@
  */
 package dk.itu.kelvin.util;
 
-// General utilities
-import java.util.Arrays;
-
 // Math
 import dk.itu.kelvin.math.Geometry;
 import static dk.itu.kelvin.math.Geometry.Bounds;
@@ -13,6 +10,8 @@ import static dk.itu.kelvin.math.Geometry.Shape;
 
 /**
  * Spatial index interface.
+ *
+ * @param <E> The type of element stored within the spatial index.
  */
 public interface SpatialIndex<E> {
   /**
@@ -41,6 +40,7 @@ public interface SpatialIndex<E> {
   /**
    * Find all elements within the range of the specified bounds.
    *
+   * @param <B>     The type of bounds to use.
    * @param bounds  The bounds to search for elements within.
    * @return        A list of elements contained within the range of the
    *                specified bounds.
@@ -51,19 +51,21 @@ public interface SpatialIndex<E> {
    * Find all elements included in the filter and within the range of the
    * specified bounds.
    *
+   * @param <B>     The type of bounds to use.
    * @param bounds  The bounds to search for elements within.
+   * @param filter  The filter to apply to the range search.
    * @return        A list of elements contained within the range of the
    *                specified bounds.
    */
-  <B extends Geometry.Bounds> List<E> range(
-    final B bounds,
-    final Filter<E> filter
-  );
+  <B extends Bounds> List<E> range(final B bounds, final Filter<E> filter);
 
   /**
    * The {@link Element} interface describes an element within the spatial index
    * and is used for converting arbitrary elements to elements that can be used
    * with the data structure.
+   *
+   * @param <E> The original type of the element.
+   * @param <S> The converted type of the element.
    */
   @FunctionalInterface
   public interface Element<E, S extends Shape> {
@@ -77,6 +79,12 @@ public interface SpatialIndex<E> {
     S toShape(final E element);
   }
 
+  /**
+   * The {@link Filter} interface describes a filter that can be applied to all
+   * range queries.
+   *
+   * @param <E> The type of element to apply the filter to.
+   */
   @FunctionalInterface
   public interface Filter<E> {
     /**

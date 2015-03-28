@@ -10,10 +10,11 @@ import java.util.Arrays;
 import dk.itu.kelvin.math.Geometry;
 import static dk.itu.kelvin.math.Geometry.Bounds;
 import static dk.itu.kelvin.math.Geometry.Point;
-import static dk.itu.kelvin.math.Geometry.Shape;
 
 /**
  * Point tree class.
+ *
+ * @param <E> The type of elements stored within the point tree.
  */
 public class PointTree<E> implements SpatialIndex<E> {
   /**
@@ -82,7 +83,7 @@ public class PointTree<E> implements SpatialIndex<E> {
    * @return        A boolean indicating whether or not the tree contains the
    *                specified element.
    */
-  public boolean contains(final E element) {
+  public final boolean contains(final E element) {
     if (element == null) {
       return false;
     }
@@ -93,11 +94,12 @@ public class PointTree<E> implements SpatialIndex<E> {
   /**
    * Find all elements within the range of the specified bounds.
    *
+   * @param <B>     The type of bounds to use.
    * @param bounds  The bounds to search for elements within.
    * @return        A list of elements contained within the range of the
    *                specified bounds.
    */
-  public <B extends Geometry.Bounds> List<E> range(final B bounds) {
+  public final <B extends Geometry.Bounds> List<E> range(final B bounds) {
     if (bounds == null) {
       return null;
     }
@@ -110,11 +112,13 @@ public class PointTree<E> implements SpatialIndex<E> {
   /**
    * Find all elements within the range of the specified bounds.
    *
+   * @param <B>     The type of bounds to use.
    * @param bounds  The bounds to search for elements within.
+   * @param filter  The filter to apply to the range search.
    * @return        A list of elements contained within the range of the
    *                specified bounds.
    */
-  public <B extends Geometry.Bounds> List<E> range(
+  public final <B extends Geometry.Bounds> List<E> range(
     final B bounds,
     final Filter<E> filter
   ) {
@@ -213,6 +217,7 @@ public class PointTree<E> implements SpatialIndex<E> {
   /**
    * Compare an element to a set of bounds at the specified depth.
    *
+   * @param <B>     The type of bounds to use.
    * @param depth   The tree depth.
    * @param element The element.
    * @param bounds  The bounds.
@@ -251,6 +256,7 @@ public class PointTree<E> implements SpatialIndex<E> {
   /**
    * Check if an element intersects the specified bounds.
    *
+   * @param <B>     The type of bounds to use.
    * @param element The element.
    * @param bounds  The bounds.
    * @return        A boolean indicating whether or not the element intersects
@@ -319,6 +325,7 @@ public class PointTree<E> implements SpatialIndex<E> {
     /**
      * Find all elements within the range of the specified bounds.
      *
+     * @param <B>       The type of bounds to use.
      * @param depth     The current tree depth.
      * @param elements  The collection to add the found elements to.
      * @param bounds    The bounds to search for elements within.
@@ -409,6 +416,7 @@ public class PointTree<E> implements SpatialIndex<E> {
     /**
      * Find all elements within the range of the specified bounds.
      *
+     * @param <B>       The type of bounds to use.
      * @param depth     The current tree depth.
      * @param elements  The collection to add the found elements to.
      * @param bounds    The bounds to search for elements within.
@@ -473,7 +481,7 @@ public class PointTree<E> implements SpatialIndex<E> {
      *                specified element.
      */
     public boolean contains(final int depth, final E element) {
-      if (element == null || element == null) {
+      if (this.element == null || element == null) {
         return false;
       }
 
@@ -483,6 +491,7 @@ public class PointTree<E> implements SpatialIndex<E> {
     /**
      * Find all elements within the range of the specified bounds.
      *
+     * @param <B>       The type of bounds to use.
      * @param depth     The current tree depth.
      * @param elements  The collection to add the found elements to.
      * @param bounds    The bounds to search for elements within.
@@ -550,6 +559,7 @@ public class PointTree<E> implements SpatialIndex<E> {
     /**
      * Find all elements within the range of the specified bounds.
      *
+     * @param <B>       The type of bounds to use.
      * @param depth     The current tree depth.
      * @param elements  The collection to add the found elements to.
      * @param bounds    The bounds to search for elements within.
