@@ -7,12 +7,14 @@ package dk.itu.kelvin.util;
 import java.util.Arrays;
 
 // Math
-import dk.itu.kelvin.math.Geometry;
 import static dk.itu.kelvin.math.Geometry.Bounds;
 import static dk.itu.kelvin.math.Geometry.Point;
 
 /**
  * Point tree class.
+ *
+ * @see <a href="http://en.wikipedia.org/wiki/K-d_tree">
+ *      http://en.wikipedia.org/wiki/K-d_tree</a>
  *
  * @param <E> The type of elements stored within the point tree.
  */
@@ -20,7 +22,12 @@ public class PointTree<E> implements SpatialIndex<E> {
   /**
    * The maximum size of point buckets.
    */
-  private static final int BUCKET_SIZE = 1000;
+  private static final int BUCKET_MAXIMUM = 1000;
+
+  /**
+   * The minimum size of points bucket.
+   */
+  private static final int BUCKET_MINIMUM = BUCKET_MAXIMUM / 2;
 
   /**
    * The size of the point tree.
@@ -30,7 +37,7 @@ public class PointTree<E> implements SpatialIndex<E> {
   /**
    * The element descriptor.
    */
-  private Element<E, Point> element;
+  private Descriptor<E, Point> descriptor;
 
   /**
    * The root node of the point tree.
@@ -38,23 +45,24 @@ public class PointTree<E> implements SpatialIndex<E> {
   private Node root;
 
   /**
-   * Initialize a new point tree.
+   * Initialize a new point tree bulk-loaded with the specified collection of
+   * elements.
    *
-   * @param elements  The elements to add to the tree.
-   * @param element   The element descriptor to use.
+   * @param elements    The elements to add to the tree.
+   * @param descriptor  The element descriptor to use.
    */
   @SuppressWarnings("unchecked")
   public PointTree(
     final Collection<E> elements,
-    final Element<E, Point> element
+    final Descriptor<E, Point> descriptor
   ) {
-    this.element = element;
+    this.descriptor = descriptor;
 
-    this.root = this.treeify(
+    this.root = this.partition(
       (E[]) elements.toArray(), // Elements
       0,                        // Depth
       0,                        // Starting index
-      elements.size() - 1       // Ending index
+      elements.size()           // Ending index
     );
   }
 
@@ -84,7 +92,7 @@ public class PointTree<E> implements SpatialIndex<E> {
    *                specified element.
    */
   public final boolean contains(final E element) {
-    if (element == null) {
+    if (this.root == null || element == null) {
       return false;
     }
 
@@ -94,13 +102,12 @@ public class PointTree<E> implements SpatialIndex<E> {
   /**
    * Find all elements within the range of the specified bounds.
    *
-   * @param <B>     The type of bounds to use.
    * @param bounds  The bounds to search for elements within.
    * @return        A list of elements contained within the range of the
    *                specified bounds.
    */
-  public final <B extends Geometry.Bounds> List<E> range(final B bounds) {
-    if (bounds == null) {
+  public final List<E> range(final Bounds bounds) {
+    if (this.root == null || bounds == null) {
       return null;
     }
 
@@ -112,17 +119,13 @@ public class PointTree<E> implements SpatialIndex<E> {
   /**
    * Find all elements within the range of the specified bounds.
    *
-   * @param <B>     The type of bounds to use.
    * @param bounds  The bounds to search for elements within.
    * @param filter  The filter to apply to the range search.
    * @return        A list of elements contained within the range of the
    *                specified bounds.
    */
-  public final <B extends Geometry.Bounds> List<E> range(
-    final B bounds,
-    final Filter<E> filter
-  ) {
-    if (bounds == null) {
+  public final List<E> range(final Bounds bounds, final Filter<E> filter) {
+    if (this.root == null || bounds == null || filter == null) {
       return null;
     }
 
@@ -134,25 +137,28 @@ public class PointTree<E> implements SpatialIndex<E> {
   }
 
   /**
-   * Treeify the given elements at the specified depth between the given
+   * Partition the given elements at the specified depth between the given
    * indices.
    *
-   * @param elements  The elements to treeify.
+   * @param elements  The elements to partition.
    * @param depth     The current depth of the tree.
    * @param start     The starting index of the operation.
    * @param end       The ending index of the operation.
-   * @return          A treeified node if any non-treeified elements were left
-   *                  in the array of elements.
+   * @return          A partitioned {@link Node} instance.
    */
-  private Node treeify(
+  private Node partition(
     final E[] elements,
     final int depth,
     final int start,
     final int end
   ) {
+    if (elements == null) {
+      return null;
+    }
+
     int length = end - start;
 
-    // Bail out if there are no elements left to treeify.
+    // Bail out if there are no elements left to partition.
     if (length < 0) {
       return null;
     }
@@ -165,14 +171,14 @@ public class PointTree<E> implements SpatialIndex<E> {
 
     // If we're within the cufoff length, store all the remaining elements in
     // a bucket.
-    if (length <= BUCKET_SIZE) {
+    if (length <= BUCKET_MAXIMUM) {
       this.size += length;
-      return new Bucket(Arrays.copyOfRange(elements, start, end + 1));
+      return new Bucket(Arrays.copyOfRange(elements, start, end));
     }
 
     // Sort the element between the specified indices using the comparator
     // associated with the current axis.
-    Arrays.sort(elements, start, end + 1, (a, b) -> {
+    Arrays.sort(elements, start, end, (a, b) -> {
       return this.compare(depth, a, b);
     });
 
@@ -184,11 +190,11 @@ public class PointTree<E> implements SpatialIndex<E> {
     return new Branch(
       elements[median],
 
-      // Recursively treeify all elements before the median.
-      this.treeify(elements, depth + 1, start, median - 1),
+      // Recursively partition all elements before the median.
+      this.partition(elements, depth + 1, start, median),
 
-      // Recursively treeify all elements after the median.
-      this.treeify(elements, depth + 1, median + 1, end)
+      // Recursively partition all elements after the median.
+      this.partition(elements, depth + 1, median + 1, end)
     );
   }
 
@@ -203,8 +209,20 @@ public class PointTree<E> implements SpatialIndex<E> {
    *              element.
    */
   private int compare(final int depth, final E a, final E b) {
-    Point ap = this.element.toShape(a);
-    Point bp = this.element.toShape(b);
+    if (a == null && b == null) {
+      return 0;
+    }
+
+    if (a == null) {
+      return -1;
+    }
+
+    if (b == null) {
+      return 1;
+    }
+
+    Point ap = this.descriptor.describe(a);
+    Point bp = this.descriptor.describe(b);
 
     if (depth % 2 == 0) {
       return Double.compare(ap.x(), bp.x());
@@ -217,19 +235,26 @@ public class PointTree<E> implements SpatialIndex<E> {
   /**
    * Compare an element to a set of bounds at the specified depth.
    *
-   * @param <B>     The type of bounds to use.
    * @param depth   The tree depth.
    * @param element The element.
    * @param bounds  The bounds.
    * @return        A negative integer, zero, or a positive integer as the
    *                element is smaller, within, or larger than the bounds.
    */
-  private <B extends Geometry.Bounds> int compare(
-    final int depth,
-    final E element,
-    final B bounds
-  ) {
-    Point ep = this.element.toShape(element);
+  private int compare(final int depth, final E element, final Bounds bounds) {
+    if (element == null && bounds == null) {
+      return 0;
+    }
+
+    if (element == null) {
+      return -1;
+    }
+
+    if (bounds == null) {
+      return 1;
+    }
+
+    Point ep = this.descriptor.describe(element);
 
     if (depth % 2 == 0) {
       if (ep.x() > bounds.min().x()) {
@@ -256,56 +281,17 @@ public class PointTree<E> implements SpatialIndex<E> {
   /**
    * Check if an element intersects the specified bounds.
    *
-   * @param <B>     The type of bounds to use.
    * @param element The element.
    * @param bounds  The bounds.
    * @return        A boolean indicating whether or not the element intersects
    *                the specified bounds.
    */
-  private <B extends Geometry.Bounds> boolean intersects(
-    final E element,
-    final B bounds
-  ) {
-    return bounds.contains(this.element.toShape(element));
-  }
-
-  /**
-   * The {@link Point} class describes a point within the point tree.
-   *
-   * <p>
-   * It has been subclassed from {@link Geometry.Point} for ease of access and
-   * to allow easy refactoring should this be needed.
-   */
-  public static final class Point extends Geometry.Point {
-    /**
-     * Initialize a new point.
-     *
-     * @param x The x-coordinate of the point.
-     * @param y The y-coordinate of the point.
-     */
-    public Point(final double x, final double y) {
-      super(x, y);
+  private boolean intersects(final E element, final Bounds bounds) {
+    if (element == null || bounds == null) {
+      return false;
     }
-  }
 
-  /**
-   * The {@link Bounds} class describes the bounds of range queries with the
-   * point tree.
-   *
-   * <p>
-   * It has been subclassed from {@link Geometry.Bounds} for ease of access and
-   * to allow easy refactoring should this be needed.
-   */
-  public static final class Bounds extends Geometry.Bounds {
-    /**
-     * Initialize a new set of bounds.
-     *
-     * @param min The minimum point of the bounds.
-     * @param max The maximum point of the bounds.
-     */
-    public Bounds(final Point min, final Point max) {
-      super(min, max);
-    }
+    return bounds.contains(this.descriptor.describe(element));
   }
 
   /**
@@ -325,16 +311,15 @@ public class PointTree<E> implements SpatialIndex<E> {
     /**
      * Find all elements within the range of the specified bounds.
      *
-     * @param <B>       The type of bounds to use.
      * @param depth     The current tree depth.
      * @param elements  The collection to add the found elements to.
      * @param bounds    The bounds to search for elements within.
      * @param filter    The filter to apply to the range search.
      */
-    public abstract <B extends Geometry.Bounds> void range(
+    public abstract void range(
       final int depth,
       final Collection<E> elements,
-      final B bounds,
+      final Bounds bounds,
       final Filter<E> filter
     );
   }
@@ -381,7 +366,7 @@ public class PointTree<E> implements SpatialIndex<E> {
      *                the specified element.
      */
     public boolean contains(final int depth, final E element) {
-      if (element == null) {
+      if (this.element == null || element == null) {
         return false;
       }
 
@@ -416,18 +401,26 @@ public class PointTree<E> implements SpatialIndex<E> {
     /**
      * Find all elements within the range of the specified bounds.
      *
-     * @param <B>       The type of bounds to use.
      * @param depth     The current tree depth.
      * @param elements  The collection to add the found elements to.
      * @param bounds    The bounds to search for elements within.
      * @param filter    The filter to apply to the range search.
      */
-    public <B extends Geometry.Bounds> void range(
+    public void range(
       final int depth,
       final Collection<E> elements,
-      final B bounds,
+      final Bounds bounds,
       final Filter<E> filter
     ) {
+      if (
+        this.element == null
+        || elements == null
+        || bounds == null
+        || filter == null
+      ) {
+        return;
+      }
+
       int contains = PointTree.this.compare(depth, this.element, bounds);
 
       if (contains < 0 || contains == 0) {
@@ -445,9 +438,8 @@ public class PointTree<E> implements SpatialIndex<E> {
       if (
         // Is the element included in the filter?
         filter.include(this.element)
-        &&
         // Does the element intersect with the search bounds?
-        PointTree.this.intersects(this.element, bounds)
+        && PointTree.this.intersects(this.element, bounds)
       ) {
         elements.add(this.element);
       }
@@ -491,24 +483,31 @@ public class PointTree<E> implements SpatialIndex<E> {
     /**
      * Find all elements within the range of the specified bounds.
      *
-     * @param <B>       The type of bounds to use.
      * @param depth     The current tree depth.
      * @param elements  The collection to add the found elements to.
      * @param bounds    The bounds to search for elements within.
      * @param filter    The filter to apply to the range search.
      */
-    public <B extends Geometry.Bounds> void range(
+    public void range(
       final int depth,
       final Collection<E> elements,
-      final B bounds,
+      final Bounds bounds,
       final Filter<E> filter
     ) {
       if (
+        this.element == null
+        || elements == null
+        || bounds == null
+        || filter == null
+      ) {
+        return;
+      }
+
+      if (
         // Is the element included in the filter?
         filter.include(this.element)
-        &&
         // Does the element intersect with the search bounds?
-        PointTree.this.intersects(this.element, bounds)
+        && PointTree.this.intersects(this.element, bounds)
       ) {
         elements.add(this.element);
       }
@@ -543,7 +542,7 @@ public class PointTree<E> implements SpatialIndex<E> {
      *                the specified element.
      */
     public boolean contains(final int depth, final E element) {
-      if (element == null) {
+      if (this.elements == null || element == null) {
         return false;
       }
 
@@ -559,25 +558,32 @@ public class PointTree<E> implements SpatialIndex<E> {
     /**
      * Find all elements within the range of the specified bounds.
      *
-     * @param <B>       The type of bounds to use.
      * @param depth     The current tree depth.
      * @param elements  The collection to add the found elements to.
      * @param bounds    The bounds to search for elements within.
      * @param filter    The filter to apply to the range search.
      */
-    public <B extends Geometry.Bounds> void range(
+    public void range(
       final int depth,
       final Collection<E> elements,
-      final B bounds,
+      final Bounds bounds,
       final Filter<E> filter
     ) {
+      if (
+        this.elements == null
+        || elements == null
+        || bounds == null
+        || filter == null
+      ) {
+        return;
+      }
+
       for (E found: this.elements) {
         if (
           // Is the element included in the filter?
           filter.include(found)
-          &&
           // Does the element intersect with the search bounds?
-          PointTree.this.intersects(found, bounds)
+          && PointTree.this.intersects(found, bounds)
         ) {
           elements.add(found);
         }
