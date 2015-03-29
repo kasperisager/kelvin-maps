@@ -139,7 +139,7 @@ public final class Address {
    * @return        The current {@link Address} instance for chaining.
    */
   public Address street(final String street) {
-    this.street = (street != null) ? street.trim() : null;
+    this.street = (street != null) ? street.trim().intern() : null;
 
     return this;
   }
@@ -160,7 +160,7 @@ public final class Address {
    * @return        The current {@link Address} instance for chaining.
    */
   public Address number(final String number) {
-    this.number = (number != null) ? number.trim() : null;
+    this.number = (number != null) ? number.trim().intern() : null;
 
     return this;
   }
@@ -181,7 +181,7 @@ public final class Address {
    * @return      The current {@link Address} instance for chaining.
    */
   public Address floor(final String floor) {
-    this.floor = (floor != null) ? floor.trim() : null;
+    this.floor = (floor != null) ? floor.trim().intern() : null;
 
     return this;
   }
@@ -202,7 +202,7 @@ public final class Address {
    * @return      The current {@link Address} instance for chaining.
    */
   public Address door(final String door) {
-    this.door = (door != null) ? door.trim() : null;
+    this.door = (door != null) ? door.trim().intern() : null;
 
     return this;
   }
@@ -223,7 +223,7 @@ public final class Address {
    * @return          The current {@link Address} instance for chaining.
    */
   public Address postcode(final String postcode) {
-    this.postcode = (postcode != null) ? postcode.trim() : null;
+    this.postcode = (postcode != null) ? postcode.trim().intern() : null;
 
     return this;
   }
@@ -244,7 +244,7 @@ public final class Address {
    * @return      The current {@link Address} instance for chaining.
    */
   public Address city(final String city) {
-    this.city = (city != null) ? city.trim() : null;
+    this.city = (city != null) ? city.trim().intern() : null;
 
     return this;
   }

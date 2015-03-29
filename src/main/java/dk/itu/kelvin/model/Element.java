@@ -52,7 +52,7 @@ public abstract class Element<T extends Node> implements Serializable {
       this.tags = new HashTable<>();
     }
 
-    return this.tags.put(key, value);
+    return this.tags.put(key.intern(), value.intern());
   }
 
   /**

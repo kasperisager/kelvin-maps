@@ -131,8 +131,9 @@ public final class ChartParser {
   }
 
   /**
-   *  Get the addresses field.
-   * @return the addresses field.
+   * Get the parsed addresses.
+   *
+   * @return The parsed addresses.
    */
   public AddressStore addresses() {
     return this.addresses;
@@ -163,7 +164,7 @@ public final class ChartParser {
    * @return            The value if found, otherwise null.
    */
   private String getString(final Attributes attributes, final String value) {
-    return attributes.getValue(value).intern();
+    return attributes.getValue(value);
   }
 
   /**
@@ -412,7 +413,7 @@ public final class ChartParser {
         relation.add(this.relations.get(ref), role);
         break;
       default:
-        // Do nothing.
+        return;
     }
   }
 
@@ -475,7 +476,7 @@ public final class ChartParser {
           break;
 
         default:
-          // Do nothing.
+          return;
       }
     }
 
@@ -511,7 +512,7 @@ public final class ChartParser {
           ChartParser.this.clear();
           break;
         default:
-          // Do nothing.
+          return;
       }
     }
   }

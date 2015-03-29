@@ -58,10 +58,10 @@ public final class BoundingBox extends Element<Rectangle> {
     final float maxX,
     final float maxY
   ) {
-    this.minX = minX;
-    this.minY = minY;
-    this.maxX = maxX;
-    this.maxY = maxY;
+    this.minX = Math.min(minX, maxX);
+    this.minY = Math.min(minY, maxY);
+    this.maxX = Math.max(minX, maxX);
+    this.maxY = Math.max(minY, maxY);
   }
 
   /**
