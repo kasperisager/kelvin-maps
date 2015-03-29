@@ -18,7 +18,6 @@ import dk.itu.kelvin.util.List;
 
 // Math
 import dk.itu.kelvin.math.Geometry;
-import static dk.itu.kelvin.math.Geometry.Bounds;
 import static dk.itu.kelvin.math.Geometry.Line;
 import static dk.itu.kelvin.math.Geometry.Point;
 
