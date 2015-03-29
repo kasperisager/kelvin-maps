@@ -171,7 +171,7 @@ public final class Land extends Element<Group> {
       if (prevInside ^ nextInside) {
         Line line = this.constructLine(prev, next);
 
-        for (Line bound: this.constructBounds()) {
+        for (Line bound: bounds) {
           if (Geometry.intersection(bound, line) == null) {
             continue;
           }
