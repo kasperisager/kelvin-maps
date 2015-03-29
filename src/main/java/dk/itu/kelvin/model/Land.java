@@ -111,34 +111,6 @@ public final class Land extends Element<Group> {
   }
 
   /**
-   * Get the intersection between the line segment specified by the two nodes
-   * and the bounding box of the land mass.
-   *
-   * @param a The first node.
-   * @param b The second node.
-   * @return  The intersection between the line segment specified by the two
-   *          nodes and the bounding box of the land mass or {@code null} is
-   *          they don't intersect.
-   */
-  private Intersection findIntersection(final Node a, final Node b) {
-    if (a == null || b == null) {
-      return null;
-    }
-
-    Line line = this.constructLine(a, b);
-
-    for (Line bound: this.constructBounds()) {
-      Point point = Geometry.intersection(bound, line);
-
-      if (point != null) {
-        return new Intersection(point, bound);
-      }
-    }
-
-    return null;
-  }
-
-  /**
    * Merge the specified way with the existing coastlines of the land mass.
    *
    * @param way The way to merge.
@@ -185,6 +157,8 @@ public final class Land extends Element<Group> {
 
     List<Node> nodes = coastline.nodes();
 
+    Line[] bounds = this.constructBounds();
+
     int i = 0;
     int n = nodes.size();
 
@@ -195,10 +169,12 @@ public final class Land extends Element<Group> {
       boolean nextInside = this.bounds.contains(next);
 
       if (prevInside ^ nextInside) {
-        Intersection intersection = this.findIntersection(prev, next);
+        Line line = this.constructLine(prev, next);
 
-        if (intersection != null) {
-          Line bound = intersection.bound;
+        for (Line bound: this.constructBounds()) {
+          if (Geometry.intersection(bound, line) == null) {
+            continue;
+          }
 
           if (nextInside) {
             nodes.add(0, new Node(bound.start().x(), bound.start().y()));
@@ -235,32 +211,5 @@ public final class Land extends Element<Group> {
     }
 
     return group;
-  }
-
-  /**
-   * The {@link Intersection} class describes an intersection consisting of an
-   * intersection point and the bounding line on which the point lies.
-   */
-  private static class Intersection {
-    /**
-     * The intersection point.
-     */
-    private Point point;
-
-    /**
-     * The bounding line that the intersection point lies on.
-     */
-    private Line bound;
-
-    /**
-     * Initialize a new intersection.
-     *
-     * @param point The intersection point.
-     * @param bound The bounding line that the intersection point lies on.
-     */
-    public Intersection(final Point point, final Line bound) {
-      this.point = point;
-      this.bound = bound;
-    }
   }
 }
