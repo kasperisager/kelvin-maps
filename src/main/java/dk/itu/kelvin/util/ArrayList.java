@@ -20,11 +20,6 @@ import java.util.NoSuchElementException;
  * is used internally to store the list.
  *
  * <p>
- * The {@link ArrayList} extends {@link DynamicArray} that keeps track of the
- * size of the {@link ArrayList} and contains methods for checking when the
- * array should resize.
- *
- * <p>
  * The {@link #get(int)} and {@link #iterator()} operations runs in constant
  * time. The {@link #add(Object)} operation runs in amortized constant time.
  * The {@link #resize(int)}, {@link #shiftLeft(int)} and
@@ -39,14 +34,56 @@ import java.util.NoSuchElementException;
  *
  * @param <E> The type of elements stored within the list.
  */
-public class ArrayList<E> extends DynamicArray implements List<E> {
+public class ArrayList<E> implements List<E> {
   /**
    * UID for identifying serialized objects.
    */
   private static final long serialVersionUID = 47;
 
   /**
-   * internal element storage.
+   * Default initial capacity of the internal storage of the collection.
+   */
+  private static final int DEFAULT_CAPACITY = 2;
+
+  /**
+   * The upper factor to use for resizing the internal storage of the
+   * collection.
+   *
+   * <p>
+   * When the number of entries in the collection reaches this factor of the
+   * total capacity of the internal storage, the storage is resized.
+   */
+  private static final float UPPER_LOAD_FACTOR = 1.0f;
+
+  /**
+   * The factor with which to grow the internal storage of the collection when
+   * the upper threshold has been reached.
+   */
+  private static final float UPPER_RESIZE_FACTOR = 2.0f;
+
+  /**
+   * The lower factor to use for resizing the internal storage of the
+   * collection.
+   *
+   * <p>
+   * When the number of entries in the collection reaches this factor of the
+   * total capacity of the internal storage, the storage is resized.
+   */
+  private static final float LOWER_LOAD_FACTOR = 0.25f;
+
+  /**
+   * The factor with which to shrink the internal storage of the collection when
+   * the lower threshold has been reached.
+   */
+  private static final float LOWER_RESIZE_FACTOR = 0.5f;
+
+  /**
+   * The size of the array list.
+   */
+  private int size;
+
+  /**
+   * Internal element storage.
    */
   private E[] elements;
 
@@ -54,7 +91,7 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    * Initialize an array list with the default initial capacity.
    */
   public ArrayList() {
-    this(2);
+    this(DEFAULT_CAPACITY);
   }
 
   /**
@@ -64,14 +101,6 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    */
   @SuppressWarnings("unchecked")
   public ArrayList(final int capacity) {
-    super(
-      capacity,
-      1.0f,   // Upper load factor
-      2.0f,   // Upper resize factor
-      0.25f,  // Lower load factor
-      0.5f    // Lower resize factor
-    );
-
     this.elements = (E[]) new Object[capacity];
   }
 
@@ -87,15 +116,33 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
   }
 
   /**
+   * Get the size of the array list.
+   *
+   * @return The size of the array list.
+   */
+  public final int size() {
+    return this.size;
+  }
+
+  /**
+   * Check if the array list is empty.
+   *
+   * @return A boolean indicating whether or not the array list is empty.
+   */
+  public final boolean isEmpty() {
+    return this.size == 0;
+  }
+
+  /**
    * Resize the internal storage of the list to the specified capacity.
    *
    * @param capacity The new capacity of the internal storage of the list.
    */
   @SuppressWarnings("unchecked")
-  protected final void resize(final int capacity) {
+  private void resize(final int capacity) {
     E[] elements = (E[]) new Object[capacity];
 
-    for (int i = 0; i < this.size(); i++) {
+    for (int i = 0; i < this.size; i++) {
       elements[i] = this.elements[i];
     }
 
@@ -112,7 +159,7 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    * @param index The index to shift the elements towards.
    */
   private void shiftLeft(final int index) {
-    int shifts = this.size() - index - 1;
+    int shifts = this.size - index - 1;
 
     if (shifts <= 0) {
       return;
@@ -131,7 +178,7 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    * @param index The index to shift the elements away from.
    */
   private void shiftRight(final int index) {
-    int shifts = this.size() - index;
+    int shifts = this.size - index;
 
     System.arraycopy(this.elements, index, this.elements, index + 1, shifts);
   }
@@ -148,7 +195,7 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
       return -1;
     }
 
-    for (int i = 0; i < this.size(); i++) {
+    for (int i = 0; i < this.size; i++) {
       if (element.equals(this.elements[i])) {
         return i;
       }
@@ -164,7 +211,7 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    * @return      The element if found.
    */
   public final E get(final int index) {
-    if (index < 0 || index >= this.size()) {
+    if (index < 0 || index >= this.size) {
       throw new ArrayIndexOutOfBoundsException();
     }
 
@@ -198,8 +245,11 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
       return false;
     }
 
-    this.elements[this.size()] = element;
-    this.grow();
+    if (this.size == (int) (this.elements.length * UPPER_LOAD_FACTOR)) {
+      this.resize((int) (this.elements.length * UPPER_RESIZE_FACTOR));
+    }
+
+    this.elements[this.size++] = element;
 
     return true;
   }
@@ -217,7 +267,7 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    *                result of the call.
    */
   public final boolean add(final int index, final E element) {
-    if (index < 0 || index >= this.size()) {
+    if (index < 0 || index > this.size) {
       throw new ArrayIndexOutOfBoundsException();
     }
 
@@ -225,9 +275,13 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
       return false;
     }
 
+    if (this.size == (int) (this.elements.length * UPPER_LOAD_FACTOR)) {
+      this.resize((int) (this.elements.length * UPPER_RESIZE_FACTOR));
+    }
+
     this.shiftRight(index);
     this.elements[index] = element;
-    this.grow();
+    this.size++;
 
     return true;
   }
@@ -261,7 +315,7 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    * @return        The element previously at the specified index if any.
    */
   public final E set(final int index, final E element) {
-    if (index < 0 || index >= this.size()) {
+    if (index < 0 || index > this.size) {
       throw new ArrayIndexOutOfBoundsException();
     }
 
@@ -287,15 +341,21 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    * @return      The removed element.
    */
   public final E remove(final int index) {
-    if (index < 0 || index >= this.size()) {
+    if (index < 0 || index >= this.size) {
       throw new ArrayIndexOutOfBoundsException();
     }
 
     E element = this.elements[index];
 
     this.shiftLeft(index);
-    this.elements[this.size() - 1] = null;
-    this.shrink();
+    this.elements[--this.size] = null;
+
+    if (
+      this.size > 0
+      && this.size == (int) (this.elements.length * LOWER_LOAD_FACTOR)
+    ) {
+      this.resize((int) (this.elements.length * LOWER_RESIZE_FACTOR));
+    }
 
     return element;
   }
@@ -322,13 +382,13 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    *
    * <p>
    * <b>NB:</b> Unlike Java's Collections, this operation will actually reset
-   * the internal storage of the list to its initial capacity instead of simply
+   * the internal storage of the list to its default capacity instead of simply
    * nullifying all elements.
    */
   @SuppressWarnings("unchecked")
   public final void clear() {
-    this.elements = (E[]) new Object[this.initialCapacity()];
-    this.reset();
+    this.elements = (E[]) new Object[DEFAULT_CAPACITY];
+    this.size = 0;
   }
 
   /**
@@ -341,7 +401,7 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
    * @return An array containing the elements of the list.
    */
   public final Object[] toArray() {
-    return Arrays.copyOf(this.elements, this.size());
+    return Arrays.copyOf(this.elements, this.size);
   }
 
   /**
@@ -350,13 +410,11 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
   public final void trimToSize() {
     // Bail out if we've already reached the capacity of the internal storage.
     // In this case there won't be anything to trim.
-    if (this.elements.length >= this.size()) {
+    if (this.elements.length >= this.size) {
       return;
     }
 
-    // We add an extra slot for the next element addition since we call
-    // shrink() after having added an element to the array.
-    this.elements = Arrays.copyOf(this.elements, this.size() + 1);
+    this.elements = Arrays.copyOf(this.elements, this.size);
   }
 
   /**
@@ -383,7 +441,7 @@ public class ArrayList<E> extends DynamicArray implements List<E> {
        *          to iterate over.
        */
       public boolean hasNext() {
-        return this.i < ArrayList.this.size();
+        return this.i < ArrayList.this.size;
       }
 
       /**

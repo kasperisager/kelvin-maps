@@ -3,6 +3,9 @@
  */
 package dk.itu.kelvin.util;
 
+// I/O utilities
+import java.io.Serializable;
+
 /**
  * Minimal implementation of Map interface.
  *
@@ -31,7 +34,7 @@ package dk.itu.kelvin.util;
  * @param <K> The type of keys stored within the map.
  * @param <V> The type of values stored within the map.
  */
-public interface Map<K, V> {
+public interface Map<K, V> extends Serializable {
   /**
    * Get the size of the map.
    *

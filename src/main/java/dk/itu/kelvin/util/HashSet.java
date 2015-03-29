@@ -11,16 +11,10 @@ import java.util.NoSuchElementException;
  * Minimal implementation of the hash set data structure.
  *
  * <p>
- * This class implements the {@link Set} interface and extends the
- * {@link DynamicHashArray} It makes no guarantees as to the iteration order
- * of the set. In particular, it does not guarantee that the order will remain
- * the same over time. This class doesn't permits the null element.
- *
- * <p>
- * The extension of {@link DynamicHashArray} provides methods for computing hash
- * values and as {@link DynamicHashArray} extends {@link DynamicArray} it
- * contains additional variables and methods for keeping track of array size and
- * capacity, and information for when the array should resize.
+ * This class implements the {@link Set} interface. It makes no guarantees as to
+ * the iteration order of the set. In particular, it does not guarantee that the
+ * order will remain the same over time. This class doesn't permit null
+ * elements.
  *
  * <p>
  * Methods {@link #resize(int)} takes linear time complexity, methods
@@ -32,16 +26,57 @@ import java.util.NoSuchElementException;
  *
  * @param <E> The type of elements stored within the set.
  */
-public class HashSet<E> extends DynamicHashArray implements Set<E> {
+public class HashSet<E> implements Set<E> {
   /**
    * UID for identifying serialized objects.
    */
   private static final long serialVersionUID = 591;
 
   /**
+   * Default initial capacity of the internal storage of the table.
+   */
+  private static final int DEFAULT_CAPACITY = 16;
+
+  /**
+   * The upper factor to use for resizing the internal storage of the table.
+   *
+   * <p>
+   * When the number of entries in the table reaches this factor of the total
+   * capacity of the internal storage, the storage is resized.
+   */
+  private static final float UPPER_LOAD_FACTOR = 0.5f;
+
+  /**
+   * The factor with which to grow the internal storage of the collection when
+   * the upper threshold has been reached.
+   */
+  private static final float UPPER_RESIZE_FACTOR = 2f;
+
+  /**
+   * The lower factor to use for resizing the internal storage of the
+   * collection.
+   *
+   * <p>
+   * When the number of entries in the collection reaches this factor of the
+   * total capacity of the internal storage, the storage is resized.
+   */
+  private static final float LOWER_LOAD_FACTOR = 0.125f;
+
+  /**
+   * The factor with which to shrink the internal storage of the collection when
+   * the lower threshold has been reached.
+   */
+  private static final float LOWER_RESIZE_FACTOR = 0.5f;
+
+  /**
    * The hash collision resolver to use.
    */
-  private static final HashResolver RESOLVER = new QuadraticProbe();
+  private static final HashResolver RESOLVER = new LinearProbe();
+
+  /**
+   * The size of the hash set.
+   */
+  private int size;
 
   /**
    * Internal element storage.
@@ -52,7 +87,7 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
    * Initialize a hash set with the default initial capacity.
    */
   public HashSet() {
-    this(16);
+    this(DEFAULT_CAPACITY);
   }
 
   /**
@@ -62,15 +97,7 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
    */
   @SuppressWarnings("unchecked")
   public HashSet(final int capacity) {
-    super(
-      capacity,
-      0.5f,   // Upper load factor
-      2f,     // Upper resize factor
-      0.125f, // Lower load factor
-      0.5f    // Lower resize factor
-    );
-
-    this.elements = (E[]) new Object[this.capacity()];
+    this.elements = (E[]) new Object[capacity];
   }
 
   /**
@@ -85,16 +112,34 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
   }
 
   /**
+   * Get the size of the hash set.
+   *
+   * @return The size of the hash set.
+   */
+  public final int size() {
+    return this.size;
+  }
+
+  /**
+   * Check if the hash table is empty.
+   *
+   * @return A boolean indicating whether or not the hash table is empty.
+   */
+  public final boolean isEmpty() {
+    return this.size == 0;
+  }
+
+  /**
    * Resize the internal storage of the set to the specified capacity.
    *
    * @param capacity The new capacity of the internal storage of the set.
    */
-  protected final void resize(final int capacity) {
+  private void resize(final int capacity) {
     HashSet<E> temp = new HashSet<>(capacity);
 
     // For each of the elements in the current set, put them in the temporary
     // set, effectively recomputing their hashes.
-    for (int i = 0; i < this.capacity(); i++) {
+    for (int i = 0; i < this.elements.length; i++) {
       if (this.elements[i] != null) {
         temp.add(this.elements[i]);
       }
@@ -116,7 +161,7 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
       return -1;
     }
 
-    return RESOLVER.resolve(this.hash(element), element, this.elements);
+    return RESOLVER.resolve(element, this.elements);
   }
 
   /**
@@ -153,7 +198,11 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
     }
     else {
       this.elements[i] = element;
-      this.grow();
+      this.size++;
+
+      if (this.size == (int) (this.elements.length * UPPER_LOAD_FACTOR)) {
+        this.resize((int) (this.elements.length * UPPER_RESIZE_FACTOR));
+      }
 
       return true;
     }
@@ -199,7 +248,14 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
     int i = this.indexOf(element);
 
     this.elements[i] = null;
-    this.shrink();
+    this.size--;
+
+    if (
+      this.size > 0
+      && this.size == (int) (this.elements.length * LOWER_LOAD_FACTOR)
+    ) {
+      this.resize((int) (this.elements.length * LOWER_RESIZE_FACTOR));
+    }
 
     return true;
   }
@@ -209,13 +265,13 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
    *
    * <p>
    * <b>NB:</b> Unlike Java's Collections, this operation will actually reset
-   * the internal storage of the set to its initial capacity instead of simply
+   * the internal storage of the set to its default capacity instead of simply
    * nullifying all elements.
    */
   @SuppressWarnings("unchecked")
   public final void clear() {
-    this.elements = (E[]) new Object[this.initialCapacity()];
-    this.reset();
+    this.elements = (E[]) new Object[DEFAULT_CAPACITY];
+    this.size = 0;
   }
 
   /**
@@ -224,11 +280,11 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
    * @return An array of elements contained within the set.
    */
   public final Object[] toArray() {
-    Object[] temp = new Object[this.size()];
+    Object[] temp = new Object[this.size];
 
     Iterator<E> it = this.iterator();
 
-    for (int i = 0; i < this.size(); i++) {
+    for (int i = 0; i < this.size; i++) {
       temp[i] = it.next();
     }
 
@@ -259,7 +315,7 @@ public class HashSet<E> extends DynamicHashArray implements Set<E> {
        *          to iterate over.
        */
       public boolean hasNext() {
-        return n < HashSet.this.size();
+        return n < HashSet.this.size;
       }
 
       /**
