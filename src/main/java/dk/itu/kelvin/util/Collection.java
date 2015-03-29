@@ -3,6 +3,9 @@
  */
 package dk.itu.kelvin.util;
 
+// I/O utilities
+import java.io.Serializable;
+
 /**
  * General simplified implementation of Collection interface.
  *
@@ -37,7 +40,7 @@ package dk.itu.kelvin.util;
  *
  * @param <E> The type of elements stored within the collection.
  */
-public interface Collection<E> extends Iterable<E> {
+public interface Collection<E> extends Iterable<E>, Serializable {
   /**
    * Get the size of the collection.
    *
