@@ -147,7 +147,7 @@ public final class Way extends Element<Polyline> {
    *
    * @return Boolean indicating whether or not the way is closed.
    */
-  public boolean closed() {
+  public boolean isClosed() {
     Node start = this.start();
     Node end = this.end();
 
@@ -163,8 +163,8 @@ public final class Way extends Element<Polyline> {
    *
    * @return Boolean indicating whether or not the way is open.
    */
-  public boolean open() {
-    return !this.closed();
+  public boolean isOpen() {
+    return !this.isClosed();
   }
 
   /**

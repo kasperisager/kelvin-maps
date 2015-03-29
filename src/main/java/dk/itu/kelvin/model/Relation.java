@@ -231,7 +231,7 @@ public final class Relation extends Element<Group> {
 
       // RA-3: If the current ring is closed, increase ring counter and go to
       // RA-2.
-      if (next.closed()) {
+      if (next.isClosed()) {
         continue;
       }
 

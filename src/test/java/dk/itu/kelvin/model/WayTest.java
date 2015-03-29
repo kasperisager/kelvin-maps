@@ -125,7 +125,7 @@ public final class WayTest {
     w1.add(n3);
     w1.add(n4);
 
-    assertTrue(w1.closed());
+    assertTrue(w1.isClosed());
 
     Way w2 = new Way();
     Node n5 = new Node(55.1198149F, 12.1159972F);
@@ -137,7 +137,7 @@ public final class WayTest {
     w2.add(n7);
     w2.add(n8);
 
-    assertFalse(w2.closed());
+    assertFalse(w2.isClosed());
   }
 
   /**

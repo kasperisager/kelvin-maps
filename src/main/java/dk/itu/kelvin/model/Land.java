@@ -18,6 +18,8 @@ import dk.itu.kelvin.util.List;
 
 // Math
 import dk.itu.kelvin.math.Geometry;
+import static dk.itu.kelvin.math.Geometry.Line;
+import static dk.itu.kelvin.math.Geometry.Point;
 
 /**
  * Land class.
@@ -57,6 +59,63 @@ public final class Land extends Element<Group> {
       return;
     }
 
+    this.merge(way);
+  }
+
+  /**
+   * Construct geometric line segments that represent the bounds of the land
+   * mass.
+   *
+   * @return Geometric line segments that represent the bounds of the land mass.
+   */
+  private Line[] constructBounds() {
+    return new Line[] {
+      // Top bounds segment.
+      new Line(
+        new Point(this.bounds.maxX(), this.bounds.minY()),
+        new Point(this.bounds.minX(), this.bounds.minY())
+      ),
+
+      // Right bounds segment.
+      new Line(
+        new Point(this.bounds.maxX(), this.bounds.maxY()),
+        new Point(this.bounds.maxX(), this.bounds.minY())
+      ),
+
+      // Bottom bounds segment.
+      new Line(
+        new Point(this.bounds.minX(), this.bounds.maxY()),
+        new Point(this.bounds.maxX(), this.bounds.maxY())
+      ),
+
+      // Left bounds segment.
+      new Line(
+        new Point(this.bounds.minX(), this.bounds.minY()),
+        new Point(this.bounds.minX(), this.bounds.maxY())
+      )
+    };
+  }
+
+  /**
+   * Construct a geometric line segment between the specified nodes.
+   *
+   * @param a The first node.
+   * @param b The second node.
+   * @return  A geometric line segment between the specified nodes.
+   */
+  private Line constructLine(final Node a, final Node b) {
+    return new Line(
+      new Point(a.x(), a.y()),
+      new Point(b.x(), b.y())
+    );
+  }
+
+  /**
+   * Merge the specified way with the existing coastlines of the land mass.
+   *
+   * @param way The way to merge.
+   */
+  private void merge(final Way way) {
     Way coastline = new Way();
     coastline.append(way);
 
@@ -80,51 +139,58 @@ public final class Land extends Element<Group> {
   }
 
   /**
-   * Construct geometric line segments that represent the bounds of the land
-   * mass.
+   * Close the specified coastline, merging it with the bounding box of the
+   * land mass where possible.
    *
-   * @return Geometric line segments that represent the bounds of the land mass.
-   */
-  private Geometry.Line[] constructBounds() {
-    return new Geometry.Line[] {
-      // Top bounds segment.
-      new Geometry.Line(
-        new Geometry.Point(this.bounds.maxX(), this.bounds.minY()),
-        new Geometry.Point(this.bounds.minX(), this.bounds.minY())
-      ),
-
-      // Right bounds segment.
-      new Geometry.Line(
-        new Geometry.Point(this.bounds.maxX(), this.bounds.maxY()),
-        new Geometry.Point(this.bounds.maxX(), this.bounds.minY())
-      ),
-
-      // Bottom bounds segment.
-      new Geometry.Line(
-        new Geometry.Point(this.bounds.minX(), this.bounds.maxY()),
-        new Geometry.Point(this.bounds.maxX(), this.bounds.maxY())
-      ),
-
-      // Left bounds segment.
-      new Geometry.Line(
-        new Geometry.Point(this.bounds.minX(), this.bounds.minY()),
-        new Geometry.Point(this.bounds.minX(), this.bounds.maxY())
-      )
-    };
-  }
-
-  /**
-   * Construct a geometric line segment between the specified nodes.
+   * <p>
+   * <b>NB:</b> This method may produce unexpected result if called prior to all
+   * coastlines having been added to the land mass.
    *
-   * @param a The first node.
-   * @param b The second node.
-   * @return  A geometric line segment between the specified nodes.
+   * @param coastline The coastline to close.
    */
-  private Geometry.Line constructLine(final Node a, final Node b) {
-    return new Geometry.Line(
-      new Geometry.Point(a.x(), a.y()),
-      new Geometry.Point(b.x(), b.y())
-    );
+  private void close(final Way coastline) {
+    if (coastline.isClosed()) {
+      return;
+    }
+
+    Node prev = null;
+
+    List<Node> nodes = coastline.nodes();
+
+    Line[] bounds = this.constructBounds();
+
+    int i = 0;
+    int n = nodes.size();
+
+    while (i < n) {
+      Node next = nodes.get(i++);
+
+      boolean prevInside = this.bounds.contains(prev);
+      boolean nextInside = this.bounds.contains(next);
+
+      if (prevInside ^ nextInside) {
+        Line line = this.constructLine(prev, next);
+
+        for (Line bound: bounds) {
+          if (Geometry.intersection(bound, line) == null) {
+            continue;
+          }
+
+          if (nextInside) {
+            nodes.add(0, new Node(bound.start().x(), bound.start().y()));
+          }
+
+          if (prevInside) {
+            nodes.add(new Node(bound.end().x(), bound.end().y()));
+          }
+
+          i++;
+          n++;
+        }
+      }
+
+      prev = next;
+    }
   }
 
   /**
@@ -135,103 +201,8 @@ public final class Land extends Element<Group> {
   public Group render() {
     Group group = new Group();
 
-    Geometry.Line[] bounds = this.constructBounds();
-
     for (Way coastline: this.coastlines) {
-      if (coastline.open()) {
-        Node previous1 = null;
-        Node previous2 = null;
-
-        boolean inside1 = false;
-        boolean inside2 = false;
-
-        List<Node> nodes = coastline.nodes();
-
-        int n = nodes.size();
-        int i = 0;
-
-        while (i < n) {
-          Node next = nodes.get(i++);
-
-          if (this.bounds.contains(next)) {
-            if (inside1 || previous1 == null) {
-              continue;
-            }
-
-            Geometry.Line line = this.constructLine(previous1, next);
-
-            for (Geometry.Line bound: bounds) {
-              Geometry.Point p = Geometry.intersection(bound, line);
-
-              if (p != null) {
-                Node node = new Node(p.x(), p.y());
-
-                nodes.add(i - 1, node);
-                i++;
-                n++;
-
-                nodes.add(0, new Node(bound.start().x(), bound.start().y()));
-
-                break;
-              }
-            }
-
-            inside1 = true;
-          }
-          else {
-            if (!inside1) {
-              nodes.remove(i - 1);
-              i--;
-              n--;
-            }
-
-            inside1 = false;
-          }
-
-          previous1 = next;
-        }
-
-        int j = n - 1;
-
-        while (j >= 0) {
-          Node next = nodes.get(j--);
-
-          if (this.bounds.contains(next)) {
-            if (inside2 || previous2 == null) {
-              continue;
-            }
-
-            Geometry.Line line = this.constructLine(previous2, next);
-
-            for (Geometry.Line bound: bounds) {
-              Geometry.Point p = Geometry.intersection(bound, line);
-
-              if (p != null) {
-                Node node = new Node(p.x(), p.y());
-
-                nodes.add(j + 3, node);
-                j++;
-
-                nodes.add(new Node(bound.end().x(), bound.end().y()));
-
-                break;
-              }
-            }
-
-            inside2 = true;
-          }
-          else {
-            if (!inside2) {
-              nodes.remove(j + 1);
-              j--;
-            }
-
-            inside2 = false;
-          }
-
-          previous2 = next;
-        }
-      }
+      this.close(coastline);
 
       Polyline polyline = coastline.render();
       polyline.getStyleClass().add("land");
