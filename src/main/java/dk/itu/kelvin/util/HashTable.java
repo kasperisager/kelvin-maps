@@ -46,16 +46,57 @@ package dk.itu.kelvin.util;
  * @param <K> The type of keys stored within the table.
  * @param <V> The type of values stored within the table.
  */
-public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
+public class HashTable<K, V> implements Map<K, V> {
   /**
    * UID for identifying serialized objects.
    */
   private static final long serialVersionUID = 55;
 
   /**
+   * Default initial capacity of the internal storage of the table.
+   */
+  private static final int DEFAULT_CAPACITY = 16;
+
+  /**
+   * The upper factor to use for resizing the internal storage of the table.
+   *
+   * <p>
+   * When the number of entries in the table reaches this factor of the total
+   * capacity of the internal storage, the storage is resized.
+   */
+  private static final float UPPER_LOAD_FACTOR = 0.5f;
+
+  /**
+   * The factor with which to grow the internal storage of the collection when
+   * the upper threshold has been reached.
+   */
+  private static final float UPPER_RESIZE_FACTOR = 2.0f;
+
+  /**
+   * The lower factor to use for resizing the internal storage of the
+   * collection.
+   *
+   * <p>
+   * When the number of entries in the collection reaches this factor of the
+   * total capacity of the internal storage, the storage is resized.
+   */
+  private static final float LOWER_LOAD_FACTOR = 0.125f;
+
+  /**
+   * The factor with which to shrink the internal storage of the collection when
+   * the lower threshold has been reached.
+   */
+  private static final float LOWER_RESIZE_FACTOR = 0.5f;
+
+  /**
    * The hash collision resolver to use.
    */
-  private static final HashResolver RESOLVER = new QuadraticProbe();
+  private static final HashResolver RESOLVER = new LinearProbe();
+
+  /**
+   * The size of the hash table.
+   */
+  private int size;
 
   /**
    * Internal key storage.
@@ -71,7 +112,7 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
    * Initialize a hash table with the default initial capacity.
    */
   public HashTable() {
-    this(16);
+    this(DEFAULT_CAPACITY);
   }
 
   /**
@@ -81,16 +122,26 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
    */
   @SuppressWarnings("unchecked")
   public HashTable(final int capacity) {
-    super(
-      capacity,
-      0.5f,   // Upper load factor
-      2f,     // Upper resize factor
-      0.125f, // Lower load factor
-      0.5f    // Lower resize factor
-    );
+    this.keys = (K[]) new Object[capacity];
+    this.values = (V[]) new Object[capacity];
+  }
 
-    this.keys = (K[]) new Object[this.capacity()];
-    this.values = (V[]) new Object[this.capacity()];
+  /**
+   * Get the size of the hash table.
+   *
+   * @return The size of the hash table.
+   */
+  public final int size() {
+    return this.size;
+  }
+
+  /**
+   * Check if the hash table is empty.
+   *
+   * @return A boolean indicating whether or not the hash table is empty.
+   */
+  public final boolean isEmpty() {
+    return this.size == 0;
   }
 
   /**
@@ -98,12 +149,12 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
    *
    * @param capacity The new capacity of the internal storage of the table.
    */
-  protected final void resize(final int capacity) {
+  private void resize(final int capacity) {
     HashTable<K, V> temp = new HashTable<>(capacity);
 
     // For each of the entries in the current table, put them in the temporary
     // table, effectively recomputing their hashes.
-    for (int i = 0; i < this.capacity(); i++) {
+    for (int i = 0; i < this.keys.length; i++) {
       if (this.keys[i] != null) {
         temp.put(this.keys[i], this.values[i]);
       }
@@ -126,7 +177,7 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
       return -1;
     }
 
-    return RESOLVER.resolve(this.hash(key), key, this.keys);
+    return RESOLVER.resolve(key, this.keys);
   }
 
   /**
@@ -202,7 +253,11 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
     else {
       this.keys[i] = key;
       this.values[i] = value;
-      this.grow();
+      this.size++;
+
+      if (this.size == (int) (this.keys.length * UPPER_LOAD_FACTOR)) {
+        this.resize((int) (this.keys.length * UPPER_RESIZE_FACTOR));
+      }
 
       return null;
     }
@@ -225,7 +280,14 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
 
     this.keys[i] = null;
     this.values[i] = null;
-    this.shrink();
+    this.size--;
+
+    if (
+      this.size > 0
+      && this.size == (int) (this.keys.length * LOWER_LOAD_FACTOR)
+    ) {
+      this.resize((int) (this.keys.length * LOWER_RESIZE_FACTOR));
+    }
 
     return old;
   }
@@ -235,14 +297,14 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
    *
    * <p>
    * <b>NB:</b> Unlike Java's Collections, this operation will actually reset
-   * the internal storage of the table to its initial capacity instead of simply
+   * the internal storage of the table to its default capacity instead of simply
    * nullifying all elements.
    */
   @SuppressWarnings("unchecked")
   public final void clear() {
-    this.keys = (K[]) new Object[this.initialCapacity()];
-    this.values = (V[]) new Object[this.initialCapacity()];
-    this.reset();
+    this.keys = (K[]) new Object[DEFAULT_CAPACITY];
+    this.values = (V[]) new Object[DEFAULT_CAPACITY];
+    this.size = 0;
   }
 
   /**
@@ -257,9 +319,9 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
    * @return A set of the keys contained within the table.
    */
   public final Set<K> keySet() {
-    Set<K> keySet = new HashSet<>(this.size());
+    Set<K> keySet = new HashSet<>(this.size);
 
-    for (int i = 0; i < this.capacity(); i++) {
+    for (int i = 0; i < this.keys.length; i++) {
       if (this.keys[i] != null) {
         keySet.add(this.keys[i]);
       }
@@ -280,9 +342,9 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
    * @return A collection of the values contained within the table.
    */
   public final Collection<V> values() {
-    List<V> values = new ArrayList<>(this.size());
+    List<V> values = new ArrayList<>(this.size);
 
-    for (int i = 0; i < this.capacity(); i++) {
+    for (int i = 0; i < this.keys.length; i++) {
       if (this.keys[i] != null) {
         values.add(this.values[i]);
       }
@@ -301,9 +363,9 @@ public class HashTable<K, V> extends DynamicHashArray implements Map<K, V> {
    * @return A set of entries contained within the map.
    */
   public final Set<Map.Entry<K, V>> entrySet() {
-    Set<Map.Entry<K, V>> entrySet = new HashSet<>(this.size());
+    Set<Map.Entry<K, V>> entrySet = new HashSet<>(this.size);
 
-    for (int i = 0; i < this.capacity(); i++) {
+    for (int i = 0; i < this.keys.length; i++) {
       if (this.keys[i] != null) {
         entrySet.add(new Entry<K, V>(this.keys[i], this.values[i]));
       }

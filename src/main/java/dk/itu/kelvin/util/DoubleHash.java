@@ -22,7 +22,7 @@ package dk.itu.kelvin.util;
  * @see <a href="http://en.wikipedia.org/wiki/Double_hashing">
  *      http://en.wikipedia.org/wiki/Double_hashing</a>
  */
-public final class DoubleHash implements HashResolver {
+public final class DoubleHash extends HashResolver {
   /**
    * Calculate the next index to step through.
    *
@@ -94,13 +94,12 @@ public final class DoubleHash implements HashResolver {
   /**
    * Resolve hash collisions for primitive {@code int} keys.
    *
-   * @param hash  The hash of the specified key.
    * @param key   The key to look up the index of.
    * @param keys  The list of keys to look through.
    * @return      The index of the specified key.
    */
-  public int resolve(final int hash, final int key, final int[] keys) {
-    int i = hash;
+  public int resolve(final int key, final int[] keys) {
+    int i = HashResolver.hash(key, keys.length);
     int secondHash = this.secondHash(key);
     int step = 1;
 
@@ -118,13 +117,12 @@ public final class DoubleHash implements HashResolver {
   /**
    * Resolve hash collisions for primitive {@code long} keys.
    *
-   * @param hash  The hash of the specified key.
    * @param key   The key to look up the index of.
    * @param keys  The list of keys to look through.
    * @return      The index of the specified key.
    */
-  public int resolve(final int hash, final long key, final long[] keys) {
-    int i = hash;
+  public int resolve(final long key, final long[] keys) {
+    int i = HashResolver.hash(key, keys.length);
     int secondHash = this.secondHash(key);
     int step = 1;
 
@@ -142,13 +140,12 @@ public final class DoubleHash implements HashResolver {
   /**
    * Resolve hash collisions for primitive {@code float} keys.
    *
-   * @param hash  The hash of the specified key.
    * @param key   The key to look up the index of.
    * @param keys  The list of keys to look through.
    * @return      The index of the specified key.
    */
-  public int resolve(final int hash, final float key, final float[] keys) {
-    int i = hash;
+  public int resolve(final float key, final float[] keys) {
+    int i = HashResolver.hash(key, keys.length);
     int secondHash = this.secondHash(key);
     int step = 1;
 
@@ -166,13 +163,12 @@ public final class DoubleHash implements HashResolver {
   /**
    * Resolve hash collisions for primitive {@code double} keys.
    *
-   * @param hash  The hash of the specified key.
    * @param key   The key to look up the index of.
    * @param keys  The list of keys to look through.
    * @return      The index of the specified key.
    */
-  public int resolve(final int hash, final double key, final double[] keys) {
-    int i = hash;
+  public int resolve(final double key, final double[] keys) {
+    int i = HashResolver.hash(key, keys.length);
     int secondHash = this.secondHash(key);
     int step = 1;
 
@@ -190,13 +186,12 @@ public final class DoubleHash implements HashResolver {
   /**
    * Resolve hash collisions for {@code Object} keys.
    *
-   * @param hash  The hash of the specified key.
    * @param key   The key to look up the index of.
    * @param keys  The list of keys to look through.
    * @return      The index of the specified key.
    */
-  public int resolve(final int hash, final Object key, final Object[] keys) {
-    int i = hash;
+  public int resolve(final Object key, final Object[] keys) {
+    int i = HashResolver.hash(key, keys.length);
     int secondHash = this.secondHash(key);
     int step = 1;
 
