@@ -4,7 +4,6 @@
 package dk.itu.kelvin.util;
 
 // Math
-import dk.itu.kelvin.math.Geometry;
 import static dk.itu.kelvin.math.Geometry.Bounds;
 import static dk.itu.kelvin.math.Geometry.Shape;
 
@@ -40,35 +39,33 @@ public interface SpatialIndex<E> {
   /**
    * Find all elements within the range of the specified bounds.
    *
-   * @param <B>     The type of bounds to use.
    * @param bounds  The bounds to search for elements within.
    * @return        A list of elements contained within the range of the
    *                specified bounds.
    */
-  <B extends Geometry.Bounds> List<E> range(final B bounds);
+  List<E> range(final Bounds bounds);
 
   /**
    * Find all elements included in the filter and within the range of the
    * specified bounds.
    *
-   * @param <B>     The type of bounds to use.
    * @param bounds  The bounds to search for elements within.
    * @param filter  The filter to apply to the range search.
    * @return        A list of elements contained within the range of the
    *                specified bounds.
    */
-  <B extends Bounds> List<E> range(final B bounds, final Filter<E> filter);
+  List<E> range(final Bounds bounds, final Filter<E> filter);
 
   /**
-   * The {@link Element} interface describes an element within the spatial index
-   * and is used for converting arbitrary elements to elements that can be used
-   * with the data structure.
+   * The {@link Descriptor} interface describes an element within the spatial
+   * index and is used for converting arbitrary elements to elements that can
+   * be used with the data structure.
    *
    * @param <E> The original type of the element.
    * @param <S> The converted type of the element.
    */
   @FunctionalInterface
-  public interface Element<E, S extends Shape> {
+  public interface Descriptor<E, S extends Shape> {
     /**
      * Convert an arbitrary element to an element that can be used within the
      * spatial index.
@@ -76,7 +73,7 @@ public interface SpatialIndex<E> {
      * @param element The element to convert.
      * @return        The converted element.
      */
-    S toShape(final E element);
+    S describe(final E element);
   }
 
   /**
