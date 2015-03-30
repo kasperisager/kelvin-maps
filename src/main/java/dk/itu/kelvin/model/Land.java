@@ -69,6 +69,10 @@ public final class Land extends Element<Group> {
    * @return Geometric line segments that represent the bounds of the land mass.
    */
   private Line[] constructBounds() {
+    if (this.bounds == null) {
+      return null;
+    }
+
     return new Line[] {
       // Top bounds segment.
       new Line(
@@ -104,6 +108,10 @@ public final class Land extends Element<Group> {
    * @return  A geometric line segment between the specified nodes.
    */
   private Line constructLine(final Node a, final Node b) {
+    if (a == null || b == null) {
+      return null;
+    }
+
     return new Line(
       new Point(a.x(), a.y()),
       new Point(b.x(), b.y())
@@ -116,6 +124,10 @@ public final class Land extends Element<Group> {
    * @param way The way to merge.
    */
   private void merge(final Way way) {
+    if (way == null) {
+      return;
+    }
+
     Way coastline = new Way();
     coastline.append(way);
 
@@ -135,6 +147,8 @@ public final class Land extends Element<Group> {
       }
     }
 
+    this.close(coastline);
+
     this.coastlines.add(coastline);
   }
 
@@ -149,13 +163,13 @@ public final class Land extends Element<Group> {
    * @param coastline The coastline to close.
    */
   private void close(final Way coastline) {
-    if (coastline.isClosed()) {
+    if (coastline == null || coastline.isClosed()) {
       return;
     }
 
-    Node prev = null;
-
     List<Node> nodes = coastline.nodes();
+
+    Node prev = null;
 
     Line[] bounds = this.constructBounds();
 
@@ -168,24 +182,34 @@ public final class Land extends Element<Group> {
       boolean prevInside = this.bounds.contains(prev);
       boolean nextInside = this.bounds.contains(next);
 
-      if (prevInside ^ nextInside) {
+      if (!nextInside && next != null) {
+        nodes.remove(i - 1);
+        i--;
+        n--;
+      }
+
+      if ((prevInside ^ nextInside) && prev != null && next != null) {
         Line line = this.constructLine(prev, next);
 
         for (Line bound: bounds) {
-          if (Geometry.intersection(bound, line) == null) {
+          Point point = Geometry.intersection(bound, line);
+
+          if (point == null) {
             continue;
           }
 
           if (nextInside) {
-            nodes.add(0, new Node(bound.start().x(), bound.start().y()));
+            nodes.add(i - 1, new Node(point.x(), point.y()));
+            nodes.add(i - 1, new Node(bound.start().x(), bound.start().y()));
           }
 
           if (prevInside) {
-            nodes.add(new Node(bound.end().x(), bound.end().y()));
+            nodes.add(i, new Node(bound.end().x(), bound.end().y()));
+            nodes.add(i, new Node(point.x(), point.y()));
           }
 
-          i++;
-          n++;
+          i += 2;
+          n += 2;
         }
       }
 
@@ -202,8 +226,6 @@ public final class Land extends Element<Group> {
     Group group = new Group();
 
     for (Way coastline: this.coastlines) {
-      this.close(coastline);
-
       Polyline polyline = coastline.render();
       polyline.getStyleClass().add("land");
 
