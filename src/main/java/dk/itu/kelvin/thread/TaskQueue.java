@@ -10,6 +10,8 @@ import java.util.Queue;
 // Concurrency utilities
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 // JavaFX concurrency utilities
 import javafx.concurrent.Task;
@@ -18,20 +20,43 @@ import javafx.concurrent.Task;
  * Task queue class.
  */
 public final class TaskQueue {
+  /**
+   * The size of the thread pool.
+   *
+   * <p>
+   * The number of live threads will never exceed this number. Whenever a new
+   * task is submitted to the task queue, the thread pool will wait for prior
+   * tasks to finish before running the new one if no more slots are available
+   * in the pool.
+   */
+  private static final int POOL_SIZE = 100;
+
+  /**
+   * Initialize the different fields of the task queue.
+   *
+   * <p>
+   * If the task queue is never used, this statement will never run thus
+   * ensuring that we don't allocate memory to things that are never used.
+   */
   static {
     // Initialize the map containing the task groups. We use a concurrent hash
     // map since it will potentially be modified from multiple threads at the
     // same time.
-    //
-    // If the task queue is never used, this statement will never run thus
-    // ensuring that we don't allocate memory to a map which is never used.
-    TaskQueue.groups = new ConcurrentHashMap<>();
+    GROUPS = new ConcurrentHashMap<>();
+
+    // Initialize the thread pool that will take care of task execution.
+    POOL = Executors.newFixedThreadPool(POOL_SIZE);
   }
+
+  /**
+   * The thread pool that handles execution of tasks on separate threads.
+   */
+  private static final ExecutorService POOL;
 
   /**
    * The map containing the different groups mapped to their task queues.
    */
-  private static Map<String, Queue<FunctionalTask>> groups;
+  private static final Map<String, Queue<FunctionalTask>> GROUPS;
 
   /**
    * Don't allow instantiation of the class.
@@ -82,15 +107,15 @@ public final class TaskQueue {
     }
 
     // Initialize the group if it hasn't been initialized yet.
-    if (!TaskQueue.groups.containsKey(group)) {
+    if (!GROUPS.containsKey(group)) {
       // A concurrent linked queue is used as the task queue will potentially be
       // modified from several threads at the same time. This will for example
       // be the case if a new task is added before `start()` has finished
       // running all the tasks in the queue.
-      TaskQueue.groups.put(group, new ConcurrentLinkedQueue<FunctionalTask>());
+      GROUPS.put(group, new ConcurrentLinkedQueue<FunctionalTask>());
     }
 
-    Queue<FunctionalTask> queue = TaskQueue.groups.get(group);
+    Queue<FunctionalTask> queue = GROUPS.get(group);
 
     for (FunctionalTask task: tasks) {
       queue.add(task);
@@ -129,8 +154,8 @@ public final class TaskQueue {
       }
     };
 
-    // Start the task on a separate thread.
-    new Thread(runner).start();
+    // Submit the task runner to the thread pool
+    POOL.submit(runner);
   }
 
   /**
@@ -139,7 +164,7 @@ public final class TaskQueue {
    * @param group The group whose tasks to run.
    */
   public static void start(final String group) {
-    if (group == null || !TaskQueue.groups.containsKey(group)) {
+    if (group == null || !GROUPS.containsKey(group)) {
       return;
     }
 
@@ -148,7 +173,7 @@ public final class TaskQueue {
     // main thread isn't blocked.
     TaskQueue.run(() -> {
       // Get the task queue for the specified group.
-      Queue<FunctionalTask> queue = TaskQueue.groups.get(group);
+      Queue<FunctionalTask> queue = GROUPS.get(group);
 
       // While there are tasks left in the queue, get the next one and run it.
       while (!queue.isEmpty()) {
@@ -156,7 +181,7 @@ public final class TaskQueue {
       }
 
       // Remove the group from the map of groups. No loitering!
-      TaskQueue.groups.remove(group);
+      GROUPS.remove(group);
     });
   }
 
