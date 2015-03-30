@@ -156,10 +156,6 @@ public final class Land extends Element<Group> {
    * Close the specified coastline, merging it with the bounding box of the
    * land mass where possible.
    *
-   * <p>
-   * <b>NB:</b> This method may produce unexpected result if called prior to all
-   * coastlines having been added to the land mass.
-   *
    * @param coastline The coastline to close.
    */
   private void close(final Way coastline) {
@@ -169,8 +165,10 @@ public final class Land extends Element<Group> {
 
     List<Node> nodes = coastline.nodes();
 
+    // Keep track of the previously visited node.
     Node prev = null;
 
+    // Construct an array of bounding lines.
     Line[] bounds = this.constructBounds();
 
     int i = 0;
@@ -179,9 +177,12 @@ public final class Land extends Element<Group> {
     while (i < n) {
       Node next = nodes.get(i++);
 
+      // Check if either the current node or the previous node are inside
+      // the bounds.
       boolean prevInside = this.bounds.contains(prev);
       boolean nextInside = this.bounds.contains(next);
 
+      // Remove the current node from the coastline if it's outside the bounds.
       if (!nextInside && next != null) {
         nodes.remove(i - 1);
         i--;
@@ -192,21 +193,27 @@ public final class Land extends Element<Group> {
         Line line = this.constructLine(prev, next);
 
         for (Line bound: bounds) {
-          Point point = Geometry.intersection(bound, line);
+          // Get the intersection point between the bounding line and the line
+          // that runs between the previous and current node.
+          Point a = Geometry.intersection(bound, line);
 
-          if (point == null) {
+          // Figure out which point on the bounding line to potentially use for
+          // closing the coastline.
+          Point b = nextInside ? bound.start() : bound.end();
+
+          if (a == null || b == null) {
             continue;
           }
 
-          if (nextInside) {
-            nodes.add(i - 1, new Node(point.x(), point.y()));
-            nodes.add(i - 1, new Node(bound.start().x(), bound.start().y()));
-          }
+          nodes.add(nextInside ? i - 1 : i, new Node(
+            (nextInside ? a : b).x(),
+            (nextInside ? a : b).y()
+          ));
 
-          if (prevInside) {
-            nodes.add(i, new Node(bound.end().x(), bound.end().y()));
-            nodes.add(i, new Node(point.x(), point.y()));
-          }
+          nodes.add(nextInside ? i - 1 : i, new Node(
+            (nextInside ? b : a).x(),
+            (nextInside ? b : a).y()
+          ));
 
           i += 2;
           n += 2;
