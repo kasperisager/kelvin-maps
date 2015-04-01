@@ -8,6 +8,8 @@ package dk.itu.kelvin.util;
  *
  * @see <a href="http://en.wikipedia.org/wiki/Trie">
  *      http://en.wikipedia.org/wiki/Trie</a>
+ *
+ * @param <V> The type of values stored within the prefix tree.
  */
 public interface PrefixTree<V> {
   /**
@@ -46,7 +48,6 @@ public interface PrefixTree<V> {
    *
    * @param key   The key to put in the tree.
    * @param value The value to put in the tree.
-   * @return      The previous value associated with the key if found.
    */
   void put(final String key, final V value);
 
@@ -54,7 +55,6 @@ public interface PrefixTree<V> {
    * Remove a key/value pair from the tree.
    *
    * @param key The key of the value to remove.
-   * @return    The removed value if fonund.
    */
   void remove(final Object key);
 

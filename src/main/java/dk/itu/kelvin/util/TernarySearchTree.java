@@ -11,6 +11,8 @@ package dk.itu.kelvin.util;
  *
  * @see <a href="http://algs4.cs.princeton.edu/52trie/TST.java.html">
  *      http://algs4.cs.princeton.edu/52trie/TST.java.html</a>
+ *
+ * @param <V> The type of values stored within the ternary search tree.
  */
 public class TernarySearchTree<V> implements PrefixTree<V> {
   /**
@@ -77,7 +79,7 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
    * @param depth The current tree depth.
    * @return      The node containing the specified key if found.
    */
-  private final Node get(final Node node, final String key, final int depth) {
+  private Node get(final Node node, final String key, final int depth) {
     if (node == null || key == null) {
       return null;
     }
@@ -159,15 +161,15 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
     final V value,
     final int depth
   ) {
+    if (key == null || value == null) {
+      return null;
+    }
+
     char character = key.charAt(depth);
     Node root = node;
 
     if (root == null) {
       root = new Node(character);
-    }
-
-    if (key == null || value == null) {
-      return root;
     }
 
     if (character < root.character) {
