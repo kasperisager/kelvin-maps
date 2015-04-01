@@ -429,7 +429,7 @@ public class RectangleTree<E extends RectangleTree.Index>
      *                specified element.
      */
     public boolean contains(final E element) {
-      if (element == null || this.isEmpty()) {
+      if (element == null || this.size == 0) {
         return false;
       }
 
@@ -459,7 +459,7 @@ public class RectangleTree<E extends RectangleTree.Index>
       final Filter<E> filter
     ) {
       if (
-        this.isEmpty()
+        this.size == 0
         || elements == null
         || bounds == null
         || filter == null
@@ -528,7 +528,7 @@ public class RectangleTree<E extends RectangleTree.Index>
      *                the specified element.
      */
     public boolean contains(final E element) {
-      if (element == null || this.isEmpty()) {
+      if (element == null || this.size == 0) {
         return false;
       }
 
@@ -558,7 +558,7 @@ public class RectangleTree<E extends RectangleTree.Index>
       final Filter<E> filter
     ) {
       if (
-        this.isEmpty()
+        this.size == 0
         || elements == null
         || bounds == null
         || filter == null
