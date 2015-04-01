@@ -3,10 +3,6 @@
  */
 package dk.itu.kelvin.util;
 
-// Math
-import static dk.itu.kelvin.math.Geometry.Bounds;
-import static dk.itu.kelvin.math.Geometry.Shape;
-
 /**
  * Spatial index interface.
  *
@@ -57,23 +53,139 @@ public interface SpatialIndex<E> {
   List<E> range(final Bounds bounds, final Filter<E> filter);
 
   /**
-   * The {@link Descriptor} interface describes an element within the spatial
-   * index and is used for converting arbitrary elements to elements that can
-   * be used with the data structure.
-   *
-   * @param <E> The original type of the element.
-   * @param <S> The converted type of the element.
+   * The {@link Bounds} class describes a set of 2-dimensional, rectangular
+   * bounds that can be used in range queries in spatial indexes.
    */
-  @FunctionalInterface
-  public interface Descriptor<E, S extends Shape> {
+  public static final class Bounds {
     /**
-     * Convert an arbitrary element to an element that can be used within the
-     * spatial index.
-     *
-     * @param element The element to convert.
-     * @return        The converted element.
+     * The smallest x-coordinate of the bounds.
      */
-    S describe(final E element);
+    private final float minX;
+
+    /**
+     * The smallest y-coordinate of the bounds.
+     */
+    private final float minY;
+
+    /**
+     * The largest x-coordinate of the bounds.
+     */
+    private final float maxX;
+
+    /**
+     * The largest y-coordinate of the bounds.
+     */
+    private final float maxY;
+
+    /**
+     * Initialize a new set of bounds.
+     *
+     * @param minX The smallest x-coordinate of the bounds.
+     * @param minY The smallest y-coordinate of the bounds.
+     * @param maxX The largest x-coordinate of the bounds.
+     * @param maxY The largest y-coordinate of the bounds.
+     */
+    public Bounds(
+      final float minX,
+      final float minY,
+      final float maxX,
+      final float maxY
+    ) {
+      this.minX = minX;
+      this.minY = minY;
+      this.maxX = maxX;
+      this.maxY = maxY;
+    }
+
+    /**
+     * Get the smallest x-coordinate of the bounds.
+     *
+     * @return The smallest x-coordinate of the bounds.
+     */
+    public float minX() {
+      return this.minX;
+    }
+
+    /**
+     * Get the smallest y-coordinate of the bounds.
+     *
+     * @return The smallest y-coordinate of the bounds.
+     */
+    public float minY() {
+      return this.minY;
+    }
+
+    /**
+     * Get the largest x-coordinate of the bounds.
+     *
+     * @return The largest x-coordinate of the bounds.
+     */
+    public float maxX() {
+      return this.maxX;
+    }
+
+    /**
+     * Get the largest y-coordinate of the bounds.
+     *
+     * @return The largest y-coordinate of the bounds.
+     */
+    public float maxY() {
+      return this.maxY;
+    }
+
+    /**
+     * Check if the current bounds contain the specified point.
+     *
+     * @param x The x-coordinate of the point.
+     * @param y The y-coordinate of the point.
+     * @return  A boolean indicating whether or not the current bounds contain
+     *          the specified point.
+     */
+    public boolean contains(final float x, final float y) {
+      return (
+        this.minX <= x
+        && this.maxX >= x
+        && this.minY <= y
+        && this.maxY >= y
+      );
+    }
+
+    /**
+     * Check if the current bounds intersect the specified bounding coordinates.
+     *
+     * @param minX  The smallest x-coordinate to check intersection of.
+     * @param minY  The smallest y-coordinate to check intersection of.
+     * @param maxX  The largest x-coordinate to check intersection of.
+     * @param maxY  The largest y-coordinate to check intersection of.
+     * @return      A boolean indicating whether or not the current bounds
+     *              intersect the specified bounding coordinates.
+     */
+    public boolean intersects(
+      final float minX,
+      final float minY,
+      final float maxX,
+      final float maxY
+    ) {
+      return (
+        this.minX() <= maxX
+        && this.maxX() >= minX
+        && this.minY() <= maxY
+        && this.maxY() >= minY
+      );
+    }
+
+    /**
+     * Check if the current bounds intersect the specified bounds.
+     *
+     * @param bounds  The bounds to check intersection of.
+     * @return        A boolean indicating whether or not the current bounds
+     *                intersect the specified bounds.
+     */
+    public boolean intersects(final Bounds bounds) {
+      return this.intersects(
+        bounds.minX(), bounds.minY(), bounds.maxX(), bounds.maxY()
+      );
+    }
   }
 
   /**

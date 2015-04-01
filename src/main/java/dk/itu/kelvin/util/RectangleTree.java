@@ -6,12 +6,6 @@ package dk.itu.kelvin.util;
 // General utilities
 import java.util.Arrays;
 
-// Math
-import dk.itu.kelvin.math.Geometry;
-import static dk.itu.kelvin.math.Geometry.Bounds;
-import static dk.itu.kelvin.math.Geometry.Point;
-import static dk.itu.kelvin.math.Geometry.Rectangle;
-
 /**
  * Rectangle tree class.
  *
@@ -23,11 +17,12 @@ import static dk.itu.kelvin.math.Geometry.Rectangle;
  *
  * @param <E> The type of elements stored within the rectangle tree.
  */
-public class RectangleTree<E> implements SpatialIndex<E> {
+public class RectangleTree<E extends RectangleTree.Index>
+  implements SpatialIndex<E> {
   /**
    * The maximum size of rectangle pages.
    */
-  private static final int PAGE_MAXIMUM = 10;
+  private static final int PAGE_MAXIMUM = 4096;
 
   /**
    * The minimum size of rectangle pages.
@@ -37,7 +32,7 @@ public class RectangleTree<E> implements SpatialIndex<E> {
   /**
    * The maximum size of rectangle buckets.
    */
-  private static final int BUCKET_MAXIMUM = 1000;
+  private static final int BUCKET_MAXIMUM = 1024;
 
   /**
    * The minimum size of rectangle buckets.
@@ -50,11 +45,6 @@ public class RectangleTree<E> implements SpatialIndex<E> {
   private int size;
 
   /**
-   * The element descriptor.
-   */
-  private Descriptor<E, Rectangle> descriptor;
-
-  /**
    * The root node of the rectangle tree.
    */
   private Node root;
@@ -63,21 +53,20 @@ public class RectangleTree<E> implements SpatialIndex<E> {
    * Initialize a new rectangle tree bulk-loaded with the specified list of
    * elements.
    *
-   * @param elements    The elements to add to the tree.
-   * @param descriptor  The element descriptor to use.
+   * @param elements The elements to add to the tree.
    */
-  @SuppressWarnings("unchecked")
-  public RectangleTree(
-    final Collection<E> elements,
-    final Descriptor<E, Rectangle> descriptor
-  ) {
-    this.descriptor = descriptor;
+  public RectangleTree(final Collection<E> elements) {
+    @SuppressWarnings("unchecked")
+    E[] array = (E[]) new Index[elements.size()];
 
-    this.root = this.partition(
-      (E[]) elements.toArray(), // Elements
-      0,                        // Starting index
-      elements.size()           // Ending index
-    );
+    int i = 0;
+
+    for (E element: elements) {
+      array[i++] = element;
+    }
+
+    this.root = this.partition(array, 0, array.length);
+    this.size = array.length;
   }
 
   /**
@@ -159,7 +148,6 @@ public class RectangleTree<E> implements SpatialIndex<E> {
    * @param end       The ending index of the operation.
    * @return          A partitioned {@link Node} instance.
    */
-  @SuppressWarnings("unchecked")
   private Node partition(final E[] elements, final int start, final int end) {
     if (elements == null) {
       return null;
@@ -171,23 +159,14 @@ public class RectangleTree<E> implements SpatialIndex<E> {
       return null;
     }
 
-    if (length == 0) {
-      this.size++;
-      return new Leaf(elements[start]);
-    }
-
     if (length <= BUCKET_MAXIMUM) {
-      this.size += length;
       return new Bucket(Arrays.copyOfRange(elements, start, end));
     }
 
     Arrays.sort(elements, start, end, (a, b) -> {
-      Bounds ab = this.descriptor.describe(a).bounds();
-      Bounds bb = this.descriptor.describe(b).bounds();
-
       return Double.compare(
-        ab.min().x() - ((ab.max().x() - ab.min().x()) / 2),
-        bb.min().x() - ((bb.max().x() - bb.min().x()) / 2)
+        a.minX() - ((a.maxX() - a.minX()) / 2),
+        b.minX() - ((b.maxX() - b.minX()) / 2)
       );
     });
 
@@ -211,36 +190,59 @@ public class RectangleTree<E> implements SpatialIndex<E> {
       }
 
       Arrays.sort(elements, sliceStart, sliceEnd, (a, b) -> {
-        Bounds ab = this.descriptor.describe(a).bounds();
-        Bounds bb = this.descriptor.describe(b).bounds();
-
         return Double.compare(
-          ab.min().y() - ((ab.max().y() - ab.min().y()) / 2),
-          bb.min().y() - ((bb.max().y() - bb.min().y()) / 2)
+          a.minY() - ((a.maxY() - a.minY()) / 2),
+          b.minY() - ((b.maxY() - b.minY()) / 2)
         );
       });
     }
 
-    Bucket[] buckets = new RectangleTree.Bucket[l];
+    if (l <= PAGE_MAXIMUM) {
+      @SuppressWarnings("unchecked")
+      Bucket[] buckets = new RectangleTree.Bucket[l];
 
-    for (int i = 0; i < l; i++) {
-      int bucketStart = start + i * BUCKET_MAXIMUM;
-      int bucketEnd = bucketStart + BUCKET_MAXIMUM;
+      for (int i = 0; i < l; i++) {
+        int bucketStart = start + i * BUCKET_MAXIMUM;
+        int bucketEnd = bucketStart + BUCKET_MAXIMUM;
 
-      if (bucketStart > end) {
-        break;
+        if (bucketStart > end) {
+          break;
+        }
+
+        if (bucketEnd > end) {
+          bucketEnd = end;
+        }
+
+        buckets[i] = new Bucket(
+          Arrays.copyOfRange(elements, bucketStart, bucketEnd)
+        );
       }
 
-      if (bucketEnd > end) {
-        bucketEnd = end;
-      }
-
-      buckets[i] = new Bucket(
-        Arrays.copyOfRange(elements, bucketStart, bucketEnd)
-      );
+      return new Page(buckets);
     }
+    else {
+      int p = (int) Math.ceil(l / (double) PAGE_MAXIMUM);
 
-    return new Page(buckets);
+      @SuppressWarnings("unchecked")
+      Node[] children = new RectangleTree.Node[p];
+
+      for (int i = 0; i < p; i++) {
+        int pageStart = start + i * BUCKET_MAXIMUM * PAGE_MAXIMUM;
+        int pageEnd = pageStart + i * BUCKET_MAXIMUM * PAGE_MAXIMUM;
+
+        if (pageStart > end) {
+          break;
+        }
+
+        if (pageEnd > end) {
+          pageEnd = end;
+        }
+
+        children[i] = this.partition(elements, pageStart, pageEnd);
+      }
+
+      return new Page(children);
+    }
   }
 
   /**
@@ -251,25 +253,25 @@ public class RectangleTree<E> implements SpatialIndex<E> {
      * The smallest x-coordinate of the nodes or elements contained within this
      * node.
      */
-    private double minX;
+    private float minX;
 
     /**
      * The smallest y-coordinate of the nodes or elements contained within this
      * node.
      */
-    private double minY;
+    private float minY;
 
     /**
      * The largest x-coordinate of the nodes or elements contained within this
      * node.
      */
-    private double maxX;
+    private float maxX;
 
     /**
      * The largest y-coordinate of the nodes or elements contained within this
      * node.
      */
-    private double maxY;
+    private float maxY;
 
     /**
      * Check if the node intersects the specified bounds.
@@ -278,14 +280,40 @@ public class RectangleTree<E> implements SpatialIndex<E> {
      * @return        A boolean indicating whether or not the node intersects
      *                the specified bounds.
      */
-    public boolean intersects(final Bounds bounds) {
-      return Geometry.intersects(
-        bounds,
-        new Bounds(
-          new Point(this.minX, this.minY),
-          new Point(this.maxX, this.maxY)
-        )
+    public final boolean intersects(final Bounds bounds) {
+      return bounds.intersects(this.minX, this.minY, this.maxX, this.maxY);
+    }
+
+    /**
+     * Check if the node intersects the specified element.
+     *
+     * @param element The element to check intersection of.
+     * @return        A boolean indicating whether or not the node intersects
+     *                the specified element.
+     */
+    public final boolean intersects(final E element) {
+      return (
+        this.minX <= element.maxX()
+        && this.maxX >= element.minX()
+        && this.minY <= element.maxY()
+        && this.maxY >= element.maxY()
       );
+    }
+
+    /**
+     * Get the size of the node.
+     *
+     * @return The size of the node.
+     */
+    public abstract int size();
+
+    /**
+     * Check if the node is empty.
+     *
+     * @return A boolean indicating whether or not the node is empty.
+     */
+    public final boolean isEmpty() {
+      return this.size() == 0;
     }
 
     /**
@@ -318,12 +346,16 @@ public class RectangleTree<E> implements SpatialIndex<E> {
      *                current node.
      */
     protected void union(final E element) {
-      Bounds bounds = RectangleTree.this.descriptor.describe(element).bounds();
+      if (element == null) {
+        return;
+      }
 
-      this.minX = Math.min(this.minX, bounds.min().x());
-      this.minY = Math.min(this.minY, bounds.min().y());
-      this.maxX = Math.max(this.maxX, bounds.max().x());
-      this.maxY = Math.max(this.maxY, bounds.max().y());
+      boolean empty = this.isEmpty();
+
+      this.minX = !empty ? Math.min(this.minX, element.minX()) : element.minX();
+      this.minY = !empty ? Math.min(this.minY, element.minY()) : element.minY();
+      this.maxX = !empty ? Math.max(this.maxX, element.maxX()) : element.maxX();
+      this.maxY = !empty ? Math.max(this.maxY, element.maxY()) : element.maxY();
     }
 
     /**
@@ -334,10 +366,16 @@ public class RectangleTree<E> implements SpatialIndex<E> {
      *              current node.
      */
     protected void union(final Node node) {
-      this.minX = Math.min(this.minX, node.minX);
-      this.minY = Math.min(this.minY, node.minY);
-      this.maxX = Math.max(this.maxX, node.maxX);
-      this.maxY = Math.max(this.maxY, node.maxY);
+      if (node == null) {
+        return;
+      }
+
+      boolean empty = this.isEmpty();
+
+      this.minX = !empty ? Math.min(this.minX, node.minX) : node.minX;
+      this.minY = !empty ? Math.min(this.minY, node.minY) : node.minY;
+      this.maxX = !empty ? Math.max(this.maxX, node.maxX) : node.maxX;
+      this.maxY = !empty ? Math.max(this.maxY, node.maxY) : node.maxY;
     }
   }
 
@@ -352,6 +390,11 @@ public class RectangleTree<E> implements SpatialIndex<E> {
     private Node[] nodes;
 
     /**
+     * The size of the page.
+     */
+    private int size;
+
+    /**
      * Initialize a new page.
      *
      * @param nodes The nodes associated with the page.
@@ -360,8 +403,22 @@ public class RectangleTree<E> implements SpatialIndex<E> {
       this.nodes = nodes;
 
       for (Node node: nodes) {
+        if (node == null) {
+          break;
+        }
+
         this.union(node);
+        this.size++;
       }
+    }
+
+    /**
+     * Get the size of the page.
+     *
+     * @return The size of the page.
+     */
+    public int size() {
+      return this.size;
     }
 
     /**
@@ -372,13 +429,11 @@ public class RectangleTree<E> implements SpatialIndex<E> {
      *                specified element.
      */
     public boolean contains(final E element) {
-      if (element == null) {
+      if (element == null || this.isEmpty()) {
         return false;
       }
 
-      if (!this.intersects(
-        RectangleTree.this.descriptor.describe(element).bounds()
-      )) {
+      if (!this.intersects(element)) {
         return false;
       }
 
@@ -403,77 +458,22 @@ public class RectangleTree<E> implements SpatialIndex<E> {
       final Bounds bounds,
       final Filter<E> filter
     ) {
-      if (elements == null || bounds == null || filter == null) {
-        return;
-      }
-
-      if (!this.intersects(bounds)) {
-        return;
-      }
-
-      for (Node node: this.nodes) {
-        node.range(elements, bounds, filter);
-      }
-    }
-  }
-
-  /**
-   * A {@link Leaf} is a {@link Node} that contains an element and nothing else.
-   */
-  private final class Leaf extends Node {
-    /**
-     * The element associated with the leaf.
-     */
-    private E element;
-
-    /**
-     * Initialize a new leaf.
-     *
-     * @param element The element associated with the leaf.
-     */
-    public Leaf(final E element) {
-      this.element = element;
-      this.union(element);
-    }
-
-    /**
-     * Check if the leaf contains the specified element.
-     *
-     * @param element The element to look for.
-     * @return        A boolean indicating whether or not the leaf contains the
-     *                specified element.
-     */
-    public boolean contains(final E element) {
-      if (this.element == null || element == null) {
-        return false;
-      }
-
-      return this.element.equals(element);
-    }
-
-    /**
-     * Find all elements within the range of the specified bounds.
-     *
-     * @param elements  The collection to add the found elements to.
-     * @param bounds    The bounds to search for elements within.
-     * @param filter    The filter to apply to the range search.
-     */
-    public void range(
-      final Collection<E> elements,
-      final Bounds bounds,
-      final Filter<E> filter
-    ) {
       if (
-        this.element == null
+        this.isEmpty()
         || elements == null
         || bounds == null
         || filter == null
+        || !this.intersects(bounds)
       ) {
         return;
       }
 
-      if (filter.include(this.element) && this.intersects(bounds)) {
-        elements.add(this.element);
+      for (Node node: this.nodes) {
+        if (node == null) {
+          break;
+        }
+
+        node.range(elements, bounds, filter);
       }
     }
   }
@@ -489,6 +489,11 @@ public class RectangleTree<E> implements SpatialIndex<E> {
     private E[] elements;
 
     /**
+     * The size of the bucket.
+     */
+    private int size;
+
+    /**
      * Initialize a new bucket.
      *
      * @param elements The elements associated with the bucket.
@@ -497,8 +502,22 @@ public class RectangleTree<E> implements SpatialIndex<E> {
       this.elements = elements;
 
       for (E element: this.elements) {
+        if (element == null) {
+          continue;
+        }
+
         this.union(element);
+        this.size++;
       }
+    }
+
+    /**
+     * Get the size of the bucket.
+     *
+     * @return The size of the bucket.
+     */
+    public int size() {
+      return this.size;
     }
 
     /**
@@ -509,11 +528,15 @@ public class RectangleTree<E> implements SpatialIndex<E> {
      *                the specified element.
      */
     public boolean contains(final E element) {
-      if (element == null) {
+      if (element == null || this.isEmpty()) {
         return false;
       }
 
       for (E found: this.elements) {
+        if (found == null) {
+          continue;
+        }
+
         if (element.equals(found)) {
           return true;
         }
@@ -535,7 +558,7 @@ public class RectangleTree<E> implements SpatialIndex<E> {
       final Filter<E> filter
     ) {
       if (
-        this.elements == null
+        this.isEmpty()
         || elements == null
         || bounds == null
         || filter == null
@@ -549,12 +572,46 @@ public class RectangleTree<E> implements SpatialIndex<E> {
           continue;
         }
 
-        Bounds found = RectangleTree.this.descriptor.describe(element).bounds();
-
-        if (Geometry.intersects(found, bounds)) {
+        if (bounds.intersects(
+          element.minX(), element.minY(), element.maxX(), element.maxY()
+        )) {
           elements.add(element);
         }
       }
     }
+  }
+
+  /**
+   * The {@link Index} interface describes an object that is indexable by the
+   * rectangle tree.
+   */
+  public interface Index {
+    /**
+     * Get the smallest x-coordinate of the object.
+     *
+     * @return The smallest x-coordinate of the object.
+     */
+    float minX();
+
+    /**
+     * Get the smallest y-coordinate of the object.
+     *
+     * @return The smallest y-coordinate of the object.
+     */
+    float minY();
+
+    /**
+     * Get the largest x-coordinate of the object.
+     *
+     * @return The largest x-coordinate of the object.
+     */
+    float maxX();
+
+    /**
+     * Ger the largest y-coordinate of the object.
+     *
+     * @return The largest y-coordinate of the object.
+     */
+    float maxY();
   }
 }

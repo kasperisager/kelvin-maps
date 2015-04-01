@@ -6,10 +6,6 @@ package dk.itu.kelvin.util;
 // General utilities
 import java.util.Arrays;
 
-// Math
-import static dk.itu.kelvin.math.Geometry.Bounds;
-import static dk.itu.kelvin.math.Geometry.Point;
-
 /**
  * Point tree class.
  *
@@ -18,11 +14,11 @@ import static dk.itu.kelvin.math.Geometry.Point;
  *
  * @param <E> The type of elements stored within the point tree.
  */
-public class PointTree<E> implements SpatialIndex<E> {
+public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
   /**
    * The maximum size of point buckets.
    */
-  private static final int BUCKET_MAXIMUM = 1000;
+  private static final int BUCKET_MAXIMUM = 2048;
 
   /**
    * The minimum size of points bucket.
@@ -35,11 +31,6 @@ public class PointTree<E> implements SpatialIndex<E> {
   private int size;
 
   /**
-   * The element descriptor.
-   */
-  private Descriptor<E, Point> descriptor;
-
-  /**
    * The root node of the point tree.
    */
   private Node root;
@@ -48,22 +39,20 @@ public class PointTree<E> implements SpatialIndex<E> {
    * Initialize a new point tree bulk-loaded with the specified collection of
    * elements.
    *
-   * @param elements    The elements to add to the tree.
-   * @param descriptor  The element descriptor to use.
+   * @param elements The elements to add to the tree.
    */
-  @SuppressWarnings("unchecked")
-  public PointTree(
-    final Collection<E> elements,
-    final Descriptor<E, Point> descriptor
-  ) {
-    this.descriptor = descriptor;
+  public PointTree(final Collection<E> elements) {
+    @SuppressWarnings("unchecked")
+    E[] array = (E[]) new Index[elements.size()];
 
-    this.root = this.partition(
-      (E[]) elements.toArray(), // Elements
-      0,                        // Depth
-      0,                        // Starting index
-      elements.size()           // Ending index
-    );
+    int i = 0;
+
+    for (E element: elements) {
+      array[i++] = element;
+    }
+
+    this.root = this.partition(array, 0, 0, array.length);
+    this.size = array.length;
   }
 
   /**
@@ -163,16 +152,9 @@ public class PointTree<E> implements SpatialIndex<E> {
       return null;
     }
 
-    // Return a leaf node if we've reached a single element.
-    if (length == 0) {
-      this.size++;
-      return new Leaf(elements[start]);
-    }
-
     // If we're within the cufoff length, store all the remaining elements in
     // a bucket.
     if (length <= BUCKET_MAXIMUM) {
-      this.size += length;
       return new Bucket(Arrays.copyOfRange(elements, start, end));
     }
 
@@ -184,8 +166,6 @@ public class PointTree<E> implements SpatialIndex<E> {
 
     // Compute the median of the elements.
     int median = start + length / 2;
-
-    this.size++;
 
     return new Branch(
       elements[median],
@@ -221,14 +201,11 @@ public class PointTree<E> implements SpatialIndex<E> {
       return 1;
     }
 
-    Point ap = this.descriptor.describe(a);
-    Point bp = this.descriptor.describe(b);
-
     if (depth % 2 == 0) {
-      return Double.compare(ap.x(), bp.x());
+      return Double.compare(a.x(), b.x());
     }
     else {
-      return Double.compare(ap.y(), bp.y());
+      return Double.compare(a.y(), b.y());
     }
   }
 
@@ -254,23 +231,21 @@ public class PointTree<E> implements SpatialIndex<E> {
       return 1;
     }
 
-    Point ep = this.descriptor.describe(element);
-
     if (depth % 2 == 0) {
-      if (ep.x() > bounds.min().x()) {
+      if (element.x() > bounds.minX()) {
         return -1;
       }
 
-      if (ep.x() < bounds.max().x()) {
+      if (element.x() < bounds.maxX()) {
         return 1;
       }
     }
     else {
-      if (ep.y() > bounds.min().y()) {
+      if (element.y() > bounds.minY()) {
         return -1;
       }
 
-      if (ep.y() < bounds.max().y()) {
+      if (element.y() < bounds.maxY()) {
         return 1;
       }
     }
@@ -291,7 +266,7 @@ public class PointTree<E> implements SpatialIndex<E> {
       return false;
     }
 
-    return bounds.contains(this.descriptor.describe(element));
+    return bounds.contains(element.x(), element.y());
   }
 
   /**
@@ -370,6 +345,10 @@ public class PointTree<E> implements SpatialIndex<E> {
         return false;
       }
 
+      if (this.element.equals(element)) {
+        return true;
+      }
+
       // Check if the element is "contained" within the element associated with
       // the current node.
       int contains = PointTree.this.compare(depth, this.element, element);
@@ -394,8 +373,7 @@ public class PointTree<E> implements SpatialIndex<E> {
         return this.right.contains(depth + 1, element);
       }
 
-      // Otherwise, check if we've found a match.
-      return this.element.equals(element);
+      return false;
     }
 
     /**
@@ -436,76 +414,9 @@ public class PointTree<E> implements SpatialIndex<E> {
       }
 
       if (
+        contains == 0
         // Is the element included in the filter?
-        filter.include(this.element)
-        // Does the element intersect with the search bounds?
-        && PointTree.this.intersects(this.element, bounds)
-      ) {
-        elements.add(this.element);
-      }
-    }
-  }
-
-  /**
-   * A {@link Leaf} is a {@link Node} that contains an element and nothing else.
-   */
-  private final class Leaf extends Node {
-    /**
-     * The element associated with the leaf.
-     */
-    private final E element;
-
-    /**
-     * Initialize a new leaf.
-     *
-     * @param element The element associated with the leaf.
-     */
-    public Leaf(final E element) {
-      this.element = element;
-    }
-
-    /**
-     * Check if the leaf contains the specified element.
-     *
-     * @param depth   The current tree depth.
-     * @param element The element to look for.
-     * @return        A boolean indicating whether or not the leaf contains the
-     *                specified element.
-     */
-    public boolean contains(final int depth, final E element) {
-      if (this.element == null || element == null) {
-        return false;
-      }
-
-      return this.element.equals(element);
-    }
-
-    /**
-     * Find all elements within the range of the specified bounds.
-     *
-     * @param depth     The current tree depth.
-     * @param elements  The collection to add the found elements to.
-     * @param bounds    The bounds to search for elements within.
-     * @param filter    The filter to apply to the range search.
-     */
-    public void range(
-      final int depth,
-      final Collection<E> elements,
-      final Bounds bounds,
-      final Filter<E> filter
-    ) {
-      if (
-        this.element == null
-        || elements == null
-        || bounds == null
-        || filter == null
-      ) {
-        return;
-      }
-
-      if (
-        // Is the element included in the filter?
-        filter.include(this.element)
+        && filter.include(this.element)
         // Does the element intersect with the search bounds?
         && PointTree.this.intersects(this.element, bounds)
       ) {
@@ -589,5 +500,25 @@ public class PointTree<E> implements SpatialIndex<E> {
         }
       }
     }
+  }
+
+  /**
+   * The {@link Index} interface describes an object that is indexable by the
+   * point tree.
+   */
+  public interface Index {
+    /**
+     * Get the x-coordinate of the object.
+     *
+     * @return The x-coordinate of the object.
+     */
+    float x();
+
+    /**
+     * Get the y-coordinate of the object.
+     *
+     * @return The y-coordinate of the object.
+     */
+    float y();
   }
 }
