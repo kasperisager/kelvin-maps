@@ -21,12 +21,13 @@ import javafx.scene.layout.VBox;
 // JavaFX shapes
 import javafx.scene.shape.Path;
 
-// JavaFX input
+// JavaFX inputs
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.RotateEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.ZoomEvent;
+
 
 // JavaFX transformations
 import javafx.scene.transform.Affine;
@@ -148,6 +149,16 @@ public final class ChartController {
   private List<String> suggestions = new ArrayList<>();
 
   /**
+   * Vbox containing the suggestion buttons.
+   */
+  private VBox suggestionVBox;
+
+  /**
+   * Pointer for highlighting the autocomplete suggestions.
+   */
+  private int pointer = 0;
+
+  /**
    * The Canvas element to add all the Chart elements to.
    */
   @FXML
@@ -238,7 +249,7 @@ public final class ChartController {
    * @throws Exception In case of an error. Duh.
    */
   public void initialize() throws Exception {
-    // Sets the parent element inactive untill loaded.
+    // Sets the parent element inactive until loaded.
     this.stackPane.setDisable(true);
     this.propertiesGridPane.getChildren().remove(this.checkboxVBox);
     this.propertiesGridPane.getChildren().remove(this.directionsScrollPane);
@@ -272,6 +283,7 @@ public final class ChartController {
 
         // Sets the chart active after load.
         this.stackPane.setDisable(false);
+        this.addressFrom.requestFocus();
         ApplicationController.removeIcon();
       });
 
@@ -281,8 +293,6 @@ public final class ChartController {
 
     this.createPOI();
     this.createPopOver();
-
-    Platform.runLater(() -> this.addressFrom.requestFocus());
 
     this.autocPopOver = new PopOver();
     this.autocPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
@@ -296,25 +306,30 @@ public final class ChartController {
   }
 
   /**
-   * sets autocomplete for textfields.
+   * Sets autocomplete for textfields.
    * @param tf textfield.
    */
   private void setAutoComplete(final TextField tf) {
-    tf.setOnKeyReleased((event) -> {
+    tf.textProperty().addListener((e) -> {
       this.suggestions.clear();
 
+      // If the input in the textfield is above
+      // The autocomplete_cutoff then add strings to the suggestions arraylist.
       if (tf.getLength() > AUTOCOMPLETE_CUTOFF) {
         for (Address a: this.addresses.keySet()) {
           if (a.toString().toLowerCase().contains(tf.getText().toLowerCase())) {
             this.suggestions.add(a.toString());
           }
 
+          // End the foreach loop
+          // if AutoComplete_max_items limit has been reached.
           if (this.suggestions.size() > AUTOCOMPLETE_MAX_ITEMS) {
             break;
           }
         }
       }
 
+      // Hide the popover if there are no suggestions.
       if (this.suggestions.size() <= 0) {
         this.autocPopOver.hide(Duration.ONE);
         return;
@@ -322,23 +337,48 @@ public final class ChartController {
 
       Bounds bounds = tf.localToScreen(tf.getBoundsInParent());
 
-      VBox suggestionsVBox = new VBox(this.suggestions.size());
-      suggestionsVBox.setPrefWidth(bounds.getWidth() + 27);
+      this.suggestionVBox = new VBox(this.suggestions.size());
 
-      for (String suggestion: this.suggestions) {
+      this.suggestionVBox.setPrefWidth(bounds.getWidth() + 27);
+
+      // Creates and adds buttons to the VBox.
+      for (String suggestion : this.suggestions) {
         Button l = new Button(suggestion);
 
         l.setPrefWidth(bounds.getWidth() + 27);
-        l.setOnMouseClicked((event2 -> {
+        l.setOnMouseClicked((e2 -> {
           tf.setText(l.getText());
           this.autocPopOver.hide(Duration.ONE);
+          if (tf.getId().equals("addressFrom")) {
+            this.findAddress();
+          }
+          else if (tf.getId().equals("addressTo")) {
+            this.findRoute();
+          }
         }));
 
-        suggestionsVBox.getChildren().add(l);
+        this.suggestionVBox.getChildren().add(l);
       }
 
-      this.autocPopOver.setContentNode(suggestionsVBox);
+      // The suggestion highlight pointer.
+      this.pointer = 0;
+      // Highlights the first suggestion as default.
+      this.addStyle();
 
+      // Removes the current highlight on mouse enter.
+      this.suggestionVBox.setOnMouseEntered((e4 -> {
+        this.removeStyle();
+      }));
+
+      // Adds highlight again on mouse exit.
+      this.suggestionVBox.setOnMouseExited((e4 -> {
+        this.addStyle();
+      }));
+
+      // Adds the VBox to the popover.
+      this.autocPopOver.setContentNode(this.suggestionVBox);
+
+      // Makes the popover visible.
       if (!this.autocPopOver.isShowing()) {
         this.autocPopOver.show(
           tf,
@@ -349,7 +389,62 @@ public final class ChartController {
       }
     });
 
+    // Updating the highlight.
+    tf.setOnKeyReleased((event -> {
+      if (this.suggestions.size() > 0) {
+        this.suggestionVBox.setOnKeyPressed((e2) -> {
+          // Removes the current highlight.
+          this.removeStyle();
+
+          // Moves the pointer and thereby the highlight.
+          this.moveHighlight(e2);
+
+          // Adds a new highlight.
+          this.addStyle();
+        });
+      }
+    }));
   }
+
+  /**
+   * Add the highlight styleclass to specific button.
+   */
+  public void addStyle() {
+    Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
+    b.getStyleClass().add("highlight");
+  }
+
+  /**
+   * Remove highlight styleclass from a specific button.
+   */
+  public void removeStyle() {
+    Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
+    b.getStyleClass().remove("highlight");
+  }
+
+  /**
+   * To move the highlight pointer up and down in the suggestion popover.
+   * @param e the keyevent.
+   */
+  public void moveHighlight(final KeyEvent e) {
+    switch (e.getCode()) {
+      case UP:
+        if (this.pointer > 0) {
+          this.pointer--;
+        }
+        e.consume();
+        break;
+      case DOWN:
+        if (this.pointer < this.suggestions.size() - 1) {
+          this.pointer++;
+        }
+        e.consume();
+        break;
+      default:
+        break;
+    }
+  }
+
   /**
    * Initialises the checkboxes of for Points Of Interest.
    */
@@ -636,30 +731,39 @@ public final class ChartController {
    */
   @FXML
   private void findAddress() {
-    String input = this.addressFrom.getText();
+    if (this.autocPopOver.isShowing()) {
+      Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
+      String input = b.getText();
+      this.addressFrom.setText(b.getText());
 
-    if (input == null) {
-      return;
+      if (input == null) {
+        return;
+      }
+
+      input = input.trim();
+
+      if (input.isEmpty()) {
+        return;
+      }
+
+      Address startAddress = Address.parse(input);
+
+      if (startAddress == null) {
+        return;
+      }
+
+      Node node = this.addresses.find(startAddress);
+
+      if (node != null) {
+        this.chart.center(node, 2.5);
+        this.chart.setPointer(node);
+      }
+
+      this.autocPopOver.hide();
     }
-
-    input = input.trim();
-
-    if (input.isEmpty()) {
-      return;
-    }
-
-    Address startAddress = Address.parse(this.addressFrom.getText());
-
-    if (startAddress == null) {
-      return;
-    }
-
-    Node node = this.addresses.find(startAddress);
-
-    if (node != null) {
-      this.chart.center(node, 2.5);
-      this.chart.setPointer(node);
-    }
+    /*else {
+      // Dialog "The address does not exist."
+    }*/
   }
 
   /**
@@ -667,22 +771,52 @@ public final class ChartController {
    */
   @FXML
   private void findRoute() {
-    if (!this.addressFrom.getText().trim().equals("")
-      && !this.addressTo.getText().trim().equals("")) {
-      Address startAddress = Address.parse(this.addressFrom.getText());
-      Address endAddress = Address.parse(this.addressTo.getText());
-      Node startPosition = this.addresses.find(startAddress);
-      Node endPosition = this.addresses.find(endAddress);
+    if (this.autocPopOver.isShowing()) {
+      Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
+      String endInput = b.getText();
+      this.addressTo.setText(b.getText());
 
-      System.out.println("X: " + startPosition.x() + " " + "Y: "
-        + startPosition.y());
-      System.out.println("X: " + endPosition.x() + " " + "Y: "
-        + endPosition.y());
+      String startInput = this.addressFrom.getText();
 
+      if (endInput == null || startInput == null) {
+        return;
+      }
+
+      endInput = endInput.trim();
+      startInput = startInput.trim();
+
+      if (endInput.isEmpty() || startInput.isEmpty()) {
+        return;
+      }
+
+      Address startAddress = Address.parse(startInput);
+      Address endAddress = Address.parse(endInput);
+
+      if (endAddress == null || startAddress == null) {
+        return;
+      }
+
+      Node startNode = this.addresses.find(startAddress);
+      Node endNode = this.addresses.find(endAddress);
+
+      // showRouteOnMap(startAddress, endAddress);
+
+      System.out.println("X: " + startNode.x() + " " + "Y: "
+      + startNode.y());
+      System.out.println("X: " + endNode.x() + " " + "Y: "
+      + endNode.y());
+
+      this.autocPopOver.hide();
     }
+    /*else {
+      // Dialog "The address does not exist."
+    }*/
 
-    this.propertiesGridPane.getChildren().add(this.directionsScrollPane);
-    this.moveCompass(400);
+    if (!this.propertiesGridPane.getChildren()
+        .contains(this.directionsScrollPane)) {
+      this.propertiesGridPane.getChildren().add(this.directionsScrollPane);
+      this.moveCompass(400);
+    }
 
     int stack = 30;
     for (int i = 0; i < stack; i++) {
@@ -698,7 +832,6 @@ public final class ChartController {
 
       hbox.getChildren().addAll(icon, label);
       this.directionsVBox.getChildren().add(hbox);
-
     }
   }
 
@@ -744,6 +877,9 @@ public final class ChartController {
     String to = this.addressTo.getText();
     this.addressFrom.setText(to);
     this.addressTo.setText(from);
+    if (this.autocPopOver.isShowing()) {
+      this.autocPopOver.hide(new Duration(0));
+    }
   }
 
   /**
@@ -777,4 +913,5 @@ public final class ChartController {
   private void setScaleLenght(final double length) {
     this.scaleIndicatorLabel.setPrefWidth(length);
   }
+
 }
