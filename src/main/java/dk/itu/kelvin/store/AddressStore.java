@@ -11,7 +11,7 @@ import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.model.Address;
 
 /**
- * <h2>HashTable store for all addresses from the OSM file.</h2>
+ * HashTable store for all addresses from the OSM file.
  * <p>
  * Addresses are stored with an {@link Address} as {@code key} and {@link Node}
  * as {@code value}.

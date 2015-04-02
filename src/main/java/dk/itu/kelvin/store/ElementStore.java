@@ -10,7 +10,7 @@ import dk.itu.kelvin.util.HashTable;
 import dk.itu.kelvin.model.Element;
 
 /**
- * <h2>HashTable store of elements.</h2>
+ * HashTable store of elements from the OSM file.
  * <p>
  * Used to store all Node, Way and Relation as HashTables.
  *

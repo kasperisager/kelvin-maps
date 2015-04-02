@@ -15,7 +15,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import javafx.concurrent.Task;
 
 /**
- * Task queue class.
+ * Task queue class for multi-thread handling.
+ *
+ * <p>
+ * This class allows with {@link #run(FunctionalTask)} to run a set of
+ * operations on a new {@code thread}.
+ * {@link #register(String, FunctionalTask...)} allows storage of a set of
+ * operations under a group name and {@link #start(String)} executes all sets
+ * of operations under a specific group when requested as new threads.
+ *
  */
 public final class TaskQueue {
   static {
