@@ -14,6 +14,9 @@ import javafx.scene.text.Font;
 // FXML utilities
 import javafx.fxml.FXMLLoader;
 
+// Threading
+import dk.itu.kelvin.thread.TaskQueue;
+
 /**
  * Main class.
  */
@@ -135,6 +138,14 @@ public final class Main extends Application {
 
     // 7. Show the primary stage. Eureka!
     stage.show();
+  }
+
+  /**
+   * Stop the JavaFX thread and close the application.
+   */
+  @Override
+  public void stop() {
+    TaskQueue.shutdown();
   }
 
   /**
