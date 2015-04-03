@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Address class.
+ * Address class for recognising address patterns and parsing as objects.
  *
  * <p>
  * The class defines a finite state automaton in the form of a set of regular
