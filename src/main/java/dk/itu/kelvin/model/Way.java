@@ -155,7 +155,7 @@ public final class Way extends Element<Polyline> {
       return false;
     }
 
-    return start.equals(end);
+    return start.x() == end.x() && start.y() == end.y();
   }
 
   /**
@@ -181,13 +181,15 @@ public final class Way extends Element<Polyline> {
     }
 
     Node start = this.start();
-    Node end = this.end();
 
-    if (start == null || end == null) {
+    if (start == null || way.start() == null) {
       return false;
     }
 
-    return (this.start().equals(way.start()) || this.start().equals(way.end()));
+    return (
+      (start.x() == way.start().x() && start.y() == way.start().y())
+      || (start.x() == way.end().x() && start.y() == way.end().y())
+    );
   }
 
   /**
@@ -203,7 +205,16 @@ public final class Way extends Element<Polyline> {
       return false;
     }
 
-    return (this.end().equals(way.start()) || this.end().equals(way.end()));
+    Node end = this.end();
+
+    if (end == null || way.end() == null) {
+      return false;
+    }
+
+    return (
+      (end.x() == way.start().x() && end.y() == way.start().y())
+      || (end.x() == way.end().x() && end.y() == way.end().y())
+    );
   }
 
   /**
@@ -246,11 +257,9 @@ public final class Way extends Element<Polyline> {
       return;
     }
 
-    if (this.nodes == null) {
-      this.nodes = new ArrayList<>();
+    for (Node node: nodes) {
+      this.add(node);
     }
-
-    this.nodes.addAll(nodes);
   }
 
   /**

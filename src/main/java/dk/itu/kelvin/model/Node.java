@@ -69,42 +69,6 @@ public final class Node extends Element<Label> {
   }
 
   /**
-   * Check if the current Node equals the specified object.
-   *
-   * @param object  The reference object with which to compare.
-   * @return        Boolean indicating whether or not the Node is equal to the
-   *                specified object.
-   */
-  @Override
-  public boolean equals(final Object object) {
-    if (object == null || !(object instanceof Node)) {
-      return false;
-    }
-
-    if (this == object) {
-      return true;
-    }
-
-    Node node = (Node) object;
-
-    return (this.x == node.x() && this.y == node.y());
-  }
-
-  /**
-   * Compute the hashcode of the Node.
-   *
-   * @return The computed hashcode of the Node.
-   */
-  @Override
-  public int hashCode() {
-    long bits = 7L;
-    bits = 31L * bits + Double.doubleToLongBits(this.x);
-    bits = 31L * bits + Double.doubleToLongBits(this.y);
-
-    return (int) (bits ^ (bits >> 32));
-  }
-
-  /**
    * Get the JavaFX representation of the node.
    *
    * @return The JavaFX representation of the node.
