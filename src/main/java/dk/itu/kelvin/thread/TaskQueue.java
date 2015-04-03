@@ -22,7 +22,7 @@ import javafx.concurrent.Task;
  * operations on a new {@code thread}.
  * {@link #register(String, FunctionalTask...)} allows storage of a set of
  * operations under a group name and {@link #start(String)} executes all sets
- * of operations under a specific group when requested as new threads.
+ * of operations under a specific group when requested, as new {@code threads}.
  *
  */
 public final class TaskQueue {

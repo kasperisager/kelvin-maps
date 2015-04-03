@@ -12,7 +12,7 @@ import java.util.Comparator;
  */
 public final class Collections {
   /**
-   * <h2></h2>
+   * Collections class for different collection methods
    * <p>
    * The {@link #sort(List)} and {@link #sort(List, Comparator)} uses
    * {link #Arrays.sort(T[], Comparator)} which is an adapted implementation

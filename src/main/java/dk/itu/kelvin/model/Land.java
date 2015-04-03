@@ -20,7 +20,7 @@ import dk.itu.kelvin.util.List;
 import dk.itu.kelvin.math.Geometry;
 
 /**
- * <h2>Calculation and merging of coastlines to land polyLines.</h2>
+ * Calculation and merging of coastlines to land polyLines.
  * <p>
  * Initially all coastlines are put in a {@link List}.
  * Then {@link Geometry.Line} line segments are created from the bounds of

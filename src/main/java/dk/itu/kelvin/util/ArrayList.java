@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * <h2>Performance optimized minimal ArrayList implementation</h2>
+ * Performance optimized minimal ArrayList implementation
  * <p>
  * Resizeable array implementation of {@link List} interface. Implements all
  * optional List operations, and permits all elements not including
