@@ -20,7 +20,30 @@ import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.model.Land;
 
 /**
- * Chart class.
+ * Chart class for handling which elements to display and where.
+ *
+ * <p>
+ * This class functions as the canvas for all map specific elements, while the
+ * extension to {@link Group} allows for addition and removal of elements.
+ *
+ * <p>
+ * Aside from being able to add regular {@code JavaFX} elements, additional
+ * methods have been added to allow for adding our own data model, respectively
+ * {@link #add(Element)}, {@link #add(Node)}, {@link #add(BoundingBox)},
+ * {@link #add(Land)} and implementation for adding a collection of elements
+ * {@link #add(Collection)}.
+ *
+ * <p>
+ * General map interactions are handled with methods, respectively
+ * {@link #zoom(double)}, {@link #pan(double, double)}, {@link #rotate(double)},
+ * additional implementations for zoom, pan and rotate are usually not called
+ * directly, but kept {@code public} as it gives more options.
+ * This class also has implementations for specialised interactions with the
+ * {@link Chart}, respectively {@link #center(double, double, double)},
+ * {@link #center(Node, double)} and {@link #setPointer(Node)}.
+ *
+ * {@link Chart} constructor takes no parameters, adding initial elements to
+ * chart.
  */
 public final class Chart extends Group {
   /**

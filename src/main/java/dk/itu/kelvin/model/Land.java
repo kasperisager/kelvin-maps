@@ -22,7 +22,23 @@ import static dk.itu.kelvin.math.Geometry.Line;
 import static dk.itu.kelvin.math.Geometry.Point;
 
 /**
- * Land class.
+ * Calculation and merging of coastlines to land polyLines.
+ * <p>
+ * Initially all coastlines are put in a {@link List}.
+ * Then {@link Geometry.Line} line segments are created from the bounds of
+ * {@link BoundingBox}. Coastlines are iterated through, each coastline is
+ * check if it's already closed(starting point = ending point). If it's open we
+ * iterate though the nodes until we until we find a note that's outside the
+ * BoundingBox then make a line segment from the two points. Then we check if
+ * the line segments intersect with any of the bounds that we made to line
+ * segments, if the intersect we add the intersection point to the nodes list.
+ * We then render the points to polyLines representing the Land segments.
+ *
+ * Time complexity for finding intersection points on bounds is worst case: ~8N
+ * (goes though the coastlines 2 times, and each coastline checks for each of
+ * the 4 bounds in BondingBox for intersections).
+ * Average is significantly lower since first iteration of coastlines only...
+ *
  */
 public final class Land extends Element<Group> {
   /**

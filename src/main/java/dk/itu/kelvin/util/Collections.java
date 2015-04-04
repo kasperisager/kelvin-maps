@@ -12,6 +12,20 @@ import java.util.Comparator;
  */
 public final class Collections {
   /**
+   * Collections class for different collection methods
+   * <p>
+   * The {@link #sort(List)} and {@link #sort(List, Comparator)} uses
+   * {link #Arrays.sort(T[], Comparator)} which is an adapted implementation
+   * from Tim Peters's list sort for Python
+   * (@see <a href="http://en.wikipedia.org/wiki/Timsort">
+   * http://en.wikipedia.org/wiki/Timsort</a>). TimSort is a hybrid sorting
+   * algorithm, derived from merge sort and insertion sort.
+   *
+   * <b>Time Complexity</b>
+   * <p>
+   * Worst case: N log(N), Average case: N log(N), Best case: N
+   *
+   * <p>
    * Don't allow instantiation of the class.
    *
    * <p>

@@ -22,7 +22,6 @@ import dk.itu.kelvin.thread.TaskQueue;
 // Models
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.BoundingBox;
-import dk.itu.kelvin.model.Land;
 import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.Way;
@@ -49,7 +48,7 @@ public abstract class Parser {
    * @param file      The file to read.
    * @param callback  The callback to invoke once the parsing has finished.
    */
-  public void read(final File file, final Callback callback) {
+  public final void read(final File file, final Callback callback) {
     TaskQueue.run(() -> {
       try {
         this.parse(file);

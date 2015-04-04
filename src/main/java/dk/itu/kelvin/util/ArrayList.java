@@ -20,13 +20,15 @@ import java.util.NoSuchElementException;
  * is used internally to store the list.
  *
  * <p>
- * The {@link #get(int)} and {@link #iterator()} operations runs in constant
- * time. The {@link #add(Object)} operation runs in amortized constant time.
- * The {@link #resize(int)}, {@link #shiftLeft(int)} and
- * {@link #indexOf(Object)} contains operations runs in ~linear time.
- * The {@link #remove(int)} and {@link #remove(Object)} operations runs in
- * amortized ~linear time. The {@link #addAll(Collection)} operation runs in
- * linear time based on the size of the collection to be added.
+ * The {@link #get(int)}, {@link #set(int, Object)} and {@link #iterator()}
+ * operations runs in constant time. The {@link #add(Object)} operation runs in
+ * amortized constant time. The {@link #resize(int)}, {@link #shiftLeft(int)},
+ * {@link #shiftRight(int)} and {@link #indexOf(Object)}, {@link #clear()},
+ * {@link #toArray()}, {@link #trimToSize()} contains operations runs in
+ * ~linear time. The {@link #remove(int)}, {@link #remove(Object)} and
+ * {@link #add(int, Object)} operations runs in amortized ~linear time. The
+ * {@link #addAll(Collection)} operation runs in linear time based
+ * on the size of the collection to be added.
  *
  * <p>
  * <b>Notice:</b> The {@link ArrayList} has an initial capacity of 2 unless an

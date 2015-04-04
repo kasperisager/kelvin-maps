@@ -8,11 +8,30 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Address class.
+ * Address class for recognising address patterns and parsing as objects.
  *
  * <p>
  * The class defines a finite state automaton in the form of a set of regular
- * expressions for parsing Danish addresses.
+ * expressions for parsing Danish addresses. The regular expression
+ * {@link #REGEX} allows for handling special characters between
+ * {@code match groups} as well as additional whitespaces.
+ *
+ * <p>
+ * With {@link #parse(String)} the string parameter representing a full address,
+ * will be parsed to an {@link Address} {@code object} using the {@link #REGEX}
+ * to create a {@link Pattern} and use said pattern to create a {@link Matcher}
+ * with {@link #matchRegex(String, String)}. From the {@link Matcher}
+ * {@code object} Strings can be retrieved from the varies
+ * {@code matcher groups}.
+ *
+ * <p>
+ * This class has an implementation of {@link #equals(Object)}that compare all
+ * {@code non-final fields} returning {@code true} if they match.
+ *
+ * <p>
+ * {@link Address} also has an implementation of {@link #toString()} for giving
+ * {@link Address} {@code objects} a {@code String} representation to be used
+ * in auto-suggestions.
  */
 public final class Address {
   /**
