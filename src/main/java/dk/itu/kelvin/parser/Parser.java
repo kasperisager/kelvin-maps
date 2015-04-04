@@ -10,11 +10,22 @@ import java.io.File;
 import javax.activation.FileTypeMap;
 import javax.activation.MimetypesFileTypeMap;
 
+// Utilities
+import dk.itu.kelvin.util.Collection;
+
 // Functional utilities
 import dk.itu.kelvin.util.function.Callback;
 
 // Threading
 import dk.itu.kelvin.thread.TaskQueue;
+
+// Models
+import dk.itu.kelvin.model.Address;
+import dk.itu.kelvin.model.BoundingBox;
+import dk.itu.kelvin.model.Land;
+import dk.itu.kelvin.model.Node;
+import dk.itu.kelvin.model.Relation;
+import dk.itu.kelvin.model.Way;
 
 /**
  * Parser class.
@@ -64,6 +75,48 @@ public abstract class Parser {
    * @throws Exception In case of an error during parsing.
    */
   protected abstract void parse(final File file) throws Exception;
+
+  /**
+   * Get the parsed bounds.
+   *
+   * @return The parsed bounds.
+   */
+  public abstract BoundingBox bounds();
+
+  /**
+   * Get the parsed node elements.
+   *
+   * @return The parsed node elements.
+   */
+  public abstract Collection<Node> nodes();
+
+  /**
+   * Get the parsed way elements.
+   *
+   * @return The parsed way elements.
+   */
+  public abstract Collection<Way> ways();
+
+  /**
+   * Get the parsed relation elements.
+   *
+   * @return The parsed relation elements.
+   */
+  public abstract Collection<Relation> relations();
+
+  /**
+   * Get the parsed land polygons.
+   *
+   * @return The parsed land polygons.
+   */
+  public abstract Collection<Way> land();
+
+  /**
+   * Get the parsed addresses.
+   *
+   * @return The parsed addresses.
+   */
+  public abstract Collection<Address> addresses();
 
   /**
    * Return a parser instance that can parse the specified file.
