@@ -42,7 +42,8 @@ import dk.itu.kelvin.model.Land;
  * {@link Chart}, respectively {@link #center(double, double, double)},
  * {@link #center(Node, double)} and {@link #setPointer(Node)}.
  *
- * {@link Chart} constructor takes no parameters, adding initial elements to chart.
+ * {@link Chart} constructor takes no parameters, adding initial elements to
+ * chart.
  */
 public final class Chart extends Group {
   /**
