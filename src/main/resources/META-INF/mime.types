@@ -1,0 +1,14 @@
+# http://en.wikipedia.org/wiki/XML
+application/xml xml XML
+
+# http://en.wikipedia.org/wiki/Bzip2
+application/x-bzip2 bz2
+
+# http://en.wikipedia.org/wiki/Protocol_Buffers
+application/octet-stream pbf PBF
+
+# http://en.wikipedia.org/wiki/Shapefile
+application/octet-stream shp SHP
+
+# http://wiki.openstreetmap.org/wiki/OSM_XML
+application/xml osm OSM
