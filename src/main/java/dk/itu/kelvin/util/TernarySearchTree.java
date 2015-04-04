@@ -16,6 +16,11 @@ package dk.itu.kelvin.util;
  */
 public class TernarySearchTree<V> implements PrefixTree<V> {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 917;
+
+  /**
    * The size of the ternary search tree.
    */
   private int size;

@@ -23,6 +23,11 @@ package dk.itu.kelvin.util;
  */
 public final class QuadraticProbe extends HashResolver {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 795;
+
+  /**
    * Calculate the next index to step through.
    *
    * @param hash    The hash to step over.

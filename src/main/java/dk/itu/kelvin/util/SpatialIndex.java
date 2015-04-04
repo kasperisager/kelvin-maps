@@ -3,12 +3,15 @@
  */
 package dk.itu.kelvin.util;
 
+// I/O utilities
+import java.io.Serializable;
+
 /**
  * Spatial index interface.
  *
  * @param <E> The type of element stored within the spatial index.
  */
-public interface SpatialIndex<E> {
+public interface SpatialIndex<E> extends Serializable {
   /**
    * Get the size of the spatial index.
    *

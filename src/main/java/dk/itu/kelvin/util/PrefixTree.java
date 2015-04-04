@@ -3,6 +3,9 @@
  */
 package dk.itu.kelvin.util;
 
+// I/O utilities
+import java.io.Serializable;
+
 /**
  * Prefix tree interface.
  *
@@ -11,7 +14,7 @@ package dk.itu.kelvin.util;
  *
  * @param <V> The type of values stored within the prefix tree.
  */
-public interface PrefixTree<V> {
+public interface PrefixTree<V> extends Serializable {
   /**
    * Get the size of the tree.
    *

@@ -6,6 +6,9 @@ package dk.itu.kelvin.util;
 // General utilities
 import java.util.Arrays;
 
+// I/O utilities
+import java.io.Serializable;
+
 /**
  * Point tree class.
  *
@@ -15,6 +18,11 @@ import java.util.Arrays;
  * @param <E> The type of elements stored within the point tree.
  */
 public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
+  /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 730;
+
   /**
    * The maximum size of point buckets.
    */
@@ -506,7 +514,7 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
    * The {@link Index} interface describes an object that is indexable by the
    * point tree.
    */
-  public interface Index {
+  public interface Index extends Serializable {
     /**
      * Get the x-coordinate of the object.
      *

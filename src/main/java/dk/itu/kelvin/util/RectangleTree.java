@@ -6,6 +6,9 @@ package dk.itu.kelvin.util;
 // General utilities
 import java.util.Arrays;
 
+// I/O utilities
+import java.io.Serializable;
+
 /**
  * Rectangle tree class.
  *
@@ -19,6 +22,11 @@ import java.util.Arrays;
  */
 public class RectangleTree<E extends RectangleTree.Index>
   implements SpatialIndex<E> {
+  /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 848;
+
   /**
    * The maximum size of rectangle pages.
    */
@@ -585,7 +593,7 @@ public class RectangleTree<E extends RectangleTree.Index>
    * The {@link Index} interface describes an object that is indexable by the
    * rectangle tree.
    */
-  public interface Index {
+  public interface Index extends Serializable {
     /**
      * Get the smallest x-coordinate of the object.
      *

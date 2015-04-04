@@ -6,6 +6,9 @@ package dk.itu.kelvin.util;
 // General utilities
 import java.util.Random;
 
+// I/O utilities
+import java.io.Serializable;
+
 /**
  * Hash collision resolver class.
  *
@@ -26,7 +29,7 @@ import java.util.Random;
  * @see <a href="http://en.wikipedia.org/wiki/Tabulation_hashing">
  *      http://en.wikipedia.org/wiki/Tabulation_hashing</a>
  */
-public abstract class HashResolver {
+public abstract class HashResolver implements Serializable {
   /**
    * Number of bytes per random integer in the table.
    */
