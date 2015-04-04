@@ -8,33 +8,33 @@ package dk.itu.kelvin.math;
  */
 public interface Projection {
   /**
-   * Convert an x-coordinate into a spherical longitude.
+   * Convert an x-coordinate into a projected longitude.
    *
    * @param x The x-coordinate to convert.
-   * @return  The corresponding spherical longitude.
+   * @return  The corresponding projected longitude.
    */
   float xToLon(final float x);
 
   /**
-   * Convert a spherical longitude into an x-coordinate.
+   * Convert a projected longitude into an x-coordinate.
    *
-   * @param lon The spherical longitude to convert.
+   * @param lon The projected longitude to convert.
    * @return    The corresponding x-coordinate.
    */
   float lonToX(final float lon);
 
   /**
-   * Convert a y-coordinate into a spherical latitude.
+   * Convert a y-coordinate into a projected latitude.
    *
    * @param y The y-coordinate to convert.
-   * @return  The corresponding spherical latitude.
+   * @return  The corresponding projected latitude.
    */
   float yToLat(final float y);
 
   /**
-   * Convert a spherical latitude into a y-coordinate.
+   * Convert a projected latitude into a y-coordinate.
    *
-   * @param lat The spherical latitude to convert.
+   * @param lat The projected latitude to convert.
    * @return    The corresponding y-coordinate.
    */
   float latToY(final float lat);
