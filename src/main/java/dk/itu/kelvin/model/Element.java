@@ -28,6 +28,15 @@ public abstract class Element<T extends Node> implements Serializable {
   private static final long serialVersionUID = 42;
 
   /**
+   * The initial capacity of the tables containing the element tags.
+   *
+   * <p>
+   * The default initial capacity of hash tables is 16 slots. We rarely need
+   * that many slots for tags so we lower the initial capacity substantially.
+   */
+  private static final int INITIAL_TAG_CAPACITY = 2;
+
+  /**
    * A map of tags associated with the element.
    *
    * <p>
@@ -49,7 +58,7 @@ public abstract class Element<T extends Node> implements Serializable {
     }
 
     if (this.tags == null) {
-      this.tags = new HashTable<>();
+      this.tags = new HashTable<>(INITIAL_TAG_CAPACITY);
     }
 
     return this.tags.put(key.intern(), value.intern());
@@ -62,7 +71,7 @@ public abstract class Element<T extends Node> implements Serializable {
    */
   public final Map<String, String> tags() {
     if (this.tags == null) {
-      this.tags = new HashTable<>();
+      this.tags = new HashTable<>(INITIAL_TAG_CAPACITY);
     }
 
     return this.tags;
