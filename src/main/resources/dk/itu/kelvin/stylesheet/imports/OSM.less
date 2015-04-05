@@ -9,7 +9,7 @@
 @color-blue: #a0c3ff;
 
 @color-water: @color-blue;
-@color-land: #e9e5dd;
+@color-land: #f2eee7;
 
 // Areas
 @fill-area: #F1EEE8;
@@ -24,11 +24,7 @@
 
 .map {
   -fx-background-color: @color-water;
-}
-
-.land {
-  -fx-background-color: @color-land;
-  -fx-fill: @color-land;
+  -fx-fill: @color-water;
 }
 
 // Ways.
@@ -68,7 +64,7 @@
   &, .member {
     -fx-fill: @fill-building;
     -fx-stroke: @stroke-building;
-    -fx-stroke-width: 0.25px;
+    -fx-stroke-width: .25px;
     -fx-stroke-type: inside;
   }
 }
@@ -81,20 +77,54 @@
   -fx-fill: none;
   -fx-stroke: none;
 
-  &.unclassfied,
-  &.residential { -fx-stroke: #FEFEFE; -fx-stroke-width: 4px; }
-  &.service     { -fx-stroke: #FDFDFD; -fx-stroke-width: 2px; }
+  &.unclassified,
+  &.residential,
+  &.living_street,
+  &.pedestrian,
+  &.road {
+    -fx-stroke: #FEFEFE;
+    -fx-stroke-width: 3px;
+  }
+
+  &.track {
+    -fx-stroke: #a17e16;
+    -fx-stroke-width: 1px;
+  }
+
   &.cycleway,
   &.steps,
-  &.footway     { -fx-stroke: #d5d4c8; -fx-stroke-width: 1px; }
-  &.steps       { -fx-stroke-dash-array: 0.5; }
-  &.bridleway   { -fx-stroke: #248E23; -fx-stroke-width: 1px; }
-  &.path        { -fx-stroke: #7E7D7B; -fx-stroke-width: 1px; }
-  &.tertiary    { -fx-stroke: #ffffff; -fx-stroke-width: 4px; }
-  &.secondary   { -fx-stroke: #F8D5A9; -fx-stroke-width: 6px; }
-  &.primary     { -fx-stroke: #ffe169; -fx-stroke-width: 6px; }
+  &.footway {
+    -fx-stroke: #d5d4c8;
+    -fx-stroke-width: 1px;
+  }
+
+  &.service   { -fx-stroke: #FDFDFD; -fx-stroke-width: 2px; }
+  &.bridleway { -fx-stroke: #248E23; -fx-stroke-width: 1px; }
+  &.path      { -fx-stroke: #7E7D7B; -fx-stroke-width: 1px; }
+
+  &.tertiary,
+  &.tertiary_link { -fx-stroke: #ffffff; -fx-stroke-width: 4px; }
+
+  &.secondary,
+  &.secondary_link { -fx-stroke: #F8D5A9; -fx-stroke-width: 6px; }
+
+  &.primary,
+  &.primary_link { -fx-stroke: #ffe169; -fx-stroke-width: 6px; }
+
   &.motorway,
-  &.trunk       { -fx-stroke: #ffffff; -fx-stroke-width: 8px; }
+  &.motorway_link,
+  &.trunk,
+  &.trunk_link { -fx-stroke: #ffffff; -fx-stroke-width: 8px; }
+
+  &.path { -fx-stroke-dash-array: 3; }
+
+  &.track,
+  &.bridleway,
+  &.path  { -fx-stroke-dash-array: 2; }
+
+  &.footway,
+  &.cycleway,
+  &.steps { -fx-stroke-dash-array: 1 2; }
 }
 
 // Waterway.
@@ -145,7 +175,6 @@
   &.industrial              { &, .member { -fx-fill: #DFD1D6; } }
   &.landfill                { &, .member { -fx-fill: #B6B592; } }
   &.meadow                  { &, .member { -fx-fill: #CFECA8; } }
-  &.military                { &, .member { -fx-fill: #F6ACA8; } }
   &.orchard                 { &, .member { -fx-fill: #9ED88F; } }
   &.quarry                  { &, .member { -fx-fill: #C5C3C3; } }
   &.railway                 { &, .member { -fx-fill: #DED0D5; } }
@@ -155,6 +184,13 @@
   &.retail                  { &, .member { -fx-fill: #F0D9D9; } }
   &.village_green           { &, .member { -fx-fill: #CFECA8; } }
   &.vineyard                { &, .member { -fx-fill: #B3E2A8; } }
+
+  &.military {
+    &, .member {
+      -fx-fill: rgba(246,172,168,.25);
+      -fx-stroke: rgba(246,172,168,.5);
+    }
+  }
 }
 
 // Natural.
@@ -176,13 +212,12 @@
   &.scree     { &, .member { -fx-fill: #EBE2DB; } }
   &.sand      { &, .member { -fx-fill: #F4E9C6; } }
   &.mud       { &, .member { -fx-fill: #E6DCD1; } }
-  &.water     { &, .member { -fx-fill: #a0c3ff; } }
   &.wetland   { &, .member { -fx-fill: #F1EEE9; } }
   &.glacier   { &, .member { -fx-fill: #DDECEC; } }
   &.beach     { &, .member { -fx-fill: #FFF1BA; } }
-}
 
-.coastline { -fx-stroke: #DAE2DE; -fx-stroke-width: 1px; }
+  &.water     { -fx-fill: #a0c3ff; }
+}
 
 // Leisure.
 //
@@ -201,4 +236,67 @@
   &.playground      { &, .member { -fx-fill: #CCFDF1; } }
   &.sports_centre   { &, .member { -fx-fill: #31CC99; } }
   &.stadium         { &, .member { -fx-fill: #31CC99; } }
+}
+
+// Barriers
+//
+// @see <a href="http://wiki.openstreetmap.org/wiki/Map_Features#Barrier">
+//      http://wiki.openstreetmap.org/wiki/Map_Features#Barrier</a>
+.barrier {
+  -fx-stroke: #b4b2ae;
+  -fx-stroke-width: .5px;
+
+  &.fence,
+  &.kerb,
+  &.wall { -fx-stroke: #b4b2ae; -fx-stroke-width: .5px; }
+
+  &.hedge {
+    -fx-stroke: #a9d09b;
+
+    &.area {
+      -fx-fill: #a9d09b;
+    }
+  }
+}
+
+// Amenities
+//
+// @see <a href="http://wiki.openstreetmap.org/wiki/Map_Features#Amenity">
+//      http://wiki.openstreetmap.org/wiki/Map_Features#Amenity</a>
+.amenity {
+  &.parking {
+    -fx-fill: #f6efb3;
+    -fx-stroke: #f1e380;
+    -fx-stroke-width: .25px;
+    -fx-stroke-type: inside;
+  }
+
+  &.place_of_worship {
+    -fx-fill: #ae9c8c;
+    -fx-stroke: #7d6959;
+    -fx-stroke-width: .25px;
+    -fx-stroke-type: inside;
+  }
+
+  &.school {
+    -fx-fill: #f0f0d7;
+    -fx-stroke: #d9b3a2;
+    -fx-stroke-width: .25px;
+    -fx-stroke-type: inside;
+  }
+}
+
+// Land and coastline.
+//
+// @see <a href="http://wiki.openstreetmap.org/wiki/Coastline">
+//      http://wiki.openstreetmap.org/wiki/Coastline</a>
+.land {
+  -fx-background-color: @color-land;
+  -fx-fill: @color-land;
+  -fx-stroke: none;
+}
+
+.coastline {
+  -fx-stroke: @color-land;
+  -fx-stroke-width: 0.5px;
 }

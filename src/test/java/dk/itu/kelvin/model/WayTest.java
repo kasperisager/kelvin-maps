@@ -20,7 +20,6 @@ import dk.itu.kelvin.util.List;
  * Way unit tests class.
  */
 public final class WayTest {
-
   /**
    * Test the tagging of ways.
    */
@@ -39,75 +38,6 @@ public final class WayTest {
     assertEquals(1, w3.tags().size());
     assertTrue(w3.tags().containsKey("highway"));
     assertEquals("primary", w3.tags().get("highway"));
-  }
-
-  /**
-   * Tests if the element order is higher, lower, or equal.
-   */
-  @Test
-  public void testOrder() {
-    Way w1 = new Way();
-    assertEquals(Way.Order.DEFAULT, w1.order());
-    w1.order(Way.Order.NATURAL_WATER);
-    assertEquals(Way.Order.NATURAL_WATER, w1.order());
-
-    Way w2 = new Way();
-    w2.order(Way.Order.HIGHWAY);
-
-    Way w3 = new Way();
-    w3.order(Way.Order.HIGHWAY);
-
-    Way w4 = new Way();
-    w4.order(Way.Order.HIGHWAY_MOTORWAY);
-
-    // < 0 first object's order is smaller than the second obejct's order.
-    // 0 if there are equal.
-    // and > 0 if first is larger than second.
-    assertTrue(Way.compare(w1, w3) < 0);
-    assertTrue(Way.compare(w4, w2) > 0);
-    assertTrue(Way.compare(w2, w3) == 0);
-  }
-
-  /**
-   * test of layers and test when there is a layer and a order.
-   */
-  @Test
-  public void testLayer() {
-    Way w1 = new Way();
-    w1.layer(-2);
-
-    Way w2 = new Way();
-    w2.layer(0);
-
-    Way w3 = new Way();
-    w3.layer(2);
-
-    Way w4 = new Way();
-    w4.layer(2);
-
-    assertTrue(Way.compare(w1, w2) < 0);
-    assertTrue(Way.compare(w1, w3) < 0);
-    assertTrue(Way.compare(w3, w2) > 0);
-    assertTrue(Way.compare(w3, w4) == 0);
-
-    Way n5 = new Way();
-    n5.order(Way.Order.HIGHWAY);
-    n5.layer(0);
-
-    Way n6 = new Way();
-    n6.order(Way.Order.HIGHWAY);
-    n6.layer(1);
-
-    Way n7 = new Way();
-    n7.order(Way.Order.HIGHWAY_MOTORWAY);
-    n7.layer(-2);
-
-    Way n8 = new Way();
-    n8.order(Way.Order.HIGHWAY_MOTORWAY);
-    n8.layer(-2);
-
-    assertTrue(Way.compare(n5, n6) < 0);
-    assertTrue(Way.compare(n7, n8) == 0);
   }
 
   /**
@@ -284,84 +214,5 @@ public final class WayTest {
     assertTrue(w1.nodes().contains(n2));
     assertTrue(w1.nodes().contains(n3));
     assertTrue(w1.nodes().contains(n4));
-  }
-
-  /**
-   * Test wether two roads intersect.
-   */
-  @Ignore("Intersection detection has been removed")
-  @Test
-  public void testIntersect() {
-    Way w1 = new Way();
-    Node n1 = new Node(55.6758261F, 12.5831593F);
-    Node n2 = new Node(55.6753869F, 12.5850681F);
-    Node n3 = new Node(55.6752059F, 12.5849356F);
-    Node n4 = new Node(55.6756510F, 12.5830358F);
-    w1.add(n1);
-    w1.add(n2);
-    w1.add(n3);
-    w1.add(n4);
-
-    Way w2 = new Way();
-    Node n5 = new Node(55.6758241F, 12.5831493F);
-    Node n6 = new Node(55.6753869F, 12.5850681F);
-    Node n7 = new Node(55.6752059F, 12.5849356F);
-    Node n8 = new Node(55.6756510F, 12.5830358F);
-    w2.add(n5);
-    w2.add(n6);
-    w2.add(n7);
-    w2.add(n8);
-
-    Way w3 = new Way();
-    Node n9 = new Node(50.6758241F, 10.5831493F);
-    Node n10 = new Node(50.6753869F, 10.5850681F);
-    Node n11 = new Node(50.6752059F, 10.5849356F);
-    Node n12 = new Node(50.6756510F, 10.5830358F);
-    w3.add(n9);
-    w3.add(n10);
-    w3.add(n11);
-    w3.add(n12);
-
-    // assertFalse(w1.intersects(w3));
-    // assertFalse(w2.intersects(w3));
-  }
-
-  /**
-   * Tests whether a way is sorrounded by another way.
-   */
-  @Test
-  public void testContains() {
-    Way w1 = new Way();
-    Node n1 = new Node(56.6758261F, 12.5831593F);
-    Node n2 = new Node(52.6753869F, 12.5831593F);
-    Node n3 = new Node(52.6753869F, 18.5849356F);
-    Node n4 = new Node(56.6758261F, 18.5830358F);
-    w1.add(n1);
-    w1.add(n2);
-    w1.add(n3);
-    w1.add(n4);
-
-    Way w2 = new Way();
-    Node n5 = new Node(55.6758241F, 12.1831493F);
-    Node n6 = new Node(53.6753869F, 12.1831493F);
-    Node n7 = new Node(53.6753869F, 15.5849356F);
-    Node n8 = new Node(55.6758241F, 15.5849356F);
-    w2.add(n5);
-    w2.add(n6);
-    w2.add(n7);
-    w2.add(n8);
-
-    Way w3 = new Way();
-    Node n9 = new Node(55.6758241F, 11.5831493F);
-    Node n10 = new Node(53.6753869F, 11.5850681F);
-    Node n11 = new Node(53.6753869F, 11.5849356F);
-    Node n12 = new Node(55.6758241F, 11.5830358F);
-    w3.add(n9);
-    w3.add(n10);
-    w3.add(n11);
-    w3.add(n12);
-
-    assertTrue(w1.contains(w2));
-    assertFalse(w1.contains(w3));
   }
 }

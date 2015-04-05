@@ -9,9 +9,6 @@ import java.util.Iterator;
 // JavaFX scene utilities
 import javafx.scene.Group;
 
-// JavaFX shapes
-import javafx.scene.shape.Polyline;
-
 // Utilities
 import dk.itu.kelvin.util.ArrayList;
 import dk.itu.kelvin.util.List;
@@ -63,6 +60,15 @@ public final class Land extends Element<Group> {
    */
   public Land(final BoundingBox bounds) {
     this.bounds = bounds;
+  }
+
+  /**
+   * Get a list of merged coastlines.
+   *
+   * @return A list of merged coastlines.
+   */
+  public List<Way> coastlines() {
+    return this.coastlines;
   }
 
   /**
@@ -165,6 +171,9 @@ public final class Land extends Element<Group> {
 
     this.close(coastline);
 
+    coastline.tag("land", "yes");
+    coastline.tag("layer", "-9999");
+
     this.coastlines.add(coastline);
   }
 
@@ -249,12 +258,22 @@ public final class Land extends Element<Group> {
     Group group = new Group();
 
     for (Way coastline: this.coastlines) {
-      Polyline polyline = coastline.render();
-      polyline.getStyleClass().add("land");
-
-      group.getChildren().add(polyline);
+      group.getChildren().add(coastline.render());
     }
 
     return group;
+  }
+
+  /**
+   * Check if the specified key/value pair should be included in the tags of
+   * the land.
+   *
+   * @param key   The key to check.
+   * @param value The value to check.
+   * @return      A bollean indicating whether or not the specified key/value
+   *              pair should be included in the tags of the land.
+   */
+  protected boolean include(final String key, final String value) {
+    return false;
   }
 }

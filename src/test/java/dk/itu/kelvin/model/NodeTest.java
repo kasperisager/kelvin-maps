@@ -45,7 +45,7 @@ public final class NodeTest {
 
     //if one of the strings are empty.
     n1.tag("", "ccc");
-    assertEquals("ccc", tags.get(""));
+    assertEquals(null, tags.get(""));
 
     // if the key is null.
     n1.tag(null, "ddd");

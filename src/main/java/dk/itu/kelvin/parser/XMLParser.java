@@ -3,8 +3,8 @@
  */
 package dk.itu.kelvin.parser;
 
-// Net utilities
-import java.net.URL;
+// I/O utilities
+import java.io.File;
 
 // SAX utilities
 import org.xml.sax.Attributes;
@@ -14,13 +14,16 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+// Utilities
+import dk.itu.kelvin.util.ArrayList;
+import dk.itu.kelvin.util.Collection;
+import dk.itu.kelvin.util.HashTable;
+import dk.itu.kelvin.util.List;
+import dk.itu.kelvin.util.Map;
+
 // Math
 import dk.itu.kelvin.math.Projection;
 import dk.itu.kelvin.math.MercatorProjection;
-
-// Storage
-import dk.itu.kelvin.store.AddressStore;
-import dk.itu.kelvin.store.ElementStore;
 
 // Models
 import dk.itu.kelvin.model.Address;
@@ -32,13 +35,13 @@ import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.Way;
 
 /**
- * Parser class.
+ * XML parser class.
  */
-public final class ChartParser {
+public final class XMLParser extends Parser {
   /**
    * Projection to use for the parsed coordinates.
    */
-  private Projection projection = new MercatorProjection();
+  private final Projection projection = new MercatorProjection();
 
   /**
    * Bounding box.
@@ -53,22 +56,22 @@ public final class ChartParser {
   /**
    * Store nodes.
    */
-  private ElementStore<Node> nodes = new ElementStore<>();
+  private Map<Long, Node> nodes = new HashTable<>();
 
   /**
    * Store ways.
    */
-  private ElementStore<Way> ways = new ElementStore<>();
+  private Map<Long, Way> ways = new HashTable<>();
 
   /**
    * Store relations.
    */
-  private ElementStore<Relation> relations = new ElementStore<>();
+  private Map<Long, Relation> relations = new HashTable<>();
 
   /**
    * Store addresses.
    */
-  private AddressStore addresses = new AddressStore();
+  private List<Address> addresses = new ArrayList<>();
 
   /**
    * The currently active element.
@@ -99,8 +102,8 @@ public final class ChartParser {
    *
    * @return The parsed land polygons.
    */
-  public Land land() {
-    return this.land;
+  public Collection<Way> land() {
+    return this.land.coastlines();
   }
 
   /**
@@ -108,8 +111,8 @@ public final class ChartParser {
    *
    * @return The parsed node elements.
    */
-  public ElementStore<Node> nodes() {
-    return this.nodes;
+  public Collection<Node> nodes() {
+    return this.nodes.values();
   }
 
   /**
@@ -117,8 +120,8 @@ public final class ChartParser {
    *
    * @return The parsed way elements.
    */
-  public ElementStore<Way> ways() {
-    return this.ways;
+  public Collection<Way> ways() {
+    return this.ways.values();
   }
 
   /**
@@ -126,8 +129,8 @@ public final class ChartParser {
    *
    * @return The parsed relation elements.
    */
-  public ElementStore<Relation> relations() {
-    return this.relations;
+  public Collection<Relation> relations() {
+    return this.relations.values();
   }
 
   /**
@@ -135,7 +138,7 @@ public final class ChartParser {
    *
    * @return The parsed addresses.
    */
-  public AddressStore addresses() {
+  public Collection<Address> addresses() {
     return this.addresses;
   }
 
@@ -144,15 +147,14 @@ public final class ChartParser {
    *
    * @param file The path to the file to parse.
    *
-   * @throws Exception In case of an error. Duh.
+   * @throws Exception In case of an exception during parsing.
    */
-  public void read(final String file) throws Exception {
-    URL url = ChartParser.class.getResource(file);
-
+  protected void parse(final File file) throws Exception {
     XMLReader reader = XMLReaderFactory.createXMLReader();
 
     reader.setContentHandler(new ContentHandler());
-    reader.parse(url.toExternalForm());
+
+    reader.parse(file.toURI().toURL().toExternalForm());
   }
 
   /**
@@ -175,7 +177,7 @@ public final class ChartParser {
    * @param value       The name of the value to look for.
    * @return            The value if found, otherwise null.
    */
-  private Integer getInteger(final Attributes attributes, final String value) {
+  private int getInteger(final Attributes attributes, final String value) {
     return Integer.parseInt(attributes.getValue(value));
   }
 
@@ -187,7 +189,7 @@ public final class ChartParser {
    * @param value       The name of the value to look for.
    * @return            The value if found, otherwise null.
    */
-  private Long getLong(final Attributes attributes, final String value) {
+  private long getLong(final Attributes attributes, final String value) {
     return Long.parseLong(attributes.getValue(value));
   }
 
@@ -199,7 +201,7 @@ public final class ChartParser {
    * @param value       The name of the value to look for.
    * @return            The value if found, otherwise null.
    */
-  private Float getFloat(final Attributes attributes, final String value) {
+  private float getFloat(final Attributes attributes, final String value) {
     return Float.parseFloat(attributes.getValue(value));
   }
 
@@ -211,7 +213,7 @@ public final class ChartParser {
    * @param value       The name of the value to look for.
    * @return            The value if found, otherwise null.
    */
-  private Double getDouble(final Attributes attributes, final String value) {
+  private double getDouble(final Attributes attributes, final String value) {
     return Double.parseDouble(attributes.getValue(value));
   }
 
@@ -231,10 +233,10 @@ public final class ChartParser {
    */
   private void startBounds(final Attributes attributes) {
     this.bounds = new BoundingBox(
-      this.projection.lonToX(this.getFloat(attributes, "minlon")),
-      this.projection.latToY(this.getFloat(attributes, "maxlat")),
-      this.projection.lonToX(this.getFloat(attributes, "maxlon")),
-      this.projection.latToY(this.getFloat(attributes, "minlat"))
+      (float) this.projection.lonToX(this.getDouble(attributes, "minlon")),
+      (float) this.projection.latToY(this.getDouble(attributes, "maxlat")),
+      (float) this.projection.lonToX(this.getDouble(attributes, "maxlon")),
+      (float) this.projection.latToY(this.getDouble(attributes, "minlat"))
     );
 
     this.land = new Land(this.bounds);
@@ -247,8 +249,8 @@ public final class ChartParser {
    */
   private void startNode(final Attributes attributes) {
     this.element = new Node(
-      this.projection.lonToX(this.getFloat(attributes, "lon")),
-      this.projection.latToY(this.getFloat(attributes, "lat"))
+      (float) this.projection.lonToX(this.getDouble(attributes, "lon")),
+      (float) this.projection.latToY(this.getDouble(attributes, "lat"))
     );
 
     this.elementId = this.getLong(attributes, "id");
@@ -258,16 +260,20 @@ public final class ChartParser {
    * End a node element.
    */
   private void endNode() {
-    if (this.element == null) {
+    if (this.element == null || !(this.element instanceof Node)) {
       return;
     }
 
     Node node = (Node) this.element;
 
-    this.nodes.put(this.elementId, node);
-
     if (this.address != null) {
-      this.addresses.put(this.address, node);
+      this.address.x(node.x());
+      this.address.y(node.y());
+
+      this.addresses.add(this.address);
+    }
+    else {
+      this.nodes.put(this.elementId, node);
     }
   }
 
@@ -285,11 +291,15 @@ public final class ChartParser {
    * End a way element.
    */
   private void endWay() {
-    if (this.element == null) {
+    if (this.element == null || !(this.element instanceof Way)) {
       return;
     }
 
-    this.ways.put(this.elementId, (Way) this.element);
+    Way way = (Way) this.element;
+
+    ((ArrayList) way.nodes()).trimToSize();
+
+    this.ways.put(this.elementId, way);
   }
 
   /**
@@ -306,7 +316,7 @@ public final class ChartParser {
    * End a relation element.
    */
   public void endRelation() {
-    if (this.element == null) {
+    if (this.element == null || !(this.element instanceof Relation)) {
       return;
     }
 
@@ -326,25 +336,19 @@ public final class ChartParser {
     String k = this.getString(attributes, "k");
     String v = this.getString(attributes, "v");
 
-    if (v.equals("coastline")) {
-      this.land.add((Way) this.element);
-    }
-
     if (k.startsWith("addr:") && this.address == null) {
       this.address = new Address();
     }
 
     if (this.element instanceof Way) {
-      ((Way) this.element).order(Way.Order.fromString(k, v));
+      Way way = (Way) this.element;
+
+      if (v.equals("coastline")) {
+        this.land.add(way);
+      }
     }
 
     switch (k) {
-      case "layer":
-        if (this.element instanceof Way) {
-          ((Way) this.element).layer(Integer.parseInt(v));
-        }
-        break;
-
       case "addr:city":
         this.address.city(v);
         break;
@@ -369,7 +373,7 @@ public final class ChartParser {
    * @param attributes Element attributes.
    */
   private void startNd(final Attributes attributes) {
-    if (this.element == null) {
+    if (this.element == null || !(this.element instanceof Way)) {
       return;
     }
 
@@ -388,7 +392,7 @@ public final class ChartParser {
    * @param attributes Element attributes.
    */
   public void startMember(final Attributes attributes) {
-    if (this.element == null) {
+    if (this.element == null || !(this.element instanceof Relation)) {
       return;
     }
 
@@ -397,31 +401,36 @@ public final class ChartParser {
     // Get the reference ID of the member.
     long ref = this.getLong(attributes, "ref");
 
-    // Get the role of the member.
-    Relation.Role role = Relation.Role.fromString(
-      this.getString(attributes, "role")
-    );
+    Element element;
 
     switch (this.getString(attributes, "type")) {
       case "node":
-        relation.add(this.nodes.get(ref), role);
+        element = this.nodes.get(ref);
         break;
       case "way":
-        relation.add(this.ways.get(ref), role);
+        element = this.ways.get(ref);
         break;
       case "relation":
-        relation.add(this.relations.get(ref), role);
+        element = this.relations.get(ref);
         break;
       default:
         return;
     }
+
+    if (element == null) {
+      return;
+    }
+
+    element.tag("role", this.getString(attributes, "role"));
+
+    relation.add(element);
   }
 
   /**
    * Custom SAX event handler.
    *
    * <p>
-   * This class is simply a proxy between the SAX parser and the ChartParser
+   * This class is simply a proxy between the SAX parser and the XMLParser
    * instance.
    */
   private class ContentHandler extends DefaultHandler {
@@ -446,33 +455,32 @@ public final class ChartParser {
       final Attributes attributes
     ) {
       switch (qName.toLowerCase()) {
-        // Bounds.
         case "bounds":
-          ChartParser.this.startBounds(attributes);
+          XMLParser.this.startBounds(attributes);
           break;
 
         // Core elements. These can have elements within them so we also need
         // to parse the closing tags.
         case "node":
-          ChartParser.this.startNode(attributes);
+          XMLParser.this.startNode(attributes);
           break;
         case "way":
-          ChartParser.this.startWay(attributes);
+          XMLParser.this.startWay(attributes);
           break;
         case "relation":
-          ChartParser.this.startRelation(attributes);
+          XMLParser.this.startRelation(attributes);
           break;
 
         // Sub elements. These are always self-closing so we're only interested
         // in the start tag.
         case "tag":
-          ChartParser.this.startTag(attributes);
+          XMLParser.this.startTag(attributes);
           break;
         case "nd":
-          ChartParser.this.startNd(attributes);
+          XMLParser.this.startNd(attributes);
           break;
         case "member":
-          ChartParser.this.startMember(attributes);
+          XMLParser.this.startMember(attributes);
           break;
 
         default:
@@ -500,16 +508,16 @@ public final class ChartParser {
       switch (qName.toLowerCase()) {
         // Core elements. Parse the closing tags of the core elements.
         case "node":
-          ChartParser.this.endNode();
-          ChartParser.this.clear();
+          XMLParser.this.endNode();
+          XMLParser.this.clear();
           break;
         case "way":
-          ChartParser.this.endWay();
-          ChartParser.this.clear();
+          XMLParser.this.endWay();
+          XMLParser.this.clear();
           break;
         case "relation":
-          ChartParser.this.endRelation();
-          ChartParser.this.clear();
+          XMLParser.this.endRelation();
+          XMLParser.this.clear();
           break;
         default:
           return;

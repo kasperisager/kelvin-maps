@@ -3,6 +3,9 @@
  */
 package dk.itu.kelvin.model;
 
+// General utilities
+import java.util.Comparator;
+
 // I/O utilities
 import java.io.Serializable;
 
@@ -26,6 +29,27 @@ public abstract class Element<T extends Node> implements Serializable {
    * UID for identifying serialized objects.
    */
   private static final long serialVersionUID = 42;
+
+  /**
+   * Comparator for comparing the drawing order and layer of two elements.
+   */
+  public static final Comparator<Element> COMPARATOR =
+    new Comparator<Element>() {
+    /**
+     * Compare two elements taking into account their drawing layer and drawing
+     * order.
+     *
+     * @param a The first element.
+     * @param b The second element.
+     * @return  A negative integer, zero, or a positive integer as the first
+     *          element is less than, equal to, or greater than the second
+     *          element.
+     */
+    @Override
+    public int compare(final Element a, final Element b) {
+      return Element.compare(a, b);
+    }
+  };
 
   /**
    * The initial capacity of the tables containing the element tags.
@@ -57,11 +81,49 @@ public abstract class Element<T extends Node> implements Serializable {
       return null;
     }
 
+    String k = key.trim();
+    String v = value.trim();
+
+    if (k.isEmpty() || v.isEmpty() || !this.include(k, v)) {
+      return null;
+    }
+
     if (this.tags == null) {
       this.tags = new HashTable<>(INITIAL_TAG_CAPACITY);
     }
 
-    return this.tags.put(key.intern(), value.intern());
+    return this.tags.put(k.intern(), v.intern());
+  }
+
+  /**
+   * Check if the specified key/value pair should be included in the tags of
+   * the element.
+   *
+   * @param key   The key to check.
+   * @param value The value to check.
+   * @return      A bollean indicating whether or not the specified key/value
+   *              pair should be included in the tags of the element.
+   */
+  protected abstract boolean include(final String key, final String value);
+
+  /**
+   * Get the value of the specified tag.
+   *
+   * @param key The key of the tag to get.
+   * @return    The value of the specified tag.
+   */
+  public final String tag(final String key) {
+    if (key == null || this.tags == null) {
+      return null;
+    }
+
+    String k = key.trim();
+
+    if (k.isEmpty()) {
+      return null;
+    }
+
+    return this.tags.get(key);
   }
 
   /**
@@ -78,6 +140,88 @@ public abstract class Element<T extends Node> implements Serializable {
   }
 
   /**
+   * Get the drawing order of the element.
+   *
+   * @return The drawing order of the element.
+   */
+  public final int order() {
+    String v;
+
+    if ((v = this.tag("land")) != null) {
+      switch (v) {
+        default: return -1;
+      }
+    }
+
+    if ((v = this.tag("natural")) != null) {
+      switch (v) {
+        default: return 1;
+      }
+    }
+
+    if ((v = this.tag("landuse")) != null) {
+      switch (v) {
+        case "military":  return 8;
+        default:          return 2;
+      }
+    }
+
+    if ((v = this.tag("waterway")) != null) {
+      switch (v) {
+        default: return 3;
+      }
+    }
+
+    if ((v = this.tag("place")) != null) {
+      switch (v) {
+        case "island":  return 4;
+        default:        return 5;
+      }
+    }
+
+    if ((v = this.tag("leisure")) != null) {
+      switch (v) {
+        default: return 6;
+      }
+    }
+
+    if ((v = this.tag("building")) != null) {
+      switch (v) {
+        default: return 7;
+      }
+    }
+
+    if ((v = this.tag("highway")) != null) {
+      switch (v) {
+        case "path":
+        case "bridleway":
+        case "footway":
+        case "cycleway":
+        case "steps":
+        case "track":         return 9;
+
+        case "unclassified":  return 11;
+
+        case "living_street":
+        case "road":
+        case "pedestrian":    return 12;
+
+        case "service":       return 13;
+        case "residential":   return 14;
+        case "tertiary":      return 15;
+        case "secondary":     return 16;
+        case "primary":       return 17;
+        case "trunk":         return 18;
+        case "motorway":      return 19;
+
+        default: return 10;
+      }
+    }
+
+    return 0;
+  }
+
+  /**
    * Get a JavaFX representation of the element.
    *
    * <p>
@@ -87,4 +231,40 @@ public abstract class Element<T extends Node> implements Serializable {
    * @return A JavaFX representation of the element.
    */
   public abstract T render();
+
+  /**
+   * Compare two elements taking into account their drawing order and layer.
+   *
+   * @param a The first element.
+   * @param b The second element.
+   * @return  A negative integer, zero, or a positive integer as the first
+   *          element is less than, equal to, or greater than the second
+   *          element.
+   */
+  public static final int compare(final Element a, final Element b) {
+    if (a == b) {
+      return 0;
+    }
+
+    if (a == null) {
+      return -1;
+    }
+
+    if (b == null) {
+      return 1;
+    }
+
+    String als = a.tag("layer");
+    String bls = b.tag("layer");
+
+    int al = als != null ? Integer.parseInt(als) : 0;
+    int bl = bls != null ? Integer.parseInt(bls) : 0;
+
+    if (al == bl) {
+      return Integer.compare(a.order(), b.order());
+    }
+    else {
+      return Integer.compare(al, bl);
+    }
+  }
 }
