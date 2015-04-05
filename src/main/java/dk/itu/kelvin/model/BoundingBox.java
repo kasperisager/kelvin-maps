@@ -6,12 +6,6 @@ package dk.itu.kelvin.model;
 // JavaFX shapes
 import javafx.scene.shape.Rectangle;
 
-// JavaFX paint
-import javafx.scene.paint.Color;
-
-// Math
-import dk.itu.kelvin.math.Geometry;
-
 /**
  * A bounding box describes the bounds of a chart.
  *
@@ -109,12 +103,12 @@ public final class BoundingBox extends Element<Rectangle> {
    *          specified point.
    */
   public boolean contains(final float x, final float y) {
-    Geometry.Bounds bounds = new Geometry.Bounds(
-      new Geometry.Point(this.minX, this.minY),
-      new Geometry.Point(this.maxX, this.maxY)
+    return (
+      this.minX <= x
+      && this.minY <= y
+      && this.maxX >= x
+      && this.maxY >= y
     );
-
-    return bounds.contains(new Geometry.Point(x, y));
   }
 
   /**
@@ -146,8 +140,7 @@ public final class BoundingBox extends Element<Rectangle> {
 
     return (
       this.contains(way.start().x(), way.start().y())
-      &&
-      this.contains(way.end().x(), way.end().y())
+      && this.contains(way.end().x(), way.end().y())
     );
   }
 
@@ -164,12 +157,21 @@ public final class BoundingBox extends Element<Rectangle> {
       Math.abs(this.maxY - this.minY)
     );
 
-    // Ensure that the bounds of the bounding box are calculated correctly. This
-    // is only the case if both a stroke and a fill is set, otherwise
-    // calculation of bounds will be off.
-    rectangle.setStroke(Color.BLACK);
-    rectangle.setFill(Color.BLACK);
+    rectangle.getStyleClass().add("map");
 
     return rectangle;
+  }
+
+  /**
+   * Check if the specified key/value pair should be included in the tags of
+   * the bounds.
+   *
+   * @param key   The key to check.
+   * @param value The value to check.
+   * @return      A bollean indicating whether or not the specified key/value
+   *              pair should be included in the tags of the bounds.
+   */
+  protected boolean include(final String key, final String value) {
+    return false;
   }
 }

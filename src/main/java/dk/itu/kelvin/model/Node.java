@@ -6,13 +6,16 @@ package dk.itu.kelvin.model;
 // JavaFX controls
 import javafx.scene.control.Label;
 
+// Utilities
+import dk.itu.kelvin.util.PointTree;
+
 /**
  * A node describes a 2-dimensional coordinate within a chart.
  *
  * @see <a href="http://wiki.openstreetmap.org/wiki/Node">
  *      http://wiki.openstreetmap.org/wiki/Node</a>
  */
-public final class Node extends Element<Label> {
+public final class Node extends Element<Label> implements PointTree.Index {
   /**
    * UID for identifying serialized objects.
    */
@@ -77,5 +80,18 @@ public final class Node extends Element<Label> {
     Label label = new Label();
 
     return label;
+  }
+
+  /**
+   * Check if the specified key/value pair should be included in the tags of
+   * the node.
+   *
+   * @param key   The key to check.
+   * @param value The value to check.
+   * @return      A bollean indicating whether or not the specified key/value
+   *              pair should be included in the tags of the node.
+   */
+  protected boolean include(final String key, final String value) {
+    return false;
   }
 }

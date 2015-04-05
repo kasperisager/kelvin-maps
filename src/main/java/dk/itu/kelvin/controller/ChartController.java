@@ -3,6 +3,9 @@
  */
 package dk.itu.kelvin.controller;
 
+// I/O utilities
+import java.io.File;
+
 // JavaFX utilities
 import javafx.util.Duration;
 
@@ -28,9 +31,11 @@ import javafx.scene.input.RotateEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.ZoomEvent;
 
-
 // JavaFX transformations
 import javafx.scene.transform.Affine;
+
+// JavaFX text
+import javafx.scene.text.Text;
 
 // JavaFX controls
 import javafx.scene.control.Button;
@@ -49,21 +54,17 @@ import javafx.fxml.FXML;
 import org.controlsfx.control.PopOver;
 
 // Utilities
-import java.util.ArrayList;
-import java.util.List;
+import dk.itu.kelvin.util.ArrayList;
+import dk.itu.kelvin.util.List;
 
 // Parser
-import dk.itu.kelvin.parser.ChartParser;
-
-// Threading
-import dk.itu.kelvin.thread.TaskQueue;
+import dk.itu.kelvin.parser.Parser;
 
 // Layout
 import dk.itu.kelvin.layout.Chart;
 
 // Models
 import dk.itu.kelvin.model.Address;
-import dk.itu.kelvin.model.Node;
 
 // Stores
 import dk.itu.kelvin.store.AddressStore;
@@ -131,7 +132,7 @@ public final class ChartController {
   /**
    * The addresses map from the parser.
    */
-  private AddressStore addresses;
+  private AddressStore addresses = new AddressStore();
 
   /**
    * PopOver for the config menu.
@@ -157,6 +158,11 @@ public final class ChartController {
    * Pointer for highlighting the autocomplete suggestions.
    */
   private int pointer = 0;
+
+  /**
+   * Label representing the found address.
+   */
+  private Text fromAddress;
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -256,39 +262,34 @@ public final class ChartController {
 
     this.compassArrow.getTransforms().add(this.compassTransform);
 
-    TaskQueue.run(() -> {
-      ChartParser parser = new ChartParser();
+    this.fromAddress = new Text();
+    this.fromAddress.getStyleClass().add("icon");
+    this.fromAddress.getStyleClass().add("address-label");
+    this.fromAddress.setText("\uf456");
+    this.fromAddress.setVisible(false);
 
-      try {
-        parser.read(MAP_INPUT);
-      } catch (Exception ex) {
-        throw new RuntimeException(ex);
+    File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
+
+    Parser parser = Parser.probe(file);
+
+    parser.read(file, () -> {
+      // Get all addresses from parser.
+      for (Address address: parser.addresses()) {
+        this.addresses.add(address);
       }
-
-      /**
-       * Results doesn't get sorted
-       */
-      //Collections.sort(this.chart.elements(), Element.COMPARATOR);
-
-      //Get map of all addresses from parser.
-      this.addresses = parser.addresses();
 
       // Schedule rendering of the chart nodes.
       Platform.runLater(() -> {
-        this.chart.add(parser.ways().values());
-        this.chart.add(parser.relations().values());
-
-        this.chart.add(parser.land());
-        this.chart.add(parser.bounds());
+        this.chart.land(parser.land());
+        this.chart.ways(parser.ways());
+        this.chart.relations(parser.relations());
+        this.chart.bounds(parser.bounds());
 
         // Sets the chart active after load.
         this.stackPane.setDisable(false);
         this.addressFrom.requestFocus();
         ApplicationController.removeIcon();
       });
-
-      //Get map of all addresses from parser.
-      this.addresses = parser.addresses();
     });
 
     this.createPOI();
@@ -316,10 +317,15 @@ public final class ChartController {
       // If the input in the textfield is above
       // The autocomplete_cutoff then add strings to the suggestions arraylist.
       if (tf.getLength() > AUTOCOMPLETE_CUTOFF) {
-        for (Address a: this.addresses.keySet()) {
-          if (a.toString().toLowerCase().contains(tf.getText().toLowerCase())) {
-            this.suggestions.add(a.toString());
-          }
+        List<Address> results = this.addresses.search(tf.getText());
+
+        for (Address address: results) {
+          this.suggestions.add(
+            address.street()
+          + " " + address.number()
+          + ", " + address.postcode()
+          + " " + address.city()
+          );
 
           // End the foreach loop
           // if AutoComplete_max_items limit has been reached.
@@ -348,7 +354,9 @@ public final class ChartController {
         l.setPrefWidth(bounds.getWidth() + 27);
         l.setOnMouseClicked((e2 -> {
           tf.setText(l.getText());
+
           this.autocPopOver.hide(Duration.ONE);
+
           if (tf.getId().equals("addressFrom")) {
             this.findAddress();
           }
@@ -752,12 +760,8 @@ public final class ChartController {
         return;
       }
 
-      Node node = this.addresses.find(startAddress);
-
-      if (node != null) {
-        this.chart.center(node, 2.5);
-        this.chart.setPointer(node);
-      }
+      this.chart.center(startAddress, 2.5);
+      this.setPointer(startAddress);
 
       this.autocPopOver.hide();
     }
@@ -796,15 +800,12 @@ public final class ChartController {
         return;
       }
 
-      Node startNode = this.addresses.find(startAddress);
-      Node endNode = this.addresses.find(endAddress);
-
       // showRouteOnMap(startAddress, endAddress);
 
-      System.out.println("X: " + startNode.x() + " " + "Y: "
-      + startNode.y());
-      System.out.println("X: " + endNode.x() + " " + "Y: "
-      + endNode.y());
+      System.out.println("X: " + startAddress.x() + " " + "Y: "
+      + startAddress.y());
+      System.out.println("X: " + endAddress.x() + " " + "Y: "
+      + endAddress.y());
 
       this.autocPopOver.hide();
     }
@@ -914,4 +915,13 @@ public final class ChartController {
     this.scaleIndicatorLabel.setPrefWidth(length);
   }
 
+  /**
+   * Sets a pointer at the address found.
+   * @param address Address with the coordinates for the pointer.
+   */
+  public void setPointer(final Address address) {
+    this.fromAddress.setLayoutX(address.x());
+    this.fromAddress.setLayoutY(address.y());
+    this.fromAddress.setVisible(true);
+  }
 }

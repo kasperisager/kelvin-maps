@@ -135,7 +135,7 @@ public abstract class Parser {
     switch (type.toLowerCase()) {
       case "application/xml":
       case "application/x-bzip2":
-        return null;
+        return new XMLParser();
 
       case "application/octet-stream":
         return null;

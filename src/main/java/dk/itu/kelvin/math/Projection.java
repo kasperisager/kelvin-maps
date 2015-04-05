@@ -13,7 +13,7 @@ public interface Projection {
    * @param x The x-coordinate to convert.
    * @return  The corresponding projected longitude.
    */
-  float xToLon(final float x);
+  double xToLon(final double x);
 
   /**
    * Convert a projected longitude into an x-coordinate.
@@ -21,7 +21,7 @@ public interface Projection {
    * @param lon The projected longitude to convert.
    * @return    The corresponding x-coordinate.
    */
-  float lonToX(final float lon);
+  double lonToX(final double lon);
 
   /**
    * Convert a y-coordinate into a projected latitude.
@@ -29,7 +29,7 @@ public interface Projection {
    * @param y The y-coordinate to convert.
    * @return  The corresponding projected latitude.
    */
-  float yToLat(final float y);
+  double yToLat(final double y);
 
   /**
    * Convert a projected latitude into a y-coordinate.
@@ -37,5 +37,5 @@ public interface Projection {
    * @param lat The projected latitude to convert.
    * @return    The corresponding y-coordinate.
    */
-  float latToY(final float lat);
+  double latToY(final double lat);
 }

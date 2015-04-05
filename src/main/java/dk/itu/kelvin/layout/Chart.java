@@ -5,19 +5,34 @@ package dk.itu.kelvin.layout;
 
 // JavaFX scene utilities
 import javafx.scene.Group;
-import javafx.scene.text.Text;
+import javafx.scene.Scene;
 
-// JavaFX geometry
+// JavaFX shape utilities
+import javafx.scene.shape.Rectangle;
+
+// JavaFX geometry utilities
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 
 // Utilities
+import dk.itu.kelvin.util.ArrayList;
 import dk.itu.kelvin.util.Collection;
+import dk.itu.kelvin.util.Collections;
+import dk.itu.kelvin.util.HashSet;
+import dk.itu.kelvin.util.HashTable;
+import dk.itu.kelvin.util.List;
+import dk.itu.kelvin.util.Map;
+import dk.itu.kelvin.util.RectangleTree;
+import dk.itu.kelvin.util.Set;
+import dk.itu.kelvin.util.SpatialIndex;
 
 // Models
+import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.BoundingBox;
 import dk.itu.kelvin.model.Element;
 import dk.itu.kelvin.model.Node;
-import dk.itu.kelvin.model.Land;
+import dk.itu.kelvin.model.Relation;
+import dk.itu.kelvin.model.Way;
 
 /**
  * Chart class for handling which elements to display and where.
@@ -57,44 +72,65 @@ public final class Chart extends Group {
   private static final double MIN_ZOOM_FACTOR = 0.5;
 
   /**
-   * The bounds of the chart.
+   * The size of each tile in the chart.
    */
-  private BoundingBox bounds;
+  private static final int TILE_SIZE = 256;
 
   /**
-   * Land polygons.
+   * Spatial index of land polygons.
    */
-  private Group land = new Group();
+  private SpatialIndex<Way> land;
 
   /**
-   * The tile grid containing all the elements within the chart.
+   * Spatial index of ways.
    */
-  private TileGrid elements = new TileGrid();
+  private SpatialIndex<Way> ways;
 
   /**
-   * Label representing the found address.
+   * Spatial index of relations.
    */
-  private Text fromAddress;
+  private SpatialIndex<Relation> relations;
 
   /**
-   * Meta layer.
+   * Keep track of the tiles currently showing.
    */
-  private TileGrid meta = new TileGrid();
+  private Map<Anchor, Group> showing = new HashTable<>();
+
+  /**
+   * Current smallest x-coordinate of the chart viewport.
+   */
+  private int minX;
+
+  /**
+   * Current smallest y-coordinate of the chart viewport.
+   */
+  private int minY;
+
+  /**
+   * Current largest x-coordinate of the chart viewport.
+   */
+  private int maxX;
+
+  /**
+   * Current largest y-coordinate of the chart viewport.
+   */
+  private int maxY;
+
+  /**
+   * Layer of land elements.
+   */
+  private Group landLayer = new Group();
+
+  /**
+   * Layer of meta elements.
+   */
+  private Group metaLayer = new Group();
 
   /**
    * Initialize the chart.
    */
   public Chart() {
-    this.getChildren().add(this.land);
-    this.getChildren().add(this.elements);
-    this.getChildren().add(this.meta);
-
-    this.fromAddress = new Text();
-    this.fromAddress.getStyleClass().add("icon");
-    this.fromAddress.getStyleClass().add("address-label");
-    this.fromAddress.setText("\uf456");
-    this.getChildren().add(this.fromAddress);
-    this.fromAddress.setVisible(false);
+    this.getChildren().addAll(this.landLayer, this.metaLayer);
   }
 
   /**
@@ -102,58 +138,53 @@ public final class Chart extends Group {
    *
    * @param bounds The bounds to add to the chart.
    */
-  public void add(final BoundingBox bounds) {
+  public void bounds(final BoundingBox bounds) {
     if (bounds == null) {
       return;
     }
 
-    this.bounds = bounds;
+    this.pan(-bounds.minX(), -bounds.minY());
 
-    this.pan(-this.bounds.minX(), -this.bounds.minY());
-    this.setClip(this.bounds.render());
+    this.setClip(bounds.render());
   }
 
   /**
-   * Add a land polygon to the chart.
+   * Add a collection of land polygons to the chart.
    *
-   * @param land The land polygon to add to the chart.
+   * @param land The collection of land polygons to add to the chart.
    */
-  public void add(final Land land) {
-    this.land.getChildren().add(land.render());
-  }
-
-  /**
-   * Add a node element to the chart.
-   *
-   * @param node The node element to add to the chart.
-   */
-  public void add(final Node node) {
-    this.meta.add(node);
-  }
-
-  /**
-   * Add an element to the chart.
-   *
-   * @param element The element to add to the chart.
-   */
-  public void add(final Element element) {
-    this.elements.add(element);
-  }
-
-  /**
-   * Add a collection of elements to the chart.
-   *
-   * @param <E>      The type of element the collection contains.
-   * @param elements The collection of elements to add to the chart.
-   */
-  public <E extends Element> void add(final Collection<E> elements) {
-    if (elements == null) {
+  public void land(final Collection<Way> land) {
+    if (land == null) {
       return;
     }
 
-    for (Element element: elements) {
-      this.add(element);
+    this.land = new RectangleTree<Way>(land);
+  }
+
+  /**
+   * Add a collection of ways to the chart.
+   *
+   * @param ways The collection of ways to add to the chart.
+   */
+  public void ways(final Collection<Way> ways) {
+    if (ways == null || ways.isEmpty()) {
+      return;
     }
+
+    this.ways = new RectangleTree<Way>(ways);
+  }
+
+  /**
+   * Add a collection of relations to the chart.
+   *
+   * @param relations The relations to add to the chart.
+   */
+  public void relations(final Collection<Relation> relations) {
+    if (relations == null || relations.isEmpty()) {
+      return;
+    }
+
+    this.relations = new RectangleTree<Relation>(relations);
   }
 
   /**
@@ -165,6 +196,8 @@ public final class Chart extends Group {
   public void pan(final double x, final double y) {
     this.setTranslateX(this.getTranslateX() + x);
     this.setTranslateY(this.getTranslateY() + y);
+
+    this.layoutTiles();
   }
 
   /**
@@ -203,9 +236,6 @@ public final class Chart extends Group {
       this.localToScene(node.x(), node.y()).getX(),
       this.localToScene(node.x(), node.y()).getY()
     );
-
-    System.out.println(this.localToScene(node.x(), node.y()).getX());
-    System.out.println(this.localToScene(node.x(), node.y()).getY());
   }
 
   /**
@@ -218,6 +248,30 @@ public final class Chart extends Group {
     this.setScaleX(scale);
     this.setScaleY(scale);
     this.center(node);
+  }
+
+  /**
+   * Center the chart on the specified address.
+   *
+   * @param address The address to center on.
+   */
+  public void center(final Address address) {
+    this.center(
+      this.localToScene(address.x(), address.y()).getX(),
+      this.localToScene(address.x(), address.y()).getY()
+    );
+  }
+
+  /**
+   * Center the chart on the specified address.
+   *
+   * @param address The address to center on.
+   * @param scale   The scale to set after centering.
+   */
+  public void center(final Address address, final double scale) {
+    this.setScaleX(scale);
+    this.setScaleY(scale);
+    this.center(address);
   }
 
   /**
@@ -253,6 +307,8 @@ public final class Chart extends Group {
 
     this.setTranslateX(this.getTranslateX() - f * dx);
     this.setTranslateY(this.getTranslateY() - f * dy);
+
+    this.layoutTiles();
   }
 
   /**
@@ -281,6 +337,7 @@ public final class Chart extends Group {
 
     this.setRotate(newAngle);
 
+    // Get the layout bounds of the chart in local coordinates.
     Bounds bounds = this.localToScene(this.getLayoutBounds());
 
     double dx = x - (bounds.getMinX() + bounds.getWidth() / 2);
@@ -296,6 +353,8 @@ public final class Chart extends Group {
       this.getTranslateY()
     + (dy - dx * Math.sin(dt) - dy * Math.cos(dt))
     );
+
+    this.layoutTiles();
   }
 
   /**
@@ -312,12 +371,183 @@ public final class Chart extends Group {
   }
 
   /**
-   * Sets a pointer at the address found.
-   * @param node with the coordinates for the pointer.
+   * Layout the tiles of the chart.
    */
-  public void setPointer(final Node node) {
-    this.fromAddress.setLayoutX(node.x());
-    this.fromAddress.setLayoutY(node.y());
-    this.fromAddress.setVisible(true);
+  private void layoutTiles() {
+    Scene scene = this.getScene();
+
+    if (scene == null) {
+      return;
+    }
+
+    Point2D min = this.sceneToLocal(0, 0);
+    Point2D max = this.sceneToLocal(scene.getWidth(), scene.getHeight());
+
+    int minX = (int) (256 * Math.floor(min.getX() / 256));
+    int minY = (int) (256 * Math.floor(min.getY() / 256));
+    int maxX = (int) (256 * Math.floor(max.getX() / 256));
+    int maxY = (int) (256 * Math.floor(max.getY() / 256));
+
+    if (
+      minX == this.minX
+      && minY == this.minY
+      && maxX == this.maxX
+      && maxY == this.maxY
+    ) {
+      return;
+    }
+
+    this.minX = minX;
+    this.minY = minY;
+    this.maxX = maxX;
+    this.maxY = maxY;
+
+    Set<Anchor> anchors = new HashSet<>();
+
+    for (int x = minX; x <= maxX; x += 256) {
+      for (int y = minY; y <= maxY; y += 256) {
+        anchors.add(new Anchor(x, y));
+      }
+    }
+
+    for (Anchor anchor: this.showing.keySet()) {
+      if (anchors.contains(anchor)) {
+        continue;
+      }
+
+      this.hide(anchor);
+    }
+
+    for (Anchor anchor: anchors) {
+      if (this.showing.containsKey(anchor)) {
+        continue;
+      }
+
+      this.show(anchor);
+    }
+  }
+
+  /**
+   * Show the specified anchor.
+   *
+   * @param anchor The anchor to show.
+   */
+  private void show(final Anchor anchor) {
+    if (anchor == null) {
+      return;
+    }
+
+    int x = anchor.x;
+    int y = anchor.y;
+
+    List<Element> elements = new ArrayList<>();
+
+    elements.addAll(this.land.range(new SpatialIndex.Bounds(
+      x, y, x + 256, y + 256
+    )));
+
+    elements.addAll(this.ways.range(new SpatialIndex.Bounds(
+      x, y, x + 256, y + 256
+    )));
+
+    elements.addAll(this.relations.range(new SpatialIndex.Bounds(
+      x, y, x + 256, y + 256
+    )));
+
+    if (elements.isEmpty()) {
+      return;
+    }
+
+    Collections.sort(elements, Element.COMPARATOR);
+
+    Group group = new Group();
+    group.setClip(new Rectangle(x, y, 256, 256));
+    group.setCache(true);
+
+    for (Element element: elements) {
+      group.getChildren().add(element.render());
+    }
+
+    this.landLayer.getChildren().add(group);
+
+    this.showing.put(anchor, group);
+  }
+
+  /**
+   * Hide the specified anchor.
+   *
+   * @param anchor The anchor to hide.
+   */
+  private void hide(final Anchor anchor) {
+    if (anchor == null) {
+      return;
+    }
+
+    Group group = this.showing.get(anchor);
+
+    this.landLayer.getChildren().remove(group);
+
+    this.showing.remove(anchor);
+  }
+
+  /**
+   * The {@link Anchor} class describes an anchor point for a group of elements
+   * within the chart.
+   */
+  private static class Anchor {
+    /**
+     * The x-coordinate of the anchor.
+     */
+    private int x;
+
+    /**
+     * The y-coordinate of the anchor.
+     */
+    private int y;
+
+    /**
+     * Initialize a new anchor.
+     *
+     * @param x The x-coordinate of the anchor.
+     * @param y The y-coordinate of the anchor.
+     */
+    public Anchor(final int x, final int y) {
+      this.x = x;
+      this.y = y;
+    }
+
+    /**
+     * Check if the anchor equals the specified object.
+     *
+     * @param object  The object to compare the anchor to.
+     * @return        A boolean indicating whether or not the anchor is equal to
+     *                The specified object.
+     */
+    public boolean equals(final Object object) {
+      if (object == null || !(object instanceof Anchor)) {
+        return false;
+      }
+
+      if (object == this) {
+        return true;
+      }
+
+      Anchor anchor = (Anchor) object;
+
+      return anchor.x == this.x && anchor.y == this.y;
+    }
+
+    /**
+     * Compute the hash code of the anchor.
+     *
+     * @return The hash code of the anchor.
+     */
+    public int hashCode() {
+      long bits = 7L;
+      bits = 31L * bits + this.x;
+      bits = 31L * bits + this.y;
+
+      return (int) (bits ^ (bits >> 32));
+    }
   }
 }

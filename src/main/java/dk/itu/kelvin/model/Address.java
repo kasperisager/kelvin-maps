@@ -113,6 +113,16 @@ public final class Address {
   + "$";
 
   /**
+   * The x-coordinate of the address.
+   */
+  private float x;
+
+  /**
+   * The y-coordinate of the address.
+   */
+  private float y;
+
+  /**
    * The street of the address.
    */
   private String street;
@@ -141,6 +151,42 @@ public final class Address {
    * The city of the address.
    */
   private String city;
+
+  /**
+   * Get the x-coordinate of the address.
+   *
+   * @return The x-coordinate of the address.
+   */
+  public float x() {
+    return this.x;
+  }
+
+  /**
+   * Set the x-coordinate of the address.
+   *
+   * @param x The x-coordinate of the address.
+   */
+  public void x(final float x) {
+    this.x = x;
+  }
+
+  /**
+   * Get the y-coordinate of the address.
+   *
+   * @return The y-coordinate of the address.
+   */
+  public float y() {
+    return this.y;
+  }
+
+  /**
+   * Set the y-coordinate of the address.
+   *
+   * @param y The y-coordinate of the address.
+   */
+  public void y(final float y) {
+    this.y = y;
+  }
 
   /**
    * Get the street of the address.
@@ -310,98 +356,6 @@ public final class Address {
   }
 
   /**
-   * Check if the current Address equals the specified object.
-   *
-   * @param object  The reference object with which to compare.
-   * @return        Boolean indicating whether or not the Address is equal to
-   *                the specified object.
-   */
-  @Override
-  public boolean equals(final Object object) {
-    if (object == null || !(object instanceof Address)) {
-      return false;
-    }
-
-    if (this == object) {
-      return true;
-    }
-
-    Address address = (Address) object;
-
-    return (
-      (
-        // Testing whether the objects strictly equal each other.
-        // Specifically if both objects are null.
-        (this.city == null && address.city == null)
-        ||
-        // Or testing if the values are equal.
-        (this.city != null && this.city.equals(address.city))
-      )
-      && (
-        (this.number == null && address.number == null)
-        ||
-        (this.number != null && this.number.equals(address.number))
-      )
-      && (
-        (this.floor == null && address.floor == null)
-        ||
-        (this.floor != null && this.floor.equals(address.floor))
-      )
-      && (
-        (this.door == null && address.door == null)
-        ||
-        (this.door != null && this.door.equals(address.door))
-      )
-      && (
-        (this.postcode == null && address.postcode == null)
-        ||
-        (this.postcode != null && this.postcode.equals(address.postcode))
-      )
-      && (
-        (this.street == null && address.street == null)
-        ||
-        (this.street != null && this.street.equals(address.street))
-      )
-    );
-  }
-
-  /**
-   * Compute the hashcode of the Node.
-   *
-   * @return The computed hashcode of the Node.
-   */
-  @Override
-  public int hashCode() {
-    long bits = 7L;
-
-    bits = 31L * bits + (
-      (this.city != null) ? this.city.hashCode() : 0
-    );
-
-    bits = 31L * bits + (
-      (this.number != null) ? this.number.hashCode() : 0
-    );
-
-    bits = 31L * bits + (
-      (this.floor != null) ? this.floor.hashCode() : 0
-    );
-
-    bits = 31L * bits + (
-      (this.door != null) ? this.door.hashCode() : 0
-    );
-
-    bits = 31L * bits + (
-      (this.postcode != null) ? this.postcode.hashCode() : 0
-    );
-
-    bits = 31L * bits + (
-      (this.street != null) ? this.street.hashCode() : 0
-    );
-
-    return (int) (bits ^ (bits >> 32));
-  }
-
-  /**
    * Parse a string representation of an address into an {@link Address} object.
    *
    * @param input The string representation of the address.
@@ -457,8 +411,7 @@ public final class Address {
 
       if (
         doorNumber != null && !doorNumber.isEmpty()
-        &&
-        doorSide != null && !doorSide.isEmpty()
+        && doorSide != null && !doorSide.isEmpty()
       ) {
         door = doorNumber + " " + doorSide;
       }
@@ -484,16 +437,5 @@ public final class Address {
       .city(city);
 
     return address;
-  }
-
-  @Override
-  public String toString() {
-    return this.street
-      + " "
-      + this.number
-      + ", "
-      + this.postcode
-      + " "
-      + this.city;
   }
 }
