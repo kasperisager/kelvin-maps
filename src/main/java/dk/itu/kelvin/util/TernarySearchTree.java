@@ -3,6 +3,9 @@
  */
 package dk.itu.kelvin.util;
 
+// I/O utilities
+import java.io.Serializable;
+
 /**
  * Ternary search tree class.
  *
@@ -28,7 +31,7 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
   /**
    * The root node of the ternary search tree.
    */
-  private Node root;
+  private Node<V> root;
 
   /**
    * Get the size of the ternary search tree.
@@ -66,7 +69,7 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
       return null;
     }
 
-    Node node = this.get(this.root, k, 0);
+    Node<V> node = this.get(this.root, k, 0);
 
     if (node != null) {
       return node.value;
@@ -84,7 +87,7 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
    * @param depth The current tree depth.
    * @return      The node containing the specified key if found.
    */
-  private Node get(final Node node, final String key, final int depth) {
+  private Node<V> get(final Node<V> node, final String key, final int depth) {
     if (node == null || key == null) {
       return null;
     }
@@ -160,8 +163,8 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
    * @param depth The current tree depth.
    * @return      The node that the key/value was added to.
    */
-  private Node put(
-    final Node node,
+  private Node<V> put(
+    final Node<V> node,
     final String key,
     final V value,
     final int depth
@@ -171,10 +174,10 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
     }
 
     char character = key.charAt(depth);
-    Node root = node;
+    Node<V> root = node;
 
     if (root == null) {
-      root = new Node(character);
+      root = new Node<V>(character);
     }
 
     if (character < root.character) {
@@ -226,7 +229,7 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
 
     String k = this.normalize(prefix);
 
-    Node root = this.get(this.root, k, 0);
+    Node<V> root = this.get(this.root, k, 0);
 
     if (root == null) {
       return results;
@@ -249,7 +252,7 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
    * @param results The map to add the results to.
    */
   private void search(
-    final Node node,
+    final Node<V> node,
     final StringBuilder prefix,
     final Map<String, V> results
   ) {
@@ -287,7 +290,12 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
   /**
    * The {@link Node} class describes a node within the ternary search tree.
    */
-  private class Node {
+  private static final class Node<V> implements Serializable {
+    /**
+     * UID for identifying serialized objects.
+     */
+    private static final long serialVersionUID = 918;
+
     /**
      * The character associated with the node.
      */
@@ -297,19 +305,19 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
      * The child node whose associated character is less than the character of
      * the current node.
      */
-    private Node less;
+    private Node<V> less;
 
     /**
      * The child node whose associated character is greater than the character
      * of the current node.
      */
-    private Node greater;
+    private Node<V> greater;
 
     /**
      * The child node whose associated character is equal to the character of
      * the current node.
      */
-    private Node equal;
+    private Node<V> equal;
 
     /**
      * The value associated with the node.

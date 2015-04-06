@@ -41,7 +41,7 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
   /**
    * The root node of the point tree.
    */
-  private Node root;
+  private Node<E> root;
 
   /**
    * Initialize a new point tree bulk-loaded with the specified collection of
@@ -143,7 +143,7 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
    * @param end       The ending index of the operation.
    * @return          A partitioned {@link Node} instance.
    */
-  private Node partition(
+  private Node<E> partition(
     final E[] elements,
     final int depth,
     final int start,
@@ -163,19 +163,19 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
     // If we're within the cufoff length, store all the remaining elements in
     // a bucket.
     if (length <= BUCKET_MAXIMUM) {
-      return new Bucket(Arrays.copyOfRange(elements, start, end));
+      return new Bucket<E>(Arrays.copyOfRange(elements, start, end));
     }
 
     // Sort the element between the specified indices using the comparator
     // associated with the current axis.
     Arrays.sort(elements, start, end, (a, b) -> {
-      return this.compare(depth, a, b);
+      return PointTree.compare(depth, a, b);
     });
 
     // Compute the median of the elements.
     int median = start + length / 2;
 
-    return new Branch(
+    return new Branch<E>(
       elements[median],
 
       // Recursively partition all elements before the median.
@@ -196,7 +196,11 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
    *              element is smaller, equal to, or larger than the second
    *              element.
    */
-  private int compare(final int depth, final E a, final E b) {
+  private static <E extends Index> int compare(
+    final int depth,
+    final E a,
+    final E b
+  ) {
     if (a == null && b == null) {
       return 0;
     }
@@ -226,7 +230,11 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
    * @return        A negative integer, zero, or a positive integer as the
    *                element is smaller, within, or larger than the bounds.
    */
-  private int compare(final int depth, final E element, final Bounds bounds) {
+  private static <E extends Index> int compare(
+    final int depth,
+    final E element,
+    final Bounds bounds
+  ) {
     if (element == null && bounds == null) {
       return 0;
     }
@@ -269,7 +277,10 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
    * @return        A boolean indicating whether or not the element intersects
    *                the specified bounds.
    */
-  private boolean intersects(final E element, final Bounds bounds) {
+  private static <E extends Index> boolean intersects(
+    final E element,
+    final Bounds bounds
+  ) {
     if (element == null || bounds == null) {
       return false;
     }
@@ -278,9 +289,34 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
   }
 
   /**
+   * The {@link Index} interface describes an object that is indexable by the
+   * point tree.
+   */
+  public interface Index extends Serializable {
+    /**
+     * Get the x-coordinate of the object.
+     *
+     * @return The x-coordinate of the object.
+     */
+    float x();
+
+    /**
+     * Get the y-coordinate of the object.
+     *
+     * @return The y-coordinate of the object.
+     */
+    float y();
+  }
+
+  /**
    * The {@link Node} class describes a node within a point tree.
    */
-  private abstract class Node {
+  private static abstract class Node<E extends Index> implements Serializable {
+    /**
+     * UID for identifying serialized objects.
+     */
+    private static final long serialVersionUID = 731;
+
     /**
      * Check if the node contains the specified element.
      *
@@ -311,7 +347,12 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
    * A {@link Branch} is a {@link Node} that contains an element and either one
    * or two children {@link Node Nodes}.
    */
-  private final class Branch extends Node {
+  private static final class Branch<E extends Index> extends Node<E> {
+    /**
+     * UID for identifying serialized objects.
+     */
+    private static final long serialVersionUID = 732;
+
     /**
      * The element associated with the branch.
      */
@@ -320,12 +361,12 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
     /**
      * The left neighbouring node.
      */
-    private final Node left;
+    private final Node<E> left;
 
     /**
      * The right neighbouring node.
      */
-    private final Node right;
+    private final Node<E> right;
 
     /**
      * Initialize a new branch.
@@ -334,7 +375,7 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
      * @param left    The left neighbouring node.
      * @param right   The right neighbouring node.
      */
-    public Branch(final E element, final Node left, final Node right) {
+    public Branch(final E element, final Node<E> left, final Node<E> right) {
       this.element = element;
       this.left = left;
       this.right = right;
@@ -359,7 +400,7 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
 
       // Check if the element is "contained" within the element associated with
       // the current node.
-      int contains = PointTree.this.compare(depth, this.element, element);
+      int contains = PointTree.compare(depth, this.element, element);
 
       // Look in the left child of the node if the element we're looking for
       // lies to the left of the element we're currently looking at.
@@ -407,7 +448,7 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
         return;
       }
 
-      int contains = PointTree.this.compare(depth, this.element, bounds);
+      int contains = PointTree.compare(depth, this.element, bounds);
 
       if (contains < 0 || contains == 0) {
         if (this.left != null) {
@@ -426,7 +467,7 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
         // Is the element included in the filter?
         && filter.include(this.element)
         // Does the element intersect with the search bounds?
-        && PointTree.this.intersects(this.element, bounds)
+        && PointTree.intersects(this.element, bounds)
       ) {
         elements.add(this.element);
       }
@@ -437,7 +478,12 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
    * A {@link Bucket} is a {@link Node} that contains a list of elements rather
    * than just a single element.
    */
-  private final class Bucket extends Node {
+  private static final class Bucket<E extends Index> extends Node<E> {
+    /**
+     * UID for identifying serialized objects.
+     */
+    private static final long serialVersionUID = 733;
+
     /**
      * The elements associated with the bucket.
      */
@@ -502,31 +548,11 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
           // Is the element included in the filter?
           filter.include(found)
           // Does the element intersect with the search bounds?
-          && PointTree.this.intersects(found, bounds)
+          && PointTree.intersects(found, bounds)
         ) {
           elements.add(found);
         }
       }
     }
-  }
-
-  /**
-   * The {@link Index} interface describes an object that is indexable by the
-   * point tree.
-   */
-  public interface Index extends Serializable {
-    /**
-     * Get the x-coordinate of the object.
-     *
-     * @return The x-coordinate of the object.
-     */
-    float x();
-
-    /**
-     * Get the y-coordinate of the object.
-     *
-     * @return The y-coordinate of the object.
-     */
-    float y();
   }
 }
