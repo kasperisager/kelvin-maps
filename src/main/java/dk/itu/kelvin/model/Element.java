@@ -33,22 +33,8 @@ public abstract class Element<T extends Node> implements Serializable {
   /**
    * Comparator for comparing the drawing order and layer of two elements.
    */
-  public static final Comparator<Element> COMPARATOR =
-    new Comparator<Element>() {
-    /**
-     * Compare two elements taking into account their drawing layer and drawing
-     * order.
-     *
-     * @param a The first element.
-     * @param b The second element.
-     * @return  A negative integer, zero, or a positive integer as the first
-     *          element is less than, equal to, or greater than the second
-     *          element.
-     */
-    @Override
-    public int compare(final Element a, final Element b) {
-      return Element.compare(a, b);
-    }
+  public static final Comparator<Element> COMPARATOR = (a, b) -> {
+    return Element.compare(a, b);
   };
 
   /**
