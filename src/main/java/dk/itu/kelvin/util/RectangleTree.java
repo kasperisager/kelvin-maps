@@ -9,6 +9,9 @@ import java.util.Arrays;
 // I/O utilities
 import java.io.Serializable;
 
+// Functional utilities
+import dk.itu.kelvin.util.function.Filter;
+
 /**
  * Rectangle tree class.
  *
