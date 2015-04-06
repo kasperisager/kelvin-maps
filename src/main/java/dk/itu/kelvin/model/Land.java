@@ -4,14 +4,12 @@
 package dk.itu.kelvin.model;
 
 // General utilities
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 // JavaFX scene utilities
 import javafx.scene.Group;
-
-// Utilities
-import dk.itu.kelvin.util.ArrayList;
-import dk.itu.kelvin.util.List;
 
 // Math
 import dk.itu.kelvin.math.Geometry;

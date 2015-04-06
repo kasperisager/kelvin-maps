@@ -3,12 +3,12 @@
  */
 package dk.itu.kelvin.store;
 
+// General utilities
+import java.util.List;
+
 // I/O utilities
 import java.io.File;
 import java.io.Serializable;
-
-// Utilities
-import dk.itu.kelvin.util.List;
 
 // Functional utilities
 import dk.itu.kelvin.util.function.Callback;

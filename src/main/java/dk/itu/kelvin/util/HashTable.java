@@ -3,6 +3,13 @@
  */
 package dk.itu.kelvin.util;
 
+// General utilities
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Modified minimal hash table implementation.
  *
@@ -264,6 +271,15 @@ public class HashTable<K, V> implements Map<K, V> {
   }
 
   /**
+   * Put a map of key/value pairs in the table.
+   *
+   * @param map The map of key/value pairs to put in the table.
+   */
+  public final void putAll(final Map<? extends K, ? extends V> map) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
    * Remove a key/value pair from the table.
    *
    * @param key The key of the value to remove.
@@ -422,6 +438,16 @@ public class HashTable<K, V> implements Map<K, V> {
      */
     public V getValue() {
       return this.value;
+    }
+
+    /**
+     * Set the value of the entry.
+     *
+     * @param value The new value of the entry.
+     * @return      The old value of the entry.
+     */
+    public V setValue(final V value) {
+      throw new UnsupportedOperationException();
     }
   }
 }

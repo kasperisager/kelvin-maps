@@ -3,6 +3,14 @@
  */
 package dk.itu.kelvin.layout;
 
+// General utilities
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 // JavaFX scene utilities
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -15,15 +23,9 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 
 // Utilities
-import dk.itu.kelvin.util.ArrayList;
-import dk.itu.kelvin.util.Collection;
-import dk.itu.kelvin.util.Collections;
 import dk.itu.kelvin.util.HashSet;
 import dk.itu.kelvin.util.HashTable;
-import dk.itu.kelvin.util.List;
-import dk.itu.kelvin.util.Map;
 import dk.itu.kelvin.util.RectangleTree;
-import dk.itu.kelvin.util.Set;
 import dk.itu.kelvin.util.SpatialIndex;
 
 // Models

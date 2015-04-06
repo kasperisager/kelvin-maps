@@ -4,7 +4,10 @@
 package dk.itu.kelvin.util;
 
 // General utilities
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 // I/O utilities
 import java.io.Serializable;

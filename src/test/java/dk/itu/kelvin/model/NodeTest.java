@@ -3,14 +3,14 @@
  */
 package dk.itu.kelvin.model;
 
+// General utilities
+import java.util.Map;
+
 // JUnit annotations
 import org.junit.Test;
 
 // JUnit assertions
 import static org.junit.Assert.assertEquals;
-
-// Utilities
-import dk.itu.kelvin.util.Map;
 
 /**
  * Test of the node class.

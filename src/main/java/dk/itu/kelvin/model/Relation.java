@@ -3,6 +3,11 @@
  */
 package dk.itu.kelvin.model;
 
+// General utilities
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 // JavaFX scene utilities
 import javafx.scene.Group;
 
@@ -13,9 +18,6 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 
 // Utilities
-import dk.itu.kelvin.util.ArrayList;
-import dk.itu.kelvin.util.List;
-import dk.itu.kelvin.util.Map;
 import dk.itu.kelvin.util.RectangleTree;
 
 /**
