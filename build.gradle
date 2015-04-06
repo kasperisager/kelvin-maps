@@ -21,6 +21,7 @@ buildscript {
   dependencies {
     classpath group: "net.carlosgsouza", name: "gradle-console", version: "1.+"
     classpath group: "com.github.houbie", name: "lesscss-gradle-plugin", version: "1.+"
+    classpath group: "com.andrewkroh.gradle", name: "gradle-protobuf-plugin", version: "0.4.0"
     classpath group: "org.ajoberstar", name: "gradle-git", version: "1.+"
   }
 }
@@ -33,6 +34,7 @@ apply plugin: "jacoco"
 apply plugin: "project-report"
 apply plugin: "findbugs"
 apply plugin: "lesscss"
+apply plugin: "protobuf"
 apply plugin: "org.ajoberstar.github-pages"
 
 // Runtime dependency repositories.
@@ -138,5 +140,14 @@ githubPages {
   pages {
     from "${buildDir}/docs"
     from "${buildDir}/reports"
+  }
+}
+
+// Shut up about potential issues in generated code.
+tasks.withType(FindBugs) {
+  exclude "**/crosby/binary/*"
+
+  classes = classes.filter {
+    !it.path.contains(new File("crosby/binary/").path)
   }
 }
