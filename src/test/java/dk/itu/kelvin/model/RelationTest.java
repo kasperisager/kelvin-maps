@@ -6,12 +6,10 @@ package dk.itu.kelvin.model;
 // General utilities
 
 // JUnit annotations
-import org.junit.Ignore;
 import org.junit.Test;
 
 // JUnit assertions
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 /**

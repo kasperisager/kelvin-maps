@@ -5,7 +5,6 @@ package dk.itu.kelvin.model;
 
 // JUnit annotations
 import org.junit.Test;
-import org.junit.Ignore;
 
 // JUnit assertions
 import static org.junit.Assert.assertEquals;
