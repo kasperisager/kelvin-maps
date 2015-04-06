@@ -145,10 +145,10 @@ public final class AddressStore extends Store<Address, String> {
     String al = a.trim().toLowerCase();
     String bl = b.trim().toLowerCase();
 
-    if (al.isEmpty() || b.isEmpty()) {
+    if (al.isEmpty() || bl.isEmpty()) {
       return true;
     }
 
-    return a.startsWith(b) || b.startsWith(a);
+    return al.startsWith(bl) || bl.startsWith(al);
   }
 }

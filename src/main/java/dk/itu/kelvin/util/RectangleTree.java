@@ -9,6 +9,9 @@ import java.util.Arrays;
 // I/O utilities
 import java.io.Serializable;
 
+// Functional utilities
+import dk.itu.kelvin.util.function.Filter;
+
 /**
  * Rectangle tree class.
  *
@@ -55,7 +58,7 @@ public class RectangleTree<E extends RectangleTree.Index>
   /**
    * The root node of the rectangle tree.
    */
-  private Node root;
+  private Node<E> root;
 
   /**
    * Initialize a new rectangle tree bulk-loaded with the specified list of
@@ -156,7 +159,11 @@ public class RectangleTree<E extends RectangleTree.Index>
    * @param end       The ending index of the operation.
    * @return          A partitioned {@link Node} instance.
    */
-  private Node partition(final E[] elements, final int start, final int end) {
+  private Node<E> partition(
+    final E[] elements,
+    final int start,
+    final int end
+  ) {
     if (elements == null) {
       return null;
     }
@@ -168,7 +175,7 @@ public class RectangleTree<E extends RectangleTree.Index>
     }
 
     if (length <= BUCKET_MAXIMUM) {
-      return new Bucket(Arrays.copyOfRange(elements, start, end));
+      return new Bucket<E>(Arrays.copyOfRange(elements, start, end));
     }
 
     Arrays.sort(elements, start, end, (a, b) -> {
@@ -207,7 +214,7 @@ public class RectangleTree<E extends RectangleTree.Index>
 
     if (l <= PAGE_MAXIMUM) {
       @SuppressWarnings("unchecked")
-      Bucket[] buckets = new RectangleTree.Bucket[l];
+      Bucket<E>[] buckets = new Bucket[l];
 
       for (int i = 0; i < l; i++) {
         int bucketStart = start + i * BUCKET_MAXIMUM;
@@ -221,18 +228,18 @@ public class RectangleTree<E extends RectangleTree.Index>
           bucketEnd = end;
         }
 
-        buckets[i] = new Bucket(
+        buckets[i] = new Bucket<E>(
           Arrays.copyOfRange(elements, bucketStart, bucketEnd)
         );
       }
 
-      return new Page(buckets);
+      return new Page<E>(buckets);
     }
     else {
       int p = (int) Math.ceil(l / (double) PAGE_MAXIMUM);
 
       @SuppressWarnings("unchecked")
-      Node[] children = new RectangleTree.Node[p];
+      Node<E>[] children = new Node[p];
 
       for (int i = 0; i < p; i++) {
         int pageStart = start + i * BUCKET_MAXIMUM * PAGE_MAXIMUM;
@@ -249,14 +256,55 @@ public class RectangleTree<E extends RectangleTree.Index>
         children[i] = this.partition(elements, pageStart, pageEnd);
       }
 
-      return new Page(children);
+      return new Page<E>(children);
     }
   }
 
   /**
-   * The {@link Node} class describes a node within a rectangle tree.
+   * The {@link Index} interface describes an object that is indexable by the
+   * rectangle tree.
    */
-  private abstract class Node {
+  public interface Index extends Serializable {
+    /**
+     * Get the smallest x-coordinate of the object.
+     *
+     * @return The smallest x-coordinate of the object.
+     */
+    float minX();
+
+    /**
+     * Get the smallest y-coordinate of the object.
+     *
+     * @return The smallest y-coordinate of the object.
+     */
+    float minY();
+
+    /**
+     * Get the largest x-coordinate of the object.
+     *
+     * @return The largest x-coordinate of the object.
+     */
+    float maxX();
+
+    /**
+     * Ger the largest y-coordinate of the object.
+     *
+     * @return The largest y-coordinate of the object.
+     */
+    float maxY();
+  }
+
+  /**
+   * The {@link Node} class describes a node within a rectangle tree.
+   *
+   * @param <E> The type of elements stored within the node.
+   */
+  private abstract static class Node<E extends Index> implements Serializable {
+    /**
+     * UID for identifying serialized objects.
+     */
+    private static final long serialVersionUID = 849;
+
     /**
      * The smallest x-coordinate of the nodes or elements contained within this
      * node.
@@ -390,12 +438,19 @@ public class RectangleTree<E extends RectangleTree.Index>
   /**
    * A {@link Page} is a {@link Node} that contains references to other
    * {@link Node Nodes}.
+   *
+   * @param <E> The type of elements stored within the page.
    */
-  private final class Page extends Node {
+  private static final class Page<E extends Index> extends Node<E> {
+    /**
+     * UID for identifying serialized objects.
+     */
+    private static final long serialVersionUID = 850;
+
     /**
      * The nodes associated with the branch.
      */
-    private Node[] nodes;
+    private Node<E>[] nodes;
 
     /**
      * The size of the page.
@@ -407,10 +462,10 @@ public class RectangleTree<E extends RectangleTree.Index>
      *
      * @param nodes The nodes associated with the page.
      */
-    public Page(final Node[] nodes) {
+    public Page(final Node<E>[] nodes) {
       this.nodes = nodes;
 
-      for (Node node: nodes) {
+      for (Node<E> node: nodes) {
         if (node == null) {
           break;
         }
@@ -445,7 +500,7 @@ public class RectangleTree<E extends RectangleTree.Index>
         return false;
       }
 
-      for (Node node: this.nodes) {
+      for (Node<E> node: this.nodes) {
         if (node.contains(element)) {
           return true;
         }
@@ -476,7 +531,7 @@ public class RectangleTree<E extends RectangleTree.Index>
         return;
       }
 
-      for (Node node: this.nodes) {
+      for (Node<E> node: this.nodes) {
         if (node == null) {
           break;
         }
@@ -489,8 +544,15 @@ public class RectangleTree<E extends RectangleTree.Index>
   /**
    * A {@link Bucket} is a {@link Node} that contains a list of elements rather
    * than just a single element.
+   *
+   * @param <E> The type of elements stored within the bucket.
    */
-  private final class Bucket extends Node {
+  private final class Bucket<E extends Index> extends Node<E> {
+    /**
+     * UID for identifying serialized objects.
+     */
+    private static final long serialVersionUID = 851;
+
     /**
      * The elements associated with the bucket.
      */
@@ -587,39 +649,5 @@ public class RectangleTree<E extends RectangleTree.Index>
         }
       }
     }
-  }
-
-  /**
-   * The {@link Index} interface describes an object that is indexable by the
-   * rectangle tree.
-   */
-  public interface Index extends Serializable {
-    /**
-     * Get the smallest x-coordinate of the object.
-     *
-     * @return The smallest x-coordinate of the object.
-     */
-    float minX();
-
-    /**
-     * Get the smallest y-coordinate of the object.
-     *
-     * @return The smallest y-coordinate of the object.
-     */
-    float minY();
-
-    /**
-     * Get the largest x-coordinate of the object.
-     *
-     * @return The largest x-coordinate of the object.
-     */
-    float maxX();
-
-    /**
-     * Ger the largest y-coordinate of the object.
-     *
-     * @return The largest y-coordinate of the object.
-     */
-    float maxY();
   }
 }
