@@ -6,6 +6,9 @@ package dk.itu.kelvin.util;
 // I/O utilities
 import java.io.Serializable;
 
+// Functional utilities
+import dk.itu.kelvin.util.function.Filter;
+
 /**
  * Spatial index interface.
  *
@@ -189,23 +192,5 @@ public interface SpatialIndex<E> extends Serializable {
         bounds.minX(), bounds.minY(), bounds.maxX(), bounds.maxY()
       );
     }
-  }
-
-  /**
-   * The {@link Filter} interface describes a filter that can be applied to all
-   * range queries.
-   *
-   * @param <E> The type of element to apply the filter to.
-   */
-  @FunctionalInterface
-  public interface Filter<E> {
-    /**
-     * Check if the specified element should be included in the filter.
-     *
-     * @param element The element to check.
-     * @return        A boolean indicating whether or not the specified element
-     *                should be included in the filter.
-     */
-    boolean include(final E element);
   }
 }
