@@ -138,7 +138,7 @@ public abstract class Parser {
         return new XMLParser();
 
       case "application/octet-stream":
-        return null;
+        return new PBFParser();
 
       default:
         return null;
