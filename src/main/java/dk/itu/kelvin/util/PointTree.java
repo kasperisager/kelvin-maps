@@ -189,6 +189,7 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
   /**
    * Compare two elements at the specified tree depth.
    *
+   * @param <E>   The type of elements to compare.
    * @param depth The tree depth.
    * @param a     The first element.
    * @param b     The second element.
@@ -224,6 +225,7 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
   /**
    * Compare an element to a set of bounds at the specified depth.
    *
+   * @param <E>     The type of elements to compare.
    * @param depth   The tree depth.
    * @param element The element.
    * @param bounds  The bounds.
@@ -272,6 +274,7 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
   /**
    * Check if an element intersects the specified bounds.
    *
+   * @param <E>     The type of elements to check intersection of.
    * @param element The element.
    * @param bounds  The bounds.
    * @return        A boolean indicating whether or not the element intersects
@@ -310,8 +313,10 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
 
   /**
    * The {@link Node} class describes a node within a point tree.
+   *
+   * @param <E> The type of elements stored within the node.
    */
-  private static abstract class Node<E extends Index> implements Serializable {
+  private abstract static class Node<E extends Index> implements Serializable {
     /**
      * UID for identifying serialized objects.
      */
@@ -346,6 +351,8 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
   /**
    * A {@link Branch} is a {@link Node} that contains an element and either one
    * or two children {@link Node Nodes}.
+   *
+   * @param <E> The type of elements stored within the branch.
    */
   private static final class Branch<E extends Index> extends Node<E> {
     /**
@@ -477,6 +484,8 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
   /**
    * A {@link Bucket} is a {@link Node} that contains a list of elements rather
    * than just a single element.
+   *
+   * @param <E> The type of elements stored within the bucket.
    */
   private static final class Bucket<E extends Index> extends Node<E> {
     /**

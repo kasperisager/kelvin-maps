@@ -289,6 +289,8 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
 
   /**
    * The {@link Node} class describes a node within the ternary search tree.
+   *
+   * @param <V> The type of value stored within the node.
    */
   private static final class Node<V> implements Serializable {
     /**

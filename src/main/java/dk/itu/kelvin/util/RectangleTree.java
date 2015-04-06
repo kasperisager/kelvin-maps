@@ -293,8 +293,15 @@ public class RectangleTree<E extends RectangleTree.Index>
 
   /**
    * The {@link Node} class describes a node within a rectangle tree.
+   *
+   * @param <E> The type of elements stored within the node.
    */
-  private static abstract class Node<E extends Index> implements Serializable {
+  private abstract static class Node<E extends Index> implements Serializable {
+    /**
+     * UID for identifying serialized objects.
+     */
+    private static final long serialVersionUID = 849;
+
     /**
      * The smallest x-coordinate of the nodes or elements contained within this
      * node.
@@ -428,10 +435,19 @@ public class RectangleTree<E extends RectangleTree.Index>
   /**
    * A {@link Page} is a {@link Node} that contains references to other
    * {@link Node Nodes}.
+   *
+   * @param <E> The type of elements stored within the page.
    */
+  private static final class Page<E extends Index> extends Node<E> {
+    /**
+     * UID for identifying serialized objects.
+     */
+    private static final long serialVersionUID = 850;
+
     /**
      * The nodes associated with the branch.
      */
+    private Node<E>[] nodes;
 
     /**
      * The size of the page.
@@ -443,8 +459,10 @@ public class RectangleTree<E extends RectangleTree.Index>
      *
      * @param nodes The nodes associated with the page.
      */
+    public Page(final Node<E>[] nodes) {
       this.nodes = nodes;
 
+      for (Node<E> node: nodes) {
         if (node == null) {
           break;
         }
@@ -479,6 +497,7 @@ public class RectangleTree<E extends RectangleTree.Index>
         return false;
       }
 
+      for (Node<E> node: this.nodes) {
         if (node.contains(element)) {
           return true;
         }
@@ -509,6 +528,7 @@ public class RectangleTree<E extends RectangleTree.Index>
         return;
       }
 
+      for (Node<E> node: this.nodes) {
         if (node == null) {
           break;
         }
@@ -521,7 +541,15 @@ public class RectangleTree<E extends RectangleTree.Index>
   /**
    * A {@link Bucket} is a {@link Node} that contains a list of elements rather
    * than just a single element.
+   *
+   * @param <E> The type of elements stored within the bucket.
    */
+  private final class Bucket<E extends Index> extends Node<E> {
+    /**
+     * UID for identifying serialized objects.
+     */
+    private static final long serialVersionUID = 851;
+
     /**
      * The elements associated with the bucket.
      */
