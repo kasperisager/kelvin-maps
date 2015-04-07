@@ -5,6 +5,7 @@ package dk.itu.kelvin.model;
 
 // General utilities
 import java.util.Comparator;
+import java.util.Map;
 
 // I/O utilities
 import java.io.Serializable;
@@ -14,7 +15,6 @@ import javafx.scene.Node;
 
 // Utilities
 import dk.itu.kelvin.util.HashTable;
-import dk.itu.kelvin.util.Map;
 
 /**
  * Abstract base class that all OSM Elements must extend.

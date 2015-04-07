@@ -3,6 +3,10 @@
  */
 package dk.itu.kelvin.controller;
 
+// General utilities
+import java.util.ArrayList;
+import java.util.List;
+
 // I/O utilities
 import java.io.File;
 
@@ -52,10 +56,6 @@ import javafx.fxml.FXML;
 
 // Controls FX
 import org.controlsfx.control.PopOver;
-
-// Utilities
-import dk.itu.kelvin.util.ArrayList;
-import dk.itu.kelvin.util.List;
 
 // Parser
 import dk.itu.kelvin.parser.Parser;

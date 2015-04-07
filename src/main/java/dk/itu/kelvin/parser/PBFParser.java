@@ -3,6 +3,12 @@
  */
 package dk.itu.kelvin.parser;
 
+// General utilities
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 // ZIP utilities
 import java.util.zip.InflaterInputStream;
 
@@ -26,11 +32,7 @@ import crosby.binary.Osmformat.PrimitiveBlock;
 import crosby.binary.Osmformat.PrimitiveGroup;
 
 // Utilities
-import dk.itu.kelvin.util.ArrayList;
-import dk.itu.kelvin.util.Collection;
 import dk.itu.kelvin.util.HashTable;
-import dk.itu.kelvin.util.List;
-import dk.itu.kelvin.util.Map;
 
 // Math
 import dk.itu.kelvin.math.Projection;

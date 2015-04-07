@@ -3,8 +3,6 @@
  */
 package dk.itu.kelvin.model;
 
-// General utilities
-
 // JUnit annotations
 import org.junit.Test;
 

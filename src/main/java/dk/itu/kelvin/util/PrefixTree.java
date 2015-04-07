@@ -3,6 +3,9 @@
  */
 package dk.itu.kelvin.util;
 
+// General utilities
+import java.util.Map;
+
 // I/O utilities
 import java.io.Serializable;
 

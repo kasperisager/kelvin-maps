@@ -3,15 +3,15 @@
  */
 package dk.itu.kelvin.parser;
 
+// General utilities
+import java.util.Collection;
+
 // I/O utilities
 import java.io.File;
 
 // File type utilities
 import javax.activation.FileTypeMap;
 import javax.activation.MimetypesFileTypeMap;
-
-// Utilities
-import dk.itu.kelvin.util.Collection;
 
 // Functional utilities
 import dk.itu.kelvin.util.function.Callback;

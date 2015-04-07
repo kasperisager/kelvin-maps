@@ -5,7 +5,9 @@ package dk.itu.kelvin.util;
 
 // General utilities
 import java.util.Iterator;
+import java.util.Collection;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * Minimal implementation of the hash set data structure.
@@ -180,6 +182,27 @@ public class HashSet<E> implements Set<E> {
   }
 
   /**
+   * Check if all elements of the specified collection exist within the set.
+   *
+   * @param elements  The elements to check for.
+   * @return          A boolean indicating whether or not the set contains all
+   *                  of the elements within the specified collection.
+   */
+  public final boolean containsAll(final Collection<?> elements) {
+    if (elements == null || elements.isEmpty()) {
+      return true;
+    }
+
+    for (Object element: elements) {
+      if (!this.contains(element)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * Add an element to the set.
    *
    * @param element The element to add to the set.
@@ -261,6 +284,50 @@ public class HashSet<E> implements Set<E> {
   }
 
   /**
+   * Remove a collection of elements from the set.
+   *
+   * @param elements  The collection of elements to remove from the set.
+   * @return          A boolean indicating whether or not the set changed as a
+   *                  result of the call.
+   */
+  public final boolean removeAll(final Collection<?> elements) {
+    if (elements == null || elements.isEmpty()) {
+      return false;
+    }
+
+    boolean changed = false;
+
+    for (Object element: elements) {
+      changed = this.remove(element) || changed;
+    }
+
+    return changed;
+  }
+
+  /**
+   * Retain only elements in the set that are also contained within the
+   * specified collection of elements.
+   *
+   * @param elements  The collection of elements to be retained.
+   * @return          A boolean indicating whether or not the set changed as a
+   *                  result of the call.
+   */
+  public final boolean retainAll(final Collection<?> elements) {
+    if (elements == null) {
+      return false;
+    }
+
+    if (elements.isEmpty() && this.size > 0) {
+      this.clear();
+      return true;
+    }
+
+    boolean changed = false;
+
+    throw new UnsupportedOperationException();
+  }
+
+  /**
    * Remove all elements from the set.
    *
    * <p>
@@ -289,6 +356,24 @@ public class HashSet<E> implements Set<E> {
     }
 
     return temp;
+  }
+
+  /**
+   * Get an array of elements contained within the set.
+   *
+   * <p>
+   * The type of the returned array will be that of the specified array.
+   *
+   * @param <T>   The runtime type of the returned array.
+   * @param array The array whose type to use for the returned array.
+   * @return      An array of elements contained within the set.
+   */
+  public final <T> T[] toArray(final T[] array) {
+    if (array == null) {
+      return null;
+    }
+
+    throw new UnsupportedOperationException();
   }
 
   /**

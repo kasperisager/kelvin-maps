@@ -3,10 +3,12 @@
  */
 package dk.itu.kelvin.store;
 
+// General utilities
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 // Utilities
-import dk.itu.kelvin.util.ArrayList;
-import dk.itu.kelvin.util.List;
-import dk.itu.kelvin.util.Map;
 import dk.itu.kelvin.util.PrefixTree;
 import dk.itu.kelvin.util.TernarySearchTree;
 

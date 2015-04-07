@@ -3,6 +3,12 @@
  */
 package dk.itu.kelvin.parser;
 
+// General utilities
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 // I/O utilities
 import java.io.File;
 
@@ -15,11 +21,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 // Utilities
-import dk.itu.kelvin.util.ArrayList;
-import dk.itu.kelvin.util.Collection;
 import dk.itu.kelvin.util.HashTable;
-import dk.itu.kelvin.util.List;
-import dk.itu.kelvin.util.Map;
 
 // Math
 import dk.itu.kelvin.math.Projection;
