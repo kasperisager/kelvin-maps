@@ -147,7 +147,8 @@ public final class ChartController {
   /**
    * The dynamic autocomplete results.
    */
-  private HashTable<String, Address> suggestions = new HashTable<>(AUTOCOMPLETE_MAX_ITEMS);
+  private HashTable<String, Address> suggestions =
+    new HashTable<>(AUTOCOMPLETE_MAX_ITEMS);
 
   /**
    * Vbox containing the suggestion buttons.
@@ -736,21 +737,27 @@ public final class ChartController {
   }
 
   /**
-   * Is activated through input from the user looking for the address.
+   * Is activated through pressing "enter" after user have typed input in the
+   * first textfield.
    * Found in textfield addressFrom.
    */
   @FXML
-  private void findAddress(){
+  private void findAddress() {
     if (this.autocPopOver.isShowing()) {
       Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
-      findAddress(suggestions.get(b.getText()));
+      this.findAddress(this.suggestions.get(b.getText()));
 
       this.addressFrom.setText(b.getText());
       this.autocPopOver.hide();
     }
 
   }
-  private void findAddress(Address a) {
+
+  /**
+   * Centers the screen on a specific point and set a location marker.
+   * @param a the Address to center the screen around and set pointer at.
+   */
+  private void findAddress(final Address a) {
     this.chart.center(a, 2.5);
     this.setPointer(a);
     /*else {
