@@ -4,8 +4,8 @@
 package dk.itu.kelvin.controller;
 
 // General utilities
-import java.util.ArrayList;
 import java.util.List;
+import dk.itu.kelvin.util.HashTable;
 
 // I/O utilities
 import java.io.File;
@@ -147,7 +147,8 @@ public final class ChartController {
   /**
    * The dynamic autocomplete results.
    */
-  private List<String> suggestions = new ArrayList<>();
+  private HashTable<String, Address> suggestions =
+    new HashTable<>(AUTOCOMPLETE_MAX_ITEMS);
 
   /**
    * Vbox containing the suggestion buttons.
@@ -267,6 +268,7 @@ public final class ChartController {
     this.fromAddress.getStyleClass().add("address-label");
     this.fromAddress.setText("\uf456");
     this.fromAddress.setVisible(false);
+    this.chart.getChildren().add(this.fromAddress);
 
     File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
 
@@ -319,12 +321,12 @@ public final class ChartController {
       if (tf.getLength() > AUTOCOMPLETE_CUTOFF) {
         List<Address> results = this.addresses.search(tf.getText());
 
-        for (Address address: results) {
-          this.suggestions.add(
-            address.street()
-          + " " + address.number()
-          + ", " + address.postcode()
-          + " " + address.city()
+        for (Address a : results) {
+          this.suggestions.put(
+            a.street()
+              + " " + a.number()
+              + ", " + a.postcode()
+              + " " + a.city(), a
           );
 
           // End the foreach loop
@@ -348,28 +350,29 @@ public final class ChartController {
       this.suggestionVBox.setPrefWidth(bounds.getWidth() + 27);
 
       // Creates and adds buttons to the VBox.
-      for (String suggestion : this.suggestions) {
-        Button l = new Button(suggestion);
+      for (String suggestion : this.suggestions.keySet()) {
+        Button b = new Button(suggestion);
+        b.setPrefWidth(bounds.getWidth() + 27);
 
-        l.setPrefWidth(bounds.getWidth() + 27);
-        l.setOnMouseClicked((e2 -> {
-          tf.setText(l.getText());
+        b.setOnMouseClicked((e2 -> {
+          tf.setText(b.getText());
 
           this.autocPopOver.hide(Duration.ONE);
 
           if (tf.getId().equals("addressFrom")) {
-            this.findAddress();
+            this.findAddress(this.suggestions.get(suggestion));
           }
           else if (tf.getId().equals("addressTo")) {
             this.findRoute();
           }
         }));
 
-        this.suggestionVBox.getChildren().add(l);
+        this.suggestionVBox.getChildren().add(b);
       }
 
       // The suggestion highlight pointer.
       this.pointer = 0;
+
       // Highlights the first suggestion as default.
       this.addStyle();
 
@@ -734,37 +737,29 @@ public final class ChartController {
   }
 
   /**
-   * Is activated through input from the user looking for the address.
+   * Is activated through pressing "enter" after user have typed input in the
+   * first textfield.
    * Found in textfield addressFrom.
    */
   @FXML
   private void findAddress() {
     if (this.autocPopOver.isShowing()) {
       Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
-      String input = b.getText();
+      this.findAddress(this.suggestions.get(b.getText()));
+
       this.addressFrom.setText(b.getText());
-
-      if (input == null) {
-        return;
-      }
-
-      input = input.trim();
-
-      if (input.isEmpty()) {
-        return;
-      }
-
-      Address startAddress = Address.parse(input);
-
-      if (startAddress == null) {
-        return;
-      }
-
-      this.chart.center(startAddress, 2.5);
-      this.setPointer(startAddress);
-
       this.autocPopOver.hide();
     }
+
+  }
+
+  /**
+   * Centers the screen on a specific point and set a location marker.
+   * @param a the Address to center the screen around and set pointer at.
+   */
+  private void findAddress(final Address a) {
+    this.chart.center(a, 2.5);
+    this.setPointer(a);
     /*else {
       // Dialog "The address does not exist."
     }*/
