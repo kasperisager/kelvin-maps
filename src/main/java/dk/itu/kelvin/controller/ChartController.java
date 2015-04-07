@@ -135,11 +135,6 @@ public final class ChartController {
   private AddressStore addresses = new AddressStore();
 
   /**
-   * The address searched for.
-   */
-  private Address address = null;
-
-  /**
    * PopOver for the config menu.
    */
   private PopOver popOver;
@@ -327,9 +322,9 @@ public final class ChartController {
         for (Address a : results) {
           this.suggestions.put(
             a.street()
-          + " " + a.number()
-          + ", " + a.postcode()
-          + " " + a.city(), a
+              + " " + a.number()
+              + ", " + a.postcode()
+              + " " + a.city(), a
           );
 
           // End the foreach loop
@@ -744,16 +739,19 @@ public final class ChartController {
    * Found in textfield addressFrom.
    */
   @FXML
-  private void findAddress(Address a) {
+  private void findAddress(){
     if (this.autocPopOver.isShowing()) {
       Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
+      findAddress(suggestions.get(b.getText()));
+
       this.addressFrom.setText(b.getText());
-
-      this.chart.center(a, 2.5);
-      this.setPointer(a);
-
       this.autocPopOver.hide();
     }
+
+  }
+  private void findAddress(Address a) {
+    this.chart.center(a, 2.5);
+    this.setPointer(a);
     /*else {
       // Dialog "The address does not exist."
     }*/
