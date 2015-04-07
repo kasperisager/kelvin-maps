@@ -267,6 +267,7 @@ public final class ChartController {
     this.fromAddress.getStyleClass().add("address-label");
     this.fromAddress.setText("\uf456");
     this.fromAddress.setVisible(false);
+    this.chart.getChildren().add(this.fromAddress);
 
     File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
 
