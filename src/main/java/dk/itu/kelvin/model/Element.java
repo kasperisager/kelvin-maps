@@ -70,7 +70,7 @@ public abstract class Element<T extends Node> implements Serializable {
     String k = key.trim();
     String v = value.trim();
 
-    if (k.isEmpty() || v.isEmpty() || !this.include(k, v)) {
+    if (k.isEmpty() || v.isEmpty()) {
       return null;
     }
 
@@ -80,17 +80,6 @@ public abstract class Element<T extends Node> implements Serializable {
 
     return this.tags.put(k.intern(), v.intern());
   }
-
-  /**
-   * Check if the specified key/value pair should be included in the tags of
-   * the element.
-   *
-   * @param key   The key to check.
-   * @param value The value to check.
-   * @return      A bollean indicating whether or not the specified key/value
-   *              pair should be included in the tags of the element.
-   */
-  protected abstract boolean include(final String key, final String value);
 
   /**
    * Get the value of the specified tag.
