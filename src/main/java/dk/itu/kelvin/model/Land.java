@@ -13,8 +13,8 @@ import javafx.scene.Group;
 
 // Math
 import dk.itu.kelvin.math.Geometry;
-import static dk.itu.kelvin.math.Geometry.Line;
-import static dk.itu.kelvin.math.Geometry.Point;
+import dk.itu.kelvin.math.Geometry.Line;
+import dk.itu.kelvin.math.Geometry.Point;
 
 /**
  * Calculation and merging of coastlines to land polyLines.

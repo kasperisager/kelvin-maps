@@ -13,11 +13,11 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Test of the node class.
+ * {@link Node} test suite.
  */
 public final class NodeTest {
   /**
-   * Test initialization of a node object with an id and a x y coordinate.
+   * Test initialization of a node object with an id and an x-/y-coordinate.
    */
   @Test
   public void testInitialization() {

@@ -15,22 +15,24 @@ import static org.junit.Assert.assertNotNull;
 
 
 /**
- * Address parser unit tests.
+ * {@link Address} test suite.
  *
+ * <p>
  * Valid addresses consists of:
  *
- * 1. A street name (one or more words separated by spaces)
- * 2. A building number (one or more digits optionally followed by a sequence
- *    of letters)
- * 3. A floor number (one or more digits optionally followed by a dot (.))
- * 4. A door number (one or more digits optionally follow by a dot (.) and
- *    optionally suffixed with th/tv, in which any combination of dots (.) can
- *    be used to separate the letters)
- * 5. A postcode (number from 1000 - 9999)
- * 6. A city (one or more words separated by spaces)
+ * <ol>
+ * <li>A street name (one or more words separated by spaces)</li>
+ * <li>A building number (one or more digits optionally followed by a sequence
+ * of letters)</li>
+ * <li>A floor number (one or more digits optionally followed by a dot (.))
+ * <li>A door number (one or more digits optionally follow by a dot (.) and
+ * optionally suffixed with th/tv, in which any combination of dots (.) can be
+ * used to separate the letters)</li>
+ * <li>A postcode (number from 1000 - 9999)</li>
+ * <li>A city (one or more words separated by spaces)</li>
+ * </ol>
  *
- * All parts of the address are optional.
- *
+ * <p>
  * Notice that either one or more spaces or a comma (,) optionally followed by
  * spaces must be used in between street name + building number and the floor
  * number + door number as well as the postcode + city:

@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 /**
- * Way unit tests class.
+ * {@link Way} test suite.
  */
 public final class WayTest {
   /**

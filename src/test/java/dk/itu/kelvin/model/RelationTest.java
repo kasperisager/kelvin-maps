@@ -11,17 +11,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * UnitTest of the Relation class.
+ * {@link Relation} test suite.
  */
 public final class RelationTest {
   /**
-   * Tests the method members().
-   * We've made two relations, one to check the lists size
-   * and if it contains the given members,
-   * and another to check if it makes a new ArrayList if the relation is empty.
+   * A relation should be able to consist of one or more member elements.
    */
   @Test
   public void testRelationListOfMembers() {
+    // Test creation of relation with a number of members.
     Relation r1 = new Relation();
     Node n1 = new Node(3, 3);
     Node n2 = new Node(4, 4);
@@ -36,6 +34,7 @@ public final class RelationTest {
     assertTrue(r1.members().contains(n2));
     assertTrue(r1.members().contains(n3));
 
+    // Test creation of relation without members.
     Relation r2 = new Relation();
     assertEquals(0, r2.members().size());
   }

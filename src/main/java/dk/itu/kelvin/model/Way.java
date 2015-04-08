@@ -119,7 +119,7 @@ public final class Way extends Element<Polyline>
   }
 
   /**
-   * Is the way closed?
+   * Check if the way is closed.
    *
    * @return Boolean indicating whether or not the way is closed.
    */
