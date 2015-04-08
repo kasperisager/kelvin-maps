@@ -38,7 +38,7 @@ public interface PrefixTree<V> extends Serializable {
    * @param key The key of the value to get.
    * @return    The value if found.
    */
-  V get(final Object key);
+  V get(final String key);
 
   /**
    * Check if the specified key exists within the tree.
@@ -47,7 +47,7 @@ public interface PrefixTree<V> extends Serializable {
    * @return    A boolean indicating whether or not the tree contains the
    *            specified key.
    */
-  boolean contains(final Object key);
+  boolean contains(final String key);
 
   /**
    * Put a key/value pair in the tree.
@@ -62,7 +62,7 @@ public interface PrefixTree<V> extends Serializable {
    *
    * @param key The key of the value to remove.
    */
-  void remove(final Object key);
+  void remove(final String key);
 
   /**
    * Remove all key/value pairs from the tree.
