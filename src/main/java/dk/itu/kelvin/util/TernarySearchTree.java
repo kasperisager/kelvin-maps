@@ -4,6 +4,9 @@
 package dk.itu.kelvin.util;
 
 // General utilities
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 // I/O utilities
@@ -56,23 +59,64 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
   }
 
   /**
+   * Initialize a new ternary search tree.
+   */
+  public TernarySearchTree() {
+    super();
+  }
+
+  /**
+   * Initialize a new ternary search tree bulk-loaded with the specified map of
+   * elements.
+   *
+   * @param elements The elements to add to the tree.
+   */
+  public TernarySearchTree(final Map<String, V> elements) {
+    List<String> keys = new ArrayList<>(elements.keySet());
+
+    Collections.sort(keys);
+
+    this.partition(keys, elements);
+  }
+
+  /**
+   * Partition the specified list of keys, adding the median key to the current
+   * tree and recursively partitioning the keys to the left and right of the
+   * median.
+   *
+   * @param keys      The list of keys to partition.
+   * @param elements  The elements to partition.
+   */
+  private void partition(
+    final List<String> keys,
+    final Map<String, V> elements
+  ) {
+    if (keys == null || elements == null || keys.size() <= 0) {
+      return;
+    }
+
+    int median = keys.size() / 2;
+
+    String key = keys.get(median);
+
+    this.put(key, elements.get(key));
+
+    this.partition(keys.subList(0, median), elements);
+    this.partition(keys.subList(median + 1, keys.size()), elements);
+  }
+
+  /**
    * Get a value by key from the ternary search tree.
    *
    * @param key The key of the value to get.
    * @return    The value if found.
    */
-  public final V get(final Object key) {
+  public final V get(final String key) {
     if (key == null) {
       return null;
     }
 
-    String k = this.normalize((String) key);
-
-    if (k.isEmpty()) {
-      return null;
-    }
-
-    Node<V> node = this.get(this.root, k, 0);
+    Node<V> node = this.get(this.root, key, 0);
 
     if (node != null) {
       return node.value;
@@ -119,14 +163,8 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
    * @return    A boolean indicating whether or not the ternary search tree
    *            contains the specified key.
    */
-  public final boolean contains(final Object key) {
-    if (key == null) {
-      return false;
-    }
-
-    String k = this.normalize((String) key);
-
-    if (k.isEmpty()) {
+  public final boolean contains(final String key) {
+    if (key == null || key.isEmpty()) {
       return false;
     }
 
@@ -140,21 +178,15 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
    * @param value The value to put in the ternary search tree.
    */
   public final void put(final String key, final V value) {
-    if (key == null || value == null) {
+    if (key == null || value == null || key.isEmpty()) {
       return;
     }
 
-    String k = this.normalize(key);
-
-    if (k.isEmpty()) {
-      return;
-    }
-
-    if (!this.contains(k)) {
+    if (!this.contains(key)) {
       this.size++;
     }
 
-    this.root = this.put(this.root, k, value, 0);
+    this.root = this.put(this.root, key, value, 0);
   }
 
   /**
@@ -204,7 +236,7 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
    *
    * @param key The key of the value to remove.
    */
-  public final void remove(final Object key) {
+  public final void remove(final String key) {
     throw new UnsupportedOperationException();
   }
 
@@ -230,19 +262,17 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
       return results;
     }
 
-    String k = this.normalize(prefix);
-
-    Node<V> root = this.get(this.root, k, 0);
+    Node<V> root = this.get(this.root, prefix, 0);
 
     if (root == null) {
       return results;
     }
 
     if (root.value != null) {
-      results.put(k, root.value);
+      results.put(prefix, root.value);
     }
 
-    this.search(root.equal, new StringBuilder(k), results);
+    this.search(root.equal, new StringBuilder(prefix), results);
 
     return results;
   }
@@ -274,20 +304,6 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
     prefix.deleteCharAt(prefix.length() - 1);
 
     this.search(node.greater, prefix, results);
-  }
-
-  /**
-   * Normalize the specified key.
-   *
-   * @param key The key to normalize.
-   * @return    The normalized key.
-   */
-  private String normalize(final String key) {
-    if (key == null) {
-      return null;
-    }
-
-    return key.trim().toLowerCase();
   }
 
   /**
