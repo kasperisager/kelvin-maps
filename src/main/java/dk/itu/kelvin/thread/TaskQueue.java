@@ -14,18 +14,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
-// JavaFX concurrency utilities
-import javafx.concurrent.Task;
-
 /**
  * Task queue class for multi-thread handling.
  *
  * <p>
- * This class allows with {@link #run(FunctionalTask)} to run a set of
- * operations on a new {@code thread}.
- * {@link #register(String, FunctionalTask...)} allows storage of a set of
- * operations under a group name and {@link #start(String)} executes all sets
- * of operations under a specific group when requested, as new {@code threads}.
+ * This class allows with {@link #run(Runnable)} to run a set of operations on a
+ * new thread.  {@link #register(String, Runnable...)} allows storage of a set
+ * of operations under a group name and {@link #start(String)} executes all sets
+ * of operations under a specific group when requested, as new threads.
  *
  */
 public final class TaskQueue {
@@ -65,7 +61,7 @@ public final class TaskQueue {
   /**
    * The map containing the different groups mapped to their task queues.
    */
-  private static Map<String, Queue<FunctionalTask>> groups;
+  private static Map<String, Queue<Runnable>> groups;
 
   /**
    * Don't allow instantiation of the class.
@@ -158,7 +154,7 @@ public final class TaskQueue {
    */
   public static void register(
     final String group,
-    final FunctionalTask... tasks
+    final Runnable... tasks
   ) {
     if (group == null || tasks == null || tasks.length == 0) {
       return;
@@ -170,12 +166,12 @@ public final class TaskQueue {
       // modified from several threads at the same time. This will for example
       // be the case if a new task is added before `start()` has finished
       // running all the tasks in the queue.
-      TaskQueue.groups.put(group, new ConcurrentLinkedQueue<FunctionalTask>());
+      TaskQueue.groups.put(group, new ConcurrentLinkedQueue<Runnable>());
     }
 
-    Queue<FunctionalTask> queue = TaskQueue.groups.get(group);
+    Queue<Runnable> queue = TaskQueue.groups.get(group);
 
-    for (FunctionalTask task: tasks) {
+    for (Runnable task: tasks) {
       queue.add(task);
     }
   }
@@ -194,26 +190,9 @@ public final class TaskQueue {
    *
    * @param task The task to perform.
    */
-  public static void run(final FunctionalTask task) {
-    // Encapsulate the FunctionalTask in a JavaFX Task.
-    Task<Void> runner = new Task<Void>() {
-      @Override
-      public Void call() {
-        // Run the task.
-        try {
-          task.run();
-        }
-        catch (Exception ex) {
-          ex.printStackTrace();
-        }
-
-        // We're done here.
-        return null;
-      }
-    };
-
+  public static void run(final Runnable task) {
     // Submit the task runner to the thread pool
-    TaskQueue.pool.submit(runner);
+    TaskQueue.pool.submit(task);
   }
 
   /**
@@ -231,7 +210,7 @@ public final class TaskQueue {
     // main thread isn't blocked.
     TaskQueue.run(() -> {
       // Get the task queue for the specified group.
-      Queue<FunctionalTask> queue = TaskQueue.groups.get(group);
+      Queue<Runnable> queue = TaskQueue.groups.get(group);
 
       // While there are tasks left in the queue, get the next one and run it.
       while (!queue.isEmpty()) {
@@ -241,16 +220,5 @@ public final class TaskQueue {
       // Remove the group from the map of groups. No loitering!
       TaskQueue.groups.remove(group);
     });
-  }
-
-  /**
-   * A functional interface for defining asynchronous tasks.
-   */
-  @FunctionalInterface
-  public interface FunctionalTask {
-    /**
-     * Run the task.
-     */
-    void run();
   }
 }
