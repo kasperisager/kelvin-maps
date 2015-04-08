@@ -161,17 +161,4 @@ public final class BoundingBox extends Element<Rectangle> {
 
     return rectangle;
   }
-
-  /**
-   * Check if the specified key/value pair should be included in the tags of
-   * the bounds.
-   *
-   * @param key   The key to check.
-   * @param value The value to check.
-   * @return      A bollean indicating whether or not the specified key/value
-   *              pair should be included in the tags of the bounds.
-   */
-  protected boolean include(final String key, final String value) {
-    return false;
-  }
 }

@@ -177,32 +177,6 @@ public final class Relation extends Element<Group>
   }
 
   /**
-   * Check if the specified key/value pair should be included in the tags of
-   * the relation.
-   *
-   * @param key   The key to check.
-   * @param value The value to check.
-   * @return      A bollean indicating whether or not the specified key/value
-   *              pair should be included in the tags of the relation.
-   */
-  protected boolean include(final String key, final String value) {
-    switch (key) {
-      case "building":
-      case "area":
-      case "leisure":
-      case "landuse":
-      case "natural":
-      case "waterway":
-      case "amenity":
-      case "barrier":
-        return true;
-
-      default:
-        return false;
-    }
-  }
-
-  /**
    * Construct a multipolygon from the ways in the relation.
    *
    * @return A multipolygon constructed from the ways of the relation.

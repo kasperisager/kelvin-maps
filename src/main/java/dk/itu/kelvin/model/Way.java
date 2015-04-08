@@ -285,36 +285,4 @@ public final class Way extends Element<Polyline>
 
     return polyline;
   }
-
-  /**
-   * Check if the specified key/value pair should be included in the tags of
-   * the way.
-   *
-   * @param key   The key to check.
-   * @param value The value to check.
-   * @return      A bollean indicating whether or not the specified key/value
-   *              pair should be included in the tags of the way.
-   */
-  protected boolean include(final String key, final String value) {
-    if (key == null || value == null) {
-      return false;
-    }
-
-    switch (key) {
-      case "building":
-      case "area":
-      case "land":
-      case "highway":
-      case "leisure":
-      case "landuse":
-      case "natural":
-      case "waterway":
-      case "amenity":
-      case "barrier":
-        return true;
-
-      default:
-        return false;
-    }
-  }
 }

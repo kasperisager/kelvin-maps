@@ -261,17 +261,4 @@ public final class Land extends Element<Group> {
 
     return group;
   }
-
-  /**
-   * Check if the specified key/value pair should be included in the tags of
-   * the land.
-   *
-   * @param key   The key to check.
-   * @param value The value to check.
-   * @return      A bollean indicating whether or not the specified key/value
-   *              pair should be included in the tags of the land.
-   */
-  protected boolean include(final String key, final String value) {
-    return false;
-  }
 }
