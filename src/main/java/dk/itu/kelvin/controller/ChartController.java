@@ -5,6 +5,8 @@ package dk.itu.kelvin.controller;
 
 // General utilities
 import java.util.List;
+
+import dk.itu.kelvin.control.Compass;
 import dk.itu.kelvin.util.HashTable;
 
 // I/O utilities
@@ -256,6 +258,11 @@ public final class ChartController {
    * @throws Exception In case of an error. Duh.
    */
   public void initialize() throws Exception {
+
+    Compass compass = new Compass();
+
+    this.stackPane.getChildren().addAll(compass);
+
     // Sets the parent element inactive until loaded.
     this.stackPane.setDisable(true);
     this.propertiesGridPane.getChildren().remove(this.checkboxVBox);

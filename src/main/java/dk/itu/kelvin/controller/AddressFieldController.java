@@ -3,7 +3,7 @@ package dk.itu.kelvin.controller;
 import javafx.fxml.FXML;
 
 /**
- * Created by Mathias on 07/04/2015.
+ * AddressField controller
  */
 public class AddressFieldController {
 
