@@ -11,6 +11,8 @@ package dk.itu.kelvin.util.function;
 public interface Callback {
   /**
    * Execute the callback.
+   *
+   * @throws Exception In case of an error while running the callback.
    */
   void call() throws Exception;
 }
