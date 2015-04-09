@@ -7,6 +7,9 @@ package dk.itu.kelvin.model;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// Utilities
+import dk.itu.kelvin.util.StringPool;
+
 /**
  * Address class for recognising address patterns and parsing as objects.
  *
@@ -34,6 +37,11 @@ import java.util.regex.Pattern;
  * in auto-suggestions.
  */
 public final class Address {
+  /**
+   * Internal string pool for addresses.
+   */
+  private static final StringPool STRING_POOL = new StringPool();
+
   /**
    * Regex for matching a single comma followed by zero or more spaces, or
    * no comma and one or more spaces.
@@ -204,7 +212,7 @@ public final class Address {
    * @return        The current {@link Address} instance for chaining.
    */
   public Address street(final String street) {
-    this.street = (street != null) ? street.trim().intern() : null;
+    this.street = (street != null) ? STRING_POOL.get(street.trim()) : null;
 
     return this;
   }
@@ -225,7 +233,7 @@ public final class Address {
    * @return        The current {@link Address} instance for chaining.
    */
   public Address number(final String number) {
-    this.number = (number != null) ? number.trim().intern() : null;
+    this.number = (number != null) ? STRING_POOL.get(number.trim()) : null;
 
     return this;
   }
@@ -246,7 +254,7 @@ public final class Address {
    * @return      The current {@link Address} instance for chaining.
    */
   public Address floor(final String floor) {
-    this.floor = (floor != null) ? floor.trim().intern() : null;
+    this.floor = (floor != null) ? STRING_POOL.get(floor.trim()) : null;
 
     return this;
   }
@@ -267,7 +275,7 @@ public final class Address {
    * @return      The current {@link Address} instance for chaining.
    */
   public Address door(final String door) {
-    this.door = (door != null) ? door.trim().intern() : null;
+    this.door = (door != null) ? STRING_POOL.get(door.trim()) : null;
 
     return this;
   }
@@ -288,7 +296,9 @@ public final class Address {
    * @return          The current {@link Address} instance for chaining.
    */
   public Address postcode(final String postcode) {
-    this.postcode = (postcode != null) ? postcode.trim().intern() : null;
+    if (postcode != null) {
+      this.postcode = STRING_POOL.get(postcode.trim());
+    }
 
     return this;
   }
@@ -309,7 +319,7 @@ public final class Address {
    * @return      The current {@link Address} instance for chaining.
    */
   public Address city(final String city) {
-    this.city = (city != null) ? city.trim().intern() : null;
+    this.city = (city != null) ? STRING_POOL.get(city.trim()) : null;
 
     return this;
   }
