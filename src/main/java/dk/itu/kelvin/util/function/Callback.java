@@ -12,5 +12,5 @@ public interface Callback {
   /**
    * Execute the callback.
    */
-  void done();
+  void call() throws Exception;
 }
