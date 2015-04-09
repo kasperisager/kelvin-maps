@@ -296,7 +296,9 @@ public final class Address {
    * @return          The current {@link Address} instance for chaining.
    */
   public Address postcode(final String postcode) {
-    this.postcode = (postcode != null) ? STRING_POOL.get(postcode.trim()) : null;
+    if (postcode != null) {
+      this.postcode = STRING_POOL.get(postcode.trim());
+    }
 
     return this;
   }
