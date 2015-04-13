@@ -2,6 +2,7 @@ package dk.itu.kelvin.controller;
 
 import dk.itu.kelvin.model.Address;
 
+import dk.itu.kelvin.store.AddressStore;
 import dk.itu.kelvin.util.HashTable;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -48,6 +49,11 @@ public class AddressController {
   private String[] tags = {"Parking", "Cafe", "Restaurant", "Fast Food",
     "Toilets", "Pub", "Recycling", "Bar", "Compressed Air", "Post Box",
     "Taxi", "BBQ", "Solarium", "Telephone"};
+
+  /**
+   * Store for all address objects.
+   */
+  public static AddressStore addresses = new AddressStore();
 
   /**
    * The main FXML element for AddressController.
@@ -131,6 +137,16 @@ public class AddressController {
   private int pointer = 0;
 
   /**
+   * The location the user is at, found in findAddressTextField.
+   */
+  private Address currentLocation;
+
+  /**
+   * The location the user tries to navigate to, found in findRouteTextField.
+   */
+  private Address finalLocation;
+
+  /**
    * Getting AddressController instance.
    * @return AddressController instance.
    */
@@ -149,7 +165,8 @@ public class AddressController {
   /**
    * Initialize the address controller.
    */
-  public void initialize() {
+  @FXML
+  private final void initialize() {
     AddressController.instance(this);
 
     this.autoCompleteSuggestions = new HashTable<>(AUTOCOMPLETE_MAX_ITEMS);
@@ -185,11 +202,9 @@ public class AddressController {
 
     poi.setOnAction((event) -> {
       if (!this.propertiesGridPane.getChildren().contains(this.poiContainer)) {
-        this.propertiesGridPane.getChildren().add(this.poiContainer);
-        //this.moveCompass(200);
+        this.showPOI();
       } else {
-        this.propertiesGridPane.getChildren().remove(this.poiContainer);
-        //this.moveCompass(0);
+        this.hidePOI();
       }
       this.settingsPopOver.hide();
     });
@@ -256,7 +271,7 @@ public class AddressController {
       // The autocomplete_cutoff then add strings to the suggestions arraylist.
       if (tf.getLength() > AUTOCOMPLETE_CUTOFF) {
         List<Address> results =
-          ChartController.instance().addresses.search(tf.getText());
+          AddressController.instance.addresses.search(tf.getText());
 
         for (Address a : results) {
           this.autoCompleteSuggestions.put(
@@ -297,11 +312,13 @@ public class AddressController {
 
           this.autoCompletePopOver.hide(Duration.ONE);
 
-          if (tf.getId().equals("addressFrom")) {
-            this.findAddress(this.autoCompleteSuggestions.get(suggestion));
+          if (tf.getId().equals("findAddressTextField")) {
+            this.currentLocation = this.autoCompleteSuggestions.get(suggestion);
+            this.findAddress(currentLocation);
           }
-          else if (tf.getId().equals("addressTo")) {
-            this.findRoute();
+          else if (tf.getId().equals("findRouteTextField")) {
+            this.finalLocation = this.autoCompleteSuggestions.get(suggestion);
+            this.findRoute(finalLocation);
           }
         }));
 
@@ -400,11 +417,12 @@ public class AddressController {
    * Gets a address from the address suggestions PopOver and sets text.
    */
   @FXML
-  public void findAddress() {
+  public final void findAddress() {
     if (this.autoCompletePopOver.isShowing()) {
       Button b = (Button) this.autoCompletePopOverVBox.getChildren().
         get(this.pointer);
-      this.findAddress(this.autoCompleteSuggestions.get(b.getText()));
+      this.currentLocation = this.autoCompleteSuggestions.get(b.getText());
+      this.findAddress(currentLocation);
 
       this.findAddressTextField.setText(b.getText());
       this.autoCompletePopOver.hide();
@@ -415,8 +433,8 @@ public class AddressController {
    * Centers chart around specific point and sets location pointer.
    * @param address the address to find.
    */
-  public void findAddress(final Address address) {
-    ChartController.centerChart(address.x(), address.y(), 2.5);
+  public final void findAddress(final Address address) {
+    ChartController.centerChart(address, 2.5);
     ChartController.setPointer(address.x(), address.y());
   }
 
@@ -424,42 +442,47 @@ public class AddressController {
    * Finds the route between two specific addresses from the text fields.
    */
   @FXML
-  public void findRoute() {
+  private final void findRoute() {
     if (this.autoCompletePopOver.isShowing()) {
       Button b = (Button) this.autoCompletePopOverVBox.getChildren().
         get(this.pointer);
-      String endInput = b.getText();
+      this.finalLocation = this.autoCompleteSuggestions.get(b.getText());
+      this.findRoute(this.finalLocation);
+
       this.findRouteTextField.setText(b.getText());
-
-      String startInput = this.findAddressTextField.getText();
-
-      if (endInput == null || startInput == null) {
-        return;
-      }
-
-      endInput = endInput.trim();
-      startInput = startInput.trim();
-
-      if (endInput.isEmpty() || startInput.isEmpty()) {
-        return;
-      }
-
-      Address startAddress = Address.parse(startInput);
-      Address endAddress = Address.parse(endInput);
-
-      if (endAddress == null || startAddress == null) {
-        return;
-      }
-
-      // showRouteOnMap(startAddress, endAddress);
-
-      System.out.println("X: " + startAddress.x() + " " + "Y: "
-        + startAddress.y());
-      System.out.println("X: " + endAddress.x() + " " + "Y: "
-        + endAddress.y());
-
       this.autoCompletePopOver.hide();
     }
+  }
+
+  /**
+   *
+   * @param address
+   */
+  public final void findRoute(final Address address) {
+    String endInput = this.findRouteTextField.getText();
+    String startInput = this.findAddressTextField.getText();
+
+    if (endInput == null || startInput == null) {
+      return;
+    }
+    if(this.currentLocation == null || this.finalLocation == null){
+      return;
+    }
+
+    endInput = endInput.trim();
+    startInput = startInput.trim();
+
+    if (endInput.isEmpty() || startInput.isEmpty()) {
+      return;
+    }
+
+    System.out.println("X: " + this.currentLocation.x() + " " + "Y: "
+      + this.currentLocation.y());
+    System.out.println("X: " + this.finalLocation.x() + " " + "Y: "
+      + this.finalLocation.y());
+
+    this.autoCompletePopOver.hide();
+
     /*else {
       // Dialog "The address does not exist."
     }*/
@@ -488,9 +511,12 @@ public class AddressController {
    * Swaps the two address fields around.
    */
   @FXML
-  public void swapTextFields() {
+  public final void swapTextFields() {
+    Address temp = this.currentLocation;
+    this.currentLocation = this.finalLocation;
+    this.finalLocation = temp;
     String from = this.findAddressTextField.getText();
-    this.findAddressTextField.setText(this.findAddressTextField.getText());
+    this.findAddressTextField.setText(this.findRouteTextField.getText());
     this.findRouteTextField.setText(from);
     if (this.autoCompletePopOver.isShowing()) {
       this.autoCompletePopOver.hide(new Duration(0));
@@ -517,34 +543,39 @@ public class AddressController {
    * Removes the Points Of Interest container from the window.
    */
   @FXML
-  public void hidePOI() {
+  public final void hidePOI() {
     this.propertiesGridPane.getChildren().remove(this.poiContainer);
+    ChartController.instance().moveCompass(0);
   }
 
   /**
    * Removes the route description container from the window.
    */
   @FXML
-  public void hideDirections() {
+  public final void hideDirections() {
     this.propertiesGridPane.getChildren().remove(this.directionsContainer);
+    ChartController.instance().moveCompass(0);
+
   }
 
   /**
    * Shows the Points Of Interest container in the window.
    */
-  public void showPOI() {
+  public final void showPOI() {
     if (!this.propertiesGridPane.getChildren().contains(this.poiContainer)) {
       this.propertiesGridPane.getChildren().add(this.poiContainer);
+      ChartController.instance().moveCompass(200);
     }
   }
 
   /**
    * Shows the route description container in the window.
    */
-  public void showDirections() {
+  public final void showDirections() {
     if (!this.propertiesGridPane.getChildren().
       contains(this.directionsContainer)) {
       this.propertiesGridPane.getChildren().add(this.directionsContainer);
+      ChartController.instance().moveCompass(400);
     }
   }
 }

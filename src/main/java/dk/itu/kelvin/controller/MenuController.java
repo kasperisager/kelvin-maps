@@ -74,9 +74,9 @@ public class MenuController {
   /**
    * The initialize method.
    */
-  public void initialize() {
+  @FXML
+  private final void initialize() {
     MenuController.instance(this);
-
   }
   /**
    * Choose an .OSM file to be loaded.

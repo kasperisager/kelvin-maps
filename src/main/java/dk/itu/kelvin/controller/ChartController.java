@@ -44,9 +44,6 @@ import dk.itu.kelvin.layout.Chart;
 // Models
 import dk.itu.kelvin.model.Address;
 
-// Stores
-import dk.itu.kelvin.store.AddressStore;
-
 /**
  * Chart controller class.
  */
@@ -100,13 +97,6 @@ public final class ChartController {
    * Affine transformation for chart compass.
    */
   private Affine compassTransform = new Affine();
-
-
-  /**
-   * Store for all address objects.
-   */
-  public static AddressStore addresses = new AddressStore();
-
 
   /**
    * Label representing the found address.
@@ -163,21 +153,16 @@ public final class ChartController {
    * Initialize the controller.
    * @throws Exception In case of an error. Duh.
    */
-  public void initialize() throws Exception {
+  @FXML
+  private void initialize() throws Exception {
     ChartController.instance(this);
 
     // Sets the parent element inactive until done loading.
     this.stackPane.setDisable(true);
 
-
     this.compassArrow.getTransforms().add(this.compassTransform);
 
-    this.locationPointer = new Text();
-    this.locationPointer.getStyleClass().add("icon");
-    this.locationPointer.getStyleClass().add("address-label");
-    this.locationPointer.setText("\uf456");
-    this.locationPointer.setVisible(false);
-    this.chart.getChildren().add(this.locationPointer);
+    this.initLocationPointer();
 
     File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
 
@@ -186,7 +171,7 @@ public final class ChartController {
     parser.read(file, () -> {
       // Get all addresses from parser.
       for (Address address: parser.addresses()) {
-        this.addresses.add(address);
+        AddressController.instance().addresses.add(address);
       }
 
       // Schedule rendering of the chart nodes.
@@ -201,6 +186,70 @@ public final class ChartController {
         ApplicationController.removeIcon();
       });
     });
+  }
+
+  /**
+   * Initializing properties for location pointer and adding to chart.
+   */
+  private void initLocationPointer() {
+    this.locationPointer = new Text();
+    this.locationPointer.getStyleClass().add("icon");
+    this.locationPointer.getStyleClass().add("address-label");
+    this.locationPointer.setText("\uf456");
+    this.locationPointer.setVisible(false);
+    this.chart.getChildren().add(this.locationPointer);
+  }
+
+  /**
+   * Moves the compass VBox relative to BOTTOM_LEFT.
+   * @param x how much to move compass along x-axis [px].
+   */
+  public void moveCompass(final double x) {
+    this.compassVBox.setTranslateX(x);
+  }
+
+  /**
+   * Will reset the compass, so it points north.
+   */
+  @FXML
+  private void compassReset() {
+    //to be continued
+  }
+
+  /**
+   * Sets the text of scaleIndicator.
+   * @param text the text to be set in scale.
+   */
+  private void setScaleText(final String text) {
+    this.scaleIndicatorLabel.setText(text);
+  }
+
+  /**
+   * Sets the length of the scaleIndicator.
+   * @param length how wide the scale is [px].
+   */
+  private void setScaleLenght(final double length) {
+    this.scaleIndicatorLabel.setPrefWidth(length);
+  }
+
+  /**
+   * Sets a pointer at the address found.
+   * @param x Address with the coordinates for the pointer.
+   * @param y Address with the coordinates for the pointer.
+   */
+  public static void setPointer(final double x, final double y) {
+    ChartController.instance.locationPointer.setLayoutX(x);
+    ChartController.instance.locationPointer.setLayoutY(y);
+    ChartController.instance.locationPointer.setVisible(true);
+  }
+
+  /**
+   * Centering chart around and x, y coordinate.
+   * @param a the address to center around.
+   * @param scale the new scale for the map.
+   */
+  public static void centerChart(final Address a, final double scale) {
+    ChartController.instance.chart.center(a, scale);
   }
 
   /**
@@ -407,62 +456,5 @@ public final class ChartController {
   @FXML
   private void zoomOut() {
     this.chart.zoom(Math.pow(ZOOM_OUT, 8));
-  }
-
-  /**
-   * Moves the compass VBox relative to BOTTOM_LEFT.
-   * @param x how much to move compass along x-axis [px].
-   */
-  public void moveCompass(final double x) {
-    this.compassVBox.setTranslateX(x);
-  }
-
-  /**
-   * Will reset the compass, so it points north.
-   */
-  @FXML
-  private void compassReset() {
-    //to be continued
-  }
-
-  /**
-   * Sets the text of scaleIndicator.
-   * @param text the text to be set in scale.
-   */
-  private void setScaleText(final String text) {
-    this.scaleIndicatorLabel.setText(text);
-  }
-
-  /**
-   * Sets the length of the scaleIndicator.
-   * @param length how wide the scale is [px].
-   */
-  private void setScaleLenght(final double length) {
-    this.scaleIndicatorLabel.setPrefWidth(length);
-  }
-
-  /**
-   * Sets a pointer at the address found.
-   * @param x Address with the coordinates for the pointer.
-   * @param y Address with the coordinates for the pointer.
-   */
-  public static void setPointer(final double x, final double y) {
-    ChartController.instance.locationPointer.setLayoutX(x);
-    ChartController.instance.locationPointer.setLayoutY(y);
-    ChartController.instance.locationPointer.setVisible(true);
-  }
-
-  /**
-   * Centering chart around and x, y coordinate.
-   * @param x the x coordinate.
-   * @param y the x coordinate.
-   * @param scale the new scale for the map.
-   */
-  public static void centerChart(
-    final double x,
-    final double y,
-    final double scale
-    ) {
-    ChartController.instance.chart.center(x, y, scale);
   }
 }

@@ -120,7 +120,6 @@
       layoutX="0"
       layoutY="0"
       maxWidth="200"
-      visible="false"
       >
       <children>
         <HBox>
