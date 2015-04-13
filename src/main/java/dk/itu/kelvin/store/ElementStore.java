@@ -20,6 +20,8 @@ import java.util.List;
  */
 public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
 
+  private List<Element> all;
+
   private PointTree water;
 
   @Override
@@ -28,7 +30,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   }
 
   @Override
-  public void add(final List<E> elements) {
+  public void add(final Collection<Element> elements) {
 
 
   }
