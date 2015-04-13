@@ -25,6 +25,11 @@ import org.controlsfx.control.PopOver;
  */
 public class MenuController {
   /**
+   * The menu controller instance.
+   */
+  private static MenuController instance;
+
+  /**
    * Current Version number.
    */
   private static final String CUR_VERSION = "0.4.0";
@@ -50,6 +55,29 @@ public class MenuController {
   @FXML
   private MenuBar mainMenuBar;
 
+  /**
+   * Getting MenuController instance.
+   * @return MenuController instance.
+   */
+  public static MenuController instance() {
+    return MenuController.instance;
+  }
+
+  /**
+   * Initializing the MenuController instance.
+   * @param instance the MenuController instance.
+   */
+  private static void instance(final MenuController instance) {
+    MenuController.instance = instance;
+  }
+
+  /**
+   * The initialize method.
+   */
+  public void initialize() {
+    MenuController.instance(this);
+
+  }
   /**
    * Choose an .OSM file to be loaded.
    */

@@ -3,29 +3,15 @@
  */
 package dk.itu.kelvin.controller;
 
-// General utilities
-import java.util.List;
-
-import dk.itu.kelvin.control.Compass;
-import dk.itu.kelvin.util.HashTable;
-
 // I/O utilities
 import java.io.File;
-
-// JavaFX utilities
-import javafx.util.Duration;
 
 // JavaFX application utilities
 import javafx.application.Platform;
 
-// JavaFX scene utilities
-import javafx.geometry.Pos;
-
 // JavaFX layout
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 // JavaFX shapes
 import javafx.scene.shape.Path;
@@ -44,20 +30,10 @@ import javafx.scene.transform.Affine;
 import javafx.scene.text.Text;
 
 // JavaFX controls
-import javafx.scene.control.Button;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
-import javafx.scene.control.CheckBox;
-
-// JavaFX geometry
-import javafx.geometry.Bounds;
 
 // FXML utilities
 import javafx.fxml.FXML;
-
-// Controls FX
-import org.controlsfx.control.PopOver;
 
 // Parser
 import dk.itu.kelvin.parser.Parser;
@@ -75,6 +51,11 @@ import dk.itu.kelvin.store.AddressStore;
  * Chart controller class.
  */
 public final class ChartController {
+
+  /**
+   * The ChartController instance.
+   */
+  private static ChartController instance;
   /**
    * The input file to show in the map viewer.
    */
@@ -94,17 +75,6 @@ public final class ChartController {
    * Default zoom out factor.
    */
   private static final double ZOOM_OUT = 1 / ZOOM_IN;
-
-  /**
-   * Don't show auto completion when the entered input contains less that this
-   * number of characters.
-   */
-  private static final int AUTOCOMPLETE_CUTOFF = 2;
-
-  /**
-   * Max number of items to show in the auto completion menu.
-   */
-  private static final int AUTOCOMPLETE_MAX_ITEMS = 5;
 
   /**
    * Mouse X coordinate for dragging.
@@ -131,24 +101,11 @@ public final class ChartController {
    */
   private Affine compassTransform = new Affine();
 
-  /**
-   * The map from the parser.
-   */
 
   /**
-   * PopOver for the config menu.
+   * Store for all address objects.
    */
-
-  /**
-   * Auto-complete popover for textfields.
-   */
-
-  /**
-   * The dynamic autocomplete results.
-   */
-
-
-  private AddressStore addresses = new AddressStore();
+  public static AddressStore addresses = new AddressStore();
 
 
   /**
@@ -187,21 +144,29 @@ public final class ChartController {
   private StackPane stackPane;
 
   /**
-   * Tags for cartographic elements.
+   * Getting ChartsController instance.
+   * @return ChartController instance.
    */
+  public static ChartController instance() {
+    return ChartController.instance;
+  }
 
+  /**
+   * Initializing the ChartController instance.
+   * @param instance the ChartController instance.
+   */
+  private static void instance(final ChartController instance) {
+    ChartController.instance = instance;
+  }
 
   /**
    * Initialize the controller.
    * @throws Exception In case of an error. Duh.
    */
   public void initialize() throws Exception {
+    ChartController.instance(this);
 
-    //Compass compass = new Compass();
-
-    //this.stackPane.getChildren().addAll(compass);
-
-    // Sets the parent element inactive until loaded.
+    // Sets the parent element inactive until done loading.
     this.stackPane.setDisable(true);
 
 
@@ -445,18 +410,6 @@ public final class ChartController {
   }
 
   /**
-   * Centers the screen on a specific point and set a location marker.
-   * @param a the Address to center the screen around and set pointer at.
-   */
-  private void findAddress(final Address a) {
-    this.chart.center(a, 2.5);
-    this.setPointer(a);
-    /*else {
-      // Dialog "The address does not exist."
-    }*/
-  }
-
-  /**
    * Moves the compass VBox relative to BOTTOM_LEFT.
    * @param x how much to move compass along x-axis [px].
    */
@@ -493,9 +446,23 @@ public final class ChartController {
    * @param x Address with the coordinates for the pointer.
    * @param y Address with the coordinates for the pointer.
    */
-  public void setPointer(final double x, final double y) {
-    this.locationPointer.setLayoutX(x);
-    this.locationPointer.setLayoutY(y);
-    this.locationPointer.setVisible(true);
+  public static void setPointer(final double x, final double y) {
+    ChartController.instance.locationPointer.setLayoutX(x);
+    ChartController.instance.locationPointer.setLayoutY(y);
+    ChartController.instance.locationPointer.setVisible(true);
+  }
+
+  /**
+   * Centering chart around and x, y coordinate.
+   * @param x the x coordinate.
+   * @param y the x coordinate.
+   * @param scale the new scale for the map.
+   */
+  public static void centerChart(
+    final double x,
+    final double y,
+    final double scale
+    ) {
+    ChartController.instance.chart.center(x, y, scale);
   }
 }

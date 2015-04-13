@@ -1,12 +1,17 @@
 package dk.itu.kelvin.controller;
 
 import dk.itu.kelvin.model.Address;
-import dk.itu.kelvin.store.AddressStore;
+
 import dk.itu.kelvin.util.HashTable;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -17,74 +22,154 @@ import org.controlsfx.control.PopOver;
 import java.util.List;
 
 /**
- * AddressField controller
+ * AddressField controller.
  */
-public class AddressFieldController {
+public class AddressController {
 
+  /**
+   * The AddressController instance.
+   */
+  private static AddressController instance;
+
+  /**
+   * The number of characters needed before address fields will show
+   * autocomplete suggestions.
+   */
   private static final int AUTOCOMPLETE_CUTOFF = 2;
 
+  /**
+   * The maximum number of addresses to suggest in address fields.
+   */
   private static final int AUTOCOMPLETE_MAX_ITEMS = 5;
 
+  /**
+   * Tags to show in Points of interest.
+   */
   private String[] tags = {"Parking", "Cafe", "Restaurant", "Fast Food",
     "Toilets", "Pub", "Recycling", "Bar", "Compressed Air", "Post Box",
     "Taxi", "BBQ", "Solarium", "Telephone"};
 
+  /**
+   * The main FXML element for AddressController.
+   */
   @FXML
   private VBox mainAddressFieldVBox;
 
+  /**
+   * First text field for the address to find or start location for finding
+   * route.
+   */
   @FXML
   private TextField findAddressTextField;
 
+  /**
+   * Second text field for the address to navigate to.
+   */
   @FXML
   private TextField findRouteTextField;
 
+  /**
+   * The toggle button for showing more settings.
+   */
   @FXML
   private ToggleButton settingsToggleButton;
 
+  /**
+   * The grid pane that contains boxes for additional settings.
+   * Pane stretches from text fields to bottom of screen.
+   */
   @FXML
   private GridPane propertiesGridPane;
 
+  /**
+   * VBox container for Points Of Interest.
+   */
   @FXML
   private VBox poiContainer;
 
+  /**
+   * VBox for the content of Points Of Interest.
+   */
   @FXML
   private VBox poiContentVBox;
 
+  /**
+   * VBox container for route description.
+   */
   @FXML
   private VBox directionsContainer;
 
+  /**
+   * VBox for the content of route description.
+   */
   @FXML
   private VBox directionsContentVBox;
 
+  /**
+   * PopOver for toggle button settings.
+   */
   private PopOver settingsPopOver;
 
-
-
+  /**
+   * PopOver for address suggestions.
+   */
   private PopOver autoCompletePopOver;
 
-  private HashTable <String, Address> autoCompleteSuggestions;
-
-
+  /**
+   * VBox for the content of autoCompletePopOver.
+   */
   private VBox autoCompletePopOverVBox;
 
+  /**
+   * HashTable for suggestions.
+   */
+  private HashTable<String, Address> autoCompleteSuggestions;
+
+  /**
+   * Pointer for which address suggestion to highlight.
+   */
   private int pointer = 0;
 
+  /**
+   * Getting AddressController instance.
+   * @return AddressController instance.
+   */
+  public static AddressController instance() {
+    return AddressController.instance;
+  }
 
-  public void initialize(){
-    autoCompleteSuggestions = new HashTable<>(AUTOCOMPLETE_MAX_ITEMS);
+  /**
+   * Initializing the AddressController instance.
+   * @param instance the AddressController instance.
+   */
+  private static void instance(final AddressController instance) {
+    AddressController.instance = instance;
+  }
+
+  /**
+   * Initialize the address controller.
+   */
+  public void initialize() {
+    AddressController.instance(this);
+
+    this.autoCompleteSuggestions = new HashTable<>(AUTOCOMPLETE_MAX_ITEMS);
 
     this.propertiesGridPane.getChildren().remove(this.poiContainer);
     this.propertiesGridPane.getChildren().remove(this.directionsContainer);
 
-    createSettingsPopOver();
-    initPoiBox();
+    this.createSettingsPopOver();
+    this.initPoiBox();
 
-    initAutoCompletePopOver();
-    setAutoComplete(this.findAddressTextField);
-    setAutoComplete(this.findRouteTextField);
+    this.initAutoCompletePopOver();
+    this.setAutoComplete(this.findAddressTextField);
+    this.setAutoComplete(this.findRouteTextField);
   }
 
-  private void createSettingsPopOver(){
+  /**
+   * Initializing of event handler for settingsToggleButton and content of
+   * settingsPopOver.
+   */
+  private void createSettingsPopOver() {
     VBox vbox = new VBox(2);
 
     Button hContrast = new Button("High Contrast");
@@ -132,7 +217,10 @@ public class AddressFieldController {
     });
   }
 
-  private void initPoiBox(){
+  /**
+   * Initializing Points Of Interest container and content of poiContentVBox.
+   */
+  private void initPoiBox() {
     for (String s : this.tags) {
       CheckBox cb = new CheckBox(s);
       cb.setPrefWidth(200);
@@ -141,9 +229,12 @@ public class AddressFieldController {
 
       this.poiContentVBox.getChildren().add(cb);
     }
-
   }
-  private void initAutoCompletePopOver(){
+
+  /**
+   * Initializing address suggestions PopOver.
+   */
+  private void initAutoCompletePopOver() {
     this.autoCompletePopOver = new PopOver();
     this.autoCompletePopOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
     this.autoCompletePopOver.setCornerRadius(2);
@@ -152,6 +243,11 @@ public class AddressFieldController {
     this.autoCompletePopOver.setDetachable(false);
   }
 
+  /**
+   * Initializing event handler for text fields and content of
+   * autoCompletePopOver.
+   * @param tf the text field get autoCompletePopOver.
+   */
   private void setAutoComplete(final TextField tf) {
     tf.textProperty().addListener((e) -> {
       this.autoCompleteSuggestions.clear();
@@ -159,7 +255,8 @@ public class AddressFieldController {
       // If the input in the textfield is above
       // The autocomplete_cutoff then add strings to the suggestions arraylist.
       if (tf.getLength() > AUTOCOMPLETE_CUTOFF) {
-        List<Address> results = this.addresses.search(tf.getText());
+        List<Address> results =
+          ChartController.instance().addresses.search(tf.getText());
 
         for (Address a : results) {
           this.autoCompleteSuggestions.put(
@@ -185,7 +282,8 @@ public class AddressFieldController {
 
       Bounds bounds = tf.localToScreen(tf.getBoundsInParent());
 
-      this.autoCompletePopOverVBox = new VBox(this.autoCompleteSuggestions.size());
+      this.autoCompletePopOverVBox =
+        new VBox(this.autoCompleteSuggestions.size());
 
       this.autoCompletePopOverVBox.setPrefWidth(bounds.getWidth() + 27);
 
@@ -256,14 +354,29 @@ public class AddressFieldController {
       }
     }));
   }
-  private void addHighlightStyle(){
-    Button b = (Button) this.autoCompletePopOverVBox.getChildren().get(this.pointer);
+
+  /**
+   * Adds the highlight style to selected address suggestion.
+   */
+  private void addHighlightStyle() {
+    Button b = (Button) this.autoCompletePopOverVBox.getChildren().
+      get(this.pointer);
     b.getStyleClass().add("highlight");
   }
-  private void removeHighlightStyle(){
-    Button b = (Button) this.autoCompletePopOverVBox.getChildren().get(this.pointer);
+
+  /**
+   * Remove the highlight style to selected address suggestion.
+   */
+  private void removeHighlightStyle() {
+    Button b = (Button) this.autoCompletePopOverVBox.getChildren().
+      get(this.pointer);
     b.getStyleClass().remove("highlight");
   }
+
+  /**
+   * Moves the pointer based on input from arrow keys.
+   * @param e the key event.
+   */
   private void movePointer(final KeyEvent e) {
     switch (e.getCode()) {
       case UP:
@@ -283,24 +396,38 @@ public class AddressFieldController {
     }
   }
 
+  /**
+   * Gets a address from the address suggestions PopOver and sets text.
+   */
   @FXML
-  public void findAddress(){
+  public void findAddress() {
     if (this.autoCompletePopOver.isShowing()) {
-      Button b = (Button) this.autoCompletePopOverVBox.getChildren().get(this.pointer);
+      Button b = (Button) this.autoCompletePopOverVBox.getChildren().
+        get(this.pointer);
       this.findAddress(this.autoCompleteSuggestions.get(b.getText()));
 
       this.findAddressTextField.setText(b.getText());
       this.autoCompletePopOver.hide();
     }
-
   }
-  public void findAddress(final Address address){
 
+  /**
+   * Centers chart around specific point and sets location pointer.
+   * @param address the address to find.
+   */
+  public void findAddress(final Address address) {
+    ChartController.centerChart(address.x(), address.y(), 2.5);
+    ChartController.setPointer(address.x(), address.y());
   }
+
+  /**
+   * Finds the route between two specific addresses from the text fields.
+   */
   @FXML
-  public void findRoute(){
+  public void findRoute() {
     if (this.autoCompletePopOver.isShowing()) {
-      Button b = (Button) this.autoCompletePopOverVBox.getChildren().get(this.pointer);
+      Button b = (Button) this.autoCompletePopOverVBox.getChildren().
+        get(this.pointer);
       String endInput = b.getText();
       this.findRouteTextField.setText(b.getText());
 
@@ -337,10 +464,9 @@ public class AddressFieldController {
       // Dialog "The address does not exist."
     }*/
 
-    if (!this.propertiesGridPane.getChildren().contains(this.directionsContainer)) {
-      this.propertiesGridPane.getChildren().add(this.directionsContainer);
-    }
+    this.showDirections();
 
+    // Initialize placeholder text
     int stack = 30;
     for (int i = 0; i < stack; i++) {
       HBox hbox = new HBox(2);
@@ -356,35 +482,69 @@ public class AddressFieldController {
       hbox.getChildren().addAll(icon, label);
       this.directionsContentVBox.getChildren().add(hbox);
     }
-
   }
 
+  /**
+   * Swaps the two address fields around.
+   */
   @FXML
-  public void swapTextFields(){
+  public void swapTextFields() {
     String from = this.findAddressTextField.getText();
     this.findAddressTextField.setText(this.findAddressTextField.getText());
     this.findRouteTextField.setText(from);
     if (this.autoCompletePopOver.isShowing()) {
       this.autoCompletePopOver.hide(new Duration(0));
     }
+  }
+
+  /**
+   * Finds route specific only to cars.
+   */
+  @FXML
+  public void routeByCar() {
 
   }
 
+  /**
+   * Find route specific only to bikes.
+   */
   @FXML
-  public void routeByCar(){
+  public void routeByFoot() {
 
   }
-  @FXML
-  public void routeByFoot(){
 
+  /**
+   * Removes the Points Of Interest container from the window.
+   */
+  @FXML
+  public void hidePOI() {
+    this.propertiesGridPane.getChildren().remove(this.poiContainer);
   }
 
+  /**
+   * Removes the route description container from the window.
+   */
   @FXML
-  public void hidePOI(){
-    propertiesGridPane.getChildren().remove(poiContainer);
+  public void hideDirections() {
+    this.propertiesGridPane.getChildren().remove(this.directionsContainer);
   }
-  @FXML
-  public void hideDirections(){
-    propertiesGridPane.getChildren().remove(directionsContainer);
+
+  /**
+   * Shows the Points Of Interest container in the window.
+   */
+  public void showPOI() {
+    if (!this.propertiesGridPane.getChildren().contains(this.poiContainer)) {
+      this.propertiesGridPane.getChildren().add(this.poiContainer);
+    }
+  }
+
+  /**
+   * Shows the route description container in the window.
+   */
+  public void showDirections() {
+    if (!this.propertiesGridPane.getChildren().
+      contains(this.directionsContainer)) {
+      this.propertiesGridPane.getChildren().add(this.directionsContainer);
+    }
   }
 }

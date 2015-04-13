@@ -11,7 +11,7 @@
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.control.TextField?>
 <VBox
-  fx:controller="dk.itu.kelvin.controller.AddressFieldController"
+  fx:controller="dk.itu.kelvin.controller.AddressController"
   fx:id="mainAddressFieldVBox"
   xmlns:fx="http://javafx.com/fxml"
   styleClass="u-padded"
