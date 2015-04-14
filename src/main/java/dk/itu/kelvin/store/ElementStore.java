@@ -81,11 +81,6 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    */
   private boolean relationsIsDirty;
 
-  public void zeb() {
-    this.waysTree = this.indexWays(this.ways);
-    this.relationsTree = this.indexRelations(this.relations);
-  }
-
   /**
    * Adds a way element to the associated list.
    *
@@ -124,32 +119,40 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   }
 
   /**
+   * Returns new search query.
+   * @return the query object.
+   */
+  public Query find() {
+    return new Query();
+  }
+
+  /**
    * Finds elements that meet the criteria.
    *
    * @param q  The criteria object to look up elements based on.
    * @return the list of elements that meet the criteria.
    */
-  public List<? extends Element> search(final Query q) {
-    if (waysTree == null || waysIsDirty) {
-      this.indexWays(this.ways);
+  private List<? extends Element> search(final Query q) {
+    if (this.waysTree == null || this.waysIsDirty) {
+      this.waysTree = this.indexWays(this.ways);
     }
-    if (relationsTree == null || relationsIsDirty) {
-      this.indexRelations(this.relations);
+    if (this.relationsTree == null || this.relationsIsDirty) {
+      this.relationsTree = this.indexRelations(this.relations);
     }
-    if (landTree == null || landIsDirty) {
-      this.indexLand(this.land);
+    if (this.landTree == null || this.landIsDirty) {
+      this.landTree = this.indexLand(this.land);
     }
 
     List<Element> elementList = new ArrayList<>();
 
-    for(String s : q.types){
-      if(s == "way"){
+    for (String s : q.types) {
+      if (s == "way") {
         elementList.addAll(this.waysTree.range(q.bounds));
       }
-      else if(s == "land"){
+      else if (s == "land") {
         elementList.addAll(this.landTree.range(q.bounds));
       }
-      else if(s == "relation"){
+      else if (s == "relation") {
 
         elementList.addAll(this.relationsTree.range(q.bounds));
       }
@@ -158,9 +161,14 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     return elementList;
   }
 
-  public List<Element> getElements(List<Element> list){
+  /**
+   * Adds all elements of the param into a new list.
+   * @param list the list to be added.
+   * @return the resulting list.
+   */
+  public List<Element> getElements(final List<Element> list) {
     List<Element> liste = new ArrayList<>();
-    for( Element e : list){
+    for (Element e : list) {
       liste.add(e);
     }
     return liste;
@@ -189,7 +197,8 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * @param relations The collection of relations to be indexed.
    * @return the indexed rectangleTree.
    */
-  public SpatialIndex<Relation> indexRelations(final Collection<Relation> relations) {
+  public SpatialIndex<Relation> indexRelations(
+    final Collection<Relation> relations) {
     if (relations == null || relations.isEmpty()) {
       return null;
     }
@@ -207,14 +216,14 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * @return the indexed rectangleTree.
    */
   public SpatialIndex<Way> indexLand(final Collection<Way> land) {
-    if (ways == null || ways.isEmpty()) {
+    if (this.land == null || this.land.isEmpty()) {
       return null;
     }
 
-    RectangleTree<Way> wayTree = new RectangleTree<>(land);
-    this.waysIsDirty = false;
+    RectangleTree<Way> landTree = new RectangleTree<>(land);
+    this.landIsDirty = false;
 
-    return wayTree;
+    return landTree;
   }
 
   /**
@@ -230,7 +239,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * The search query object.
    */
-  public static class Query {
+  public class Query {
 
     /**
      * Specifies object type to search for.
@@ -249,45 +258,73 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
 
     /**
      * Getter for type field.
+     * @return list of types.
      */
-    public String[] type() {
+    public final String[] type() {
       return this.types;
     }
 
     /**
      * Getter for bounds field.
+     *
+     * @return the bounds.
      */
-    public SpatialIndex.Bounds bounds() {
+    public final SpatialIndex.Bounds bounds() {
       return this.bounds;
     }
 
-    public void setTypes(String... type){
-      int N = type.length;
-      types = new String[N];
+    /**
+     * Adds strings to a list and adds to field.
+     * @param type the different type strings.
+     * @return the Query object.
+     */
+    public final Query types(final String... type) {
+      int n = type.length;
+      this.types = new String[n];
 
-      for(int i = 0; i < N; i++){
-        types[i] = type[i];
+      for (int i = 0; i < n; i++) {
+        this.types[i] = type[i];
       }
+
+      return this;
     }
 
     /**
-     *
-     * @param minX
-     * @param minY
-     * @param maxX
-     * @param maxY
+     * Creates a bounds object and sets it in the field.
+     * @param minX minimum x coordinate.
+     * @param minY minimum y coordinate.
+     * @param maxX maximum x coordinate.
+     * @param maxY maximum y coordinate.
+     * @return the Query object.
      */
-    public void setBounds(float minX, float minY, float maxX, float maxY) {
+    public final Query bounds(
+      final float minX,
+      final float minY,
+      final float maxX,
+      final float maxY) {
       SpatialIndex.Bounds b = new SpatialIndex.Bounds(minX, minY, maxX, maxY);
       this.bounds = b;
+
+      return this;
     }
 
     /**
-     *
-     * @param b
+     * Set the bounds field.
+     * @param b the bounds object to be set.
+     * @return the Query object.
      */
-    public void setBounds(SpatialIndex.Bounds b) {
+    public final Query bounds(final SpatialIndex.Bounds b) {
       this.bounds = b;
+
+      return this;
+    }
+
+    /**
+     *  Gets the elements searched for.
+     * @return list of results.
+     */
+    public final List<? extends Element> get() {
+      return ElementStore.this.search(this);
     }
   }
 

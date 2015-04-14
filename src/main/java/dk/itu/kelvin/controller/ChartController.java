@@ -69,7 +69,6 @@ import dk.itu.kelvin.layout.Chart;
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Relation;
-import dk.itu.kelvin.model.BoundingBox;
 
 // Stores
 import dk.itu.kelvin.store.AddressStore;
@@ -306,11 +305,7 @@ public final class ChartController {
 
         this.elementStore.add(parser.bounds());
 
-        this.elementStore.zeb();
-
-        this.chart.land(parser.land());
-        this.chart.ways(parser.ways());
-        this.chart.relations(parser.relations());
+        this.chart.elementStore(this.elementStore);
         this.chart.bounds(parser.bounds());
 
         // Sets the chart active after load.

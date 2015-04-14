@@ -3,9 +3,6 @@
  */
 package dk.itu.kelvin.store;
 
-// General utilities
-import java.util.List;
-
 // I/O utilities
 import java.io.File;
 import java.io.Serializable;
@@ -20,6 +17,12 @@ import dk.itu.kelvin.util.function.Callback;
  * @param <C> The search criteria to use when looking up elements.
  */
 public abstract class Store<E, C> implements Serializable {
+  /**
+   * Save the current store to the specified file.
+   *
+   * @param file      The file to save the store to.
+   * @param callback  The callback to invoke once saving has finished.
+   */
   public final void save(final File file, final Callback callback) {
     throw new UnsupportedOperationException();
   }

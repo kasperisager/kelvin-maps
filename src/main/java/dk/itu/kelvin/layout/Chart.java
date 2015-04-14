@@ -4,8 +4,6 @@
 package dk.itu.kelvin.layout;
 
 // General utilities
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -25,16 +23,12 @@ import javafx.geometry.Point2D;
 // Utilities
 import dk.itu.kelvin.util.HashSet;
 import dk.itu.kelvin.util.HashTable;
-import dk.itu.kelvin.util.RectangleTree;
-import dk.itu.kelvin.util.SpatialIndex;
 
 // Models
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.BoundingBox;
 import dk.itu.kelvin.model.Element;
 import dk.itu.kelvin.model.Node;
-import dk.itu.kelvin.model.Relation;
-import dk.itu.kelvin.model.Way;
 
 // Stores
 import dk.itu.kelvin.store.ElementStore;
@@ -82,19 +76,9 @@ public final class Chart extends Group {
   private static final int TILE_SIZE = 256;
 
   /**
-   * Spatial index of land polygons.
+   * Stores all elements.
    */
-  private SpatialIndex<Way> land;
-
-  /**
-   * Spatial index of ways.
-   */
-  private SpatialIndex<Way> ways;
-
-  /**
-   * Spatial index of relations.
-   */
-  private SpatialIndex<Relation> relations;
+  private ElementStore elementStore;
 
   /**
    * Keep track of the tiles currently showing.
@@ -139,6 +123,14 @@ public final class Chart extends Group {
   }
 
   /**
+   * Setter for the element store field.
+   * @param elementStore the element store object.
+   */
+  public void elementStore(final ElementStore elementStore) {
+    this.elementStore = elementStore;
+  }
+
+  /**
    * Add bounds to the chart.
    *
    * @param bounds The bounds to add to the chart.
@@ -151,45 +143,6 @@ public final class Chart extends Group {
     this.pan(-bounds.minX(), -bounds.minY());
 
     this.setClip(bounds.render());
-  }
-
-  /**
-   * Add a collection of land polygons to the chart.
-   *
-   * @param land The collection of land polygons to add to the chart.
-   */
-  public void land(final Collection<Way> land) {
-    if (land == null) {
-      return;
-    }
-
-    this.land = new RectangleTree<Way>(land);
-  }
-
-  /**
-   * Add a collection of ways to the chart.
-   *
-   * @param ways The collection of ways to add to the chart.
-   */
-  public void ways(final Collection<Way> ways) {
-    if (ways == null || ways.isEmpty()) {
-      return;
-    }
-
-    this.ways = new RectangleTree<Way>(ways);
-  }
-
-  /**
-   * Add a collection of relations to the chart.
-   *
-   * @param relations The relations to add to the chart.
-   */
-  public void relations(final Collection<Relation> relations) {
-    if (relations == null || relations.isEmpty()) {
-      return;
-    }
-
-    this.relations = new RectangleTree<Relation>(relations);
   }
 
   /**
@@ -279,7 +232,7 @@ public final class Chart extends Group {
     this.center(address);
   }
 
-  /**
+   /**
    * Zoom the chart.
    *
    * @param factor  The factor with which to zoom.
@@ -445,29 +398,11 @@ public final class Chart extends Group {
     int x = anchor.x;
     int y = anchor.y;
 
-    ElementStore elementStore = new ElementStore();
+    List<? extends Element> elements = this.elementStore.find()
+      .types("land", "way", "relation")
+      .bounds(x, y, x + 256, y + 256)
+      .get();
 
-    ElementStore.Query q = new ElementStore.Query();
-    q.setTypes("land", "way", "relation");
-    q.setBounds(x, y, x + 256, y + 256);
-
-    List<?extends Element> elements = elementStore.search(q);
-
-
-    /*List<Element> elements = new ArrayList<>();
-
-    elements.addAll(this.land.range(new SpatialIndex.Bounds(
-      x, y, x + 256, y + 256
-    )));
-
-    elements.addAll(this.ways.range(new SpatialIndex.Bounds(
-      x, y, x + 256, y + 256
-    )));
-
-    elements.addAll(this.relations.range(new SpatialIndex.Bounds(
-      x, y, x + 256, y + 256
-    )));
-*/
     if (elements.isEmpty()) {
       return;
     }
