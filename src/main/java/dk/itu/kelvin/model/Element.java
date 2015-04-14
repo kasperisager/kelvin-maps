@@ -15,6 +15,7 @@ import javafx.scene.Node;
 
 // Utilities
 import dk.itu.kelvin.util.HashTable;
+import dk.itu.kelvin.util.StringPool;
 
 /**
  * Abstract base class that all OSM Elements must extend.
@@ -29,6 +30,11 @@ public abstract class Element<T extends Node> implements Serializable {
    * UID for identifying serialized objects.
    */
   private static final long serialVersionUID = 42;
+
+  /**
+   * Internal string pool for elements.
+   */
+  private static final StringPool STRING_POOL = new StringPool();
 
   /**
    * Comparator for comparing the drawing order and layer of two elements.
@@ -78,7 +84,7 @@ public abstract class Element<T extends Node> implements Serializable {
       this.tags = new HashTable<>(INITIAL_TAG_CAPACITY);
     }
 
-    return this.tags.put(k.intern(), v.intern());
+    return this.tags.put(STRING_POOL.get(k), STRING_POOL.get(v));
   }
 
   /**

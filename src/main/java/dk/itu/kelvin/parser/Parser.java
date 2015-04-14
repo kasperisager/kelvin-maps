@@ -57,7 +57,7 @@ public abstract class Parser {
         ex.printStackTrace();
       }
       finally {
-        callback.done();
+        callback.call();
       }
     });
   }

@@ -14,12 +14,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
+// Functional utilities
+import dk.itu.kelvin.util.function.Callback;
+
 /**
  * Task queue class for multi-thread handling.
  *
  * <p>
- * This class allows with {@link #run(Runnable)} to run a set of operations on a
- * new thread.  {@link #register(String, Runnable...)} allows storage of a set
+ * This class allows with {@link #run(Callback)} to run a set of operations on a
+ * new thread.  {@link #register(String, Callback...)} allows storage of a set
  * of operations under a group name and {@link #start(String)} executes all sets
  * of operations under a specific group when requested, as new threads.
  *
@@ -61,7 +64,7 @@ public final class TaskQueue {
   /**
    * The map containing the different groups mapped to their task queues.
    */
-  private static Map<String, Queue<Runnable>> groups;
+  private static Map<String, Queue<Callback>> groups;
 
   /**
    * Don't allow instantiation of the class.
@@ -154,7 +157,7 @@ public final class TaskQueue {
    */
   public static void register(
     final String group,
-    final Runnable... tasks
+    final Callback... tasks
   ) {
     if (group == null || tasks == null || tasks.length == 0) {
       return;
@@ -166,12 +169,12 @@ public final class TaskQueue {
       // modified from several threads at the same time. This will for example
       // be the case if a new task is added before `start()` has finished
       // running all the tasks in the queue.
-      TaskQueue.groups.put(group, new ConcurrentLinkedQueue<Runnable>());
+      TaskQueue.groups.put(group, new ConcurrentLinkedQueue<Callback>());
     }
 
-    Queue<Runnable> queue = TaskQueue.groups.get(group);
+    Queue<Callback> queue = TaskQueue.groups.get(group);
 
-    for (Runnable task: tasks) {
+    for (Callback task: tasks) {
       queue.add(task);
     }
   }
@@ -190,9 +193,16 @@ public final class TaskQueue {
    *
    * @param task The task to perform.
    */
-  public static void run(final Runnable task) {
+  public static void run(final Callback task) {
     // Submit the task runner to the thread pool
-    TaskQueue.pool.submit(task);
+    TaskQueue.pool.submit(() -> {
+      try {
+        task.call();
+      }
+      catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    });
   }
 
   /**
@@ -210,7 +220,7 @@ public final class TaskQueue {
     // main thread isn't blocked.
     TaskQueue.run(() -> {
       // Get the task queue for the specified group.
-      Queue<Runnable> queue = TaskQueue.groups.get(group);
+      Queue<Callback> queue = TaskQueue.groups.get(group);
 
       // While there are tasks left in the queue, get the next one and run it.
       while (!queue.isEmpty()) {

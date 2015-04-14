@@ -37,6 +37,8 @@ public final class TaskQueueTest {
 
   /**
    * Test execution of tasks queued in the task queue.
+   *
+   * @throws Exception In case of an error.
    */
   @Test
   public void testTaskExecution() throws Exception {
@@ -49,6 +51,8 @@ public final class TaskQueueTest {
 
   /**
    * Test execution of queued grouped tasks in the task queue.
+   *
+   * @throws Exception In case of an error.
    */
   @Test
   public void testTaskGroupExecution() throws Exception {
