@@ -36,6 +36,9 @@ import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.Way;
 
+// Stores
+import dk.itu.kelvin.store.ElementStore;
+
 /**
  * Chart class for handling which elements to display and where.
  *
@@ -442,7 +445,16 @@ public final class Chart extends Group {
     int x = anchor.x;
     int y = anchor.y;
 
-    List<Element> elements = new ArrayList<>();
+    ElementStore elementStore = new ElementStore();
+
+    ElementStore.Query q = new ElementStore.Query();
+    q.setTypes("land", "way", "relation");
+    q.setBounds(x, y, x + 256, y + 256);
+
+    List<?extends Element> elements = elementStore.search(q);
+
+
+    /*List<Element> elements = new ArrayList<>();
 
     elements.addAll(this.land.range(new SpatialIndex.Bounds(
       x, y, x + 256, y + 256
@@ -455,7 +467,7 @@ public final class Chart extends Group {
     elements.addAll(this.relations.range(new SpatialIndex.Bounds(
       x, y, x + 256, y + 256
     )));
-
+*/
     if (elements.isEmpty()) {
       return;
     }

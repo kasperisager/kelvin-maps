@@ -129,23 +129,31 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * @param q  The criteria object to look up elements based on.
    * @return the list of elements that meet the criteria.
    */
-  public List<Element> search(final Query q) {
-    switch (q.type()) {
-      case "way":
-        return this.waysTree(q.bounds());
-      break;
-      case "land":
-        return this.landTree.range(q.bounds());
-      break;
-      case "relation":
-        return this.relationsTree(q.bounds());
-      break;
-      default:
-        List<Element> all = new ArrayList<>();
-        for ()
+  public List<? extends Element> search(final Query q) {
+    List<Element> elementList = new ArrayList<>();
+
+    for(String s : q.types){
+      if(s == "way"){
+        elementList.addAll(this.waysTree.range(q.bounds));
+      }
+      else if(s == "land"){
+        elementList.addAll(this.landTree.range(q.bounds));
+      }
+      else if(s == "relation"){
+
+        elementList.addAll(this.relationsTree.range(q.bounds));
+      }
     }
 
-    return null;
+    return elementList;
+  }
+
+  public List<Element> getElements(List<Element> list){
+    List<Element> liste = new ArrayList<>();
+    for( Element e : list){
+      liste.add(e);
+    }
+    return liste;
   }
 
   /**
@@ -195,11 +203,12 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * The search query object.
    */
-  public class Query{
+  public static class Query {
+
     /**
      * Specifies object type to search for.
      */
-    private String type;
+    private String[] types;
 
     /**
      * Specifies the tag to search for.
@@ -212,30 +221,10 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     private SpatialIndex.Bounds bounds;
 
     /**
-     * The analog bound coordinates.
-     */
-    private double minX;
-
-    /**
-     * The analog bound coordinates.
-     */
-    private double maxX;
-
-    /**
-     * The analog bound coordinates.
-     */
-    private double minY;
-
-    /**
-     * The analog bound coordinates.
-     */
-    private double maxY;
-
-    /**
      * Getter for type field.
      */
-    public String type() {
-      return this.type;
+    public String[] type() {
+      return this.types;
     }
 
     /**
@@ -245,6 +234,34 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
       return this.bounds;
     }
 
+    public void setTypes(String... type){
+      int N = type.length;
+      types = new String[N];
+
+      for(int i = 0; i < N; i++){
+        types[i] = type[i];
+      }
+    }
+
+    /**
+     *
+     * @param minX
+     * @param minY
+     * @param maxX
+     * @param maxY
+     */
+    public void setBounds(float minX, float minY, float maxX, float maxY) {
+      SpatialIndex.Bounds b = new SpatialIndex.Bounds(minX, minY, maxX, maxY);
+      this.bounds = b;
+    }
+
+    /**
+     *
+     * @param b
+     */
+    public void setBounds(SpatialIndex.Bounds b) {
+      this.bounds = b;
+    }
   }
 
 }
