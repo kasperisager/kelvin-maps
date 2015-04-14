@@ -7,15 +7,19 @@ package dk.itu.kelvin.controller;
 import java.io.File;
 
 // JavaFX stage utilities
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-// Later
-import javafx.fxml.FXML;
+// JavaFX Scene utilities
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.scene.control.MenuBar;
+
+// JavaFX Geometry
+import javafx.geometry.Pos;
+
+// JavaFX FXML
+import javafx.fxml.FXML;
 
 // ControlsFX
 import org.controlsfx.control.PopOver;
@@ -23,7 +27,13 @@ import org.controlsfx.control.PopOver;
 /**
  * MenuBar controller class.
  */
-public class MenuController {
+public final class MenuController {
+
+  /**
+   * The menu controller instance.
+   */
+  private static MenuController instance;
+
   /**
    * Current Version number.
    */
@@ -51,9 +61,33 @@ public class MenuController {
   private MenuBar mainMenuBar;
 
   /**
+   * Getting MenuController instance.
+   * @return MenuController instance.
+   */
+  public static MenuController instance() {
+    return MenuController.instance;
+  }
+
+  /**
+   * Initializing the MenuController instance.
+   * @param instance the MenuController instance.
+   */
+  private static void instance(final MenuController instance) {
+    MenuController.instance = instance;
+  }
+
+  /**
+   * The initialize method.
+   */
+  @FXML
+  private void initialize() {
+    MenuController.instance(this);
+  }
+  /**
    * Choose an .OSM file to be loaded.
    */
-  public final void pickFile() {
+  @FXML
+  private void pickFile() {
     FileChooser filechooser = new FileChooser();
     filechooser.setTitle("Select file to load");
     filechooser.getExtensionFilters().add(
@@ -70,28 +104,32 @@ public class MenuController {
   /**
    * Saves current OSM file as bin.
    */
-  public void saveBin() {
+  @FXML
+  private void saveBin() {
     //do stuff.
   }
 
   /**
    * Loads the last used bin file.
    */
-  public void loadBin() {
+  @FXML
+  private void loadBin() {
     //do stuff
   }
 
   /**
    * Loads the default bin file.
    */
-  public void defaultBin() {
+  @FXML
+  private void defaultBin() {
     //do stuff.
   }
 
   /**
    * Closes the application.
    */
-  public final void close() {
+  @FXML
+  private void close() {
     Stage stage = (Stage) this.mainMenuBar.getScene().getWindow();
     stage.close();
   }
@@ -99,14 +137,16 @@ public class MenuController {
   /**
    * Resets all application settings to default.
    */
-  public void resetAll() {
+  @FXML
+  private void resetAll() {
     //do stuff.
   }
 
   /**
    * Manual shows information about general interaction with the software.
    */
-  public final void showManual() {
+  @FXML
+  private void showManual() {
     this.manual = new PopOver();
     VBox vbox = new VBox();
 
@@ -129,7 +169,8 @@ public class MenuController {
   /**
    * About menu showing information about the software and creators.
    */
-  public final void showAbout() {
+  @FXML
+  private void showAbout() {
     this.about = new PopOver();
     VBox vbox = new VBox();
     vbox.getStyleClass().add("aboutVBox");

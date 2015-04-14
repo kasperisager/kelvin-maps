@@ -34,10 +34,10 @@ public final class ApplicationController {
   private RotateTransition rt;
 
   /**
-   * Borderpane element.
+   * The main parent element.
    */
   @FXML
-  private BorderPane borderPane;
+  private BorderPane mainBorderPane;
 
   /**
    * StackPane element.
@@ -54,7 +54,8 @@ public final class ApplicationController {
   /**
    * JavaFX constructor for the ApplicationController.
    */
-  public void initialize() {
+  @FXML
+  private void initialize() {
     ApplicationController.instance(this);
     ApplicationController.instance().rt
     = new RotateTransition(Duration.millis(10000), this.loadIcon);
@@ -63,7 +64,6 @@ public final class ApplicationController {
 
   /**
    * Get the application controller instance.
-   *
    * @return The application controller instance.
    */
   public static ApplicationController instance() {
@@ -72,7 +72,6 @@ public final class ApplicationController {
 
   /**
    * Set the application controller instance.
-   *
    * @param instance The application controller instance.
    */
   private static void instance(final ApplicationController instance) {
@@ -84,16 +83,16 @@ public final class ApplicationController {
    * This enables us to change colours of the map.
    */
   public static void highContrast() {
-    if (!ApplicationController.instance().borderPane.getStyleClass().
+    if (!ApplicationController.instance().mainBorderPane.getStyleClass().
       contains("high-contrast")) {
-      ApplicationController.instance().borderPane.getStyleClass().
+      ApplicationController.instance().mainBorderPane.getStyleClass().
       add("high-contrast");
-      System.out.println(ApplicationController.instance().borderPane.
+      System.out.println(ApplicationController.instance().mainBorderPane.
       getStyleClass());
     } else {
-      ApplicationController.instance().borderPane.getStyleClass().
+      ApplicationController.instance().mainBorderPane.getStyleClass().
       remove("high-contrast");
-      System.out.println(ApplicationController.instance().borderPane.
+      System.out.println(ApplicationController.instance().mainBorderPane.
       getStyleClass());
     }
   }

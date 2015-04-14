@@ -3,27 +3,15 @@
  */
 package dk.itu.kelvin.controller;
 
-// General utilities
-import java.util.List;
-import dk.itu.kelvin.util.HashTable;
-
 // I/O utilities
 import java.io.File;
-
-// JavaFX utilities
-import javafx.util.Duration;
 
 // JavaFX application utilities
 import javafx.application.Platform;
 
-// JavaFX scene utilities
-import javafx.geometry.Pos;
-
 // JavaFX layout
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 // JavaFX shapes
 import javafx.scene.shape.Path;
@@ -42,20 +30,10 @@ import javafx.scene.transform.Affine;
 import javafx.scene.text.Text;
 
 // JavaFX controls
-import javafx.scene.control.Button;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
-import javafx.scene.control.CheckBox;
-
-// JavaFX geometry
-import javafx.geometry.Bounds;
 
 // FXML utilities
 import javafx.fxml.FXML;
-
-// Controls FX
-import org.controlsfx.control.PopOver;
 
 // Parser
 import dk.itu.kelvin.parser.Parser;
@@ -66,13 +44,15 @@ import dk.itu.kelvin.layout.Chart;
 // Models
 import dk.itu.kelvin.model.Address;
 
-// Stores
-import dk.itu.kelvin.store.AddressStore;
-
 /**
  * Chart controller class.
  */
 public final class ChartController {
+
+  /**
+   * The ChartController instance.
+   */
+  private static ChartController instance;
   /**
    * The input file to show in the map viewer.
    */
@@ -92,17 +72,6 @@ public final class ChartController {
    * Default zoom out factor.
    */
   private static final double ZOOM_OUT = 1 / ZOOM_IN;
-
-  /**
-   * Don't show auto completion when the entered input contains less that this
-   * number of characters.
-   */
-  private static final int AUTOCOMPLETE_CUTOFF = 2;
-
-  /**
-   * Max number of items to show in the auto completion menu.
-   */
-  private static final int AUTOCOMPLETE_MAX_ITEMS = 5;
 
   /**
    * Mouse X coordinate for dragging.
@@ -130,40 +99,9 @@ public final class ChartController {
   private Affine compassTransform = new Affine();
 
   /**
-   * The addresses map from the parser.
+   * Text(icon) representing the found address.
    */
-  private AddressStore addresses = new AddressStore();
-
-  /**
-   * PopOver for the config menu.
-   */
-  private PopOver popOver;
-
-  /**
-   * Auto-complete popover for textfields.
-   */
-  private PopOver autocPopOver;
-
-  /**
-   * The dynamic autocomplete results.
-   */
-  private HashTable<String, Address> suggestions =
-    new HashTable<>(AUTOCOMPLETE_MAX_ITEMS);
-
-  /**
-   * Vbox containing the suggestion buttons.
-   */
-  private VBox suggestionVBox;
-
-  /**
-   * Pointer for highlighting the autocomplete suggestions.
-   */
-  private int pointer = 0;
-
-  /**
-   * Label representing the found address.
-   */
-  private Text fromAddress;
+  private Text locationPointer;
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -178,48 +116,6 @@ public final class ChartController {
   private Path compassArrow;
 
   /**
-   * The address typed in.
-   */
-  @FXML
-  private TextField addressFrom;
-
-  /**
-   * The address to navigate to from addressFrom.
-   */
-  @FXML
-  private TextField addressTo;
-
-  /**
-   * The config button.
-   */
-  @FXML
-  private ToggleButton toggleButton;
-
-  /**
-   * The checkbox VBox element.
-   */
-  @FXML
-  private VBox checkboxVBox;
-
-  /**
-   * The poi elements VBox.
-   */
-  @FXML
-  private VBox poiVBox;
-
-  /**
-   * The VBox containing route description.
-   */
-  @FXML
-  private VBox directionsVBox;
-
-  /**
-   * The VBox containing a ScrollPane.
-   */
-  @FXML
-  private VBox directionsScrollPane;
-
-  /**
    * The VBox surrounding all compass elements.
    */
   @FXML
@@ -232,43 +128,41 @@ public final class ChartController {
   private Label scaleIndicatorLabel;
 
   /**
-   * GridPane surrounding the big properties boxes
-   * containing route description and point of interest.
+   * The main parent element.
    */
   @FXML
-  private GridPane propertiesGridPane;
+  private StackPane mainStackPane;
 
   /**
-   * The parent element.
+   * Getting ChartsController instance.
+   * @return ChartController instance.
    */
-  @FXML
-  private StackPane stackPane;
+  public static ChartController instance() {
+    return ChartController.instance;
+  }
 
   /**
-   * Tags for cartographic elements.
+   * Initializing the ChartController instance.
+   * @param instance the ChartController instance.
    */
-  private String[] tags = {"Parking", "Cafe", "Restaurant", "Fast Food",
-    "Toilets", "Pub", "Recycling", "Bar", "Compressed Air", "Post Box",
-    "Taxi", "BBQ", "Solarium", "Telephone"};
+  private static void instance(final ChartController instance) {
+    ChartController.instance = instance;
+  }
 
   /**
    * Initialize the controller.
    * @throws Exception In case of an error. Duh.
    */
-  public void initialize() throws Exception {
-    // Sets the parent element inactive until loaded.
-    this.stackPane.setDisable(true);
-    this.propertiesGridPane.getChildren().remove(this.checkboxVBox);
-    this.propertiesGridPane.getChildren().remove(this.directionsScrollPane);
+  @FXML
+  private void initialize() throws Exception {
+    ChartController.instance(this);
+
+    // Sets the parent element inactive until done loading.
+    this.mainStackPane.setDisable(true);
 
     this.compassArrow.getTransforms().add(this.compassTransform);
 
-    this.fromAddress = new Text();
-    this.fromAddress.getStyleClass().add("icon");
-    this.fromAddress.getStyleClass().add("address-label");
-    this.fromAddress.setText("\uf456");
-    this.fromAddress.setVisible(false);
-    this.chart.getChildren().add(this.fromAddress);
+    this.initLocationPointer();
 
     File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
 
@@ -277,7 +171,7 @@ public final class ChartController {
     parser.read(file, () -> {
       // Get all addresses from parser.
       for (Address address: parser.addresses()) {
-        this.addresses.add(address);
+        AddressController.instance().addAddress(address);
       }
 
       // Schedule rendering of the chart nodes.
@@ -288,241 +182,74 @@ public final class ChartController {
         this.chart.bounds(parser.bounds());
 
         // Sets the chart active after load.
-        this.stackPane.setDisable(false);
-        this.addressFrom.requestFocus();
+        this.mainStackPane.setDisable(false);
         ApplicationController.removeIcon();
       });
     });
-
-    this.createPOI();
-    this.createPopOver();
-
-    this.autocPopOver = new PopOver();
-    this.autocPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
-    this.autocPopOver.setCornerRadius(2);
-    this.autocPopOver.setArrowSize(0);
-    this.autocPopOver.setAutoHide(true);
-    this.autocPopOver.setDetachable(false);
-
-    this.setAutoComplete(this.addressFrom);
-    this.setAutoComplete(this.addressTo);
   }
 
   /**
-   * Sets autocomplete for textfields.
-   * @param tf textfield.
+   * Initializing properties for location pointer and adding to chart.
    */
-  private void setAutoComplete(final TextField tf) {
-    tf.textProperty().addListener((e) -> {
-      this.suggestions.clear();
-
-      // If the input in the textfield is above
-      // The autocomplete_cutoff then add strings to the suggestions arraylist.
-      if (tf.getLength() > AUTOCOMPLETE_CUTOFF) {
-        List<Address> results = this.addresses.search(tf.getText());
-
-        for (Address a : results) {
-          this.suggestions.put(
-            a.street()
-              + " " + a.number()
-              + ", " + a.postcode()
-              + " " + a.city(), a
-          );
-
-          // End the foreach loop
-          // if AutoComplete_max_items limit has been reached.
-          if (this.suggestions.size() > AUTOCOMPLETE_MAX_ITEMS) {
-            break;
-          }
-        }
-      }
-
-      // Hide the popover if there are no suggestions.
-      if (this.suggestions.size() <= 0) {
-        this.autocPopOver.hide(Duration.ONE);
-        return;
-      }
-
-      Bounds bounds = tf.localToScreen(tf.getBoundsInParent());
-
-      this.suggestionVBox = new VBox(this.suggestions.size());
-
-      this.suggestionVBox.setPrefWidth(bounds.getWidth() + 27);
-
-      // Creates and adds buttons to the VBox.
-      for (String suggestion : this.suggestions.keySet()) {
-        Button b = new Button(suggestion);
-        b.setPrefWidth(bounds.getWidth() + 27);
-
-        b.setOnMouseClicked((e2 -> {
-          tf.setText(b.getText());
-
-          this.autocPopOver.hide(Duration.ONE);
-
-          if (tf.getId().equals("addressFrom")) {
-            this.findAddress(this.suggestions.get(suggestion));
-          }
-          else if (tf.getId().equals("addressTo")) {
-            this.findRoute();
-          }
-        }));
-
-        this.suggestionVBox.getChildren().add(b);
-      }
-
-      // The suggestion highlight pointer.
-      this.pointer = 0;
-
-      // Highlights the first suggestion as default.
-      this.addStyle();
-
-      // Removes the current highlight on mouse enter.
-      this.suggestionVBox.setOnMouseEntered((e4 -> {
-        this.removeStyle();
-      }));
-
-      // Adds highlight again on mouse exit.
-      this.suggestionVBox.setOnMouseExited((e4 -> {
-        this.addStyle();
-      }));
-
-      // Adds the VBox to the popover.
-      this.autocPopOver.setContentNode(this.suggestionVBox);
-
-      // Makes the popover visible.
-      if (!this.autocPopOver.isShowing()) {
-        this.autocPopOver.show(
-          tf,
-          bounds.getMinX() + 14, // 14 = font size
-          bounds.getMinY() + bounds.getHeight(),
-          Duration.ONE
-        );
-      }
-    });
-
-    // Updating the highlight.
-    tf.setOnKeyReleased((event -> {
-      if (this.suggestions.size() > 0) {
-        this.suggestionVBox.setOnKeyPressed((e2) -> {
-          // Removes the current highlight.
-          this.removeStyle();
-
-          // Moves the pointer and thereby the highlight.
-          this.moveHighlight(e2);
-
-          // Adds a new highlight.
-          this.addStyle();
-        });
-      }
-    }));
+  private void initLocationPointer() {
+    this.locationPointer = new Text();
+    this.locationPointer.getStyleClass().add("icon");
+    this.locationPointer.getStyleClass().add("address-label");
+    this.locationPointer.setText("\uf456");
+    this.locationPointer.setVisible(false);
+    this.chart.getChildren().add(this.locationPointer);
   }
 
   /**
-   * Add the highlight styleclass to specific button.
+   * Moves the compass VBox relative to BOTTOM_LEFT.
+   * @param x how much to move compass along x-axis [px].
    */
-  public void addStyle() {
-    Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
-    b.getStyleClass().add("highlight");
+  public void moveCompass(final double x) {
+    this.compassVBox.setTranslateX(x);
   }
 
   /**
-   * Remove highlight styleclass from a specific button.
+   * Will reset the compass, so it points north.
    */
-  public void removeStyle() {
-    Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
-    b.getStyleClass().remove("highlight");
+  @FXML
+  private void compassReset() {
+    //to be continued
   }
 
   /**
-   * To move the highlight pointer up and down in the suggestion popover.
-   * @param e the keyevent.
+   * Sets the text of scaleIndicator.
+   * @param text the text to be set in scale.
    */
-  public void moveHighlight(final KeyEvent e) {
-    switch (e.getCode()) {
-      case UP:
-        if (this.pointer > 0) {
-          this.pointer--;
-        }
-        e.consume();
-        break;
-      case DOWN:
-        if (this.pointer < this.suggestions.size() - 1) {
-          this.pointer++;
-        }
-        e.consume();
-        break;
-      default:
-        break;
-    }
+  private void setScaleText(final String text) {
+    this.scaleIndicatorLabel.setText(text);
   }
 
   /**
-   * Initialises the checkboxes of for Points Of Interest.
+   * Sets the length of the scaleIndicator.
+   * @param length how wide the scale is [px].
    */
-  private void createPOI() {
-
-    for (String s : this.tags) {
-      CheckBox cb = new CheckBox(s);
-      cb.setPrefWidth(200);
-
-      //add CheckBox event listener and update shown labels
-
-      this.poiVBox.getChildren().add(cb);
-    }
-
+  private void setScaleLenght(final double length) {
+    this.scaleIndicatorLabel.setPrefWidth(length);
   }
 
   /**
-   * Creates a PopOver object with buttons, eventhandlers and listeners.
+   * Sets a pointer at the address found.
+   * @param x Address with the coordinates for the pointer.
+   * @param y Address with the coordinates for the pointer.
    */
-  private void createPopOver() {
-    VBox vbox = new VBox(2);
+  public static void setPointer(final double x, final double y) {
+    ChartController.instance.locationPointer.setLayoutX(x);
+    ChartController.instance.locationPointer.setLayoutY(y);
+    ChartController.instance.locationPointer.setVisible(true);
+  }
 
-    Button blind = new Button("High Contrast");
-    Button poi = new Button("Points of Interest");
-
-    blind.setPrefWidth(140);
-    poi.setPrefWidth(140);
-    vbox.getChildren().addAll(blind, poi);
-
-    blind.setOnAction((event) -> {
-      ApplicationController.highContrast();
-    });
-
-    poi.setOnAction((event) -> {
-      if (!this.checkboxVBox.isVisible()) {
-        this.checkboxVBox.setVisible(true);
-        this.propertiesGridPane.getChildren().add(this.checkboxVBox);
-        this.moveCompass(200);
-      } else {
-        this.checkboxVBox.setVisible(false);
-        this.propertiesGridPane.getChildren().remove(this.checkboxVBox);
-        this.moveCompass(0);
-      }
-      this.popOver.hide();
-    });
-
-    this.popOver = new PopOver();
-    this.popOver.setContentNode(vbox);
-    this.popOver.setCornerRadius(2);
-    this.popOver.setArrowSize(6);
-    this.popOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
-    this.popOver.setAutoHide(true);
-
-    this.toggleButton.selectedProperty().addListener((ob, ov, nv) -> {
-      if (nv) {
-        this.popOver.show(this.toggleButton);
-      }
-      else {
-        this.popOver.hide();
-      }
-    });
-
-    this.popOver.showingProperty().addListener((ob, ov, nv) -> {
-      if (!nv && this.toggleButton.isSelected()) {
-        this.toggleButton.setSelected(false);
-      }
-    });
+  /**
+   * Centering chart around and x, y coordinate.
+   * @param a the address to center around.
+   * @param scale the new scale for the map.
+   */
+  public static void centerChart(final Address a, final double scale) {
+    ChartController.instance.chart.center(a, scale);
   }
 
   /**
@@ -604,7 +331,6 @@ public final class ChartController {
 
   /**
    * On mouse dragged event.
-   *
    * @param e The mouse event.
    */
   @FXML
@@ -620,7 +346,6 @@ public final class ChartController {
 
   /**
    * On scroll event.
-   *
    * @param e The scroll event.
    */
   @FXML
@@ -636,7 +361,6 @@ public final class ChartController {
 
   /**
    * On zoom event.
-   *
    * @param e The zoom event.
    */
   @FXML
@@ -650,7 +374,6 @@ public final class ChartController {
 
   /**
    * On rotate event.
-   *
    * @param e The rotate event.
    */
   @FXML
@@ -665,7 +388,6 @@ public final class ChartController {
 
   /**
    * On key pressed event.
-   *
    * @param e The key event.
    */
   @FXML
@@ -734,189 +456,5 @@ public final class ChartController {
   @FXML
   private void zoomOut() {
     this.chart.zoom(Math.pow(ZOOM_OUT, 8));
-  }
-
-  /**
-   * Is activated through pressing "enter" after user have typed input in the
-   * first textfield.
-   * Found in textfield addressFrom.
-   */
-  @FXML
-  private void findAddress() {
-    if (this.autocPopOver.isShowing()) {
-      Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
-      this.findAddress(this.suggestions.get(b.getText()));
-
-      this.addressFrom.setText(b.getText());
-      this.autocPopOver.hide();
-    }
-
-  }
-
-  /**
-   * Centers the screen on a specific point and set a location marker.
-   * @param a the Address to center the screen around and set pointer at.
-   */
-  private void findAddress(final Address a) {
-    this.chart.center(a, 2.5);
-    this.setPointer(a);
-    /*else {
-      // Dialog "The address does not exist."
-    }*/
-  }
-
-  /**
-   * Takes the input from addressFrom and addressTo.
-   */
-  @FXML
-  private void findRoute() {
-    if (this.autocPopOver.isShowing()) {
-      Button b = (Button) this.suggestionVBox.getChildren().get(this.pointer);
-      String endInput = b.getText();
-      this.addressTo.setText(b.getText());
-
-      String startInput = this.addressFrom.getText();
-
-      if (endInput == null || startInput == null) {
-        return;
-      }
-
-      endInput = endInput.trim();
-      startInput = startInput.trim();
-
-      if (endInput.isEmpty() || startInput.isEmpty()) {
-        return;
-      }
-
-      Address startAddress = Address.parse(startInput);
-      Address endAddress = Address.parse(endInput);
-
-      if (endAddress == null || startAddress == null) {
-        return;
-      }
-
-      // showRouteOnMap(startAddress, endAddress);
-
-      System.out.println("X: " + startAddress.x() + " " + "Y: "
-      + startAddress.y());
-      System.out.println("X: " + endAddress.x() + " " + "Y: "
-      + endAddress.y());
-
-      this.autocPopOver.hide();
-    }
-    /*else {
-      // Dialog "The address does not exist."
-    }*/
-
-    if (!this.propertiesGridPane.getChildren()
-        .contains(this.directionsScrollPane)) {
-      this.propertiesGridPane.getChildren().add(this.directionsScrollPane);
-      this.moveCompass(400);
-    }
-
-    int stack = 30;
-    for (int i = 0; i < stack; i++) {
-      HBox hbox = new HBox(2);
-      hbox.getStyleClass().add("bottomBorder");
-      hbox.setPrefWidth(500);
-      Label icon = new Label("\uf10c");
-      icon.getStyleClass().add("icon");
-      icon.setPrefWidth(40);
-      icon.setAlignment(Pos.CENTER);
-
-      Label label = new Label("Turn right at next left");
-
-      hbox.getChildren().addAll(icon, label);
-      this.directionsVBox.getChildren().add(hbox);
-    }
-  }
-
-  /**
-   * Hides the route description VBox.
-   */
-  public void hideDirections() {
-    this.propertiesGridPane.getChildren().remove(this.directionsScrollPane);
-    this.moveCompass(0);
-  }
-
-  /**
-   * Hides the Points of Interest VBox.
-   */
-  public void hidePOI() {
-    this.checkboxVBox.setVisible(false);
-    this.propertiesGridPane.getChildren().remove(this.checkboxVBox);
-    this.moveCompass(0);
-  }
-
-  /**
-   * Moves the compass VBox relative to BOTTOM_LEFT.
-   * @param x how much to move compass along x-axis [px].
-   */
-  public void moveCompass(final double x) {
-    this.compassVBox.setTranslateX(x);
-  }
-
-  /**
-   * Will reset the compass, so it points north.
-   */
-  @FXML
-  private void compassReset() {
-    //to be continued
-  }
-
-  /**
-   * Swap the text of the from and to address inputs.
-   */
-  @FXML
-  private void swapTextFields() {
-    String from = this.addressFrom.getText();
-    String to = this.addressTo.getText();
-    this.addressFrom.setText(to);
-    this.addressTo.setText(from);
-    if (this.autocPopOver.isShowing()) {
-      this.autocPopOver.hide(new Duration(0));
-    }
-  }
-
-  /**
-   * Shows the route between a and b by car.
-   */
-  @FXML
-  private void routeByCar() {
-    System.out.println("Route by car");
-  }
-
-  /**
-   * Shows the rout between a and b by foot or bicycle.
-   */
-  @FXML
-  private void routeByFoot() {
-    System.out.println("Route by foot");
-  }
-
-  /**
-   * Sets the text of scaleIndicator.
-   * @param text the text to be set in scale.
-   */
-  private void setScaleText(final String text) {
-    this.scaleIndicatorLabel.setText(text);
-  }
-
-  /**
-   * Sets the length of the scaleIndicator.
-   * @param length how wide the scale is [px].
-   */
-  private void setScaleLenght(final double length) {
-    this.scaleIndicatorLabel.setPrefWidth(length);
-  }
-
-  /**
-   * Sets a pointer at the address found.
-   * @param address Address with the coordinates for the pointer.
-   */
-  public void setPointer(final Address address) {
-    this.fromAddress.setLayoutX(address.x());
-    this.fromAddress.setLayoutY(address.y());
-    this.fromAddress.setVisible(true);
   }
 }
