@@ -106,9 +106,9 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   }
 
   /**
-   * Add a collection of ways to the chart.
+   * Indexing the way rangeTree.
    *
-   * @param list The collection of ways to add to the chart.
+   * @param list The collection of ways to be indexed.
    */
   public RectangleTree indexWays(final Collection<Way> list) {
     if (ways == null || ways.isEmpty()) {
@@ -121,11 +121,11 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   }
 
   /**
-   * Add a collection of relations to the chart.
+   * Indexing relations rangeTree.
    *
-   * @param list The relations to add to the chart.
+   * @param list The collection of relations to be indexed.
    */
-  public RectangleTree relations(final Collection<Relation> list) {
+  public RectangleTree indexRelations(final Collection<Relation> list) {
     if (relations == null || relations.isEmpty()) {
       return null;
     }
@@ -136,14 +136,6 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   }
 
   /**
-   * Removes a specific element from the store.
-   * @param element The element to remove from the store.
-   */
-  @Override
-  public void remove(final Element element) {
-  }
-
-  /**
    * If needed indexes the given pointTree.
    */
   public PointTree<? extends Element> index(final PointTree<? extends Element> p) {
@@ -151,10 +143,11 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   }
 
   /**
-   * If needed indexes the given rectangleTree.
+   * Removes a specific element from the store.
+   * @param element The element to remove from the store.
    */
-  public RectangleTree<? extends Element> index(final RectangleTree<? extends Element> r) {
-    return null;
+  @Override
+  public void remove(final Element element) {
   }
 
 }
