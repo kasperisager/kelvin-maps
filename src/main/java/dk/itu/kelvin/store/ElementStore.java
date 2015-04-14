@@ -81,12 +81,6 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    */
   private boolean relationsIsDirty;
 
-  /**
-   * Constructor.
-   */
-  public ElementStore() {
-  }
-
   public void zeb() {
     this.waysTree = this.indexWays(this.ways);
     this.relationsTree = this.indexRelations(this.relations);
@@ -136,6 +130,21 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * @return the list of elements that meet the criteria.
    */
   public List<Element> search(final Query q) {
+    switch (q.type()) {
+      case "way":
+        return this.waysTree(q.bounds());
+      break;
+      case "land":
+        return this.landTree.range(q.bounds());
+      break;
+      case "relation":
+        return this.relationsTree(q.bounds());
+      break;
+      default:
+        List<Element> all = new ArrayList<>();
+        for ()
+    }
+
     return null;
   }
 
@@ -200,7 +209,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     /**
      * Bounds to search for.
      */
-    private BoundingBox bounds;
+    private SpatialIndex.Bounds bounds;
 
     /**
      * The analog bound coordinates.
@@ -222,8 +231,19 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
      */
     private double maxY;
 
+    /**
+     * Getter for type field.
+     */
+    public String type() {
+      return this.type;
+    }
 
-
+    /**
+     * Getter for bounds field.
+     */
+    public SpatialIndex.Bounds bounds() {
+      return this.bounds;
+    }
 
   }
 
