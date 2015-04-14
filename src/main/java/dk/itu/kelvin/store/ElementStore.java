@@ -44,7 +44,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * A list for all bounds.
    */
-  private List<BoundingBox> bounds = new ArrayList<>();
+  private BoundingBox bounds;
 
   /**
    * Point tree for quick search in node elements.
@@ -87,7 +87,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   public ElementStore() {
   }
 
-  public void zeb() { // hej palle
+  public void zeb() {
     this.waysTree = this.indexWays(this.ways);
     this.relationsTree = this.indexRelations(this.relations);
   }
@@ -99,7 +99,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    */
   public void add(final Way w) {
     this.ways.add(w);
-    System.out.println("add way");
+    this.waysIsDirty = true;
   }
 
   /**
@@ -109,8 +109,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    */
   public void addLand(final Way l) {
     this.land.add(l);
-    System.out.println("add land");
-
+    this.landIsDirty = true;
   }
 
   /**
@@ -119,8 +118,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    */
   public void add(final Relation r) {
     this.relations.add(r);
-    System.out.println("add relation");
-
+    this.relationsIsDirty = true;
   }
 
   /**
@@ -128,8 +126,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * @param b the relation element.
    */
   public void add(final BoundingBox b) {
-    this.bounds.add(b);
-    System.out.println("add bbox");
+    this.bounds = b;
   }
 
   /**
@@ -164,12 +161,10 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
       return null;
     }
 
-    System.out.println("way added");
-
-    RectangleTree<Way> tree = new RectangleTree<Way>(ways);
+    RectangleTree<Way> wayTree = new RectangleTree<>(ways);
     this.waysIsDirty = false;
 
-    return tree;
+    return wayTree;
   }
 
   /**
@@ -180,16 +175,13 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    */
   public SpatialIndex<Relation> indexRelations(final Collection<Relation> relations) {
     if (relations == null || relations.isEmpty()) {
-      System.out.println("is empty");
       return null;
     }
 
-    System.out.println("relation added");
-
-    RectangleTree<Relation> tree = new RectangleTree<Relation>(relations);
+    RectangleTree<Relation> relationTree = new RectangleTree<>(relations);
     this.relationsIsDirty = false;
 
-    return tree;
+    return relationTree;
   }
 
   /**

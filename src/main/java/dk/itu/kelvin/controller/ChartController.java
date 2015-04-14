@@ -304,9 +304,9 @@ public final class ChartController {
           this.elementStore.add(r);
         }
 
-        this.elementStore.zeb();
-
         this.elementStore.add(parser.bounds());
+
+        this.elementStore.zeb();
 
         this.chart.land(parser.land());
         this.chart.ways(parser.ways());
