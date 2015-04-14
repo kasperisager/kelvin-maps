@@ -130,6 +130,16 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * @return the list of elements that meet the criteria.
    */
   public List<? extends Element> search(final Query q) {
+    if (waysTree == null || waysIsDirty) {
+      this.indexWays(this.ways);
+    }
+    if (relationsTree == null || relationsIsDirty) {
+      this.indexRelations(this.relations);
+    }
+    if (landTree == null || landIsDirty) {
+      this.indexLand(this.land);
+    }
+
     List<Element> elementList = new ArrayList<>();
 
     for(String s : q.types){
@@ -188,6 +198,23 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     this.relationsIsDirty = false;
 
     return relationTree;
+  }
+
+  /**
+   * Indexing the land rangeTree.
+   *
+   * @param land The collection of land to be indexed.
+   * @return the indexed rectangleTree.
+   */
+  public SpatialIndex<Way> indexLand(final Collection<Way> land) {
+    if (ways == null || ways.isEmpty()) {
+      return null;
+    }
+
+    RectangleTree<Way> wayTree = new RectangleTree<>(land);
+    this.waysIsDirty = false;
+
+    return wayTree;
   }
 
   /**
