@@ -5,6 +5,8 @@ package dk.itu.kelvin.controller;
 
 // General utilities
 import java.util.List;
+
+import dk.itu.kelvin.store.ElementStore;
 import dk.itu.kelvin.util.HashTable;
 
 // I/O utilities
@@ -65,6 +67,9 @@ import dk.itu.kelvin.layout.Chart;
 
 // Models
 import dk.itu.kelvin.model.Address;
+import dk.itu.kelvin.model.Way;
+import dk.itu.kelvin.model.Relation;
+import dk.itu.kelvin.model.BoundingBox;
 
 // Stores
 import dk.itu.kelvin.store.AddressStore;
@@ -164,6 +169,11 @@ public final class ChartController {
    * Label representing the found address.
    */
   private Text fromAddress;
+
+  /**
+   * Element store storing all elements.
+   */
+  private ElementStore elementStore = new ElementStore();
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -282,6 +292,22 @@ public final class ChartController {
 
       // Schedule rendering of the chart nodes.
       Platform.runLater(() -> {
+        for (Way l : parser.land()) {
+          this.elementStore.addLand(l);
+        }
+
+        for (Way w : parser.ways()) {
+          this.elementStore.add(w);
+        }
+
+        for (Relation r : parser.relations()) {
+          this.elementStore.add(r);
+        }
+
+        this.elementStore.zeb();
+
+        this.elementStore.add(parser.bounds());
+
         this.chart.land(parser.land());
         this.chart.ways(parser.ways());
         this.chart.relations(parser.relations());

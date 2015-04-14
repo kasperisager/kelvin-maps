@@ -21,13 +21,6 @@ import dk.itu.kelvin.util.function.Callback;
  */
 public abstract class Store<E, C> implements Serializable {
   /**
-   * Add an element to the store.
-   *
-   * @param element The element to add to the store.
-   */
-  public abstract void add(final E element);
-
-  /**
    * Remove an element from the store.
    *
    * @param element The element to remove from the store.

@@ -7,11 +7,9 @@ package dk.itu.kelvin.store;
 import dk.itu.kelvin.model.Element;
 
 import dk.itu.kelvin.model.Way;
-import dk.itu.kelvin.model.Land;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.BoundingBox;
 import dk.itu.kelvin.model.Node;
-
 
 // Utilities
 import dk.itu.kelvin.util.SpatialIndex;
@@ -31,22 +29,22 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * A list for all land elements.
    */
-  private List<Element> land = new ArrayList<>();
+  private List<Way> land = new ArrayList<>();
 
   /**
    * A list for all land elements.
    */
-  private List<Element> ways = new ArrayList<>();;
+  private List<Way> ways = new ArrayList<>();
 
   /**
    * A list for all water elements.
    */
-  private List<Element> relations = new ArrayList<>();
+  private List<Relation> relations = new ArrayList<>();
 
   /**
    * A list for all bounds.
    */
-  private List<Element> bounds = new ArrayList<>();
+  private List<BoundingBox> bounds = new ArrayList<>();
 
   /**
    * Point tree for quick search in node elements.
@@ -69,34 +67,74 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   private SpatialIndex<Relation> relationsTree;
 
   /**
-   * Adds elements to the associated list.
-   * @param element The element to add to the store.
+   * Indicates whether waysTree needs to be indexed or not.
    */
-  @Override
-  public void add(final Element element) {
-    if (element instanceof Way) {
-      this.ways.add(element);
-    } else if (element instanceof Land) {
-      this.land.add(element);
-    } else if (element instanceof Relation) {
-      this.relations.add(element);
-    } else if (element instanceof BoundingBox) {
-      this.bounds.add(element);
-    }
+  private boolean waysIsDirty;
+
+  /**
+   * Indicates whether waysTree needs to be indexed or not.
+   */
+  private boolean landIsDirty;
+
+  /**
+   * Indicates whether waysTree needs to be indexed or not.
+   */
+  private boolean relationsIsDirty;
+
+  /**
+   * Constructor.
+   */
+  public ElementStore() {
+  }
+
+  public void zeb() {
+    this.waysTree = this.indexWays(this.ways);
+    this.relationsTree = this.indexRelations(this.relations);
   }
 
   /**
-   * Adds a collection of elements to the associated list.
-   * @param elements The collection to be added.
+   * Adds a way element to the associated list.
+   *
+   * @param w The element to be added.
    */
-  public void add(final Collection<Element> elements) {
-    for (Element e : elements) {
-      this.add(e);
-    }
+  public void add(final Way w) {
+    this.ways.add(w);
+    System.out.println("add way");
+  }
+
+  /**
+   * Adds a land element to the associated list.
+   *
+   * @param l the land element to be added.
+   */
+  public void addLand(final Way l) {
+    this.land.add(l);
+    System.out.println("add land");
+
+  }
+
+  /**
+   * Adds a relations element to the associated collection.
+   * @param r the relation element.
+   */
+  public void add(final Relation r) {
+    this.relations.add(r);
+    System.out.println("add relation");
+
+  }
+
+  /**
+   * Adds bound element to the associated collection.
+   * @param b the relation element.
+   */
+  public void add(final BoundingBox b) {
+    this.bounds.add(b);
+    System.out.println("add bbox");
   }
 
   /**
    * Finds elements that meet the criteria.
+   *
    * @param criteria  The criteria to look up elements based on.
    * @return the list of elements that meet the criteria.
    */
@@ -106,16 +144,30 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   }
 
   /**
+   * Removes a specific element from the store.
+   *
+   * @param element The element to remove from the store.
+   */
+  @Override
+  public void remove(final Element element) {
+  }
+
+  /**
    * Indexing the way rangeTree.
    *
-   * @param list The collection of ways to be indexed.
+   * @param ways The collection of ways to be indexed.
+   * @return the indexed rectangleTree.
    */
-  public RectangleTree indexWays(final Collection<Way> list) {
+  public SpatialIndex<Way> indexWays(final Collection<Way> ways) {
     if (ways == null || ways.isEmpty()) {
+      System.out.println("is empty");
       return null;
     }
 
-    RectangleTree tree = new RectangleTree<Way>(list);
+    System.out.println("way added");
+
+    RectangleTree<Way> tree = new RectangleTree<Way>(ways);
+    this.waysIsDirty = false;
 
     return tree;
   }
@@ -123,31 +175,31 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * Indexing relations rangeTree.
    *
-   * @param list The collection of relations to be indexed.
+   * @param relations The collection of relations to be indexed.
+   * @return the indexed rectangeTree.
    */
-  public RectangleTree indexRelations(final Collection<Relation> list) {
+  public SpatialIndex<Relation> indexRelations(final Collection<Relation> relations) {
     if (relations == null || relations.isEmpty()) {
+      System.out.println("is empty");
       return null;
     }
 
-    RectangleTree tree = new RectangleTree<Relation>(list);
+    System.out.println("relation added");
+
+    RectangleTree<Relation> tree = new RectangleTree<Relation>(relations);
+    this.relationsIsDirty = false;
 
     return tree;
   }
 
   /**
    * If needed indexes the given pointTree.
+   *
+   * @param nodes the list of nodes to be indexed.
+   * @return the indexed point tree.
    */
-  public PointTree<? extends Element> index(final PointTree<? extends Element> p) {
+  public PointTree<? extends Element> index(final Collection<Node> nodes) {
     return null;
-  }
-
-  /**
-   * Removes a specific element from the store.
-   * @param element The element to remove from the store.
-   */
-  @Override
-  public void remove(final Element element) {
   }
 
 }
