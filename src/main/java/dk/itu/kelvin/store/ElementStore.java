@@ -4,26 +4,29 @@
 package dk.itu.kelvin.store;
 
 // Models
-import dk.itu.kelvin.model.*;
-import dk.itu.kelvin.util.RectangleTree;
-import dk.itu.kelvin.util.SpatialIndex;
+import dk.itu.kelvin.model.Element;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import dk.itu.kelvin.model.Way;
+import dk.itu.kelvin.model.Land;
+import dk.itu.kelvin.model.Relation;
+import dk.itu.kelvin.model.BoundingBox;
+import dk.itu.kelvin.model.Node;
+
 
 // Utilities
+import dk.itu.kelvin.util.SpatialIndex;
+import dk.itu.kelvin.util.PointTree;
+import dk.itu.kelvin.util.RectangleTree;
+
 // General utilities
+import java.util.List;
+import java.util.Collection;
+import java.util.ArrayList;
 
 /**
  * Common store for storing all elements in the chart.
  */
 public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
-
-  /**
-   * Spatial index of ways.
-   */
-  private SpatialIndex<Way> waysTree;
 
   /**
    * A list for all land elements.
@@ -44,6 +47,26 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * A list for all bounds.
    */
   private List<Element> bounds = new ArrayList<>();
+
+  /**
+   * Point tree for quick search in node elements.
+   */
+  private SpatialIndex<Node> pointTree;
+
+  /**
+   * Rectangle tree for quick search in way elements.
+   */
+  private SpatialIndex<Way> waysTree;
+
+  /**
+   * Rectangle tree for quick search in land elements.
+   */
+  private SpatialIndex<Way> landTree;
+
+  /**
+   * Rectangle tree for quick search in way elements.
+   */
+  private SpatialIndex<Relation> relationsTree;
 
   /**
    * Adds elements to the associated list.
@@ -79,7 +102,6 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    */
   @Override
   public List<Element> search(final SpatialIndex.Bounds criteria) {
-
     return null;
   }
 
@@ -94,7 +116,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     }
 
     RectangleTree tree = new RectangleTree<Way>(list);
-    
+
     return tree;
   }
 
@@ -113,14 +135,26 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     return tree;
   }
 
-
-
   /**
    * Removes a specific element from the store.
    * @param element The element to remove from the store.
    */
   @Override
   public void remove(final Element element) {
+  }
+
+  /**
+   * If needed indexes the given pointTree.
+   */
+  public PointTree<? extends Element> index(final PointTree<? extends Element> p) {
+    return null;
+  }
+
+  /**
+   * If needed indexes the given rectangleTree.
+   */
+  public RectangleTree<? extends Element> index(final RectangleTree<? extends Element> r) {
+    return null;
   }
 
 }
