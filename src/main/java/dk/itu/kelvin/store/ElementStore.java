@@ -13,7 +13,6 @@ import dk.itu.kelvin.model.BoundingBox;
 
 
 // Utilities
-import dk.itu.kelvin.util.RectangleTree;
 import dk.itu.kelvin.util.SpatialIndex;
 
 // General utilities
@@ -47,31 +46,24 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   private List<Element> bounds = new ArrayList<>();
 
   /**
-   * Constructor does nothing.
-   */
-  public ElementStore() {
-    // Do nothing.
-  }
-
-  /**
    * Adds elements to the associated list.
    * @param element The element to add to the store.
    */
   @Override
   public void add(final Element element) {
     if (element instanceof Way) {
-      ways.add(element);
+      this.ways.add(element);
     } else if (element instanceof Land) {
-      land.add(element);
+      this.land.add(element);
     } else if (element instanceof Relation) {
-      relations.add(element);
+      this.relations.add(element);
     } else if (element instanceof BoundingBox) {
-      bounds.add(element);
+      this.bounds.add(element);
     }
   }
 
   /**
-   *  Adds a collection of elements to the associated list.
+   * Adds a collection of elements to the associated list.
    * @param elements The collection to be added.
    */
   public void add(final Collection<Element> elements) {
@@ -83,10 +75,10 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * Finds elements that meet the criteria.
    * @param criteria  The criteria to look up elements based on.
-   * @return
+   * @return the list of elements that meet the criteria.
    */
   @Override
-  public List<Element> search(SpatialIndex.Bounds criteria) {
+  public List<Element> search(final SpatialIndex.Bounds criteria) {
     return null;
   }
 
@@ -95,8 +87,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * @param element The element to remove from the store.
    */
   @Override
-  public void remove(Element element) {
-
+  public void remove(final Element element) {
   }
 
 }
