@@ -132,21 +132,11 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * Finds elements that meet the criteria.
    *
-   * @param criteria  The criteria to look up elements based on.
+   * @param q  The criteria object to look up elements based on.
    * @return the list of elements that meet the criteria.
    */
-  @Override
-  public List<Element> search(final SpatialIndex.Bounds criteria) {
+  public List<Element> search(final Query q) {
     return null;
-  }
-
-  /**
-   * Removes a specific element from the store.
-   *
-   * @param element The element to remove from the store.
-   */
-  @Override
-  public void remove(final Element element) {
   }
 
   /**
@@ -157,7 +147,6 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    */
   public SpatialIndex<Way> indexWays(final Collection<Way> ways) {
     if (ways == null || ways.isEmpty()) {
-      System.out.println("is empty");
       return null;
     }
 
@@ -171,7 +160,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * Indexing relations rangeTree.
    *
    * @param relations The collection of relations to be indexed.
-   * @return the indexed rectangeTree.
+   * @return the indexed rectangleTree.
    */
   public SpatialIndex<Relation> indexRelations(final Collection<Relation> relations) {
     if (relations == null || relations.isEmpty()) {
@@ -192,6 +181,50 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    */
   public PointTree<? extends Element> index(final Collection<Node> nodes) {
     return null;
+  }
+
+  /**
+   * The search query object.
+   */
+  public class Query{
+    /**
+     * Specifies object type to search for.
+     */
+    private String type;
+
+    /**
+     * Specifies the tag to search for.
+     */
+    private String tag;
+
+    /**
+     * Bounds to search for.
+     */
+    private BoundingBox bounds;
+
+    /**
+     * The analog bound coordinates.
+     */
+    private double minX;
+
+    /**
+     * The analog bound coordinates.
+     */
+    private double maxX;
+
+    /**
+     * The analog bound coordinates.
+     */
+    private double minY;
+
+    /**
+     * The analog bound coordinates.
+     */
+    private double maxY;
+
+
+
+
   }
 
 }

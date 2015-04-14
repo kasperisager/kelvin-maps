@@ -20,27 +20,6 @@ import dk.itu.kelvin.util.function.Callback;
  * @param <C> The search criteria to use when looking up elements.
  */
 public abstract class Store<E, C> implements Serializable {
-  /**
-   * Remove an element from the store.
-   *
-   * @param element The element to remove from the store.
-   */
-  public abstract void remove(final E element);
-
-  /**
-   * Look up elements within the store based on the specified criteria.
-   *
-   * @param criteria  The criteria to look up elements based on.
-   * @return          A list of elements matching the search criteria.
-   */
-  public abstract List<E> search(final C criteria);
-
-  /**
-   * Save the current store to the specified file.
-   *
-   * @param file      The file to save the store to.
-   * @param callback  The callback to invoke once saving has finished.
-   */
   public final void save(final File file, final Callback callback) {
     throw new UnsupportedOperationException();
   }
@@ -54,4 +33,5 @@ public abstract class Store<E, C> implements Serializable {
   public final void load(final File file, final Callback callback) {
     throw new UnsupportedOperationException();
   }
+
 }
