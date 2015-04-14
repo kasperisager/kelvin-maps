@@ -87,7 +87,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   public ElementStore() {
   }
 
-  public void zeb() {
+  public void zeb() { // hej palle
     this.waysTree = this.indexWays(this.ways);
     this.relationsTree = this.indexRelations(this.relations);
   }
