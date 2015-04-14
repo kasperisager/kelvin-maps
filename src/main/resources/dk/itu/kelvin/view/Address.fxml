@@ -12,7 +12,7 @@
 <?import javafx.scene.control.TextField?>
 <VBox
   fx:controller="dk.itu.kelvin.controller.AddressController"
-  fx:id="mainAddressFieldVBox"
+  fx:id="mainVBox"
   xmlns:fx="http://javafx.com/fxml"
   styleClass="u-padded"
   alignment="TOP_LEFT"

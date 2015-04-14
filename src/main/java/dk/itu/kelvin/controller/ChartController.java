@@ -99,7 +99,7 @@ public final class ChartController {
   private Affine compassTransform = new Affine();
 
   /**
-   * Label representing the found address.
+   * Text(icon) representing the found address.
    */
   private Text locationPointer;
 
@@ -128,10 +128,10 @@ public final class ChartController {
   private Label scaleIndicatorLabel;
 
   /**
-   * The parent element.
+   * The main parent element.
    */
   @FXML
-  private StackPane stackPane;
+  private StackPane mainStackPane;
 
   /**
    * Getting ChartsController instance.
@@ -158,7 +158,7 @@ public final class ChartController {
     ChartController.instance(this);
 
     // Sets the parent element inactive until done loading.
-    this.stackPane.setDisable(true);
+    this.mainStackPane.setDisable(true);
 
     this.compassArrow.getTransforms().add(this.compassTransform);
 
@@ -171,7 +171,7 @@ public final class ChartController {
     parser.read(file, () -> {
       // Get all addresses from parser.
       for (Address address: parser.addresses()) {
-        AddressController.instance().addresses.add(address);
+        AddressController.instance().addAddress(address);
       }
 
       // Schedule rendering of the chart nodes.
@@ -182,7 +182,7 @@ public final class ChartController {
         this.chart.bounds(parser.bounds());
 
         // Sets the chart active after load.
-        this.stackPane.setDisable(false);
+        this.mainStackPane.setDisable(false);
         ApplicationController.removeIcon();
       });
     });
