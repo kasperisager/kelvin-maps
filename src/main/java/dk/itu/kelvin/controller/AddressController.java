@@ -6,9 +6,6 @@ import dk.itu.kelvin.model.Address;
 // Kelvin Store
 import dk.itu.kelvin.store.AddressStore;
 
-// Kelvin Util
-import dk.itu.kelvin.util.HashTable;
-
 // JavaFX Beans
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -44,6 +41,10 @@ import org.controlsfx.control.PopOver;
 
 // Java Util
 import java.util.List;
+import java.util.Map;
+
+// Koloboke collections
+import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
 
 /**
  * AddressField controller.
@@ -150,9 +151,9 @@ public final class AddressController {
   private static VBox autoCompletePopOverVBox;
 
   /**
-   * HashTable for suggestions.
+   * Map for suggestions.
    */
-  private static HashTable<String, Address> autoCompleteSuggestions;
+  private static Map<String, Address> autoCompleteSuggestions;
 
   /**
    * Pointer for which address suggestion to highlight.
@@ -192,7 +193,9 @@ public final class AddressController {
   private void initialize() {
     AddressController.instance(this);
 
-    this.autoCompleteSuggestions = new HashTable<>(AUTOCOMPLETE_MAX_ITEMS);
+    this.autoCompleteSuggestions = HashObjObjMaps.newMutableMap(
+      AUTOCOMPLETE_MAX_ITEMS
+    );
 
     this.propertiesGridPane.getChildren().remove(this.poiContainer);
     this.propertiesGridPane.getChildren().remove(this.directionsContainer);
