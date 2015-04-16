@@ -14,6 +14,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 
 // JavaFX shape utilities
+import javafx.scene.control.Label;
 import javafx.scene.shape.Rectangle;
 
 // JavaFX geometry utilities
@@ -114,6 +115,11 @@ public final class Chart extends Group {
    * Layer of meta elements.
    */
   private Group metaLayer = new Group();
+
+  /**
+   * Map of points currently being shown.
+   */
+  private HashTable<Node, Label> points = new HashTable<>();
 
   /**
    * Initialize the chart.
@@ -386,6 +392,50 @@ public final class Chart extends Group {
   }
 
   /**
+   * Sets visibility for labels attached to a unique type of POI.
+   *
+   * @param tag unique type of POI.
+   */
+  public void showSelectedPoi(final String tag) {
+    System.out.println("BORK SHOW" + tag);
+    List<Element> elements = this.elementStore.find()
+      .types("poi")
+      .tag(tag)
+      .bounds(this.minX, this.minY, this.maxX + 256, this.maxY + 256)
+      .get();
+
+      for (Element element: elements) {
+        Node node = (Node) element;
+        Label label = node.render();
+        this.points.put(node, label);
+        System.out.println("SHOW " + label);
+        this.metaLayer.getChildren().add(label);
+      }
+  }
+
+  /**
+   * Remove visibility for labels attached to a unique type of POI.
+   *
+   * @param tag unique key in POI.
+   */
+  public void hidePointsOfInterests(final String tag) {
+    System.out.println("BORK HIDE" + tag);
+
+    List<Element> elements = this.elementStore.find()
+      .types("poi")
+      .tag(tag)
+      .bounds(this.minX, this.minY, this.maxX + 256, this.maxY + 256)
+      .get();
+
+    for (Element element : elements) {
+      Node node = (Node) element;
+      Label label = this.points.remove(node);
+      System.out.println("HIDE " + label);
+      this.metaLayer.getChildren().remove(label);
+    }
+  }
+
+  /**
    * Show the specified anchor.
    *
    * @param anchor The anchor to show.
@@ -398,7 +448,7 @@ public final class Chart extends Group {
     int x = anchor.x;
     int y = anchor.y;
 
-    List<? extends Element> elements = this.elementStore.find()
+    List<Element> elements = this.elementStore.find()
       .types("land", "way", "relation")
       .bounds(x, y, x + 256, y + 256)
       .get();

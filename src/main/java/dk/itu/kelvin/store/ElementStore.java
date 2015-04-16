@@ -54,7 +54,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * Point tree for quick search in node elements.
    */
-  private SpatialIndex<Node> pointTree;
+  private SpatialIndex<Node> poiTree;
 
   /**
    * Rectangle tree for quick search in way elements.
@@ -85,6 +85,11 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * Indicates whether waysTree needs to be indexed or not.
    */
   private boolean relationsIsDirty;
+
+  /**
+   * Indicates whether poiTree needs to be indexed or not.
+   */
+  private boolean poiIsDirty;
 
   /**
    * Adds a way element to the associated list.
@@ -124,11 +129,13 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   }
 
   /**
-   * Adds POI element to the associated collection.
+   *  Adds POI element to the associated collection.
+   * @param n The node object which represent a POI.
    */
   public void add(final Node n) {
     this.pois.add(n);
-    System.out.println(n);
+    System.out.println(n.tags().values());
+    this.poiIsDirty = true;
   }
   /**
    * Returns new search query.
@@ -144,7 +151,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * @param q  The criteria object to look up elements based on.
    * @return the list of elements that meet the criteria.
    */
-  private List<? extends Element> search(final Query q) {
+  private List<Element> search(final Query q) {
     if (this.waysTree == null || this.waysIsDirty) {
       this.waysTree = this.indexWays(this.ways);
     }
@@ -154,22 +161,29 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     if (this.landTree == null || this.landIsDirty) {
       this.landTree = this.indexLand(this.land);
     }
+    if (this.poiTree == null || this.poiIsDirty) {
+      this.poiTree = this.indexPoi(this.pois);
+    }
 
     List<Element> elementList = new ArrayList<>();
 
     for (String s : q.types) {
       if (s == "way") {
         elementList.addAll(this.waysTree.range(q.bounds));
-      }
-      else if (s == "land") {
+      } else if (s == "land") {
         elementList.addAll(this.landTree.range(q.bounds));
-      }
-      else if (s == "relation") {
+      } else if (s == "relation") {
 
         elementList.addAll(this.relationsTree.range(q.bounds));
+      } else if (s == "poi") {
+        elementList.addAll(this.poiTree.range(q.bounds, (element) -> {
+          return element.tags().containsValue(q.tag);
+
+
+        }));
+
       }
     }
-
     return elementList;
   }
 
@@ -244,8 +258,15 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * @param nodes the list of nodes to be indexed.
    * @return the indexed point tree.
    */
-  public PointTree<? extends Element> index(final Collection<Node> nodes) {
-    return null;
+  public SpatialIndex<Node> indexPoi(final Collection<Node> nodes) {
+    if (nodes == null || nodes.isEmpty()) {
+      return null;
+    }
+
+    PointTree<Node> poiTree = new PointTree<>(nodes);
+    this.poiIsDirty = false;
+
+    return poiTree;
   }
 
   /**
@@ -302,6 +323,17 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     }
 
     /**
+     * Set the tag field.
+     * @param tag to search for.
+     * @return the Query object.
+     */
+    public final Query tag(final String tag) {
+      this.tag = tag;
+
+      return this;
+    }
+
+    /**
      * Creates a bounds object and sets it in the field.
      * @param minX minimum x coordinate.
      * @param minY minimum y coordinate.
@@ -335,7 +367,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
      *  Gets the elements searched for.
      * @return list of results.
      */
-    public final List<? extends Element> get() {
+    public final List<Element> get() {
       return ElementStore.this.search(this);
     }
   }

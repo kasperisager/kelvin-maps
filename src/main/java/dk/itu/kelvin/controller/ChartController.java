@@ -452,31 +452,33 @@ public final class ChartController {
    * Setup checkboxes for Points Of Interest.
    */
   public void createPOI() {
-    Map<String, String> FILTER = new HashTable<String, String>();
-    FILTER.put("bank", "Bank");
-    FILTER.put("toilets", "Toilets");
-    FILTER.put("cafe", "Cafe");
-    FILTER.put("pub", "Pub");
-    FILTER.put("supermarket", "Supermarket");
-    FILTER.put("compressed_air", "Compressed Air");
-    FILTER.put("post_box", "Post Box");
-    FILTER.put("taxi", "Taxi");
-    FILTER.put("fast_food", "Fast Food");
-    FILTER.put("telephone", "Telephone");
-    FILTER.put("solarium", "Solarium");
-    FILTER.put("recycling", "Recycling");
-    FILTER.put("restaurant", "Restaurant");
+    Map<String, String> filter = new HashTable<String, String>();
+    filter.put("bank", "Bank");
+    filter.put("toilets", "Toilets");
+    filter.put("cafe", "Cafe");
+    filter.put("pub", "Pub");
+    filter.put("supermarket", "Supermarket");
+    filter.put("compressed_air", "Compressed Air");
+    filter.put("post_box", "Post Box");
+    filter.put("taxi", "Taxi");
+    filter.put("fast_food", "Fast Food");
+    filter.put("telephone", "Telephone");
+    filter.put("solarium", "Solarium");
+    filter.put("recycling", "Recycling");
+    filter.put("restaurant", "Restaurant");
 
 
-    for (String s : FILTER.keySet()) {
-      CheckBox cb = new CheckBox(FILTER.get(s));
+    for (String s : filter.keySet()) {
+      CheckBox cb = new CheckBox(filter.get(s));
       cb.setPrefWidth(200);
 
       cb.selectedProperty().addListener((ob, ov, nv) -> {
         if (nv) {
-          this.showPointsOfInterests(s);
+          this.chart.showSelectedPoi(s);
+          //this.showPointsOfInterests(s);
         } else {
-          this.hidePointsOfInterests(s);
+          this.chart.hidePointsOfInterests(s);
+          //this.hidePointsOfInterests(s);
         }
 
       });
@@ -486,7 +488,7 @@ public final class ChartController {
 
   /**
    * Store all POI nodes in ElementStore.
-   * @param parser
+   * @param parser for parsing data.
    */
   public void storePoi(final Parser parser) {
     for (Node n : parser.nodes()) {
