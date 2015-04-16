@@ -5,7 +5,7 @@ package dk.itu.kelvin.controller;
 
 // General utilities
 import java.util.List;
-
+import java.util.Map;
 import dk.itu.kelvin.store.ElementStore;
 import dk.itu.kelvin.util.HashTable;
 
@@ -14,6 +14,7 @@ import java.io.File;
 
 // JavaFX utilities
 import javafx.util.Duration;
+
 
 // JavaFX application utilities
 import javafx.application.Platform;
@@ -69,6 +70,7 @@ import dk.itu.kelvin.layout.Chart;
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Relation;
+import dk.itu.kelvin.model.Node;
 
 // Stores
 import dk.itu.kelvin.store.AddressStore;
@@ -158,6 +160,11 @@ public final class ChartController {
    * Vbox containing the suggestion buttons.
    */
   private VBox suggestionVBox;
+
+  /**
+   * Map of points currently being shown.
+   */
+  private HashTable<Node, Label> points = new HashTable<>();
 
   /**
    * Pointer for highlighting the autocomplete suggestions.
@@ -288,6 +295,9 @@ public final class ChartController {
       for (Address address: parser.addresses()) {
         this.addresses.add(address);
       }
+
+      // Sets all POT from initialized nodes.
+      this.storePoi(parser);
 
       // Schedule rendering of the chart nodes.
       Platform.runLater(() -> {
@@ -439,6 +449,95 @@ public final class ChartController {
   }
 
   /**
+   * Setup checkboxes for Points Of Interest.
+   */
+  public void createPOI() {
+    Map<String, String> FILTER = new HashTable<String, String>();
+    FILTER.put("bank", "Bank");
+    FILTER.put("toilets", "Toilets");
+    FILTER.put("cafe", "Cafe");
+    FILTER.put("pub", "Pub");
+    FILTER.put("supermarket", "Supermarket");
+    FILTER.put("compressed_air", "Compressed Air");
+    FILTER.put("post_box", "Post Box");
+    FILTER.put("taxi", "Taxi");
+    FILTER.put("fast_food", "Fast Food");
+    FILTER.put("telephone", "Telephone");
+    FILTER.put("solarium", "Solarium");
+    FILTER.put("recycling", "Recycling");
+    FILTER.put("restaurant", "Restaurant");
+
+
+    for (String s : FILTER.keySet()) {
+      CheckBox cb = new CheckBox(FILTER.get(s));
+      cb.setPrefWidth(200);
+
+      cb.selectedProperty().addListener((ob, ov, nv) -> {
+        if (nv) {
+          this.showPointsOfInterests(s);
+        } else {
+          this.hidePointsOfInterests(s);
+        }
+
+      });
+      this.poiVBox.getChildren().add(cb);
+    }
+  }
+
+  /**
+   * Store all POI nodes in ElementStore.
+   * @param parser
+   */
+  public void storePoi(final Parser parser) {
+    for (Node n : parser.nodes()) {
+
+      if (n.tag("amenity") != null) {
+        this.elementStore.add(n);
+
+      }
+      if (n.tag("shop") != null) {
+        this.elementStore.add(n);
+      }
+    }
+
+  }
+
+  /**
+   * Sets visibility for labels attached to a unique key in POI.
+   *
+   * @param point unique key in POI.
+   */
+  public void showPointsOfInterests(final String point) {
+    System.out.println("BORK SHOW");
+    /*List<Node> nodes = this.pointsOfInterest.get(point);
+
+    for (Node node: nodes) {
+      Label label = node.render();
+      this.points.put(node, label);
+      this.chart.getChildren().add(label);
+    }*/
+
+    // KALD TIL ELEMTSTOR K-TREE med filter
+  }
+
+  /**
+   * Remove visibility for labels attached to a unique key in POI.
+   *
+   * @param point unique key in POI.
+   */
+  public void hidePointsOfInterests(final String point) {
+    System.out.println("BORK HIDE");
+    /*List<Node> nodes = this.pointsOfInterest.get(point);
+
+    for (Node node : nodes) {
+      Label label = this.points.remove(node);
+      this.chart.getChildren().remove(label);
+    }*/
+
+    // SLÅ KD-TRÆ FRA IGEN I ELEMTSTORE
+  }
+
+  /**
    * Add the highlight styleclass to specific button.
    */
   public void addStyle() {
@@ -477,10 +576,11 @@ public final class ChartController {
     }
   }
 
+
   /**
    * Initialises the checkboxes of for Points Of Interest.
    */
-  private void createPOI() {
+  /*private void createPOI() {
 
     for (String s : this.tags) {
       CheckBox cb = new CheckBox(s);
@@ -491,7 +591,7 @@ public final class ChartController {
       this.poiVBox.getChildren().add(cb);
     }
 
-  }
+  }*/
 
   /**
    * Creates a PopOver object with buttons, eventhandlers and listeners.

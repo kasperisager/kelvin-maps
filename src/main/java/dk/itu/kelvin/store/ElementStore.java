@@ -42,6 +42,11 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   private List<Relation> relations = new ArrayList<>();
 
   /**
+   * A list for all POI.
+   */
+  private List<Node> pois = new ArrayList<>();
+
+  /**
    * A list for all bounds.
    */
   private BoundingBox bounds;
@@ -118,6 +123,13 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     this.bounds = b;
   }
 
+  /**
+   * Adds POI element to the associated collection.
+   */
+  public void add(final Node n) {
+    this.pois.add(n);
+    System.out.println(n);
+  }
   /**
    * Returns new search query.
    * @return the query object.
