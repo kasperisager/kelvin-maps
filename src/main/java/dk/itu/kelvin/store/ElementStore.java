@@ -168,22 +168,26 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     List<Element> elementList = new ArrayList<>();
 
     for (String s : q.types) {
-      if (s == "way") {
-        elementList.addAll(this.waysTree.range(q.bounds));
-      } else if (s == "land") {
-        elementList.addAll(this.landTree.range(q.bounds));
-      } else if (s == "relation") {
-
-        elementList.addAll(this.relationsTree.range(q.bounds));
-      } else if (s == "poi") {
-        elementList.addAll(this.poiTree.range(q.bounds, (element) -> {
-          return element.tags().containsValue(q.tag);
-
-
-        }));
-
+      switch (s) {
+        case "way":
+          elementList.addAll(this.waysTree.range(q.bounds));
+          break;
+        case "land":
+          elementList.addAll(this.landTree.range(q.bounds));
+          break;
+        case "relation":
+          elementList.addAll(this.relationsTree.range(q.bounds));
+          break;
+        case "poi":
+          elementList.addAll(this.poiTree.range(q.bounds, (element) -> {
+            return element.tags().containsValue(q.tag);
+          }));
+          break;
+        default:
+          break;
       }
     }
+
     return elementList;
   }
 
