@@ -3,9 +3,6 @@
  */
 package dk.itu.kelvin.store;
 
-// Utilities
-import dk.itu.kelvin.util.HashTable;
-
 // Models
 import dk.itu.kelvin.model.Element;
 
@@ -24,5 +21,5 @@ import dk.itu.kelvin.model.Element;
  *
  * @param <E> The type of elements contained within the store.
  */
-public final class ElementStore<E extends Element> extends HashTable<Long, E> {
-}
+// public final class ElementStore<E extends Element> extends HashTable<Long, E> {
+// }

@@ -20,8 +20,8 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-// Utilities
-import dk.itu.kelvin.util.HashTable;
+// Koloboke collections
+import net.openhft.koloboke.collect.map.hash.HashLongObjMaps;
 
 // Math
 import dk.itu.kelvin.math.Projection;
@@ -58,17 +58,17 @@ public final class XMLParser extends Parser {
   /**
    * Store nodes.
    */
-  private Map<Long, Node> nodes = new HashTable<>();
+  private Map<Long, Node> nodes = HashLongObjMaps.newMutableMap();
 
   /**
    * Store ways.
    */
-  private Map<Long, Way> ways = new HashTable<>();
+  private Map<Long, Way> ways = HashLongObjMaps.newMutableMap();
 
   /**
    * Store relations.
    */
-  private Map<Long, Relation> relations = new HashTable<>();
+  private Map<Long, Relation> relations = HashLongObjMaps.newMutableMap();
 
   /**
    * Store addresses.
