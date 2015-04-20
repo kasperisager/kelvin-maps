@@ -163,7 +163,7 @@ public final class ChartController {
     this.compassArrow.getTransforms().add(this.compassTransform);
 
     this.initLocationPointer();
-
+    System.out.println(Parser.class.getResource(MAP_INPUT).toURI());
     File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
 
     Parser parser = Parser.probe(file);
@@ -457,4 +457,39 @@ public final class ChartController {
   private void zoomOut() {
     this.chart.zoom(Math.pow(ZOOM_OUT, 8));
   }
+
+  public static void clearMap(){
+    //ChartController.instance.chart.getChildren().clear();
+    ChartController.instance.chart.getChildren().clear();
+    ChartController.instance.chart = new Chart();
+
+
+
+  }
+
+  public static void loadMap(File file){
+    System.out.println(file.toURI());
+    //ApplicationController.instance().addIcon();
+    //ApplicationController.instance().rotateIcon();
+    //ChartController.instance.mainStackPane.setDisable(true);
+
+    Parser parser = Parser.probe(file);
+
+    parser.read(file, () -> {
+      // Get all addresses from parser.
+
+      // Schedule rendering of the chart nodes.
+      Platform.runLater(() -> {
+        ChartController.instance.chart.land(parser.land());
+        ChartController.instance.chart.ways(parser.ways());
+        ChartController.instance.chart.relations(parser.relations());
+        ChartController.instance.chart.bounds(parser.bounds());
+
+        // Sets the chart active after load.
+        //ChartController.instance.mainStackPane.setDisable(false);
+        //ApplicationController.removeIcon();
+      });
+    });
+  }
 }
+

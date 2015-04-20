@@ -97,7 +97,8 @@ public final class MenuController {
 
     if (file != null) {
       //do something with the file.
-      System.out.println(file.getAbsolutePath());
+      ChartController.instance().clearMap();
+      ChartController.instance().loadMap(file);
     }
   }
 

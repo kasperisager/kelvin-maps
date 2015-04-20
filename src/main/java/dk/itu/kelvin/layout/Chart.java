@@ -498,6 +498,11 @@ public final class Chart extends Group {
     this.landLayer.getChildren().remove(group);
   }
 
+  public void clear(){
+    this.landLayer.getChildren().clear();
+    this.metaLayer.getChildren().clear();
+  }
+
   /**
    * The {@link Anchor} class describes an anchor point for a group of elements
    * within the chart.
@@ -557,5 +562,6 @@ public final class Chart extends Group {
 
       return (int) (bits ^ (bits >> 32));
     }
+
   }
 }
