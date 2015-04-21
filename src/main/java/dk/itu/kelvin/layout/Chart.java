@@ -449,7 +449,7 @@ public final class Chart extends Group {
     int y = anchor.y;
 
     List<Element> elements = this.elementStore.find()
-      .types("land", "way", "relation")
+      .types("land", "way", "relation", "transportWay")
       .bounds(x, y, x + 256, y + 256)
       .get();
 

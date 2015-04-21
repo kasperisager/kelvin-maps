@@ -167,6 +167,8 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
           this.transportWays.add(w);
           this.cyclewaysIsDirty = true;
           break;
+        default:
+          break;
       }
     }
     else if (cycleway != null) {
@@ -182,6 +184,8 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
           this.transportWays.add(w);
           this.cyclewaysIsDirty = true;
           break;
+        default:
+          break;
       }
     }
     else if (bicycle_road != null) {
@@ -190,6 +194,8 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
           this.cycleways.add(w);
           this.transportWays.add(w);
           this.cyclewaysIsDirty = true;
+          break;
+        default:
           break;
       }
     }
@@ -233,7 +239,6 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    */
   public void add(final Node n) {
     this.pois.add(n);
-    System.out.println(n.tags().values());
     this.poiIsDirty = true;
   }
   /**
@@ -265,18 +270,20 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     }
     if (this.roadsTree == null || this.roadsIsDirty) {
      this.roadsTree = this.indexRoads(this.roads);
-      this.transportWaysTree = this.indexTransportWays(transportWays);
+      this.transportWaysTree = this.indexTransportWays(this.transportWays);
     }
     if (this.cyclewaysTree == null || this.cyclewaysIsDirty) {
       this.cyclewaysTree = this.indexCycleways(this.cycleways);
-      this.transportWaysTree = this.indexTransportWays(transportWays);
+      this.transportWaysTree = this.indexTransportWays(this.transportWays);
     }
-
 
     List<Element> elementList = new ArrayList<>();
 
     for (String s : q.types) {
       switch (s) {
+        case "transportWay":
+          elementList.addAll(this.transportWaysTree.range(q.bounds));
+          break;
         case "way":
           elementList.addAll(this.waysTree.range(q.bounds));
           break;
@@ -379,8 +386,6 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
 
     return cyclewaysTree;
   }
-
-
 
   /**
    * Indexing relations rangeTree.

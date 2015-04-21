@@ -80,7 +80,6 @@ import dk.itu.kelvin.store.AddressStore;
  */
 public final class ChartController {
 
-  private int countway = 0;
   /**
    * The input file to show in the map viewer.
    */
