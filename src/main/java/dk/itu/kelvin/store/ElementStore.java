@@ -139,7 +139,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   public void add(final Way w) {
     String highway = w.tag("highway");
     String cycleway = w.tag("cycleway");
-    String bicycle_road = w.tag("bicycle_road");
+    String bicycleRoad = w.tag("bicycle_road");
 
     if (highway != null) {
       switch (highway) {
@@ -188,8 +188,8 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
           break;
       }
     }
-    else if (bicycle_road != null) {
-      switch (bicycle_road) {
+    else if (bicycleRoad != null) {
+      switch (bicycleRoad) {
         case "yes":
           this.cycleways.add(w);
           this.transportWays.add(w);

@@ -3,17 +3,8 @@
  */
 package dk.itu.kelvin.controller;
 
-// General utilities
-import java.util.List;
-import java.util.Map;
-import dk.itu.kelvin.store.ElementStore;
-import dk.itu.kelvin.util.HashTable;
-
 // I/O utilities
 import java.io.File;
-
-// JavaFX utilities
-import javafx.util.Duration;
 
 // JavaFX application utilities
 import javafx.application.Platform;
@@ -55,6 +46,9 @@ import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.Node;
+
+// Stores
+import dk.itu.kelvin.store.ElementStore;
 
 /**
  * Chart controller class.
@@ -219,19 +213,6 @@ public final class ChartController {
         ApplicationController.removeIcon();
       });
     });
-
-    this.createPOI();
-    this.createPopOver();
-
-    this.autocPopOver = new PopOver();
-    this.autocPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_LEFT);
-    this.autocPopOver.setCornerRadius(2);
-    this.autocPopOver.setArrowSize(0);
-    this.autocPopOver.setAutoHide(true);
-    this.autocPopOver.setDetachable(false);
-
-    this.setAutoComplete(this.addressFrom);
-    this.setAutoComplete(this.addressTo);
   }
 
   /**
@@ -252,44 +233,6 @@ public final class ChartController {
    */
   public void moveCompass(final double x) {
     this.compassVBox.setTranslateX(x);
-  }
-
-  /**
-   * Setup checkboxes for Points Of Interest.
-   */
-  public void createPOI() {
-    Map<String, String> filter = new HashTable<String, String>();
-    filter.put("bank", "Bank");
-    filter.put("toilets", "Toilets");
-    filter.put("cafe", "Cafe");
-    filter.put("pub", "Pub");
-    filter.put("supermarket", "Supermarket");
-    filter.put("compressed_air", "Compressed Air");
-    filter.put("post_box", "Post Box");
-    filter.put("taxi", "Taxi");
-    filter.put("fast_food", "Fast Food");
-    filter.put("telephone", "Telephone");
-    filter.put("solarium", "Solarium");
-    filter.put("recycling", "Recycling");
-    filter.put("restaurant", "Restaurant");
-
-
-    for (String s : filter.keySet()) {
-      CheckBox cb = new CheckBox(filter.get(s));
-      cb.setPrefWidth(200);
-
-      cb.selectedProperty().addListener((ob, ov, nv) -> {
-        if (nv) {
-          this.chart.showSelectedPoi(s);
-          //this.showPointsOfInterests(s);
-        } else {
-          this.chart.hidePointsOfInterests(s);
-          //this.hidePointsOfInterests(s);
-        }
-
-      });
-      this.poiVBox.getChildren().add(cb);
-    }
   }
 
   /**
@@ -326,23 +269,6 @@ public final class ChartController {
   }
 
   /**
-   * Sets the length of the scaleIndicator.
-   * @param length how wide the scale is [px].
-   */
-  private void createPOI() {
-
-    for (String s : this.tags) {
-      CheckBox cb = new CheckBox(s);
-      cb.setPrefWidth(200);
-
-      //add CheckBox event listener and update shown labels
-
-      this.poiVBox.getChildren().add(cb);
-    }
-
-  }
-
-  /**
    * Sets a pointer at the address found.
    * @param x Address with the coordinates for the pointer.
    * @param y Address with the coordinates for the pointer.
@@ -360,6 +286,24 @@ public final class ChartController {
    */
   public static void centerChart(final Address a, final double scale) {
     ChartController.instance.chart.center(a, scale);
+  }
+
+  /**
+   * Shows points of interest.
+   *
+   * @param tag tag to show on map.
+   */
+  public static void showPoi(final String tag) {
+    ChartController.instance().chart.showSelectedPoi(tag);
+  }
+
+  /**
+   * Hides points of interest.
+   *
+   * @param tag to hide on map.
+   */
+  public static void hidePoi(final String tag) {
+    ChartController.instance().chart.hidePointsOfInterests(tag);
   }
 
   /**

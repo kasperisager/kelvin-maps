@@ -26,10 +26,6 @@ import javafx.geometry.Point2D;
 import net.openhft.koloboke.collect.set.hash.HashObjSets;
 import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
 
-// Utilities
-import dk.itu.kelvin.util.HashSet;
-import dk.itu.kelvin.util.HashTable;
-
 // Models
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.BoundingBox;
@@ -124,7 +120,7 @@ public final class Chart extends Group {
   /**
    * Map of points currently being shown.
    */
-  private HashTable<Node, Label> points = new HashTable<>();
+  private Map<Node, Label> points = HashObjObjMaps.newMutableMap();
 
   /**
    * Initialize the chart.
@@ -407,7 +403,6 @@ public final class Chart extends Group {
    * @param tag unique type of POI.
    */
   public void showSelectedPoi(final String tag) {
-    System.out.println("BORK SHOW" + tag);
     List<Element> elements = this.elementStore.find()
       .types("poi")
       .tag(tag)
@@ -418,7 +413,6 @@ public final class Chart extends Group {
         Node node = (Node) element;
         Label label = node.render();
         this.points.put(node, label);
-        System.out.println("SHOW " + label);
         this.metaLayer.getChildren().add(label);
       }
   }
@@ -429,8 +423,6 @@ public final class Chart extends Group {
    * @param tag unique key in POI.
    */
   public void hidePointsOfInterests(final String tag) {
-    System.out.println("BORK HIDE" + tag);
-
     List<Element> elements = this.elementStore.find()
       .types("poi")
       .tag(tag)
@@ -440,7 +432,6 @@ public final class Chart extends Group {
     for (Element element : elements) {
       Node node = (Node) element;
       Label label = this.points.remove(node);
-      System.out.println("HIDE " + label);
       this.metaLayer.getChildren().remove(label);
     }
   }
