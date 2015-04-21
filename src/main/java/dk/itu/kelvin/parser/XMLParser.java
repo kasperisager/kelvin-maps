@@ -301,6 +301,7 @@ public final class XMLParser extends Parser {
 
     ((ArrayList) way.nodes()).trimToSize();
 
+
     this.ways.put(this.elementId, way);
   }
 

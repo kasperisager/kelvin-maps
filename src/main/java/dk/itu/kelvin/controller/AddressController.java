@@ -262,6 +262,41 @@ public final class AddressController {
    * Initializing Points Of Interest container and content of poiContentVBox.
    */
   private void initPoiBox() {
+    Map<String, String> filter = HashObjObjMaps.newMutableMap();
+    filter.put("bank", "Bank");
+    filter.put("toilets", "Toilets");
+    filter.put("cafe", "Cafe");
+    filter.put("pub", "Pub");
+    filter.put("supermarket", "Supermarket");
+    filter.put("compressed_air", "Compressed Air");
+    filter.put("post_box", "Post Box");
+    filter.put("taxi", "Taxi");
+    filter.put("fast_food", "Fast Food");
+    filter.put("telephone", "Telephone");
+    filter.put("solarium", "Solarium");
+    filter.put("recycling", "Recycling");
+    filter.put("restaurant", "Restaurant");
+
+    for (String s : filter.keySet()) {
+      CheckBox cb = new CheckBox(filter.get(s));
+      cb.setPrefWidth(200);
+
+      cb.selectedProperty().addListener((ob, ov, nv) -> {
+        if (nv) {
+          ChartController.instance().showPoi(s);
+          //this.showPointsOfInterests(s);
+        } else {
+          ChartController.instance().hidePoi(s);
+          //this.hidePointsOfInterests(s);
+        }
+
+      });
+      this.poiContentVBox.getChildren().add(cb);
+    }
+
+
+
+
     for (String s : this.tags) {
       CheckBox cb = new CheckBox(s);
       cb.setPrefWidth(200);

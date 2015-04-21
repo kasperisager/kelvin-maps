@@ -43,6 +43,12 @@ import dk.itu.kelvin.layout.Chart;
 
 // Models
 import dk.itu.kelvin.model.Address;
+import dk.itu.kelvin.model.Way;
+import dk.itu.kelvin.model.Relation;
+import dk.itu.kelvin.model.Node;
+
+// Stores
+import dk.itu.kelvin.store.ElementStore;
 
 /**
  * Chart controller class.
@@ -53,6 +59,7 @@ public final class ChartController {
    * The ChartController instance.
    */
   private static ChartController instance;
+
   /**
    * The input file to show in the map viewer.
    */
@@ -102,6 +109,11 @@ public final class ChartController {
    * Text(icon) representing the found address.
    */
   private Text locationPointer;
+
+  /**
+   * Element store storing all elements.
+   */
+  private ElementStore elementStore = new ElementStore();
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -174,11 +186,26 @@ public final class ChartController {
         AddressController.instance().addAddress(address);
       }
 
+      // Sets all POT from initialized nodes.
+      this.storePoi(parser);
+
       // Schedule rendering of the chart nodes.
       Platform.runLater(() -> {
-        this.chart.land(parser.land());
-        this.chart.ways(parser.ways());
-        this.chart.relations(parser.relations());
+        for (Way l : parser.land()) {
+          this.elementStore.addLand(l);
+        }
+
+        for (Way w : parser.ways()) {
+          this.elementStore.add(w);
+        }
+
+        for (Relation r : parser.relations()) {
+          this.elementStore.add(r);
+        }
+
+        this.elementStore.add(parser.bounds());
+
+        this.chart.elementStore(this.elementStore);
         this.chart.bounds(parser.bounds());
 
         // Sets the chart active after load.
@@ -209,6 +236,23 @@ public final class ChartController {
   }
 
   /**
+   * Store all POI nodes in ElementStore.
+   * @param parser for parsing data.
+   */
+  public void storePoi(final Parser parser) {
+    for (Node n : parser.nodes()) {
+
+      if (n.tag("amenity") != null) {
+        this.elementStore.add(n);
+
+      }
+      if (n.tag("shop") != null) {
+        this.elementStore.add(n);
+      }
+    }
+  }
+
+  /**
    * Will reset the compass, so it points north.
    */
   @FXML
@@ -222,14 +266,6 @@ public final class ChartController {
    */
   private void setScaleText(final String text) {
     this.scaleIndicatorLabel.setText(text);
-  }
-
-  /**
-   * Sets the length of the scaleIndicator.
-   * @param length how wide the scale is [px].
-   */
-  private void setScaleLenght(final double length) {
-    this.scaleIndicatorLabel.setPrefWidth(length);
   }
 
   /**
@@ -250,6 +286,24 @@ public final class ChartController {
    */
   public static void centerChart(final Address a, final double scale) {
     ChartController.instance.chart.center(a, scale);
+  }
+
+  /**
+   * Shows points of interest.
+   *
+   * @param tag tag to show on map.
+   */
+  public static void showPoi(final String tag) {
+    ChartController.instance().chart.showSelectedPoi(tag);
+  }
+
+  /**
+   * Hides points of interest.
+   *
+   * @param tag to hide on map.
+   */
+  public static void hidePoi(final String tag) {
+    ChartController.instance().chart.hidePointsOfInterests(tag);
   }
 
   /**
@@ -331,6 +385,7 @@ public final class ChartController {
 
   /**
    * On mouse dragged event.
+   *
    * @param e The mouse event.
    */
   @FXML
@@ -346,6 +401,7 @@ public final class ChartController {
 
   /**
    * On scroll event.
+   *
    * @param e The scroll event.
    */
   @FXML
@@ -361,6 +417,7 @@ public final class ChartController {
 
   /**
    * On zoom event.
+   *
    * @param e The zoom event.
    */
   @FXML
@@ -374,6 +431,7 @@ public final class ChartController {
 
   /**
    * On rotate event.
+   *
    * @param e The rotate event.
    */
   @FXML
@@ -388,6 +446,7 @@ public final class ChartController {
 
   /**
    * On key pressed event.
+   *
    * @param e The key event.
    */
   @FXML

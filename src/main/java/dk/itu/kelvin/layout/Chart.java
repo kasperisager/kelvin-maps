@@ -4,8 +4,6 @@
 package dk.itu.kelvin.layout;
 
 // General utilities
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +15,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 
 // JavaFX shape utilities
+import javafx.scene.control.Label;
 import javafx.scene.shape.Rectangle;
 
 // JavaFX geometry utilities
@@ -27,17 +26,14 @@ import javafx.geometry.Point2D;
 import net.openhft.koloboke.collect.set.hash.HashObjSets;
 import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
 
-// Utilities
-import dk.itu.kelvin.util.RectangleTree;
-import dk.itu.kelvin.util.SpatialIndex;
-
 // Models
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.BoundingBox;
 import dk.itu.kelvin.model.Element;
 import dk.itu.kelvin.model.Node;
-import dk.itu.kelvin.model.Relation;
-import dk.itu.kelvin.model.Way;
+
+// Stores
+import dk.itu.kelvin.store.ElementStore;
 
 /**
  * Chart class for handling which elements to display and where.
@@ -82,19 +78,9 @@ public final class Chart extends Group {
   private static final int TILE_SIZE = 256;
 
   /**
-   * Spatial index of land polygons.
+   * Stores all elements.
    */
-  private SpatialIndex<Way> land;
-
-  /**
-   * Spatial index of ways.
-   */
-  private SpatialIndex<Way> ways;
-
-  /**
-   * Spatial index of relations.
-   */
-  private SpatialIndex<Relation> relations;
+  private ElementStore elementStore;
 
   /**
    * Keep track of the tiles currently showing.
@@ -132,10 +118,23 @@ public final class Chart extends Group {
   private Group metaLayer = new Group();
 
   /**
+   * Map of points currently being shown.
+   */
+  private Map<Node, Label> points = HashObjObjMaps.newMutableMap();
+
+  /**
    * Initialize the chart.
    */
   public Chart() {
     this.getChildren().addAll(this.landLayer, this.metaLayer);
+  }
+
+  /**
+   * Setter for the element store field.
+   * @param elementStore the element store object.
+   */
+  public void elementStore(final ElementStore elementStore) {
+    this.elementStore = elementStore;
   }
 
   /**
@@ -151,45 +150,6 @@ public final class Chart extends Group {
     this.pan(-bounds.minX(), -bounds.minY());
 
     this.setClip(bounds.render());
-  }
-
-  /**
-   * Add a collection of land polygons to the chart.
-   *
-   * @param land The collection of land polygons to add to the chart.
-   */
-  public void land(final Collection<Way> land) {
-    if (land == null) {
-      return;
-    }
-
-    this.land = new RectangleTree<Way>(land);
-  }
-
-  /**
-   * Add a collection of ways to the chart.
-   *
-   * @param ways The collection of ways to add to the chart.
-   */
-  public void ways(final Collection<Way> ways) {
-    if (ways == null || ways.isEmpty()) {
-      return;
-    }
-
-    this.ways = new RectangleTree<Way>(ways);
-  }
-
-  /**
-   * Add a collection of relations to the chart.
-   *
-   * @param relations The relations to add to the chart.
-   */
-  public void relations(final Collection<Relation> relations) {
-    if (relations == null || relations.isEmpty()) {
-      return;
-    }
-
-    this.relations = new RectangleTree<Relation>(relations);
   }
 
   /**
@@ -438,6 +398,45 @@ public final class Chart extends Group {
   }
 
   /**
+   * Sets visibility for labels attached to a unique type of POI.
+   *
+   * @param tag unique type of POI.
+   */
+  public void showSelectedPoi(final String tag) {
+    List<Element> elements = this.elementStore.find()
+      .types("poi")
+      .tag(tag)
+      .bounds(this.minX, this.minY, this.maxX + 256, this.maxY + 256)
+      .get();
+
+      for (Element element: elements) {
+        Node node = (Node) element;
+        Label label = node.render();
+        this.points.put(node, label);
+        this.metaLayer.getChildren().add(label);
+      }
+  }
+
+  /**
+   * Remove visibility for labels attached to a unique type of POI.
+   *
+   * @param tag unique key in POI.
+   */
+  public void hidePointsOfInterests(final String tag) {
+    List<Element> elements = this.elementStore.find()
+      .types("poi")
+      .tag(tag)
+      .bounds(this.minX, this.minY, this.maxX + 256, this.maxY + 256)
+      .get();
+
+    for (Element element : elements) {
+      Node node = (Node) element;
+      Label label = this.points.remove(node);
+      this.metaLayer.getChildren().remove(label);
+    }
+  }
+
+  /**
    * Show the specified anchor.
    *
    * @param anchor The anchor to show.
@@ -450,19 +449,10 @@ public final class Chart extends Group {
     int x = anchor.x;
     int y = anchor.y;
 
-    List<Element> elements = new ArrayList<>();
-
-    elements.addAll(this.land.range(new SpatialIndex.Bounds(
-      x, y, x + 256, y + 256
-    )));
-
-    elements.addAll(this.ways.range(new SpatialIndex.Bounds(
-      x, y, x + 256, y + 256
-    )));
-
-    elements.addAll(this.relations.range(new SpatialIndex.Bounds(
-      x, y, x + 256, y + 256
-    )));
+    List<Element> elements = this.elementStore.find()
+      .types("land", "way", "relation", "transportWay")
+      .bounds(x, y, x + 256, y + 256)
+      .get();
 
     if (elements.isEmpty()) {
       return;

@@ -3,9 +3,6 @@
  */
 package dk.itu.kelvin.store;
 
-// General utilities
-import java.util.List;
-
 // I/O utilities
 import java.io.File;
 import java.io.Serializable;
@@ -20,28 +17,6 @@ import dk.itu.kelvin.util.function.Callback;
  * @param <C> The search criteria to use when looking up elements.
  */
 public abstract class Store<E, C> implements Serializable {
-  /**
-   * Add an element to the store.
-   *
-   * @param element The element to add to the store.
-   */
-  public abstract void add(final E element);
-
-  /**
-   * Remove an element from the store.
-   *
-   * @param element The element to remove from the store.
-   */
-  public abstract void remove(final E element);
-
-  /**
-   * Look up elements within the store based on the specified criteria.
-   *
-   * @param criteria  The criteria to look up elements based on.
-   * @return          A list of elements matching the search criteria.
-   */
-  public abstract List<E> search(final C criteria);
-
   /**
    * Save the current store to the specified file.
    *
@@ -61,4 +36,5 @@ public abstract class Store<E, C> implements Serializable {
   public final void load(final File file, final Callback callback) {
     throw new UnsupportedOperationException();
   }
+
 }
