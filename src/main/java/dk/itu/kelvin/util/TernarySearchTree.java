@@ -138,7 +138,7 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
    * @return      The node containing the specified key if found.
    */
   private Node<V> get(final Node<V> node, final String key, final int depth) {
-    if (node == null || key == null) {
+    if (node == null || key == null || key.isEmpty()) {
       return null;
     }
 
