@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+// Koloboke collections
+import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
+
 // Utilities
 import dk.itu.kelvin.util.PrefixTree;
 import dk.itu.kelvin.util.TernarySearchTree;
@@ -27,9 +30,22 @@ import dk.itu.kelvin.model.Address;
  */
 public final class AddressStore extends Store<Address, String> {
   /**
-   * The entries contained within the address store.
+   * The addresses contained within the store.
    */
-  private PrefixTree<List<Address>> entries;
+  private List<Address> addresses = new ArrayList<>();
+
+  /**
+   * Search index of the addresses.
+   */
+  private transient PrefixTree<List<Address>> addressIndex;
+
+  /**
+   * Keep track of the dirty status of the address index.
+   *
+   * <p>
+   * Whenever the address index becomes dirty a re-index is required.
+   */
+  private transient boolean addressIndexIsDirty;
 
   /**
    * Add an address to the store.
@@ -41,21 +57,8 @@ public final class AddressStore extends Store<Address, String> {
       return;
     }
 
-    if (this.entries == null) {
-      this.entries = new TernarySearchTree<>();
-    }
-
-    String key = this.key(address);
-
-    List<Address> addresses = this.entries.get(key);
-
-    if (addresses == null) {
-      addresses = new ArrayList<>();
-
-      this.entries.put(key, addresses);
-    }
-
-    addresses.add(address);
+    this.addresses.add(address);
+    this.addressIndexIsDirty = true;
   }
 
   /**
@@ -68,7 +71,8 @@ public final class AddressStore extends Store<Address, String> {
       return;
     }
 
-    throw new UnsupportedOperationException();
+    this.addresses.remove(address);
+    this.addressIndexIsDirty = true;
   }
 
   /**
@@ -78,6 +82,10 @@ public final class AddressStore extends Store<Address, String> {
    * @return        A list of addresses matching the specified prefix.
    */
   public List<Address> search(final String prefix) {
+    if (this.addressIndex == null || this.addressIndexIsDirty) {
+      this.createAddressIndex();
+    }
+
     List<Address> results = new ArrayList<>();
 
     if (prefix == null) {
@@ -90,7 +98,7 @@ public final class AddressStore extends Store<Address, String> {
       return results;
     }
 
-    Map<String, List<Address>> entries = this.entries.search(
+    Map<String, List<Address>> entries = this.addressIndex.search(
       this.key(address)
     );
 
@@ -109,6 +117,30 @@ public final class AddressStore extends Store<Address, String> {
     }
 
     return results;
+  }
+
+  /**
+   * Construct the search index of the addresses in the store.
+   */
+  private void createAddressIndex() {
+    Map<String, List<Address>> entries = HashObjObjMaps.newMutableMap();
+
+    for (Address address: this.addresses) {
+      String key = this.key(address);
+
+      List<Address> addresses = entries.get(key);
+
+      if (addresses == null) {
+        addresses = new ArrayList<>();
+
+        entries.put(key, addresses);
+      }
+
+      addresses.add(address);
+    }
+
+    this.addressIndex = new TernarySearchTree<>(entries);
+    this.addressIndexIsDirty = false;
   }
 
   /**
