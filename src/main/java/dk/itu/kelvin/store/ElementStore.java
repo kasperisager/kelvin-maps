@@ -32,9 +32,24 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   private List<Way> land = new ArrayList<>();
 
   /**
-   * A list for all land elements.
+   * A list for all way elements.
    */
   private List<Way> ways = new ArrayList<>();
+
+  /**
+   * A list for all road elements.
+   */
+  private List<Way> roads = new ArrayList<>();
+
+  /**
+   * A list for all cycleways elements.
+   */
+  private List<Way> cycleways = new ArrayList<>();
+
+  /**
+   * A list for all transportWays elements.
+   */
+  private List<Way> transportWays = new ArrayList<>();
 
   /**
    * A list for all water elements.
@@ -77,12 +92,22 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   private boolean waysIsDirty;
 
   /**
-   * Indicates whether waysTree needs to be indexed or not.
+   * Indicates whether roadsTree needs to be indexed or not.
+   */
+  private boolean roadsIsDirty;
+
+  /**
+   * Indicates whether roadsTree needs to be indexed or not.
+   */
+  private boolean cyclewaysIsDirty;
+
+  /**
+   * Indicates whether landsTree needs to be indexed or not.
    */
   private boolean landIsDirty;
 
   /**
-   * Indicates whether waysTree needs to be indexed or not.
+   * Indicates whether relationsTree needs to be indexed or not.
    */
   private boolean relationsIsDirty;
 
@@ -97,8 +122,67 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * @param w The element to be added.
    */
   public void add(final Way w) {
-    this.ways.add(w);
-    this.waysIsDirty = true;
+    String highway = w.tag("highway");
+    String cycleway = w.tag("cycleway");
+    String bicycle_road = w.tag("bicycle_road");
+
+    if (highway != null) {
+      switch (highway) {
+        case "motorway":
+        case "trunk":
+        case "primary":
+        case "secondary":
+        case "tertiary":
+        case "unclassified":
+        case "residential":
+        case "service":
+        case "motorway_link":
+        case "trunk_link":
+        case "primary_link":
+        case "secondary_link":
+        case "tertiary_link":
+        case "living_street":
+        case "road":
+          this.roads.add(w);
+          this.transportWays.add(w);
+          this.roadsIsDirty = true;
+          break;
+        case "cycleway":
+          this.cycleways.add(w);
+          this.transportWays.add(w);
+          this.cyclewaysIsDirty = true;
+          break;
+      }
+    }
+    else if (cycleway != null) {
+      switch (cycleway) {
+        case "lane":
+        case "opposite":
+        case "opposite_lane":
+        case "track":
+        case "opposite_track":
+        case "share_busway":
+        case "shared_lane":
+          this.cycleways.add(w);
+          this.transportWays.add(w);
+          this.cyclewaysIsDirty = true;
+          break;
+      }
+    }
+    else if (bicycle_road != null) {
+      switch (bicycle_road) {
+        case "yes":
+          this.cycleways.add(w);
+          this.transportWays.add(w);
+          this.cyclewaysIsDirty = true;
+          break;
+      }
+    }
+    else {
+      this.ways.add(w);
+      this.waysIsDirty = true;
+    }
+
   }
 
   /**
@@ -164,6 +248,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     if (this.poiTree == null || this.poiIsDirty) {
       this.poiTree = this.indexPoi(this.pois);
     }
+
 
     List<Element> elementList = new ArrayList<>();
 

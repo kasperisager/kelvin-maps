@@ -79,6 +79,8 @@ import dk.itu.kelvin.store.AddressStore;
  * Chart controller class.
  */
 public final class ChartController {
+
+  private int countway = 0;
   /**
    * The input file to show in the map viewer.
    */
@@ -306,8 +308,10 @@ public final class ChartController {
         }
 
         for (Way w : parser.ways()) {
+          countway++;
           this.elementStore.add(w);
         }
+        System.out.println("ways: " + countway);
 
         for (Relation r : parser.relations()) {
           this.elementStore.add(r);

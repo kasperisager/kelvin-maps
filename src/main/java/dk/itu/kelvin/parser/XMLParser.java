@@ -301,6 +301,7 @@ public final class XMLParser extends Parser {
 
     ((ArrayList) way.nodes()).trimToSize();
 
+
     this.ways.put(this.elementId, way);
   }
 
@@ -341,6 +342,7 @@ public final class XMLParser extends Parser {
     if (k.startsWith("addr:") && this.address == null) {
       this.address = new Address();
     }
+
 
     if (this.element instanceof Way) {
       Way way = (Way) this.element;
