@@ -536,10 +536,6 @@ public final class PBFParser extends Parser {
       String k = this.getString(keyId);
       String v = this.getString(valId);
 
-      if (k.equals("coastline")) {
-        this.land.add(parsedWay);
-      }
-
       parsedWay.tag(k, v);
     }
 
@@ -549,6 +545,13 @@ public final class PBFParser extends Parser {
       ref += nextRef;
 
       parsedWay.add(this.nodes.get(ref));
+    }
+
+    if (
+      parsedWay.tag("natural") != null
+      && parsedWay.tag("natural").equals("coastline")
+    ) {
+      this.land.add(parsedWay);
     }
 
     this.ways.put(wayId, parsedWay);
