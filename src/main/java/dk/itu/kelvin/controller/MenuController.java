@@ -91,12 +91,13 @@ public final class MenuController {
     FileChooser filechooser = new FileChooser();
     filechooser.setTitle("Select file to load");
     filechooser.getExtensionFilters().add(
-      new FileChooser.ExtensionFilter("All Files", "*.osm")
+      new FileChooser.ExtensionFilter("All Files", "*.osm", "*zip", "*.pbf")
     );
     File file = filechooser.showOpenDialog(new Stage());
 
     if (file != null) {
       //do something with the file.
+      AddressController.instance().clearAddresses();
       ChartController.instance().clearMap();
       ChartController.instance().loadMap(file);
     }

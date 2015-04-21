@@ -460,24 +460,22 @@ public final class ChartController {
 
   public static void clearMap(){
     //ChartController.instance.chart.getChildren().clear();
-    ChartController.instance.chart.getChildren().clear();
-    ChartController.instance.chart = new Chart();
-
-
-
+    ChartController.instance.chart.clear();
   }
 
   public static void loadMap(File file){
     System.out.println(file.toURI());
-    //ApplicationController.instance().addIcon();
+    ApplicationController.instance().addIcon();
     //ApplicationController.instance().rotateIcon();
-    //ChartController.instance.mainStackPane.setDisable(true);
+    ChartController.instance.mainStackPane.setDisable(true);
 
     Parser parser = Parser.probe(file);
 
     parser.read(file, () -> {
       // Get all addresses from parser.
-
+      for (Address address: parser.addresses()) {
+        AddressController.instance().addAddress(address);
+      }
       // Schedule rendering of the chart nodes.
       Platform.runLater(() -> {
         ChartController.instance.chart.land(parser.land());
@@ -486,8 +484,8 @@ public final class ChartController {
         ChartController.instance.chart.bounds(parser.bounds());
 
         // Sets the chart active after load.
-        //ChartController.instance.mainStackPane.setDisable(false);
-        //ApplicationController.removeIcon();
+        ChartController.instance.mainStackPane.setDisable(false);
+        ApplicationController.removeIcon();
       });
     });
   }

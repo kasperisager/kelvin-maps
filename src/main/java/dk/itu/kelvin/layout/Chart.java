@@ -147,8 +147,8 @@ public final class Chart extends Group {
     if (bounds == null) {
       return;
     }
-
-    this.pan(-bounds.minX(), -bounds.minY());
+    System.out.println(-bounds.minX() + -bounds.minY());
+    this.panLocation(-bounds.minX(), -bounds.minY());
 
     this.setClip(bounds.render());
   }
@@ -203,6 +203,14 @@ public final class Chart extends Group {
     this.setTranslateY(this.getTranslateY() + y);
 
     this.layoutTiles();
+  }
+
+  public void panLocation(final double x, final double y){
+    this.setTranslateX(x);
+    this.setTranslateY(y);
+
+    this.layoutTiles();
+
   }
 
   /**
@@ -501,6 +509,9 @@ public final class Chart extends Group {
   public void clear(){
     this.landLayer.getChildren().clear();
     this.metaLayer.getChildren().clear();
+    this.ways = null;
+    this.land = null;
+    this.relations = null;
   }
 
   /**
