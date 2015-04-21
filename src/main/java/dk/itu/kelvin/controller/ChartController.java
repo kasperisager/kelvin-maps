@@ -163,7 +163,6 @@ public final class ChartController {
     this.compassArrow.getTransforms().add(this.compassTransform);
 
     this.initLocationPointer();
-    System.out.println(Parser.class.getResource(MAP_INPUT).toURI());
     File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
 
     Parser parser = Parser.probe(file);
@@ -458,13 +457,18 @@ public final class ChartController {
     this.chart.zoom(Math.pow(ZOOM_OUT, 8));
   }
 
-  public static void clearMap(){
-    //ChartController.instance.chart.getChildren().clear();
+  /**
+   * Clears map by removing all children from layers.
+   */
+  public static void clearMap() {
     ChartController.instance.chart.clear();
   }
 
-  public static void loadMap(File file){
-    System.out.println(file.toURI());
+  /**
+   * Loads a new map, shows loading icon and parse all map elements.
+   * @param file the map file to load.
+   */
+  public static void loadMap(final File file) {
     ApplicationController.instance().addIcon();
     //ApplicationController.instance().rotateIcon();
     ChartController.instance.mainStackPane.setDisable(true);

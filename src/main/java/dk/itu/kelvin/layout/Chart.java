@@ -147,7 +147,6 @@ public final class Chart extends Group {
     if (bounds == null) {
       return;
     }
-    System.out.println(-bounds.minX() + -bounds.minY());
     this.panLocation(-bounds.minX(), -bounds.minY());
 
     this.setClip(bounds.render());
@@ -205,7 +204,13 @@ public final class Chart extends Group {
     this.layoutTiles();
   }
 
-  public void panLocation(final double x, final double y){
+  /**
+   * Pans the chart to a specific location.
+   *
+   * @param x the x position.
+   * @param y the y position.
+   */
+  public void panLocation(final double x, final double y) {
     this.setTranslateX(x);
     this.setTranslateY(y);
 
@@ -506,7 +511,10 @@ public final class Chart extends Group {
     this.landLayer.getChildren().remove(group);
   }
 
-  public void clear(){
+  /**
+   * Removes children from layers and sets collections to null.
+   */
+  public void clear() {
     this.landLayer.getChildren().clear();
     this.metaLayer.getChildren().clear();
     this.ways = null;

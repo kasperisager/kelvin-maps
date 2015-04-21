@@ -116,7 +116,10 @@ public final class ApplicationController {
     .getChildren().remove(ApplicationController.instance().loadIcon);
   }
 
-  public static void addIcon(){
+  /**
+   * Adds the loading icon to the stack pane.
+   */
+  public static void addIcon() {
     ApplicationController.instance().stackPane
       .getChildren().add(ApplicationController.instance().loadIcon);
   }

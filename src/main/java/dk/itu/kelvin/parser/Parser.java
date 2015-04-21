@@ -135,11 +135,9 @@ public abstract class Parser {
     switch (type.toLowerCase()) {
       case "application/xml":
       case "application/x-bzip2":
-        System.out.println("xml");
         return new XMLParser();
 
       case "application/octet-stream":
-        System.out.println("PBF");
         return new PBFParser();
 
       default:
