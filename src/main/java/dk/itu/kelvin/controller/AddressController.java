@@ -68,13 +68,6 @@ public final class AddressController {
   private static final int AUTOCOMPLETE_MAX_ITEMS = 5;
 
   /**
-   * Tags to show in Points of interest.
-   */
-  private String[] tags = {"Parking", "Cafe", "Restaurant", "Fast Food",
-    "Toilets", "Pub", "Recycling", "Bar", "Compressed Air", "Post Box",
-    "Taxi", "BBQ", "Solarium", "Telephone"};
-
-  /**
    * Store for all address objects.
    */
   private static AddressStore addresses = new AddressStore();
@@ -291,18 +284,6 @@ public final class AddressController {
         }
 
       });
-      this.poiContentVBox.getChildren().add(cb);
-    }
-
-
-
-
-    for (String s : this.tags) {
-      CheckBox cb = new CheckBox(s);
-      cb.setPrefWidth(200);
-
-      //add CheckBox event listener and update shown labels
-
       this.poiContentVBox.getChildren().add(cb);
     }
   }
