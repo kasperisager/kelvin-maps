@@ -87,6 +87,21 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   private SpatialIndex<Relation> relationsTree;
 
   /**
+   * Rectangle tree for quick search in road elements.
+   */
+  private SpatialIndex<Way> roadsTree;
+
+  /**
+   * Point tree for quick search in cycleways elements.
+   */
+  private SpatialIndex<Way> cyclewaysTree;
+
+  /**
+   * Point tree for quick search in transportWays elements.
+   */
+  private SpatialIndex<Way> transportWaysTree;
+
+  /**
    * Indicates whether waysTree needs to be indexed or not.
    */
   private boolean waysIsDirty;
@@ -248,6 +263,14 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     if (this.poiTree == null || this.poiIsDirty) {
       this.poiTree = this.indexPoi(this.pois);
     }
+    if (this.roadsTree == null || this.roadsIsDirty) {
+     this.roadsTree = this.indexRoads(this.roads);
+      this.transportWaysTree = this.indexTransportWays(transportWays);
+    }
+    if (this.cyclewaysTree == null || this.cyclewaysIsDirty) {
+      this.cyclewaysTree = this.indexCycleways(this.cycleways);
+      this.transportWaysTree = this.indexTransportWays(transportWays);
+    }
 
 
     List<Element> elementList = new ArrayList<>();
@@ -305,6 +328,59 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
 
     return wayTree;
   }
+
+  /**
+   * Indexing the road rangeTree.
+   *
+   * @param ways The collection of roads to be indexed.
+   * @return the indexed rectangleTree.
+   */
+  public SpatialIndex<Way> indexRoads(final Collection<Way> ways) {
+    if (ways == null || ways.isEmpty()) {
+      return null;
+    }
+
+    RectangleTree<Way> roadTree = new RectangleTree<>(ways);
+    this.roadsIsDirty = false;
+
+    return roadTree;
+  }
+
+  /**
+   * Indexing the road rangeTree.
+   *
+   * @param ways The collection of roads to be indexed.
+   * @return the indexed rectangleTree.
+   */
+  public SpatialIndex<Way> indexTransportWays(final Collection<Way> ways) {
+    if (ways == null || ways.isEmpty()) {
+      return null;
+    }
+
+    RectangleTree<Way> transportWaysTree = new RectangleTree<>(ways);
+    this.roadsIsDirty = false;
+
+    return transportWaysTree;
+  }
+
+  /**
+   * Indexing the road rangeTree.
+   *
+   * @param ways The collection of roads to be indexed.
+   * @return the indexed rectangleTree.
+   */
+  public SpatialIndex<Way> indexCycleways(final Collection<Way> ways) {
+    if (ways == null || ways.isEmpty()) {
+      return null;
+    }
+
+    RectangleTree<Way> cyclewaysTree = new RectangleTree<>(ways);
+    this.cyclewaysIsDirty = false;
+
+    return cyclewaysTree;
+  }
+
+
 
   /**
    * Indexing relations rangeTree.
