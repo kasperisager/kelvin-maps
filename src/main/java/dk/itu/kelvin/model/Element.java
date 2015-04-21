@@ -13,8 +13,10 @@ import java.io.Serializable;
 // JavaFX scene utilities
 import javafx.scene.Node;
 
+// Koloboke collections
+import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
+
 // Utilities
-import dk.itu.kelvin.util.HashTable;
 import dk.itu.kelvin.util.StringPool;
 
 /**
@@ -81,7 +83,7 @@ public abstract class Element<T extends Node> implements Serializable {
     }
 
     if (this.tags == null) {
-      this.tags = new HashTable<>(INITIAL_TAG_CAPACITY);
+      this.tags = HashObjObjMaps.newMutableMap(INITIAL_TAG_CAPACITY);
     }
 
     return this.tags.put(STRING_POOL.get(k), STRING_POOL.get(v));
@@ -114,7 +116,7 @@ public abstract class Element<T extends Node> implements Serializable {
    */
   public final Map<String, String> tags() {
     if (this.tags == null) {
-      this.tags = new HashTable<>(INITIAL_TAG_CAPACITY);
+      this.tags = HashObjObjMaps.newMutableMap(INITIAL_TAG_CAPACITY);
     }
 
     return this.tags;

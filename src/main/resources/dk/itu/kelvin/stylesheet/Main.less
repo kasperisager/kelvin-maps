@@ -110,17 +110,17 @@
 @strokeWidth-base--compassDisc: 4px;
 @effect-base--compassDisc: @effect-base--compassArrow;
 
-// Configuration box -------------------------------------------------------- //
+// Properties box -------------------------------------------------------- //
 
-@padding-base--configBox: 4px;
-@backgroundColor-base--configBox: @color-white;
-@borderRadius-base--configBox: @borderRadius-base;
-@effect-base--configBox: @effect-base--input;
+@padding-base--propertiesBox: 4px;
+@backgroundColor-base--propertiesBox: @color-white;
+@borderRadius-base--propertiesBox: @borderRadius-base;
+@effect-base--propertiesBox: @effect-base--input;
 
 // Check boxes
-@padding-base--configBoxCheckBox: 4px;
-@borderRadius-base--configBoxCheckBox: @borderRadius-base;
-@backgroundColor-hover--configBoxCheckBox: #eee;
+@padding-base--propertiesBoxCheckBox: 4px;
+@borderRadius-base--propertiesBoxCheckBox: @borderRadius-base;
+@backgroundColor-hover--propertiesBoxCheckBox: #eee;
 
 // -------------------------------------------------------------------------- //
 // # STYLES
@@ -348,22 +348,22 @@
   }
 }
 
-// Configuration box -------------------------------------------------------- //
+// Properties box -------------------------------------------------------- //
 
-.config-box {
-  -fx-padding: @padding-base--configBox;
-  -fx-background-color: @backgroundColor-base--configBox;
-  -fx-background-radius: @borderRadius-base--configBox;
-  -fx-effect: @effect-base--configBox;
+.properties-box {
+  -fx-padding: @padding-base--propertiesBox;
+  -fx-background-color: @backgroundColor-base--propertiesBox;
+  -fx-background-radius: @borderRadius-base--propertiesBox;
+  -fx-effect: @effect-base--propertiesBox;
 
   .check-box {
-    -fx-padding: @padding-base--configBoxCheckBox;
+    -fx-padding: @padding-base--propertiesBoxCheckBox;
     -fx-text-alignment: left;
     -fx-cursor: hand;
-    -fx-background-radius: @borderRadius-base--configBoxCheckBox;
+    -fx-background-radius: @borderRadius-base--propertiesBoxCheckBox;
 
     &:hover {
-      -fx-background-color: @backgroundColor-hover--configBoxCheckBox;
+      -fx-background-color: @backgroundColor-hover--propertiesBoxCheckBox;
     }
   }
 }

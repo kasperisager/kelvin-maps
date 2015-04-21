@@ -44,8 +44,13 @@ repositories {
 
 // Runetime dependencies.
 dependencies {
+  // ControlsFX
   compile group: "org.controlsfx", name: "controlsfx", version: "8.+"
+  compile group: "net.openhft", name: "koloboke-api-jdk8", version: "0.6.6"
 
+  runtime group: "net.openhft", name: "koloboke-impl-jdk8", version: "0.6.6"
+
+  // JUnit
   testCompile group: "junit", name: "junit", version: "4.+"
 }
 
@@ -103,6 +108,7 @@ allprojects {
   // Force rendering on the GPU.
   tasks.withType(JavaExec) {
     jvmArgs = [
+      "-Xmx6g"
       /* "-Dprism.forceGPU=true", */
       /* "-Dprism.dirtyopts=false", */
       /* "-Dprism.order=es2", */
@@ -150,4 +156,9 @@ tasks.withType(FindBugs) {
   classes = classes.filter {
     !it.path.contains(new File("crosby/binary/").path)
   }
+}
+
+// Include only main code in coverage reports.
+jacocoTestReport.doFirst{
+  classDirectories = files("build/classes/main/${namespaceDir}")
 }

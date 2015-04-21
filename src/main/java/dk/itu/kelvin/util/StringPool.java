@@ -9,6 +9,9 @@ import java.util.Map;
 // I/O utilities
 import java.io.Serializable;
 
+// Koloboke collections
+import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
+
 /**
  * String pool class.
  *
@@ -22,7 +25,7 @@ public final class StringPool implements Serializable {
   /**
    * Internal map of strings.
    */
-  private Map<String, String> pool = new HashTable<>();
+  private Map<String, String> pool = HashObjObjMaps.newMutableMap();
 
   /**
    * Get the interned version of the specified string, interning it if it's not

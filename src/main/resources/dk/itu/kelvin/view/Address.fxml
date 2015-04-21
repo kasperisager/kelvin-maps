@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.control.TextField?>
+<VBox
+  fx:controller="dk.itu.kelvin.controller.AddressController"
+  fx:id="mainVBox"
+  xmlns:fx="http://javafx.com/fxml"
+  styleClass="u-padded"
+  alignment="TOP_LEFT"
+  pickOnBounds="false"
+  fillWidth="false"
+  spacing="10"
+  prefWidth="400"
+  >
+  <HBox styleClass="input-group" maxWidth="400">
+    <children>
+      <TextField
+        promptText="Enter an address"
+        styleClass="first"
+        prefWidth="9999"
+        fx:id="findAddressTextField"
+        onAction="#findAddress"
+        />
+
+      <Button
+        text="&#xf4a4;"
+        styleClass="icon, last"
+        onAction="#findAddress"
+        focusTraversable="false"
+        >
+        <tooltip>
+          <Tooltip text="Search for address"/>
+        </tooltip>
+      </Button>
+    </children>
+  </HBox>
+
+  <HBox styleClass="input-group" maxWidth="400">
+    <children>
+      <TextField
+        promptText="Get directions to this address"
+        styleClass="first"
+        prefWidth="9999"
+        fx:id="findRouteTextField"
+        onAction="#findRoute"
+        />
+
+      <Button
+        text="&#xf30f;"
+        styleClass="icon, last"
+        onAction="#findRoute"
+        focusTraversable="false"
+        >
+        <tooltip>
+          <Tooltip text="Get directions"/>
+        </tooltip>
+      </Button>
+    </children>
+  </HBox>
+
+  <HBox spacing="10">
+    <children>
+      <Button
+        text="&#xf268;"
+        styleClass="icon"
+        onAction="#swapTextFields"
+        >
+        <tooltip>
+          <Tooltip text="Swap textfields"/>
+        </tooltip>
+      </Button>
+    </children>
+
+    <children>
+      <Button
+        text="&#xf2c1;"
+        styleClass="icon"
+        onAction="#routeByCar"
+        >
+        <tooltip>
+          <Tooltip text="Highlight car routes"/>
+        </tooltip>
+      </Button>
+    </children>
+
+    <children>
+      <Button
+        text="&#xf3bb; / &#xf369;"
+        styleClass="icon"
+        onAction="#routeByFoot"
+        >
+        <tooltip>
+          <Tooltip text="Highlight walk/bike routes"/>
+        </tooltip>
+      </Button>
+    </children>
+
+    <children>
+      <ToggleButton styleClass="icon" text="&#xf13d;" fx:id="settingsToggleButton"/>
+    </children>
+  </HBox>
+
+  <GridPane
+    VBox.vgrow="SOMETIMES"
+    fx:id="propertiesGridPane"
+    >
+    <VBox
+      styleClass="properties-box"
+      fx:id="poiContainer"
+      prefWidth="200"
+      layoutX="0"
+      layoutY="0"
+      maxWidth="200"
+      >
+      <children>
+        <HBox>
+          <children>
+            <Label
+              prefWidth="200"
+              styleClass="header"
+              alignment="CENTER"
+              >
+              Points of Interest
+            </Label>
+          </children>
+          <children>
+            <Button
+              styleClass="icon"
+              text="&#xf12a;"
+              onAction="#hidePOI"
+              >
+            </Button>
+          </children>
+        </HBox>
+      </children>
+      <children>
+        <ScrollPane
+          VBox.vgrow="SOMETIMES"
+          hbarPolicy="NEVER"
+          >
+          <VBox
+            fx:id="poiContentVBox"
+            >
+          </VBox>
+        </ScrollPane>
+      </children>
+    </VBox>
+
+    <VBox
+      styleClass="properties-box"
+      fx:id="directionsContainer"
+      prefWidth="400"
+      layoutX="0"
+      layoutY="0"
+      VBox.vgrow="SOMETIMES"
+      >
+      <children>
+        <HBox>
+          <Label
+            prefWidth="345"
+            styleClass="header"
+            alignment="CENTER"
+            >
+            Directions
+          </Label>
+          <Button
+            alignment="TOP_RIGHT"
+            styleClass="icon"
+            text="&#xf12a;"
+            onAction="#hideDirections"
+            >
+          </Button>
+        </HBox>
+      </children>
+      <children>
+        <ScrollPane
+          VBox.vgrow="SOMETIMES"
+          hbarPolicy="NEVER"
+          >
+          <VBox
+            fx:id="directionsContentVBox"
+            >
+          </VBox>
+        </ScrollPane>
+      </children>
+    </VBox>
+    <rowConstraints>
+      <RowConstraints minHeight="10.0" percentHeight="100"  />
+
+    </rowConstraints>
+  </GridPane>
+</VBox>

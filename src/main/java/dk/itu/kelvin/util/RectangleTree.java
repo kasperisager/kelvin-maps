@@ -46,7 +46,7 @@ public class RectangleTree<E extends RectangleTree.Index>
   /**
    * The maximum size of rectangle buckets.
    */
-  private static final int BUCKET_MAXIMUM = 1024;
+  private static final int BUCKET_MAXIMUM = 512;
 
   /**
    * The minimum size of rectangle buckets.

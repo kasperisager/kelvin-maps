@@ -212,7 +212,9 @@ public final class Address {
    * @return        The current {@link Address} instance for chaining.
    */
   public Address street(final String street) {
-    this.street = (street != null) ? STRING_POOL.get(street.trim()) : null;
+    if (street != null) {
+      this.street = STRING_POOL.get(street.trim());
+    }
 
     return this;
   }
@@ -233,7 +235,9 @@ public final class Address {
    * @return        The current {@link Address} instance for chaining.
    */
   public Address number(final String number) {
-    this.number = (number != null) ? STRING_POOL.get(number.trim()) : null;
+    if (number != null) {
+      this.number = STRING_POOL.get(number.trim());
+    }
 
     return this;
   }
@@ -254,7 +258,9 @@ public final class Address {
    * @return      The current {@link Address} instance for chaining.
    */
   public Address floor(final String floor) {
-    this.floor = (floor != null) ? STRING_POOL.get(floor.trim()) : null;
+    if (floor != null) {
+      this.floor = STRING_POOL.get(floor.trim());
+    }
 
     return this;
   }
@@ -275,7 +281,9 @@ public final class Address {
    * @return      The current {@link Address} instance for chaining.
    */
   public Address door(final String door) {
-    this.door = (door != null) ? STRING_POOL.get(door.trim()) : null;
+    if (door != null) {
+      this.door = STRING_POOL.get(door.trim());
+    }
 
     return this;
   }
@@ -319,7 +327,9 @@ public final class Address {
    * @return      The current {@link Address} instance for chaining.
    */
   public Address city(final String city) {
-    this.city = (city != null) ? STRING_POOL.get(city.trim()) : null;
+    if (city != null) {
+      this.city = STRING_POOL.get(city.trim());
+    }
 
     return this;
   }

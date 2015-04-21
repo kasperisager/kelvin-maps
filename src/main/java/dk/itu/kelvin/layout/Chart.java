@@ -5,6 +5,7 @@ package dk.itu.kelvin.layout;
 
 // General utilities
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +21,10 @@ import javafx.scene.shape.Rectangle;
 // JavaFX geometry utilities
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+
+// Koloboke collections
+import net.openhft.koloboke.collect.set.hash.HashObjSets;
+import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
 
 // Utilities
 import dk.itu.kelvin.util.HashSet;
@@ -84,7 +89,7 @@ public final class Chart extends Group {
   /**
    * Keep track of the tiles currently showing.
    */
-  private Map<Anchor, Group> showing = new HashTable<>();
+  private Map<Anchor, Group> showing = HashObjObjMaps.newMutableMap();
 
   /**
    * Current smallest x-coordinate of the chart viewport.
@@ -238,7 +243,7 @@ public final class Chart extends Group {
     this.center(address);
   }
 
-   /**
+  /**
    * Zoom the chart.
    *
    * @param factor  The factor with which to zoom.
@@ -366,7 +371,7 @@ public final class Chart extends Group {
     this.maxX = maxX;
     this.maxY = maxY;
 
-    Set<Anchor> anchors = new HashSet<>();
+    Set<Anchor> anchors = HashObjSets.newMutableSet();
 
     for (int x = minX; x <= maxX; x += 256) {
       for (int y = minY; y <= maxY; y += 256) {
@@ -374,12 +379,17 @@ public final class Chart extends Group {
       }
     }
 
-    for (Anchor anchor: this.showing.keySet()) {
+    Iterator<Anchor> it = this.showing.keySet().iterator();
+
+    while (it.hasNext()) {
+      Anchor anchor = it.next();
+
       if (anchors.contains(anchor)) {
         continue;
       }
 
       this.hide(anchor);
+      it.remove();
     }
 
     for (Anchor anchor: anchors) {
@@ -485,8 +495,6 @@ public final class Chart extends Group {
     Group group = this.showing.get(anchor);
 
     this.landLayer.getChildren().remove(group);
-
-    this.showing.remove(anchor);
   }
 
   /**

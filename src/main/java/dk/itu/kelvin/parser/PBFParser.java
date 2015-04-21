@@ -19,6 +19,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+// Koloboke collections
+import net.openhft.koloboke.collect.map.hash.HashLongObjMaps;
+
 // Protocol Buffer File entities
 import crosby.binary.Fileformat.Blob;
 import crosby.binary.Fileformat.BlobHeader;
@@ -30,9 +33,6 @@ import crosby.binary.Osmformat.HeaderBlock;
 import crosby.binary.Osmformat.StringTable;
 import crosby.binary.Osmformat.PrimitiveBlock;
 import crosby.binary.Osmformat.PrimitiveGroup;
-
-// Utilities
-import dk.itu.kelvin.util.HashTable;
 
 // Math
 import dk.itu.kelvin.math.Projection;
@@ -133,17 +133,17 @@ public final class PBFParser extends Parser {
   /**
    * The parsed nodes mapped to their IDs.
    */
-  private Map<Long, Node> nodes = new HashTable<>();
+  private Map<Long, Node> nodes = HashLongObjMaps.newMutableMap();
 
   /**
    * The parsed ways mapped to their IDs.
    */
-  private Map<Long, Way> ways = new HashTable<>();
+  private Map<Long, Way> ways = HashLongObjMaps.newMutableMap();
 
   /**
    * The parsed relations mapped to their IDs.
    */
-  private Map<Long, Relation> relations = new HashTable<>();
+  private Map<Long, Relation> relations = HashLongObjMaps.newMutableMap();
 
   /**
    * The parsed land.
@@ -536,10 +536,6 @@ public final class PBFParser extends Parser {
       String k = this.getString(keyId);
       String v = this.getString(valId);
 
-      if (k.equals("coastline")) {
-        this.land.add(parsedWay);
-      }
-
       parsedWay.tag(k, v);
     }
 
@@ -549,6 +545,13 @@ public final class PBFParser extends Parser {
       ref += nextRef;
 
       parsedWay.add(this.nodes.get(ref));
+    }
+
+    if (
+      parsedWay.tag("natural") != null
+      && parsedWay.tag("natural").equals("coastline")
+    ) {
+      this.land.add(parsedWay);
     }
 
     this.ways.put(wayId, parsedWay);
