@@ -113,7 +113,7 @@ public final class ChartController {
   /**
    * Element store storing all elements.
    */
-  private ElementStore elementStore = new ElementStore();
+  public static ElementStore elementStore = new ElementStore();
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -175,7 +175,6 @@ public final class ChartController {
     this.compassArrow.getTransforms().add(this.compassTransform);
 
     this.initLocationPointer();
-
     File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
 
     Parser parser = Parser.probe(file);
@@ -186,7 +185,7 @@ public final class ChartController {
         AddressController.instance().addAddress(address);
       }
 
-      // Sets all POT from initialized nodes.
+      // Sets all POI from initialized nodes.
       this.storePoi(parser);
 
       // Schedule rendering of the chart nodes.
@@ -231,23 +230,23 @@ public final class ChartController {
    * Moves the compass VBox relative to BOTTOM_LEFT.
    * @param x how much to move compass along x-axis [px].
    */
-  public void moveCompass(final double x) {
-    this.compassVBox.setTranslateX(x);
+  public static void moveCompass(final double x) {
+    ChartController.instance().compassVBox.setTranslateX(x);
   }
 
   /**
    * Store all POI nodes in ElementStore.
    * @param parser for parsing data.
    */
-  public void storePoi(final Parser parser) {
+  private static void storePoi(final Parser parser) {
     for (Node n : parser.nodes()) {
 
       if (n.tag("amenity") != null) {
-        this.elementStore.add(n);
+        ChartController.instance().elementStore.add(n);
 
       }
       if (n.tag("shop") != null) {
-        this.elementStore.add(n);
+        ChartController.instance().elementStore.add(n);
       }
     }
   }
@@ -516,4 +515,56 @@ public final class ChartController {
   private void zoomOut() {
     this.chart.zoom(Math.pow(ZOOM_OUT, 8));
   }
+
+  /**
+   * Clears map by removing all children from layers.
+   */
+  public static void clearMap() {
+    ChartController.instance.chart.clear();
+  }
+
+  /**
+   * Loads a new map, shows loading icon and parse all map elements.
+   * @param file the map file to load.
+   */
+  public static void loadMap(final File file) {
+    ApplicationController.instance().addIcon();
+    //ApplicationController.instance().rotateIcon();
+    ChartController.instance.mainStackPane.setDisable(true);
+
+    Parser parser = Parser.probe(file);
+
+    parser.read(file, () -> {
+      // Get all addresses from parser.
+      for (Address address: parser.addresses()) {
+        AddressController.instance().addAddress(address);
+      }
+      // Sets all POI from initialized nodes.
+      ChartController.instance().storePoi(parser);
+
+      Platform.runLater(() -> {
+        for (Way l : parser.land()) {
+          ChartController.instance().elementStore.addLand(l);
+        }
+
+        for (Way w : parser.ways()) {
+          ChartController.instance().elementStore.add(w);
+        }
+
+        for (Relation r : parser.relations()) {
+          ChartController.instance().elementStore.add(r);
+        }
+
+        ChartController.instance().elementStore.add(parser.bounds());
+
+        ChartController.instance().chart.elementStore(ChartController.instance().elementStore);
+        ChartController.instance().chart.bounds(parser.bounds());
+
+        // Sets the chart active after load.
+        ChartController.instance().mainStackPane.setDisable(false);
+        ApplicationController.removeIcon();
+      });
+    });
+  }
 }
+

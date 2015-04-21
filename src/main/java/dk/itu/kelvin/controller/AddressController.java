@@ -556,6 +556,13 @@ public final class AddressController {
   }
 
   /**
+   * Resets the AddressStore and clears all addresses.
+   */
+  public static void clearAddresses() {
+    AddressController.instance.addresses = new AddressStore();
+  }
+
+  /**
    * Listener for input TextFields, controlling auto-complete suggestions.
    */
   private ChangeListener<String> addressFieldListener =

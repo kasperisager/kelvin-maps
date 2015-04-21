@@ -100,7 +100,7 @@ public final class ApplicationController {
   /**
    * To rotate the load icon.
    */
-  public void rotateIcon() {
+  public static void rotateIcon() {
     ApplicationController.instance().rt.setByAngle(360);
     ApplicationController.instance()
     .rt.setCycleCount(RotateTransition.INDEFINITE);
@@ -116,4 +116,11 @@ public final class ApplicationController {
     .getChildren().remove(ApplicationController.instance().loadIcon);
   }
 
+  /**
+   * Adds the loading icon to the stack pane.
+   */
+  public static void addIcon() {
+    ApplicationController.instance().stackPane
+      .getChildren().add(ApplicationController.instance().loadIcon);
+  }
 }

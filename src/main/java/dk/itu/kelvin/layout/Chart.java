@@ -146,8 +146,7 @@ public final class Chart extends Group {
     if (bounds == null) {
       return;
     }
-
-    this.pan(-bounds.minX(), -bounds.minY());
+    this.panLocation(-bounds.minX(), -bounds.minY());
 
     this.setClip(bounds.render());
   }
@@ -159,10 +158,21 @@ public final class Chart extends Group {
    * @param y The amount to pan on the y-axis.
    */
   public void pan(final double x, final double y) {
-    this.setTranslateX(this.getTranslateX() + x);
-    this.setTranslateY(this.getTranslateY() + y);
+    this.panLocation(this.getTranslateX() + x, this.getTranslateY() + y);
+  }
+
+  /**
+   * Pans the chart to a specific location.
+   *
+   * @param x the x position.
+   * @param y the y position.
+   */
+  public void panLocation(final double x, final double y) {
+    this.setTranslateX(x);
+    this.setTranslateY(y);
 
     this.layoutTiles();
+
   }
 
   /**
@@ -489,6 +499,15 @@ public final class Chart extends Group {
   }
 
   /**
+   * Removes children from layers and sets collections to null.
+   */
+  public void clear() {
+    this.landLayer.getChildren().clear();
+    this.metaLayer.getChildren().clear();
+    this.elementStore = new ElementStore();
+  }
+
+  /**
    * The {@link Anchor} class describes an anchor point for a group of elements
    * within the chart.
    */
@@ -547,5 +566,6 @@ public final class Chart extends Group {
 
       return (int) (bits ^ (bits >> 32));
     }
+
   }
 }
