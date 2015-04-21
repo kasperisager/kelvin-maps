@@ -343,7 +343,6 @@ public final class XMLParser extends Parser {
       this.address = new Address();
     }
 
-
     if (this.element instanceof Way) {
       Way way = (Way) this.element;
 

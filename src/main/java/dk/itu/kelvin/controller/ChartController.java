@@ -156,7 +156,7 @@ public final class ChartController {
    * The dynamic autocomplete results.
    */
   private HashTable<String, Address> suggestions =
-    new HashTable<>(AUTOCOMPLETE_MAX_ITEMS);
+  new HashTable<>(AUTOCOMPLETE_MAX_ITEMS);
 
   /**
    * Vbox containing the suggestion buttons.
@@ -308,10 +308,8 @@ public final class ChartController {
         }
 
         for (Way w : parser.ways()) {
-          countway++;
           this.elementStore.add(w);
         }
-        System.out.println("ways: " + countway);
 
         for (Relation r : parser.relations()) {
           this.elementStore.add(r);
