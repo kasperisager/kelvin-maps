@@ -82,6 +82,29 @@ public final class Geometry {
   }
 
   /**
+   * Get the rectangular union of the specified rectangles.
+   *
+   * @param a The first rectangle.
+   * @param b The second rectangle.
+   * @return  The rectangular union of the specified rectangles.
+   */
+  public static Rectangle union(final Rectangle a, final Rectangle b) {
+    Point position = new Point(
+      Math.min(a.position.x, b.position.x),
+      Math.min(a.position.y, b.position.y)
+    );
+
+    Bounds ab = a.bounds();
+    Bounds bb = b.bounds();
+
+    return new Rectangle(
+      position,
+      Math.max(ab.max.x, bb.max.x) - position.x,
+      Math.max(ab.max.y, bb.max.y) - position.y
+    );
+  }
+
+  /**
    * Calculate the line-line intersection between the specified line segments.
    *
    * @see <a href="http://en.wikipedia.org/wiki/Line%E2%80%93line_intersection">
@@ -691,6 +714,36 @@ public final class Geometry {
      */
     public final double area() {
       return this.width * this.height;
+    }
+
+    /**
+     * Add another rectangle to the current rectangle, letting the current
+     * rectangle become the union of the two.
+     *
+     * @param rectangle The rectangle to add to the current rectangle.
+     */
+    public final void add(final Rectangle rectangle) {
+      if (rectangle == null) {
+        return;
+      }
+
+      Rectangle union = Geometry.union(this, rectangle);
+
+      this.position = union.position;
+      this.width = union.width;
+      this.height = union.height;
+    }
+
+    /**
+     * Compute the area by which the current rectangle would be increased if
+     * unioned with the specified rectangle.
+     *
+     * @param rectangle The rectangle.
+     * @return          The area by which the current rectangle would increase
+     *                  if unioned with the specified rectangle.
+     */
+    public final double enlargement(final Rectangle rectangle) {
+      return Geometry.union(this, rectangle).area() - this.area();
     }
 
     /**
