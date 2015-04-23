@@ -63,6 +63,10 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
     return this.adjacencyList.get(node).size();
   }
 
+  /**
+   * Returns all edges in the graph.
+   * @return all edges.
+   */
   public List<Edge> edges() {
     List<Edge> list = new ArrayList<>();
     for(HashSet<Edge> set : this.adjacencyList.values()) {
@@ -70,7 +74,7 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
         list.add(edge);
       }
     }
-    
+
     return list;
   }
 
