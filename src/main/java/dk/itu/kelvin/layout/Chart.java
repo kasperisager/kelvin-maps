@@ -151,8 +151,8 @@ public final class Chart extends Group {
      * The 10.000 is default padding to ensure it still works for really small
      * maps with coastlines.
      */
-    double paddingX = 10000 + bounds.maxX() - bounds.minX();
-    double paddingY = 10000 + bounds.maxY() - bounds.minY();
+    double paddingX = 10000 + Math.abs(bounds.maxX() - bounds.minX());
+    double paddingY = 10000 + Math.abs(bounds.maxY() - bounds.minY());
 
     Rectangle wrapper = new Rectangle(
       bounds.minX() - paddingX,
