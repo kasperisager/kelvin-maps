@@ -5,6 +5,8 @@ package dk.itu.kelvin.util;
 
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.ArrayList;
 
 public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Edge>{
   /**
@@ -59,6 +61,17 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
    */
   public int outdegree(final Node node) {
     return this.adjacencyList.get(node).size();
+  }
+
+  public List<Edge> edges() {
+    List<Edge> list = new ArrayList<>();
+    for(HashSet<Edge> set : this.adjacencyList.values()) {
+      for (Edge edge : set) {
+        list.add(edge);
+      }
+    }
+    
+    return list;
   }
 
   /**
