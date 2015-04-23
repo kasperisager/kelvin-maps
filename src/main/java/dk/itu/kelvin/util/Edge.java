@@ -1,19 +1,21 @@
 /**
  * Copyright (C) 2015 The Authors.
  */
-package dk.itu.kelvin.model;
+package dk.itu.kelvin.util;
+
+import dk.itu.kelvin.model.Node;
 
 public class Edge {
   private Node start;
   private Node end;
   private float weight;
-  private int speeedLimit;
+  private int speedLimit;
 
   public Edge(Node start, Node end, float weight, int speedLimit) {
     this.start = start;
     this.end = end;
     this.weight = weight;
-    this.speeedLimit = speedLimit;
+    this.speedLimit = speedLimit;
   }
 
   /**
@@ -29,31 +31,25 @@ public class Edge {
    * @return the speed limit of the edge
    */
   public double speedLimit() {
-    return speeedLimit;
+    return speedLimit;
   }
 
   /**
-   * Returns either endpoint of the edge.
-   * @return either endpoint of the edge
+   * Returns the tail vertex of the directed edge.
+   * @return the tail vertex of the directed edge
    */
-  public Node either() {
+  public Node from() {
     return start;
   }
 
   /**
-   * Returns the endpoint of the edge that is different from the given vertex
-   * (unless the edge represents a self-loop in which case it returns the same vertex).
-   * @param vertex one endpoint of the edge
-   * @return the endpoint of the edge that is different from the given vertex
-   *   (unless the edge represents a self-loop in which case it returns the same vertex)
-   * @throws java.lang.IllegalArgumentException if the vertex is not one of the endpoints
-   *   of the edge
+   * Returns the head vertex of the directed edge.
+   * @return the head vertex of the directed edge
    */
-  public Node other(Node vertex) {
-    if      (vertex.equals(this.start)) return this.end;
-    else if (vertex.equals(this.end)) return this.start;
-    else throw new IllegalArgumentException("Illegal endpoint");
+  public Node to() {
+    return end;
   }
+
 
   /**
    * Compares two edges by weight.
