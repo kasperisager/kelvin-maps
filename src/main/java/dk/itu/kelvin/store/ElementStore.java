@@ -172,6 +172,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
         case "cycleway":
           this.cycleways.add(w);
           this.transportWays.add(w);
+          this.addEdge(w);
           this.cyclewaysIsDirty = true;
           break;
         default:
@@ -189,6 +190,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
         case "shared_lane":
           this.cycleways.add(w);
           this.transportWays.add(w);
+          this.addEdge(w);
           this.cyclewaysIsDirty = true;
           break;
         default:
@@ -200,6 +202,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
         case "yes":
           this.cycleways.add(w);
           this.transportWays.add(w);
+          this.addEdge(w);
           this.cyclewaysIsDirty = true;
           break;
         default:
