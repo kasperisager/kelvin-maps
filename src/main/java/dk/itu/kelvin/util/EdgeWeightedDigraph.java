@@ -6,16 +6,14 @@ package dk.itu.kelvin.util;
 // Models
 import dk.itu.kelvin.model.Node;
 
-public class EdgeWeightedDigraph {
-  private final int V;
-  private int E;
-  private Bag<Edge>[] adj;
+import java.util.List;
 
-  /**
-   * Initializes an empty edge-weighted digraph with <tt>V</tt> vertices and 0 edges.
-   * param V the number of vertices
-   * @throws java.lang.IllegalArgumentException if <tt>V</tt> < 0
-   */
+public class EdgeWeightedDigraph {
+  private int V;
+  private int E;
+  private List<Edge> eges;
+
+/*
   public EdgeWeightedDigraph(int V) {
     if (V < 0) throw new IllegalArgumentException("Number of vertices in a Digraph must be nonnegative");
     this.V = V;
@@ -24,7 +22,12 @@ public class EdgeWeightedDigraph {
     for (int v = 0; v < V; v++)
       adj[v] = new Bag<Edge>();
   }
+*/
 
+  public EdgeWeightedDigraph() {
+    this.V = 0;
+    this.E = 0;
+  }
   /**
    * Returns the number of vertices in the edge-weighted digraph.
    * @return the number of vertices in the edge-weighted digraph
