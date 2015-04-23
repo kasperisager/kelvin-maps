@@ -15,6 +15,7 @@ import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.util.SpatialIndex;
 import dk.itu.kelvin.util.PointTree;
 import dk.itu.kelvin.util.RectangleTree;
+import dk.itu.kelvin.util.WeightedGraph;
 
 // General utilities
 import java.util.List;
@@ -25,6 +26,11 @@ import java.util.ArrayList;
  * Common store for storing all elements in the chart.
  */
 public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
+
+  /**
+   * Weighted graph for all roads.
+   */
+  private WeightedGraph roadsWeightedGraph = new WeightedGraph();
 
   /**
    * A list for all land elements.
@@ -160,6 +166,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
         case "road":
           this.roads.add(w);
           this.transportWays.add(w);
+          this.addEdge(w);
           this.roadsIsDirty = true;
           break;
         case "cycleway":
@@ -439,6 +446,24 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     return poiTree;
   }
 
+  public void addEdge(final Way way) {
+    for (int i = 0; i < way.nodes().size(); i++) {
+      if (i + 1 >= way.nodes().size()-1) {
+        break;
+      }
+
+      Node from = way.nodes().get(i);
+      Node to = way.nodes().get(i + 1);
+
+      WeightedGraph.Edge edge = new WeightedGraph.Edge(
+        new WeightedGraph.Node(from.x(), from.y()),
+        new WeightedGraph.Node(to.x(), to.y())
+      );
+      this.roadsWeightedGraph.add(edge);
+
+    }
+  }
+
   /**
    * The search query object.
    */
@@ -541,5 +566,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
       return ElementStore.this.search(this);
     }
   }
+
+
 
 }

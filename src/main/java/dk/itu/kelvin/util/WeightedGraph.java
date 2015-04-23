@@ -9,16 +9,10 @@ import java.util.Hashtable;
 public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Edge>{
   private Hashtable<WeightedGraph.Node, HashSet<WeightedGraph.Edge>> adjacencyList = new Hashtable<>();
 
-  public void add(Node n, Node m){
-    WeightedGraph.Node start = new WeightedGraph.Node(n.x(), n.y());
-    WeightedGraph.Node end = new WeightedGraph.Node(m.x(), m.y());
-
-    this.add(new WeightedGraph.Edge(start, end));
-  }
-
   public void add(Edge e){
     if (adjacencyList.get(e.from()) == null) {
       adjacencyList.put(e.from(), new HashSet<>());
+
     }
     if (adjacencyList.get(e.to()) == null) {
       adjacencyList.put(e.to(), new HashSet<>());
@@ -28,7 +22,7 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
     adjacencyList.get(e.to()).add(e);
   }
 
-  public final class Node implements Graph.Node {
+  public static final class Node implements Graph.Node {
     private float x;
     private float y;
 
@@ -37,14 +31,11 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
       this.y = y;
     }
 
-
     public float x() {
-
       return x;
     }
 
     public float y(){
-
       return y;
     }
 
@@ -84,7 +75,7 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
 
   }
 
-  public final class Edge implements Graph.Edge {
+  public static final class Edge implements Graph.Edge {
     private Node from;
     private Node to;
     private float weight;
