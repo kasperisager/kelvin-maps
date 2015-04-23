@@ -147,12 +147,19 @@ public final class Chart extends Group {
       return;
     }
     this.panLocation(-bounds.minX(), -bounds.minY());
-    // The 10.000 is default padding to ensure it still works for really small maps with coastlines
-    double paddingX = 10000 + bounds.maxX()-bounds.minX();
-    double paddingY = 10000 + bounds.maxY()-bounds.minY();
+    /**
+     * The 10.000 is default padding to ensure it still works for really small
+     * maps with coastlines.
+     */
+    double paddingX = 10000 + bounds.maxX() - bounds.minX();
+    double paddingY = 10000 + bounds.maxY() - bounds.minY();
 
-    Rectangle wrapper = new Rectangle(bounds.minX()-paddingX,bounds.minY()-paddingY,
-      Math.abs(bounds.maxX()-bounds.minX()+paddingX), Math.abs(bounds.maxY()-bounds.minY()+paddingY));
+    Rectangle wrapper = new Rectangle(
+      bounds.minX() - paddingX,
+      bounds.minY() - paddingY,
+      Math.abs(bounds.maxX() - bounds.minX() + paddingX),
+      Math.abs(bounds.maxY() - bounds.minY() + paddingY)
+    );
     wrapper.getStyleClass().add("boundingBox");
 
     this.getChildren().add(wrapper);

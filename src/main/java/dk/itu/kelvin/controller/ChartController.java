@@ -113,7 +113,7 @@ public final class ChartController {
   /**
    * Element store storing all elements.
    */
-  public static ElementStore elementStore = new ElementStore();
+  private static ElementStore elementStore = new ElementStore();
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -557,7 +557,8 @@ public final class ChartController {
 
         ChartController.instance().elementStore.add(parser.bounds());
 
-        ChartController.instance().chart.elementStore(ChartController.instance().elementStore);
+        ChartController.instance().chart.elementStore(
+          ChartController.instance().elementStore);
         ChartController.instance().chart.bounds(parser.bounds());
 
         // Sets the chart active after load.
