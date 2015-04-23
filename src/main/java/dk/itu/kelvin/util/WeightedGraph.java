@@ -7,8 +7,19 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Edge>{
+  /**
+   * The adjacency list for all vertices and edges in the graph.
+   */
   private Hashtable<WeightedGraph.Node, HashSet<WeightedGraph.Edge>> adjacencyList = new Hashtable<>();
 
+  /**
+   * Total number of vertices in the graph.
+   */
+  private int V = 0;
+
+  /**
+   * Total number of edges in the graph.
+   */
   private int E = 0;
 
   /**
@@ -18,16 +29,18 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
   public void add(Edge e){
     if (adjacencyList.get(e.from()) == null) {
       adjacencyList.put(e.from(), new HashSet<>());
-      this.E++;
+      this.V++;
     }
 
     if (adjacencyList.get(e.to()) == null) {
       adjacencyList.put(e.to(), new HashSet<>());
-      this.E++;
+      this.V++;
     }
 
     adjacencyList.get(e.from()).add(e);
+    this.E++;
     adjacencyList.get(e.to()).add(e);
+    this.E++;
   }
 
   /**
@@ -47,7 +60,6 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
   public int outdegree(final Node node) {
     return this.adjacencyList.get(node).size();
   }
-
 
   /**
    * The node class for the graph.
@@ -193,7 +205,9 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
 
       Edge e = (Edge) object;
 
-      return (e.from().equals(this.from) && e.to().equals(this.to) && e.weight() == this.weight);
+      return (e.from().equals(this.from)
+      && e.to().equals(this.to)
+      && e.weight() == this.weight);
     }
   }
 
