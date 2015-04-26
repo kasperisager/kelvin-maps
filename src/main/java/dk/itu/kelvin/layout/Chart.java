@@ -70,7 +70,7 @@ public final class Chart extends Group {
   /**
    * Minimum zoom factor.
    */
-  private static final double MIN_ZOOM_FACTOR = 0.5;
+  private static final double MIN_ZOOM_FACTOR = 0.000001;
 
   /**
    * The size of each tile in the chart.
@@ -154,10 +154,15 @@ public final class Chart extends Group {
     System.out.println("Width: "+this.getScene().getWidth()+ " Height: "+this.getScene().getHeight());
     double screenW = this.getScene().getWidth();
     double screenH = this.getScene().getHeight();
+
+    double mapWidth = Math.abs(bounds.maxX() - bounds.minX());
+    double mapHeight = Math.abs(bounds.maxY() - bounds.minY());
+    double scaleX = mapWidth / this.getScene().getWidth();
+    double scaleY = mapHeight / this.getScene().getHeight();
+    double scaleMax = Math.max(scaleX, scaleY);
+    System.out.println("scaleX: "+scaleX + " scaleY: "+ scaleY);
     System.out.println("Screen = width: "+ this.screenToLocal(screenW, screenW).getX() + " height: " + this.screenToLocal(screenW, screenH).getY());
     Node center  = new Node(centerX, centerY);
-    center(center);
-    center(center);
     /**
      * The 10.000 is default padding to ensure it still works for really small
      * maps with coastlines.
@@ -175,7 +180,8 @@ public final class Chart extends Group {
 
     this.getChildren().add(wrapper);
     this.landLayer.setClip(bounds.render());
-
+    //this.layoutTiles();
+    center(center, 1/scaleMax);
   }
 
   /**
