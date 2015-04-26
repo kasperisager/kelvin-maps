@@ -146,7 +146,18 @@ public final class Chart extends Group {
     if (bounds == null) {
       return;
     }
-    this.panLocation(-bounds.minX(), -bounds.minY());
+    System.out.println("Bounds = minX: " + bounds.minX()+ " minY: "+ bounds.minY()+" maxX: "+ bounds.maxX()+" maxY: "+ bounds.maxY());
+    double centerX = bounds.minX() + (Math.abs(bounds.maxX() - bounds.minX()))/2;
+    double centerY = bounds.minY() + (Math.abs(bounds.maxY() - bounds.minY()))/2;
+
+    System.out.println("centerX: " + centerX + " centerY:" + centerY);
+    System.out.println("Width: "+this.getScene().getWidth()+ " Height: "+this.getScene().getHeight());
+    double screenW = this.getScene().getWidth();
+    double screenH = this.getScene().getHeight();
+    System.out.println("Screen = width: "+ this.screenToLocal(screenW, screenW).getX() + " height: " + this.screenToLocal(screenW, screenH).getY());
+    Node center  = new Node(centerX, centerY);
+    center(center);
+    center(center);
     /**
      * The 10.000 is default padding to ensure it still works for really small
      * maps with coastlines.
@@ -164,6 +175,7 @@ public final class Chart extends Group {
 
     this.getChildren().add(wrapper);
     this.landLayer.setClip(bounds.render());
+
   }
 
   /**
@@ -173,19 +185,8 @@ public final class Chart extends Group {
    * @param y The amount to pan on the y-axis.
    */
   public void pan(final double x, final double y) {
-    this.panLocation(this.getTranslateX() + x, this.getTranslateY() + y);
-  }
-
-  /**
-   * Pans the chart to a specific location.
-   *
-   * @param x the x position.
-   * @param y the y position.
-   */
-  public void panLocation(final double x, final double y) {
-    this.setTranslateX(x);
-    this.setTranslateY(y);
-
+    this.setTranslateX(this.getTranslateX() + x);
+    this.setTranslateY(this.getTranslateY() + y);
     this.layoutTiles();
   }
 
@@ -245,6 +246,8 @@ public final class Chart extends Group {
    * @param address The address to center on.
    */
   public void center(final Address address) {
+    System.out.println("Address = "+address.x()+" : "+address.y());
+    System.out.println("Local = "+ this.localToScene(address.x(), address.y()).getX() + " : " + this.localToScene(address.x(), address.y()).getY());
     this.center(
       this.localToScene(address.x(), address.y()).getX(),
       this.localToScene(address.x(), address.y()).getY()

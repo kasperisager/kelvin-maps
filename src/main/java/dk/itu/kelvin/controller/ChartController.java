@@ -495,6 +495,9 @@ public final class ChartController {
         this.compassTransform.prependRotation(10, 4, 40);
         e.consume();
         break;
+      case P:
+        //this.chart.center();
+        break;
       default:
         return;
     }
