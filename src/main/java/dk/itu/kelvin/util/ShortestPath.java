@@ -7,8 +7,6 @@ package dk.itu.kelvin.util;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
-// HEJ ZEB
-
 public class ShortestPath {
   /**
    * Maps the distance from the source to all different vertices in the graph.
@@ -39,22 +37,22 @@ public class ShortestPath {
     for (WeightedGraph.Node n : this.distance.keySet()) {
       this.distance.put(n, Float.POSITIVE_INFINITY);
       this.distance.put(source, 0.0f);
-
     }
 
-      // relax vertices in order of distance from s
-      this.queue = new PriorityQueue<>(graph.V(), (a, b) -> {
-        // Comparing b to a instead of a to b to make
-        // a minimum priority and not maximum priority.
-        return this.distance.get(b).compareTo(this.distance.get(a));
-      });
+    // relax vertices in order of distance from s
+    this.queue = new PriorityQueue<>(graph.V(), (a, b) -> {
+      // Comparing b to a instead of a to b to make
+      // a minimum priority and not maximum priority.
+      return this.distance.get(b).compareTo(this.distance.get(a));
+    });
 
-      this.queue.add(source);
+    this.queue.add(source);
 
-      while (!queue.isEmpty()) {
-        WeightedGraph.Node v = this.queue.remove();
-        for (WeightedGraph.Edge e : graph.neighbours(v))
-          relax(e);
+    while (!queue.isEmpty()) {
+      WeightedGraph.Node v = this.queue.poll();
+
+      for (WeightedGraph.Edge e: graph.neighbours(v)) {
+        relax(e);
       }
     }
   }
@@ -64,14 +62,13 @@ public class ShortestPath {
     WeightedGraph.Node v = e.from(), w = e.to();
     if (this.distance.get(w) > this.distance.get(v) + e.weight()) {
       this.distance.put(w, this.distance.get(v) + e.weight());
-      this.edgeTo.put(w, e);
+      //this.edgeTo.put(w, e);
 
       if (queue.contains(w)) {
-        this.queue.decreaseKey(w, this.distance.get(w));
+        this.queue.remove(w);
       }
-      else {
-        this.queue.add(w);
-      }
+
+      this.queue.add(w);
     }
   }
 
