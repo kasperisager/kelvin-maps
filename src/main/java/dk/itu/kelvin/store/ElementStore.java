@@ -459,18 +459,19 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
       }
 
       Node from = way.nodes().get(i);
-      Geometry.Point first = new Geometry.Point(from.x(), from.y());
       Node to = way.nodes().get(i + 1);
-      Geometry.Point second = new Geometry.Point(to.x(), to.y());
 
-      float distance = (float) Geometry.distance(first, second);
+      float distance = (float) Geometry.distance(
+        new Geometry.Point(from.x(), from.y()),
+        new Geometry.Point(to.x(), to.y())
+      );
 
       WeightedGraph.Edge edge = new WeightedGraph.Edge(
         new WeightedGraph.Node(from.x(), from.y()),
         new WeightedGraph.Node(to.x(), to.y()), distance
       );
+      
       this.roadsWeightedGraph.add(edge);
-
     }
   }
 
