@@ -7,6 +7,8 @@ package dk.itu.kelvin.util;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
+// HEJ ZEB
+
 public class ShortestPath {
   /**
    * Maps the distance from the source to all different vertices in the graph.
