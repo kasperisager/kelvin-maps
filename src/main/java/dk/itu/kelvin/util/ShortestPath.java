@@ -44,7 +44,9 @@ public class ShortestPath {
 
       // relax vertices in order of distance from s
       this.queue = new PriorityQueue<>(graph.V(), (a, b) -> {
-        return this.distance.get(a).compareTo(this.distance.get(b));
+        // Comparing b to a instead of a to b to make
+        // a minimum priority and not maximum priority.
+        return this.distance.get(b).compareTo(this.distance.get(a));
       });
 
       this.queue.add(source);
