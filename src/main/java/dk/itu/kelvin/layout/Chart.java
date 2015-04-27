@@ -157,7 +157,7 @@ public final class Chart extends Group {
     double centerX = bounds.minX() + (mapWidth / 2);
     double centerY = bounds.minY() + (mapHeight / 2);
 
-    Node centerNode  = new Node(centerX, centerY);
+    Node centerNode = new Node(centerX, centerY);
     /**
      * The 10.000 is default padding to ensure it still works for really small
      * maps with coastlines.
