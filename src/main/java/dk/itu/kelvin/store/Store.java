@@ -5,6 +5,8 @@ package dk.itu.kelvin.store;
 
 // I/O utilities
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 // Functional utilities
@@ -24,7 +26,14 @@ public abstract class Store<E, C> implements Serializable {
    * @param callback  The callback to invoke once saving has finished.
    */
   public final void save(final File file, final Callback callback) {
-    throw new UnsupportedOperationException();
+    try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))){
+      out.writeObject(this);
+      out.close();
+      callback.call();
+    }catch (Exception e){
+      throw new RuntimeException(e);
+    }
+    //throw new UnsupportedOperationException();
   }
 
   /**

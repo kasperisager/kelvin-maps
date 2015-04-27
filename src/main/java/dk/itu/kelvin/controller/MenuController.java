@@ -114,10 +114,13 @@ public final class MenuController {
     //do stuff.
     String filename = "currentMap.bin";
     File file = new File(filename);
-    ChartController.getElementStore().save(file, () -> {
-
+    AddressController.getAddressStore().save(file, () -> {
+      System.out.println("success... or not?");
     });
-
+    ChartController.getElementStore().save(file, () -> {
+      System.out.println("success... or not?");
+    });
+    /*
     try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
 
       out.writeObject(ChartController.getElementStore());
@@ -127,6 +130,7 @@ public final class MenuController {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+    */
   }
 
   /**
