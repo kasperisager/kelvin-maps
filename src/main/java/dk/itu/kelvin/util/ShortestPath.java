@@ -40,12 +40,17 @@ public class ShortestPath {
       this.distance.put(n, Float.POSITIVE_INFINITY);
       this.distance.put(source, 0.0f);
 
+    }
+
       // relax vertices in order of distance from s
-      this.queue = new PriorityQueue<>(graph.V());
-      this.queue.insert(source, this.distance.get(source));
+      this.queue = new PriorityQueue<>(graph.V(), (a, b) -> {
+        return this.distance.get(a).compareTo(this.distance.get(b));
+      });
+
+      this.queue.add(source);
 
       while (!queue.isEmpty()) {
-        WeightedGraph.Node v = this.queue.delMin();
+        WeightedGraph.Node v = this.queue.remove();
         for (WeightedGraph.Edge e : graph.neighbours(v))
           relax(e);
       }
@@ -63,7 +68,7 @@ public class ShortestPath {
         this.queue.decreaseKey(w, this.distance.get(w));
       }
       else {
-        this.queue.insert(w, this.distance.get(w));
+        this.queue.add(w);
       }
     }
   }
