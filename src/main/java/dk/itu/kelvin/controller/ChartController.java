@@ -567,5 +567,13 @@ public final class ChartController {
       });
     });
   }
+
+  /**
+   * Gets the element store and returns it.
+   * @return the element store.
+   */
+  public static ElementStore getElementStore(){
+    return ChartController.instance.elementStore;
+  }
 }
 

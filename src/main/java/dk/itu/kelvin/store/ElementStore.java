@@ -57,7 +57,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   private List<Relation> relations = new ArrayList<>();
 
   /**
-   * A list for all POI.
+   * A list for all Points Of Interest.
    */
   private List<Node> pois = new ArrayList<>();
 

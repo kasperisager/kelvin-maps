@@ -5,8 +5,11 @@ package dk.itu.kelvin.controller;
 
 // I/O utilities
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 
 // JavaFX stage utilities
+import dk.itu.kelvin.util.function.Callback;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -109,6 +112,21 @@ public final class MenuController {
   @FXML
   private void saveBin() {
     //do stuff.
+    String filename = "currentMap.bin";
+    File file = new File(filename);
+    ChartController.getElementStore().save(file, () -> {
+
+    });
+
+    try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
+
+      out.writeObject(ChartController.getElementStore());
+      out.writeObject(AddressController.getAddressStore());
+      out.close();
+
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -117,6 +135,7 @@ public final class MenuController {
   @FXML
   private void loadBin() {
     //do stuff
+
   }
 
   /**

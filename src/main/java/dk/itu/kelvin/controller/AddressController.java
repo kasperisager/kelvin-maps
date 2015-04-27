@@ -683,4 +683,12 @@ public final class AddressController {
       }
     }
   };
+
+  /**
+   * Gets the address store and returns it
+   * @return the address store
+   */
+  public static AddressStore getAddressStore(){
+    return AddressController.instance.addresses;
+  }
 }
