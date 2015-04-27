@@ -70,7 +70,7 @@ public final class Chart extends Group {
   /**
    * Minimum zoom factor.
    */
-  private static final double MIN_ZOOM_FACTOR = 0.5;
+  private static double minZoomFactor = 0.0000001;
 
   /**
    * The size of each tile in the chart.
@@ -146,13 +146,24 @@ public final class Chart extends Group {
     if (bounds == null) {
       return;
     }
-    this.panLocation(-bounds.minX(), -bounds.minY());
+
+    double mapWidth = Math.abs(bounds.maxX() - bounds.minX());
+    double mapHeight = Math.abs(bounds.maxY() - bounds.minY());
+
+    double scaleX = mapWidth / this.getScene().getWidth();
+    double scaleY = mapHeight / this.getScene().getHeight();
+    double scaleMax = Math.max(scaleX, scaleY);
+
+    double centerX = bounds.minX() + (mapWidth / 2);
+    double centerY = bounds.minY() + (mapHeight / 2);
+
+    Node centerNode = new Node(centerX, centerY);
     /**
      * The 10.000 is default padding to ensure it still works for really small
      * maps with coastlines.
      */
-    double paddingX = 10000 + Math.abs(bounds.maxX() - bounds.minX());
-    double paddingY = 10000 + Math.abs(bounds.maxY() - bounds.minY());
+    double paddingX = 10000 + mapWidth;
+    double paddingY = 10000 + mapHeight;
 
     Rectangle wrapper = new Rectangle(
       bounds.minX() - paddingX,
@@ -164,6 +175,9 @@ public final class Chart extends Group {
 
     this.getChildren().add(wrapper);
     this.landLayer.setClip(bounds.render());
+
+    this.minZoomFactor = 1 / scaleMax;
+    this.center(centerNode, this.minZoomFactor);
   }
 
   /**
@@ -173,19 +187,8 @@ public final class Chart extends Group {
    * @param y The amount to pan on the y-axis.
    */
   public void pan(final double x, final double y) {
-    this.panLocation(this.getTranslateX() + x, this.getTranslateY() + y);
-  }
-
-  /**
-   * Pans the chart to a specific location.
-   *
-   * @param x the x position.
-   * @param y the y position.
-   */
-  public void panLocation(final double x, final double y) {
-    this.setTranslateX(x);
-    this.setTranslateY(y);
-
+    this.setTranslateX(this.getTranslateX() + x);
+    this.setTranslateY(this.getTranslateY() + y);
     this.layoutTiles();
   }
 
@@ -278,7 +281,7 @@ public final class Chart extends Group {
       return;
     }
 
-    if (factor < 1 && newScale <= MIN_ZOOM_FACTOR) {
+    if (factor < 1 && newScale < minZoomFactor) {
       return;
     }
 
