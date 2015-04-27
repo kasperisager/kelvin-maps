@@ -70,7 +70,7 @@ public final class Chart extends Group {
   /**
    * Minimum zoom factor.
    */
-  private static final double MIN_ZOOM_FACTOR = 0.000001;
+  private static double minZoomFactor = 0.0000001;
 
   /**
    * The size of each tile in the chart.
@@ -146,29 +146,24 @@ public final class Chart extends Group {
     if (bounds == null) {
       return;
     }
-    System.out.println("Bounds = minX: " + bounds.minX()+ " minY: "+ bounds.minY()+" maxX: "+ bounds.maxX()+" maxY: "+ bounds.maxY());
-    double centerX = bounds.minX() + (Math.abs(bounds.maxX() - bounds.minX()))/2;
-    double centerY = bounds.minY() + (Math.abs(bounds.maxY() - bounds.minY()))/2;
-
-    System.out.println("centerX: " + centerX + " centerY:" + centerY);
-    System.out.println("Width: "+this.getScene().getWidth()+ " Height: "+this.getScene().getHeight());
-    double screenW = this.getScene().getWidth();
-    double screenH = this.getScene().getHeight();
 
     double mapWidth = Math.abs(bounds.maxX() - bounds.minX());
     double mapHeight = Math.abs(bounds.maxY() - bounds.minY());
+
     double scaleX = mapWidth / this.getScene().getWidth();
     double scaleY = mapHeight / this.getScene().getHeight();
     double scaleMax = Math.max(scaleX, scaleY);
-    System.out.println("scaleX: "+scaleX + " scaleY: "+ scaleY);
-    System.out.println("Screen = width: "+ this.screenToLocal(screenW, screenW).getX() + " height: " + this.screenToLocal(screenW, screenH).getY());
-    Node center  = new Node(centerX, centerY);
+
+    double centerX = bounds.minX() + (mapWidth / 2);
+    double centerY = bounds.minY() + (mapHeight / 2);
+
+    Node centerNode  = new Node(centerX, centerY);
     /**
      * The 10.000 is default padding to ensure it still works for really small
      * maps with coastlines.
      */
-    double paddingX = 10000 + Math.abs(bounds.maxX() - bounds.minX());
-    double paddingY = 10000 + Math.abs(bounds.maxY() - bounds.minY());
+    double paddingX = 10000 + mapWidth;
+    double paddingY = 10000 + mapHeight;
 
     Rectangle wrapper = new Rectangle(
       bounds.minX() - paddingX,
@@ -180,8 +175,9 @@ public final class Chart extends Group {
 
     this.getChildren().add(wrapper);
     this.landLayer.setClip(bounds.render());
-    //this.layoutTiles();
-    center(center, 1/scaleMax);
+
+    this.minZoomFactor = 1 / scaleMax;
+    this.center(centerNode, this.minZoomFactor);
   }
 
   /**
@@ -252,8 +248,6 @@ public final class Chart extends Group {
    * @param address The address to center on.
    */
   public void center(final Address address) {
-    System.out.println("Address = "+address.x()+" : "+address.y());
-    System.out.println("Local = "+ this.localToScene(address.x(), address.y()).getX() + " : " + this.localToScene(address.x(), address.y()).getY());
     this.center(
       this.localToScene(address.x(), address.y()).getX(),
       this.localToScene(address.x(), address.y()).getY()
@@ -287,7 +281,7 @@ public final class Chart extends Group {
       return;
     }
 
-    if (factor < 1 && newScale <= MIN_ZOOM_FACTOR) {
+    if (factor < 1 && newScale < minZoomFactor) {
       return;
     }
 
