@@ -46,6 +46,22 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
   }
 
   /**
+   * Return number of vertices in the graph.
+   * @return number of vertices.
+   */
+  public int V() {
+    return this.V;
+  }
+
+  /**
+   * Return number of edges in the graph.
+   * @return number of edges.
+   */
+  public int E() {
+    return this.E;
+  }
+
+  /**
    * Gets all edges incident on a vertex.
    * @param node the vertex.
    * @return set of edges incident on the given vertex.
@@ -160,10 +176,10 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
      * @param from the node object the edge starts in.
      * @param to the node object the edge ends in.
      */
-    public Edge(final Node from, final Node to) {
+    public Edge(final Node from, final Node to, float weight) {
       this.from = from;
       this.to = to;
-      //this.weight = weight;
+      this.weight = weight;
     }
 
     /**

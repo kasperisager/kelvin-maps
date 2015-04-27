@@ -34,7 +34,7 @@ public final class Geometry {
    * @return  The distance between points {@code a} and {@code b} or {@code -1}
    *          if either of them are {@code null}.
    */
-  private static double distance(final Point a, final Point b) {
+  public static double distance(final Point a, final Point b) {
     if (a == null || b == null) {
       return -1;
     }

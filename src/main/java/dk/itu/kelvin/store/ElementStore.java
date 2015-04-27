@@ -6,6 +6,9 @@ package dk.itu.kelvin.store;
 // Models
 import dk.itu.kelvin.model.Element;
 
+// Math
+import dk.itu.kelvin.math.Geometry;
+
 import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.BoundingBox;
@@ -456,11 +459,15 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
       }
 
       Node from = way.nodes().get(i);
+      Geometry.Point first = new Geometry.Point(from.x(), from.y());
       Node to = way.nodes().get(i + 1);
+      Geometry.Point second = new Geometry.Point(to.x(), to.y());
+
+      float distance = (float) Geometry.distance(first, second);
 
       WeightedGraph.Edge edge = new WeightedGraph.Edge(
         new WeightedGraph.Node(from.x(), from.y()),
-        new WeightedGraph.Node(to.x(), to.y())
+        new WeightedGraph.Node(to.x(), to.y()), distance
       );
       this.roadsWeightedGraph.add(edge);
 
