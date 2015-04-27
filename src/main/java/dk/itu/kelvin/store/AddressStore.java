@@ -92,7 +92,7 @@ public final class AddressStore extends Store<Address, String> {
       return results;
     }
 
-    Address address = Address.parse(prefix);
+    Address address = Address.parse(prefix.toLowerCase());
 
     if (address == null) {
       return results;
@@ -160,7 +160,7 @@ public final class AddressStore extends Store<Address, String> {
       key.append(address.postcode());
     }
 
-    return key.toString();
+    return key.toString().toLowerCase();
   }
 
   /**
