@@ -237,52 +237,45 @@ public class RectangleTree<E extends RectangleTree.Index>
       });
     }
 
-    if (l <= PAGE_MAXIMUM) {
-      @SuppressWarnings("unchecked")
-      Bucket<E>[] buckets = new Bucket[l];
+    // Can the elements fit on a single page?
+    boolean singlePage = l <= PAGE_MAXIMUM;
 
-      for (int i = 0; i < l; i++) {
-        int bucketStart = start + i * BUCKET_MAXIMUM;
-        int bucketEnd = bucketStart + BUCKET_MAXIMUM;
+    // Compute the number of elements per page.
+    int n = (singlePage) ? l : (int) Math.ceil(l / (double) PAGE_MAXIMUM);
 
-        if (bucketStart > end) {
-          break;
-        }
+    @SuppressWarnings("unchecked")
+    Node<E>[] nodes = new Node[n];
 
-        if (bucketEnd > end) {
-          bucketEnd = end;
-        }
+    for (int i = 0; i < n; i++) {
+      int pageStart = start + i * BUCKET_MAXIMUM;
+      int pageEnd = pageStart + i * BUCKET_MAXIMUM;
 
-        buckets[i] = new Bucket<E>(
-          Arrays.copyOfRange(elements, bucketStart, bucketEnd)
+      if (!singlePage) {
+        pageStart *= PAGE_MAXIMUM;
+        pageEnd *= PAGE_MAXIMUM;
+      }
+
+      if (pageStart > end) {
+        break;
+      }
+
+      if (pageEnd > end) {
+        pageEnd = end;
+      }
+
+      // If the elements can fit on a single page, create a bucket.
+      if (singlePage) {
+        nodes[i] = new Bucket<E>(
+          Arrays.copyOfRange(elements, pageStart, pageEnd)
         );
       }
-
-      return new Page<E>(buckets);
-    }
-    else {
-      int p = (int) Math.ceil(l / (double) PAGE_MAXIMUM);
-
-      @SuppressWarnings("unchecked")
-      Node<E>[] children = new Node[p];
-
-      for (int i = 0; i < p; i++) {
-        int pageStart = start + i * BUCKET_MAXIMUM * PAGE_MAXIMUM;
-        int pageEnd = pageStart + i * BUCKET_MAXIMUM * PAGE_MAXIMUM;
-
-        if (pageStart > end) {
-          break;
-        }
-
-        if (pageEnd > end) {
-          pageEnd = end;
-        }
-
-        children[i] = this.partition(elements, pageStart, pageEnd);
+      // Otherwise, continue recursively partioning the elements.
+      else {
+        nodes[i] = this.partition(elements, pageStart, pageEnd);
       }
-
-      return new Page<E>(children);
     }
+
+    return new Page<E>(nodes);
   }
 
   /**
