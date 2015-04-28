@@ -870,6 +870,21 @@ public final class Geometry {
       return Geometry.intersects(this, point.bounds());
     }
 
+    /**
+     * Check if the current bounds intersect with the specified bounds.
+     *
+     * @param bounds  The bounds to check intersection of.
+     * @return        A boolean indicating whether or not the bounds intersect
+     *                with the specified bounds.
+     */
+    public final boolean intersects(final Bounds bounds) {
+      if (bounds == null) {
+        return false;
+      }
+
+      return Geometry.intersects(this, bounds);
+    }
+
     @Override
     public final String toString() {
       return "Bounds["
