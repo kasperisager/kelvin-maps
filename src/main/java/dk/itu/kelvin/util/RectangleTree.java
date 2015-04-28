@@ -151,6 +151,28 @@ public class RectangleTree<E extends RectangleTree.Index>
   }
 
   /**
+   * Check if an element intersects the specified bounds.
+   *
+   * @param <E>     The type of elements to check intersection of.
+   * @param element The element.
+   * @param bounds  The bounds.
+   * @return        A boolean indicating whether or not the element intersects
+   *                the specified bounds.
+   */
+  private static <E extends Index> boolean intersects(
+    final E element,
+    final Bounds bounds
+  ) {
+    if (element == null || bounds == null) {
+      return false;
+    }
+
+    return bounds.intersects(
+      new Bounds(element.minX(), element.minY(), element.maxX(), element.maxY())
+    );
+  }
+
+  /**
    * Partition the specified array of elements between the given indices using
    * the Sort-Tile-Recursive (STR) algorithm.
    *
@@ -340,7 +362,9 @@ public class RectangleTree<E extends RectangleTree.Index>
      *                the specified bounds.
      */
     public final boolean intersects(final Bounds bounds) {
-      return bounds.intersects(this.minX, this.minY, this.maxX, this.maxY);
+      return bounds.intersects(
+        new Bounds(this.minX, this.minY, this.maxX, this.maxY)
+      );
     }
 
     /**
@@ -351,12 +375,9 @@ public class RectangleTree<E extends RectangleTree.Index>
      *                the specified element.
      */
     public final boolean intersects(final E element) {
-      return (
-        this.minX <= element.maxX()
-        && this.maxX >= element.minX()
-        && this.minY <= element.maxY()
-        && this.maxY >= element.maxY()
-      );
+      return this.intersects(new Bounds(
+        element.minX(), element.minY(), element.maxX(), element.maxY()
+      ));
     }
 
     /**
@@ -645,9 +666,7 @@ public class RectangleTree<E extends RectangleTree.Index>
           continue;
         }
 
-        if (bounds.intersects(
-          element.minX(), element.minY(), element.maxX(), element.maxY()
-        )) {
+        if (RectangleTree.intersects(element, bounds)) {
           elements.add(element);
         }
       }

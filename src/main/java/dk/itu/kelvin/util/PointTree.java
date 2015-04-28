@@ -256,20 +256,20 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
     }
 
     if (depth % 2 == 0) {
-      if (element.x() > bounds.minX()) {
+      if (element.x() > bounds.min().x()) {
         return -1;
       }
 
-      if (element.x() < bounds.maxX()) {
+      if (element.x() < bounds.max().x()) {
         return 1;
       }
     }
     else {
-      if (element.y() > bounds.minY()) {
+      if (element.y() > bounds.min().y()) {
         return -1;
       }
 
-      if (element.y() < bounds.maxY()) {
+      if (element.y() < bounds.max().y()) {
         return 1;
       }
     }
@@ -294,7 +294,7 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
       return false;
     }
 
-    return bounds.contains(element.x(), element.y());
+    return bounds.contains(new Point(element.x(), element.y()));
   }
 
   /**
