@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.Set;
 
 // JavaFX scene utilities
+import dk.itu.kelvin.controller.ChartController;
+import dk.itu.kelvin.math.Haversine;
+import dk.itu.kelvin.math.MercatorProjection;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 
@@ -133,6 +136,11 @@ public final class Chart extends Group {
   private double mapHeight;
 
   /**
+   * A unit for how many pixel it takes to stretch 100 meter.
+   */
+  private double unitPrKM;
+
+  /**
    * Initialize the chart.
    */
   public Chart() {
@@ -160,6 +168,8 @@ public final class Chart extends Group {
     this.mapWidth = Math.abs(bounds.maxX() - bounds.minX());
     this.mapHeight = Math.abs(bounds.maxY() - bounds.minY());
 
+    System.out.println(mapWidth);
+
     double centerX = bounds.minX() + (this.mapWidth / 2);
     double centerY = bounds.minY() + (this.mapHeight / 2);
 
@@ -174,16 +184,35 @@ public final class Chart extends Group {
     Rectangle wrapper = new Rectangle(
       bounds.minX() - paddingX,
       bounds.minY() - paddingY,
-      Math.abs(bounds.maxX() - bounds.minX() + paddingX),
-      Math.abs(bounds.maxY() - bounds.minY() + paddingY)
+      mapWidth + paddingX*2,
+      mapHeight + paddingY*2
     );
     wrapper.getStyleClass().add("boundingBox");
 
     this.getChildren().add(wrapper);
     this.landLayer.setClip(bounds.render());
 
+    MercatorProjection mp = new MercatorProjection();
+
+    double mapLength = Haversine.distance(
+      (float)mp.yToLat(bounds.minY()),
+      (float)mp.xToLon(bounds.minX()),
+      (float)mp.yToLat(bounds.minY()),
+      (float)mp.xToLon(bounds.maxX())
+    )*1000;
+    double unitPrPx = mapLength / (mapWidth / 100);
+    unitPrKM = 100/(unitPrPx/100);
+    System.out.println("map length: "+mapLength+" map width: "+mapWidth);
+    System.out.println("unit pr. 100px: "+unitPrPx);
+    System.out.println("pixel pr. 100m: "+unitPrKM);
+
+
     this.calcMinZoomFactor();
-    this.center(centerNode, this.minZoomFactor);
+    //ChartController.instance().setScaleText((int) unit + "m");
+    ChartController.instance().setScaleText("100m");
+    ChartController.instance().setScaleLength(unitPrKM);
+    this.center(centerNode, 1);
+    //this.center(centerNode, this.minZoomFactor);
   }
 
   /**
@@ -291,6 +320,7 @@ public final class Chart extends Group {
    */
   public void zoom(final double factor, final double x, final double y) {
     this.calcMinZoomFactor();
+
     double oldScale = this.getScaleX();
     double newScale = oldScale * factor;
 
@@ -304,6 +334,9 @@ public final class Chart extends Group {
 
     this.setScaleX(newScale);
     this.setScaleY(newScale);
+    ChartController.instance().setScaleLength(
+      unitPrKM*1/newScale
+    );
 
     // Calculate the difference between the new and the old scale.
     double f = (newScale / oldScale) - 1;

@@ -5,6 +5,7 @@ package dk.itu.kelvin.controller;
 
 // I/O utilities
 import java.io.File;
+import java.util.Map;
 
 // JavaFX application utilities
 import javafx.application.Platform;
@@ -49,6 +50,9 @@ import dk.itu.kelvin.model.Node;
 
 // Stores
 import dk.itu.kelvin.store.ElementStore;
+
+// Koloboke collections
+import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
 
 /**
  * Chart controller class.
@@ -181,7 +185,7 @@ public final class ChartController {
 
     parser.read(file, () -> {
       // Get all addresses from parser.
-      for (Address address: parser.addresses()) {
+      for (Address address : parser.addresses()) {
         AddressController.instance().addAddress(address);
       }
 
@@ -263,8 +267,34 @@ public final class ChartController {
    * Sets the text of scaleIndicator.
    * @param text the text to be set in scale.
    */
-  private void setScaleText(final String text) {
-    this.scaleIndicatorLabel.setText(text);
+  public static void setScaleText(final String text) {
+    ChartController.instance.scaleIndicatorLabel.setText(text);
+  }
+
+  /**
+   * Sets the length of scaleIndicator.
+   * @param length the length in pixels.
+   */
+  public static void setScaleLength(final double length) {
+    Map<Integer, Integer> scaleUnit = HashObjObjMaps.newMutableMap(15);
+    int count = 1;
+    for(int i = 0; i<7; i++){
+      scaleUnit.put(count++, 10*(int)(Math.pow(10,i)));
+      scaleUnit.put(count++, 20*(int)(Math.pow(10,i)));
+      scaleUnit.put(count++, 50*(int)(Math.pow(10,i)));
+    }
+
+
+
+    ChartController.instance.scaleIndicatorLabel.setPrefWidth(length);
+  }
+
+  /**
+   * Return scale length.
+   * @return scale in length in pixels.
+   */
+  public static double getScaleLength(){
+    return ChartController.instance.scaleIndicatorLabel.getPrefWidth();
   }
 
   /**
@@ -494,6 +524,9 @@ public final class ChartController {
         this.chart.rotate(10);
         this.compassTransform.prependRotation(10, 4, 40);
         e.consume();
+        break;
+      case P:
+        ChartController.instance().setScaleLength(50);
         break;
       default:
         return;
