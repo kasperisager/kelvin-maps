@@ -247,12 +247,16 @@ public class RectangleTree<E extends RectangleTree.Index>
     Node<E>[] nodes = new Node[n];
 
     for (int i = 0; i < n; i++) {
-      int pageStart = start + i * BUCKET_MAXIMUM;
-      int pageEnd = pageStart + i * BUCKET_MAXIMUM;
+      int pageStart;
+      int pageEnd;
 
-      if (!singlePage) {
-        pageStart *= PAGE_MAXIMUM;
-        pageEnd *= PAGE_MAXIMUM;
+      if (singlePage) {
+        pageStart = start + i * BUCKET_MAXIMUM;
+        pageEnd = pageStart + BUCKET_MAXIMUM;
+      }
+      else {
+        pageStart = start + i * BUCKET_MAXIMUM * PAGE_MAXIMUM;
+        pageEnd = pageStart + i * BUCKET_MAXIMUM * PAGE_MAXIMUM;
       }
 
       if (pageStart > end) {
