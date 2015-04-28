@@ -12,6 +12,10 @@ import java.util.List;
 // I/O utilities
 import java.io.Serializable;
 
+// Math
+import dk.itu.kelvin.math.Geometry;
+import dk.itu.kelvin.math.Epsilon;
+
 // Functional utilities
 import dk.itu.kelvin.util.function.Filter;
 
@@ -280,6 +284,113 @@ public class RectangleTree<E extends RectangleTree.Index>
     }
 
     return new Page<E>(nodes);
+  }
+
+  /**
+   * @see <a href="http://www.cs.umd.edu/~nick/papers/nnpaper.pdf">
+   *      http://www.cs.umd.edu/~nick/papers/nnpaper.pdf</a>
+   *
+   * @param point   The point to calculate the minimum distance to.
+   * @param bounds  The bounds to calculate the minimum distance from.
+   * @return        The minimum distance between the specified bounds and the
+   *                given point.
+   */
+  private static double mininumDistance(
+    final Point point,
+    final Bounds bounds
+  ) {
+    if (point == null || bounds == null) {
+      return Double.POSITIVE_INFINITY;
+    }
+
+    double r1 = point.x();
+
+    if (Epsilon.less(point.x(), bounds.min().x())) {
+      r1 = bounds.min().x();
+    }
+    else if (Epsilon.greater(point.x(), bounds.max().x())) {
+      r1 = bounds.max().x();
+    }
+
+    double r2 = point.y();
+
+    if (Epsilon.less(point.y(), bounds.min().y())) {
+      r2 = bounds.min().y();
+    }
+    else if (Epsilon.greater(point.y(), bounds.max().y())) {
+      r2 = bounds.max().y();
+    }
+
+    return Geometry.distance(point, new Point(r1, r2));
+  }
+
+  /**
+   * @see <a href="http://www.cs.umd.edu/~nick/papers/nnpaper.pdf">
+   *      http://www.cs.umd.edu/~nick/papers/nnpaper.pdf</a>
+   *
+   * @param point   The point to calculate the minimax distance to.
+   * @param bounds  The bounds to calculate the minimax distance from.
+   * @return        The minimax distance between the specified bounds and the
+   *                given point.
+   */
+  private static double minimaxDistance(
+    final Point point,
+    final Bounds bounds
+  ) {
+    if (point == null || bounds == null) {
+      return Double.POSITIVE_INFINITY;
+    }
+
+    double rm1;
+    double rm2;
+
+    if (Epsilon.lessOrEqual(
+      point.x(), (bounds.min().x() + bounds.max().x()) / 2.0
+    )) {
+      rm1 = bounds.min().x();
+    }
+    else {
+      rm1 = bounds.max().x();
+    }
+
+    if (Epsilon.lessOrEqual(
+      point.y(), (bounds.min().y() + bounds.max().y()) / 2.0
+    )) {
+      rm2 = bounds.min().y();
+    }
+    else {
+      rm2 = bounds.max().y();
+    }
+
+    double rM1;
+    double rM2;
+
+    if (Epsilon.greaterOrEqual(
+      point.x(), (bounds.min().x() + bounds.max().x()) / 2.0
+    )) {
+      rM1 = bounds.min().x();
+    }
+    else {
+      rM1 = bounds.max().x();
+    }
+
+    if (Epsilon.greaterOrEqual(
+      point.y(), (bounds.min().y() + bounds.max().y()) / 2.0
+    )) {
+      rM2 = bounds.min().y();
+    }
+    else {
+      rM2 = bounds.max().x();
+    }
+
+    double s = Geometry.distance(point, new Point(rM1, rM2));
+
+    double distance = Math.min(
+      Math.pow(Math.abs(point.x() - rm1), 2) + s,
+      Math.pow(Math.abs(point.y() - rm2), 2) + s
+    );
+
+    return Math.sqrt(distance);
   }
 
   /**
