@@ -717,6 +717,18 @@ public final class Geometry {
     }
 
     /**
+     * Get the center point of the rectangle.
+     *
+     * @return The center point of the rectangle.
+     */
+    public final Point center() {
+      return new Point(
+        this.position.x + (this.width / 2),
+        this.position.y + (this.height / 2)
+      );
+    }
+
+    /**
      * Add another rectangle to the current rectangle, letting the current
      * rectangle become the union of the two.
      *
@@ -829,6 +841,18 @@ public final class Geometry {
      */
     public final Point max() {
       return this.max;
+    }
+
+    /**
+     * Get the center point of the bounds.
+     *
+     * @return The center point of the bounds.
+     */
+    public final Point center() {
+      return new Point(
+        this.min.x + ((this.max.x - this.min.x) / 2),
+        this.min.y + ((this.max.y - this.min.y) / 2)
+      );
     }
 
     /**
