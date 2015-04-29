@@ -98,12 +98,10 @@
     </children>
 
     <children>
-
           <Label
             styleClass="scaleIndicator"
             fx:id="scaleIndicatorLabel"
-            >
-          </Label>
+            ></Label>
     </children>
   </HBox>
 
