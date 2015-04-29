@@ -168,8 +168,6 @@ public final class Chart extends Group {
     this.mapWidth = Math.abs(bounds.maxX() - bounds.minX());
     this.mapHeight = Math.abs(bounds.maxY() - bounds.minY());
 
-    System.out.println(mapWidth);
-
     double centerX = bounds.minX() + (this.mapWidth / 2);
     double centerY = bounds.minY() + (this.mapHeight / 2);
 
@@ -184,10 +182,10 @@ public final class Chart extends Group {
     Rectangle wrapper = new Rectangle(
       bounds.minX() - paddingX,
       bounds.minY() - paddingY,
-      mapWidth + paddingX*2,
-      mapHeight + paddingY*2
+      this.mapWidth + paddingX * 2,
+      this.mapHeight + paddingY * 2
     );
-    wrapper.getStyleClass().add("boundingBox");
+    wrapper.getStyleClass().add("wrapper");
 
     this.getChildren().add(wrapper);
     this.landLayer.setClip(bounds.render());
@@ -195,21 +193,15 @@ public final class Chart extends Group {
     MercatorProjection mp = new MercatorProjection();
 
     double mapLength = Haversine.distance(
-      (float)mp.yToLat(bounds.minY()),
-      (float)mp.xToLon(bounds.minX()),
-      (float)mp.yToLat(bounds.minY()),
-      (float)mp.xToLon(bounds.maxX())
-    )*1000;
-    double unitPrPx = mapLength / (mapWidth / 100);
-    unitPrM = 100/unitPrPx;
-    System.out.println("map length: "+mapLength+" map width: "+mapWidth);
-    System.out.println("unit pr. 100px: "+unitPrPx);
-    System.out.println("pixel pr. 100m: "+unitPrM);
-
+      (float) mp.yToLat(bounds.minY()),
+      (float) mp.xToLon(bounds.minX()),
+      (float) mp.yToLat(bounds.minY()),
+      (float) mp.xToLon(bounds.maxX())
+    ) * 1000;
+    double unitPrPx = mapLength / (this.mapWidth / 100);
+    this.unitPrM = 100 / unitPrPx;
 
     this.calcMinZoomFactor();
-    ChartController.instance().setScaleLength(unitPrM);
-    //this.center(centerNode, 1);
     this.center(centerNode, this.minZoomFactor);
   }
 
@@ -402,9 +394,12 @@ public final class Chart extends Group {
     );
   }
 
-  private void setScale(double scale){
-    System.out.println("new length: " + unitPrM*(scale));
-    ChartController.instance().setScaleLength(unitPrM*(scale));
+  /**
+   * Sets a specific scale on both x and y.
+   * @param scale the scale to set.
+   */
+  private void setScale(final double scale) {
+    ChartController.instance().setScaleLength(this.unitPrM * scale);
     this.setScaleX(scale);
     this.setScaleY(scale);
   }

@@ -103,11 +103,9 @@
             styleClass="scaleIndicator"
             fx:id="scaleIndicatorLabel"
             >
-            10 km
           </Label>
     </children>
   </HBox>
-
 
   <VBox
     spacing="10"
