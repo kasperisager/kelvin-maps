@@ -542,9 +542,6 @@ public final class ChartController {
         this.compassTransform.prependRotation(10, 4, 40);
         e.consume();
         break;
-      case P:
-        ChartController.instance().setScaleLength(50);
-        break;
       default:
         return;
     }

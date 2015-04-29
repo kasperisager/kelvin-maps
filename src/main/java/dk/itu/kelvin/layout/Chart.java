@@ -11,9 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 // JavaFX scene utilities
-import dk.itu.kelvin.controller.ChartController;
-import dk.itu.kelvin.math.Haversine;
-import dk.itu.kelvin.math.MercatorProjection;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 
@@ -24,6 +21,13 @@ import javafx.scene.shape.Rectangle;
 // JavaFX geometry utilities
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+
+// Kelvin Math
+import dk.itu.kelvin.math.Haversine;
+import dk.itu.kelvin.math.MercatorProjection;
+
+// Kelvin Controllers
+import dk.itu.kelvin.controller.ChartController;
 
 // Koloboke collections
 import net.openhft.koloboke.collect.set.hash.HashObjSets;
