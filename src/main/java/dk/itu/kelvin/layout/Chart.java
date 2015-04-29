@@ -22,6 +22,13 @@ import javafx.scene.shape.Rectangle;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 
+// Kelvin Math
+import dk.itu.kelvin.math.Haversine;
+import dk.itu.kelvin.math.MercatorProjection;
+
+// Kelvin Controllers
+import dk.itu.kelvin.controller.ChartController;
+
 // Koloboke collections
 import net.openhft.koloboke.collect.set.hash.HashObjSets;
 import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
@@ -133,6 +140,11 @@ public final class Chart extends Group {
   private double mapHeight;
 
   /**
+   * A unit for how many pixel it takes to stretch 1 meter.
+   */
+  private double unitPrM;
+
+  /**
    * Initialize the chart.
    */
   public Chart() {
@@ -174,13 +186,24 @@ public final class Chart extends Group {
     Rectangle wrapper = new Rectangle(
       bounds.minX() - paddingX,
       bounds.minY() - paddingY,
-      Math.abs(bounds.maxX() - bounds.minX() + paddingX),
-      Math.abs(bounds.maxY() - bounds.minY() + paddingY)
+      this.mapWidth + paddingX * 2,
+      this.mapHeight + paddingY * 2
     );
-    wrapper.getStyleClass().add("boundingBox");
+    wrapper.getStyleClass().add("wrapper");
 
     this.getChildren().add(wrapper);
     this.landLayer.setClip(bounds.render());
+
+    MercatorProjection mp = new MercatorProjection();
+
+    double mapLength = Haversine.distance(
+      (float) mp.yToLat(bounds.minY()),
+      (float) mp.xToLon(bounds.minX()),
+      (float) mp.yToLat(bounds.minY()),
+      (float) mp.xToLon(bounds.maxX())
+    ) * 1000;
+    double unitPrPx = mapLength / (this.mapWidth / 100);
+    this.unitPrM = 100 / unitPrPx;
 
     this.calcMinZoomFactor();
     this.center(centerNode, this.minZoomFactor);
@@ -229,8 +252,7 @@ public final class Chart extends Group {
    * @param scale The scale to set after centering.
    */
   public void center(final double x, final double y, final double scale) {
-    this.setScaleX(scale);
-    this.setScaleY(scale);
+    this.setScale(scale);
     this.center(x, y);
   }
 
@@ -253,8 +275,7 @@ public final class Chart extends Group {
    * @param scale The scale to set after centering.
    */
   public void center(final Node node, final double scale) {
-    this.setScaleX(scale);
-    this.setScaleY(scale);
+    this.setScale(scale);
     this.center(node);
   }
 
@@ -277,8 +298,7 @@ public final class Chart extends Group {
    * @param scale   The scale to set after centering.
    */
   public void center(final Address address, final double scale) {
-    this.setScaleX(scale);
-    this.setScaleY(scale);
+    this.setScale(scale);
     this.center(address);
   }
 
@@ -302,8 +322,7 @@ public final class Chart extends Group {
       return;
     }
 
-    this.setScaleX(newScale);
-    this.setScaleY(newScale);
+    this.setScale(newScale);
 
     // Calculate the difference between the new and the old scale.
     double f = (newScale / oldScale) - 1;
@@ -377,6 +396,16 @@ public final class Chart extends Group {
       this.getScene().getWidth() / 2,
       this.getScene().getHeight() / 2
     );
+  }
+
+  /**
+   * Sets a specific scale on both x and y.
+   * @param scale the scale to set.
+   */
+  private void setScale(final double scale) {
+    ChartController.instance().setScaleLength(this.unitPrM * scale);
+    this.setScaleX(scale);
+    this.setScaleY(scale);
   }
 
   /**
