@@ -275,18 +275,28 @@ public final class ChartController {
    * Sets the length of scaleIndicator.
    * @param length the length in pixels.
    */
-  public static void setScaleLength(final double length) {
+  public static void setScaleLength(double length) {
     Map<Integer, Integer> scaleUnit = HashObjObjMaps.newMutableMap(15);
     int count = 1;
     for(int i = 0; i<7; i++){
-      scaleUnit.put(count++, 10*(int)(Math.pow(10,i)));
-      scaleUnit.put(count++, 20*(int)(Math.pow(10,i)));
-      scaleUnit.put(count++, 50*(int)(Math.pow(10,i)));
+      scaleUnit.put(count++, 1 * (int)(Math.pow(10,i)));
+      scaleUnit.put(count++, 2 * (int)(Math.pow(10,i)));
+      scaleUnit.put(count++, 5 * (int)(Math.pow(10,i)));
     }
 
+    double minLength = 45;
+    count = 1;
+    double temp = length;
+    while(temp < minLength){
+      temp = length * scaleUnit.get(++count);
+    }
+    if(scaleUnit.get(count)>= 1000){
+      ChartController.instance.setScaleText(scaleUnit.get(count)/1000 +" km");
+    }else{
+      ChartController.instance.setScaleText(scaleUnit.get(count) +" m");
 
-
-    ChartController.instance.scaleIndicatorLabel.setPrefWidth(length);
+    }
+    ChartController.instance.scaleIndicatorLabel.setPrefWidth(temp);
   }
 
   /**
