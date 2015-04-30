@@ -61,7 +61,7 @@ public abstract class Element<T extends Node> implements Serializable {
    * The map is initialized on-demand when first accessed to avoid allocating
    * memory to empty maps.
    */
-  private Map<String, String> tags;
+  private transient Map<String, String> tags;
 
   /**
    * Add a tag to the element.

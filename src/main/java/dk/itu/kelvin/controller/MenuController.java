@@ -116,9 +116,9 @@ public final class MenuController {
     AddressController.getAddressStore().save(file, () -> {
       System.out.println("Success with storing AddressStore");
     });
-    /*
+
     ChartController.getElementStore().save(file, () -> {
-      System.out.println("success... or not?");
+      System.out.println("Success with storing ElementStore");
     });
     /*
     try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
