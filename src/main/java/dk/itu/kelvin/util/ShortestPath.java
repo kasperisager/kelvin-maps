@@ -5,7 +5,9 @@ package dk.itu.kelvin.util;
 
 // General utilities
 import java.util.HashMap;
+import java.util.Set;
 import java.util.PriorityQueue;
+import java.util.ArrayList;
 
 public class ShortestPath {
   /**
@@ -51,7 +53,11 @@ public class ShortestPath {
     while (!queue.isEmpty()) {
       WeightedGraph.Node v = this.queue.poll();
 
-      for (WeightedGraph.Edge e: graph.neighbours(v)) {
+      Set<WeightedGraph.Edge> neighbours = graph.neighbours(v);
+
+      System.out.println(neighbours);
+
+      for (WeightedGraph.Edge e: neighbours) {
         relax(e);
       }
     }
@@ -62,7 +68,7 @@ public class ShortestPath {
     WeightedGraph.Node v = e.from(), w = e.to();
     if (this.distance.get(w) > this.distance.get(v) + e.weight()) {
       this.distance.put(w, this.distance.get(v) + e.weight());
-      //this.edgeTo.put(w, e);
+      this.edgeTo.put(w, e);
 
       if (queue.contains(w)) {
         this.queue.remove(w);
@@ -97,12 +103,13 @@ public class ShortestPath {
    * @return shortest path from the source vertex to the param vertex
    * as an iterable of edges, and null if no such path.
    */
-  public Iterable<WeightedGraph.Edge> path(final WeightedGraph.Node n) {
+  public ArrayList<WeightedGraph.Edge> path(final WeightedGraph.Node n) {
     if (!hasPathTo(n)) return null;
 
-    Stack<WeightedGraph.Edge> path = new Stack<WeightedGraph.Edge>();
+    ArrayList<WeightedGraph.Edge> path = new ArrayList<>();
+
     for (WeightedGraph.Edge e = this.edgeTo.get(n); e!= null; e = this.edgeTo.get(e.from())) {
-      path.push(e);
+      path.add(e);
     }
 
     return path;

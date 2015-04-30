@@ -33,7 +33,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * Weighted graph for all roads.
    */
-  private WeightedGraph roadsWeightedGraph = new WeightedGraph();
+  public WeightedGraph roadsWeightedGraph = new WeightedGraph();
 
   /**
    * A list for all land elements.
@@ -216,7 +216,10 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
       this.ways.add(w);
       this.waysIsDirty = true;
     }
+  }
 
+  public WeightedGraph graph() {
+    return this.roadsWeightedGraph;
   }
 
   /**
@@ -470,7 +473,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
         new WeightedGraph.Node(from.x(), from.y()),
         new WeightedGraph.Node(to.x(), to.y()), distance
       );
-      
+
       this.roadsWeightedGraph.add(edge);
     }
   }

@@ -42,13 +42,21 @@ import dk.itu.kelvin.parser.Parser;
 import dk.itu.kelvin.layout.Chart;
 
 // Models
+import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Relation;
-import dk.itu.kelvin.model.Node;
 
 // Stores
 import dk.itu.kelvin.store.ElementStore;
+
+// Utilities
+import dk.itu.kelvin.util.ShortestPath;
+import dk.itu.kelvin.util.WeightedGraph;
+
+// General utilities
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Chart controller class.
@@ -147,6 +155,7 @@ public final class ChartController {
 
   /**
    * Getting ChartsController instance.
+   *
    * @return ChartController instance.
    */
   public static ChartController instance() {
@@ -155,6 +164,7 @@ public final class ChartController {
 
   /**
    * Initializing the ChartController instance.
+   *
    * @param instance the ChartController instance.
    */
   private static void instance(final ChartController instance) {
@@ -163,6 +173,7 @@ public final class ChartController {
 
   /**
    * Initialize the controller.
+   *
    * @throws Exception In case of an error. Duh.
    */
   @FXML
@@ -181,7 +192,7 @@ public final class ChartController {
 
     parser.read(file, () -> {
       // Get all addresses from parser.
-      for (Address address: parser.addresses()) {
+      for (Address address : parser.addresses()) {
         AddressController.instance().addAddress(address);
       }
 
@@ -228,10 +239,19 @@ public final class ChartController {
 
   /**
    * Moves the compass VBox relative to BOTTOM_LEFT.
+   *
    * @param x how much to move compass along x-axis [px].
    */
   public static void moveCompass(final double x) {
     ChartController.instance().compassVBox.setTranslateX(x);
+  }
+
+  public static void findShortestPath(WeightedGraph.Node n, WeightedGraph.Node m) {
+    ShortestPath shortestPath = new ShortestPath(elementStore.graph(), n);
+
+    ArrayList<WeightedGraph.Edge> path = shortestPath.path(m);
+
+    System.out.println("The whole list of edges leading from source to target: " + path);
   }
 
   /**

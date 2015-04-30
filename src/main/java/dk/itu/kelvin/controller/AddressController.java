@@ -7,6 +7,7 @@ import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.store.AddressStore;
 
 // JavaFX Beans
+import dk.itu.kelvin.util.WeightedGraph;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -443,6 +444,10 @@ public final class AddressController {
     if (endInput.isEmpty() || startInput.isEmpty()) {
       return;
     }
+
+    WeightedGraph.Node n = new WeightedGraph.Node(currentAddress.x(), currentAddress.y());
+    WeightedGraph.Node m = new WeightedGraph.Node(destinationAddress.x(), destinationAddress.y());
+    ChartController.instance().findShortestPath(n, m);
 
     System.out.println("X: " + this.currentAddress.x() + " " + "Y: "
       + this.currentAddress.y());

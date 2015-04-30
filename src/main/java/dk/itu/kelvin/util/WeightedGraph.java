@@ -4,7 +4,7 @@
 package dk.itu.kelvin.util;
 
 import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -12,7 +12,7 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
   /**
    * The adjacency list for all vertices and edges in the graph.
    */
-  private Hashtable<WeightedGraph.Node, HashSet<WeightedGraph.Edge>> adjacencyList = new Hashtable<>();
+  private HashMap<WeightedGraph.Node, HashSet<WeightedGraph.Edge>> adjacencyList = new HashMap<>();
 
   /**
    * Total number of vertices in the graph.
@@ -66,7 +66,7 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
    * @param node the vertex.
    * @return set of edges incident on the given vertex.
    */
-  public HashSet<Edge> neighbours(final Node node) {
+  public HashSet<WeightedGraph.Edge> neighbours(final Node node) {
     return this.adjacencyList.get(node);
   }
 
@@ -242,6 +242,13 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
       && e.to().equals(this.to)
       && e.weight() == this.weight);
     }
+
+    @Override
+    public String toString() {
+      String s = this.from.toString() + " -> " + this.to.toString();
+      return s;
+    }
+
   }
 
 }
