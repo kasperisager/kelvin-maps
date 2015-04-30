@@ -132,11 +132,7 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
       return null;
     }
 
-    List<E> elements = new ArrayList<>();
-
-    this.root.range(0, elements, bounds, filter);
-
-    return elements;
+    return this.root.range(0, bounds, filter);
   }
 
   /**
@@ -341,14 +337,12 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
     /**
      * Find all elements within the range of the specified bounds.
      *
-     * @param depth     The current tree depth.
-     * @param elements  The collection to add the found elements to.
-     * @param bounds    The bounds to search for elements within.
-     * @param filter    The filter to apply to the range search.
+     * @param depth   The current tree depth.
+     * @param bounds  The bounds to search for elements within.
+     * @param filter  The filter to apply to the range search.
      */
-    public abstract void range(
+    public abstract List<E> range(
       final int depth,
-      final Collection<E> elements,
       final Bounds bounds,
       final Filter<E> filter
     );
@@ -441,37 +435,36 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
     /**
      * Find all elements within the range of the specified bounds.
      *
-     * @param depth     The current tree depth.
-     * @param elements  The collection to add the found elements to.
-     * @param bounds    The bounds to search for elements within.
-     * @param filter    The filter to apply to the range search.
+     * @param depth   The current tree depth.
+     * @param bounds  The bounds to search for elements within.
+     * @param filter  The filter to apply to the range search.
      */
-    public void range(
+    public List<E> range(
       final int depth,
-      final Collection<E> elements,
       final Bounds bounds,
       final Filter<E> filter
     ) {
+      List<E> elements = new ArrayList<>();
+
       if (
         this.element == null
-        || elements == null
         || bounds == null
         || filter == null
       ) {
-        return;
+        return elements;
       }
 
       int contains = PointTree.compare(depth, this.element, bounds);
 
       if (contains < 0 || contains == 0) {
         if (this.left != null) {
-          this.left.range(depth + 1, elements, bounds, filter);
+          elements.addAll(this.left.range(depth + 1, bounds, filter));
         }
       }
 
       if (contains > 0 || contains == 0) {
         if (this.right != null) {
-          this.right.range(depth + 1, elements, bounds, filter);
+          elements.addAll(this.right.range(depth + 1, bounds, filter));
         }
       }
 
@@ -484,6 +477,8 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
       ) {
         elements.add(this.element);
       }
+
+      return elements;
     }
   }
 
@@ -538,24 +533,23 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
     /**
      * Find all elements within the range of the specified bounds.
      *
-     * @param depth     The current tree depth.
-     * @param elements  The collection to add the found elements to.
-     * @param bounds    The bounds to search for elements within.
-     * @param filter    The filter to apply to the range search.
+     * @param depth   The current tree depth.
+     * @param bounds  The bounds to search for elements within.
+     * @param filter  The filter to apply to the range search.
      */
-    public void range(
+    public List<E> range(
       final int depth,
-      final Collection<E> elements,
       final Bounds bounds,
       final Filter<E> filter
     ) {
+      List<E> elements = new ArrayList<>();
+
       if (
         this.elements == null
-        || elements == null
         || bounds == null
         || filter == null
       ) {
-        return;
+        return elements;
       }
 
       for (E found: this.elements) {
@@ -568,6 +562,8 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
           elements.add(found);
         }
       }
+
+      return elements;
     }
   }
 }
