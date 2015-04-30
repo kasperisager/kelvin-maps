@@ -5,7 +5,6 @@ package dk.itu.kelvin.controller;
 
 // I/O utilities
 import java.io.File;
-import java.util.Map;
 
 // JavaFX application utilities
 import javafx.application.Platform;
@@ -50,9 +49,6 @@ import dk.itu.kelvin.model.Node;
 
 // Stores
 import dk.itu.kelvin.store.ElementStore;
-
-// Koloboke collections
-import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
 
 /**
  * Chart controller class.
@@ -150,11 +146,6 @@ public final class ChartController {
   private StackPane mainStackPane;
 
   /**
-   * Map indicating the different scales the map can show.
-   */
-  private Map<Integer, Integer> scaleUnit;
-
-  /**
    * Getting ChartsController instance.
    * @return ChartController instance.
    */
@@ -183,7 +174,6 @@ public final class ChartController {
 
     this.compassArrow.getTransforms().add(this.compassTransform);
 
-    this.createScaleUnits();
     this.initLocationPointer();
     File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
 
@@ -270,20 +260,6 @@ public final class ChartController {
   }
 
   /**
-   * Creates the hash table used for managing scales units and length.
-   */
-  private void createScaleUnits() {
-    int scaleCycle = 7;
-    this.scaleUnit = HashObjObjMaps.newMutableMap(scaleCycle * 3);
-    int count = 1;
-    for (int i = 0; i < scaleCycle; i++) {
-      this.scaleUnit.put(count++, 1 * (int) (Math.pow(10, i)));
-      this.scaleUnit.put(count++, 2 * (int) (Math.pow(10, i)));
-      this.scaleUnit.put(count++, 5 * (int) (Math.pow(10, i)));
-    }
-  }
-
-  /**
    * Sets the text of scaleIndicator.
    * @param text the text to be set in scale.
    */
@@ -300,18 +276,39 @@ public final class ChartController {
     int count = 1;
     double temp = length;
     while (temp < minLength) {
-      temp = length * ChartController.instance.scaleUnit.get(++count);
+      temp = length * ChartController.instance.findScale(++count);
     }
-    if (ChartController.instance.scaleUnit.get(count) >= 1000) {
+    if (ChartController.instance.findScale(count) >= 1000) {
       ChartController.instance.setScaleText(
-        ChartController.instance.scaleUnit.get(count) / 1000 + " km"
+        ChartController.instance.findScale(count) / 1000 + " km"
       );
     } else {
       ChartController.instance.setScaleText(
-        ChartController.instance.scaleUnit.get(count) + " m"
+        ChartController.instance.findScale(count) + " m"
       );
     }
     ChartController.instance.scaleIndicatorLabel.setPrefWidth(temp);
+  }
+
+  /**
+   * Finds a scale value in the cycle of 1, 2, 5, 10, 20,... that correlates to
+   * the count value.
+   * @param count the count to correlate to a specific scale.
+   * @return the scale that correlates to the count.
+   */
+  private static int findScale(final int count) {
+    int scaleCase = count % 3;
+    int multiplier = (int) Math.ceil(count / 3) + 1;
+    switch (scaleCase) {
+      case 0:
+        return 1 * (int) (Math.pow(10, multiplier));
+      case 1:
+        return 2 * (int) (Math.pow(10, multiplier));
+      case 2:
+        return 5 * (int) (Math.pow(10, multiplier));
+      default:
+        return 0;
+    }
   }
 
   /**
