@@ -36,10 +36,12 @@ public class ShortestPath {
         throw new IllegalArgumentException("edge " + e + " has negative weight");
     }
 
-    for (WeightedGraph.Node n : this.distance.keySet()) {
-      this.distance.put(n, Float.POSITIVE_INFINITY);
-      this.distance.put(source, 0.0f);
+    for (WeightedGraph.Edge e: graph.edges()) {
+      this.distance.put(e.from(), Float.POSITIVE_INFINITY);
+      //this.distance.put(e.to(), Float.POSITIVE_INFINITY);
     }
+
+    this.distance.put(source, 0.0f);
 
     // relax vertices in order of distance from s
     this.queue = new PriorityQueue<>(graph.V(), (a, b) -> {
@@ -50,12 +52,12 @@ public class ShortestPath {
 
     this.queue.add(source);
 
+    System.out.println(this.distance);
+
     while (!queue.isEmpty()) {
       WeightedGraph.Node v = this.queue.poll();
 
       Set<WeightedGraph.Edge> neighbours = graph.neighbours(v);
-
-      System.out.println(neighbours);
 
       for (WeightedGraph.Edge e: neighbours) {
         relax(e);
@@ -66,6 +68,7 @@ public class ShortestPath {
   // relax edge e and update queue if changed
   private void relax(WeightedGraph.Edge e) {
     WeightedGraph.Node v = e.from(), w = e.to();
+
     if (this.distance.get(w) > this.distance.get(v) + e.weight()) {
       this.distance.put(w, this.distance.get(v) + e.weight());
       this.edgeTo.put(w, e);
@@ -82,9 +85,9 @@ public class ShortestPath {
    * Returns the length of a shortest path from the source.
    * @param v the destination vertex.
    * @return the length of a shortest path.
-   * Double.POSITIVE_INFINITY if no such path
+   * Float.POSITIVE_INFINITY if no such path
    */
-  public double distTo(final WeightedGraph.Node v) {
+  public float distTo(final WeightedGraph.Node v) {
     return this.distance.get(v);
   }
 
@@ -94,7 +97,7 @@ public class ShortestPath {
    * @return true if there is a path, false otherwise.
    */
   public boolean hasPathTo(final WeightedGraph.Node v) {
-    return this.distance.get(v) < Double.POSITIVE_INFINITY;
+    return this.distance.get(v) < Float.POSITIVE_INFINITY;
   }
 
   /**
@@ -110,6 +113,7 @@ public class ShortestPath {
 
     for (WeightedGraph.Edge e = this.edgeTo.get(n); e!= null; e = this.edgeTo.get(e.from())) {
       path.add(e);
+      System.out.println("Edges:  " + e);
     }
 
     return path;
