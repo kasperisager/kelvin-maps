@@ -37,7 +37,7 @@ public final class MenuController {
   /**
    * Current Version number.
    */
-  private static final String CUR_VERSION = "0.4.0";
+  private static final String CUR_VERSION = "0.10.0";
 
   /**
    * Location for default bin file.

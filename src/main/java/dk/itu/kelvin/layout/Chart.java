@@ -22,6 +22,13 @@ import javafx.scene.shape.Rectangle;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 
+// Kelvin Math
+import dk.itu.kelvin.math.Haversine;
+import dk.itu.kelvin.math.MercatorProjection;
+
+// Kelvin Controllers
+import dk.itu.kelvin.controller.ChartController;
+
 // Koloboke collections
 import net.openhft.koloboke.collect.set.hash.HashObjSets;
 import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
@@ -70,12 +77,12 @@ public final class Chart extends Group {
   /**
    * Minimum zoom factor.
    */
-  private static final double MIN_ZOOM_FACTOR = 0.5;
+  private static double minZoomFactor = 0.0000001;
 
   /**
    * The size of each tile in the chart.
    */
-  private static final int TILE_SIZE = 256;
+  private static int tileSize = 256;
 
   /**
    * Stores all elements.
@@ -123,6 +130,21 @@ public final class Chart extends Group {
   private Map<Node, Label> points = HashObjObjMaps.newMutableMap();
 
   /**
+   * The width of the map.
+   */
+  private double mapWidth;
+
+  /**
+   * The height of the map.
+   */
+  private double mapHeight;
+
+  /**
+   * A unit for how many pixel it takes to stretch 1 meter.
+   */
+  private double unitPrM;
+
+  /**
    * Initialize the chart.
    */
   public Chart() {
@@ -146,9 +168,55 @@ public final class Chart extends Group {
     if (bounds == null) {
       return;
     }
-    this.panLocation(-bounds.minX(), -bounds.minY());
 
-    this.setClip(bounds.render());
+    this.mapWidth = Math.abs(bounds.maxX() - bounds.minX());
+    this.mapHeight = Math.abs(bounds.maxY() - bounds.minY());
+
+    double centerX = bounds.minX() + (this.mapWidth / 2);
+    double centerY = bounds.minY() + (this.mapHeight / 2);
+
+    Node centerNode = new Node(centerX, centerY);
+    /**
+     * The 10.000 is default padding to ensure it still works for really small
+     * maps with coastlines.
+     */
+    double paddingX = 10000 + this.mapWidth;
+    double paddingY = 10000 + this.mapHeight;
+
+    Rectangle wrapper = new Rectangle(
+      bounds.minX() - paddingX,
+      bounds.minY() - paddingY,
+      this.mapWidth + paddingX * 2,
+      this.mapHeight + paddingY * 2
+    );
+    wrapper.getStyleClass().add("wrapper");
+
+    this.getChildren().add(wrapper);
+    this.landLayer.setClip(bounds.render());
+
+    MercatorProjection mp = new MercatorProjection();
+
+    double mapLength = Haversine.distance(
+      (float) mp.yToLat(bounds.minY()),
+      (float) mp.xToLon(bounds.minX()),
+      (float) mp.yToLat(bounds.minY()),
+      (float) mp.xToLon(bounds.maxX())
+    ) * 1000;
+    double unitPrPx = mapLength / (this.mapWidth / 100);
+    this.unitPrM = 100 / unitPrPx;
+
+    this.calcMinZoomFactor();
+    this.center(centerNode, this.minZoomFactor);
+  }
+
+  /**
+   * Recalculates the min zoom factor, in case the user changes the window size.
+   */
+  private void calcMinZoomFactor() {
+    double scaleX = this.mapWidth / this.getScene().getWidth();
+    double scaleY = this.mapHeight / this.getScene().getHeight();
+    double scaleMax = Math.max(scaleX, scaleY);
+    this.minZoomFactor = 1 / scaleMax;
   }
 
   /**
@@ -158,21 +226,9 @@ public final class Chart extends Group {
    * @param y The amount to pan on the y-axis.
    */
   public void pan(final double x, final double y) {
-    this.panLocation(this.getTranslateX() + x, this.getTranslateY() + y);
-  }
-
-  /**
-   * Pans the chart to a specific location.
-   *
-   * @param x the x position.
-   * @param y the y position.
-   */
-  public void panLocation(final double x, final double y) {
-    this.setTranslateX(x);
-    this.setTranslateY(y);
-
+    this.setTranslateX(this.getTranslateX() + x);
+    this.setTranslateY(this.getTranslateY() + y);
     this.layoutTiles();
-
   }
 
   /**
@@ -196,8 +252,7 @@ public final class Chart extends Group {
    * @param scale The scale to set after centering.
    */
   public void center(final double x, final double y, final double scale) {
-    this.setScaleX(scale);
-    this.setScaleY(scale);
+    this.setScale(scale);
     this.center(x, y);
   }
 
@@ -220,8 +275,7 @@ public final class Chart extends Group {
    * @param scale The scale to set after centering.
    */
   public void center(final Node node, final double scale) {
-    this.setScaleX(scale);
-    this.setScaleY(scale);
+    this.setScale(scale);
     this.center(node);
   }
 
@@ -244,8 +298,7 @@ public final class Chart extends Group {
    * @param scale   The scale to set after centering.
    */
   public void center(final Address address, final double scale) {
-    this.setScaleX(scale);
-    this.setScaleY(scale);
+    this.setScale(scale);
     this.center(address);
   }
 
@@ -257,6 +310,7 @@ public final class Chart extends Group {
    * @param y       The y-coordinate of the pivot point.
    */
   public void zoom(final double factor, final double x, final double y) {
+    this.calcMinZoomFactor();
     double oldScale = this.getScaleX();
     double newScale = oldScale * factor;
 
@@ -264,12 +318,11 @@ public final class Chart extends Group {
       return;
     }
 
-    if (factor < 1 && newScale <= MIN_ZOOM_FACTOR) {
+    if (factor < 1 && newScale < minZoomFactor) {
       return;
     }
 
-    this.setScaleX(newScale);
-    this.setScaleY(newScale);
+    this.setScale(newScale);
 
     // Calculate the difference between the new and the old scale.
     double f = (newScale / oldScale) - 1;
@@ -346,6 +399,16 @@ public final class Chart extends Group {
   }
 
   /**
+   * Sets a specific scale on both x and y.
+   * @param scale the scale to set.
+   */
+  private void setScale(final double scale) {
+    ChartController.instance().setScaleLength(this.unitPrM * scale);
+    this.setScaleX(scale);
+    this.setScaleY(scale);
+  }
+
+  /**
    * Layout the tiles of the chart.
    */
   private void layoutTiles() {
@@ -358,10 +421,10 @@ public final class Chart extends Group {
     Point2D min = this.sceneToLocal(0, 0);
     Point2D max = this.sceneToLocal(scene.getWidth(), scene.getHeight());
 
-    int minX = (int) (256 * Math.floor(min.getX() / 256));
-    int minY = (int) (256 * Math.floor(min.getY() / 256));
-    int maxX = (int) (256 * Math.floor(max.getX() / 256));
-    int maxY = (int) (256 * Math.floor(max.getY() / 256));
+    int minX = (int) (this.tileSize * Math.floor(min.getX() / this.tileSize));
+    int minY = (int) (this.tileSize * Math.floor(min.getY() / this.tileSize));
+    int maxX = (int) (this.tileSize * Math.floor(max.getX() / this.tileSize));
+    int maxY = (int) (this.tileSize * Math.floor(max.getY() / this.tileSize));
 
     if (
       minX == this.minX
@@ -379,8 +442,8 @@ public final class Chart extends Group {
 
     Set<Anchor> anchors = HashObjSets.newMutableSet();
 
-    for (int x = minX; x <= maxX; x += 256) {
-      for (int y = minY; y <= maxY; y += 256) {
+    for (int x = minX; x <= maxX; x += this.tileSize) {
+      for (int y = minY; y <= maxY; y += this.tileSize) {
         anchors.add(new Anchor(x, y));
       }
     }
@@ -416,7 +479,8 @@ public final class Chart extends Group {
     List<Element> elements = this.elementStore.find()
       .types("poi")
       .tag(tag)
-      .bounds(this.minX, this.minY, this.maxX + 256, this.maxY + 256)
+      .bounds(this.minX, this.minY, this.maxX + this.tileSize,
+        this.maxY + this.tileSize)
       .get();
 
       for (Element element: elements) {
@@ -436,7 +500,8 @@ public final class Chart extends Group {
     List<Element> elements = this.elementStore.find()
       .types("poi")
       .tag(tag)
-      .bounds(this.minX, this.minY, this.maxX + 256, this.maxY + 256)
+      .bounds(this.minX, this.minY, this.maxX + this.tileSize,
+        this.maxY + this.tileSize)
       .get();
 
     for (Element element : elements) {
@@ -461,7 +526,7 @@ public final class Chart extends Group {
 
     List<Element> elements = this.elementStore.find()
       .types("land", "way", "relation", "transportWay")
-      .bounds(x, y, x + 256, y + 256)
+      .bounds(x, y, x + this.tileSize, y + this.tileSize)
       .get();
 
     if (elements.isEmpty()) {
@@ -471,7 +536,7 @@ public final class Chart extends Group {
     Collections.sort(elements, Element.COMPARATOR);
 
     Group group = new Group();
-    group.setClip(new Rectangle(x, y, 256, 256));
+    group.setClip(new Rectangle(x, y, this.tileSize, this.tileSize));
     group.setCache(true);
 
     for (Element element: elements) {

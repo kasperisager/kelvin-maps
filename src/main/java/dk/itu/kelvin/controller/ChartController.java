@@ -10,6 +10,7 @@ import java.util.List;
 
 // I/O utilities
 import java.io.File;
+import java.util.Map;
 
 // JavaFX application utilities
 import javafx.application.Platform;
@@ -51,13 +52,13 @@ import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Relation;
+import dk.itu.kelvin.model.Node;
 
 // Stores
 import dk.itu.kelvin.store.ElementStore;
 
-// Utilities
-import dk.itu.kelvin.util.ShortestPath;
-import dk.itu.kelvin.util.WeightedGraph;
+// Koloboke collections
+import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
 
 /**
  * Chart controller class.
@@ -122,7 +123,7 @@ public final class ChartController {
   /**
    * Element store storing all elements.
    */
-  public static ElementStore elementStore = new ElementStore();
+  private static ElementStore elementStore = new ElementStore();
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -153,6 +154,11 @@ public final class ChartController {
    */
   @FXML
   private StackPane mainStackPane;
+
+  /**
+   * Map indicating the different scales the map can show.
+   */
+  private Map<Integer, Integer> scaleUnit;
 
   /**
    * Getting ChartsController instance.
@@ -186,6 +192,7 @@ public final class ChartController {
 
     this.compassArrow.getTransforms().add(this.compassTransform);
 
+    this.createScaleUnits();
     this.initLocationPointer();
     File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
 
@@ -281,11 +288,48 @@ public final class ChartController {
   }
 
   /**
+   * Creates the hash table used for managing scales units and length.
+   */
+  private void createScaleUnits() {
+    int scaleCycle = 7;
+    this.scaleUnit = HashObjObjMaps.newMutableMap(scaleCycle * 3);
+    int count = 1;
+    for (int i = 0; i < scaleCycle; i++) {
+      this.scaleUnit.put(count++, 1 * (int) (Math.pow(10, i)));
+      this.scaleUnit.put(count++, 2 * (int) (Math.pow(10, i)));
+      this.scaleUnit.put(count++, 5 * (int) (Math.pow(10, i)));
+    }
+  }
+
+  /**
    * Sets the text of scaleIndicator.
    * @param text the text to be set in scale.
    */
-  private void setScaleText(final String text) {
-    this.scaleIndicatorLabel.setText(text);
+  public static void setScaleText(final String text) {
+    ChartController.instance.scaleIndicatorLabel.setText(text);
+  }
+
+  /**
+   * Sets the length of scaleIndicator.
+   * @param length the length in pixels.
+   */
+  public static void setScaleLength(final double length) {
+    double minLength = 50;
+    int count = 1;
+    double temp = length;
+    while (temp < minLength) {
+      temp = length * ChartController.instance.scaleUnit.get(++count);
+    }
+    if (ChartController.instance.scaleUnit.get(count) >= 1000) {
+      ChartController.instance.setScaleText(
+        ChartController.instance.scaleUnit.get(count) / 1000 + " km"
+      );
+    } else {
+      ChartController.instance.setScaleText(
+        ChartController.instance.scaleUnit.get(count) + " m"
+      );
+    }
+    ChartController.instance.scaleIndicatorLabel.setPrefWidth(temp);
   }
 
   /**
@@ -578,7 +622,8 @@ public final class ChartController {
 
         ChartController.instance().elementStore.add(parser.bounds());
 
-        ChartController.instance().chart.elementStore(ChartController.instance().elementStore);
+        ChartController.instance().chart.elementStore(
+          ChartController.instance().elementStore);
         ChartController.instance().chart.bounds(parser.bounds());
 
         // Sets the chart active after load.

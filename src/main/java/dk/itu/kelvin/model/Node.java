@@ -101,7 +101,7 @@ public final class Node extends Element<Label> implements PointTree.Index {
         case "fast_food":
           return this.createLabel("\uf2a8", value, Color.YELLOW);
         case "toilets":
-          return this.createLabel("\uf3e4", value, Color.YELLOW);
+          return this.createLabel("\uf25d|\uf202", value, Color.YELLOW);
         case "post_box":
           return this.createLabel("\uf423", value, Color.YELLOW);
         case "telephone":
