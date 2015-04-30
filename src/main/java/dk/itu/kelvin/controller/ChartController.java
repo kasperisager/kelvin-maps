@@ -3,6 +3,11 @@
  */
 package dk.itu.kelvin.controller;
 
+// General utilities
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 // I/O utilities
 import java.io.File;
 
@@ -53,10 +58,6 @@ import dk.itu.kelvin.store.ElementStore;
 // Utilities
 import dk.itu.kelvin.util.ShortestPath;
 import dk.itu.kelvin.util.WeightedGraph;
-
-// General utilities
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Chart controller class.
@@ -249,7 +250,7 @@ public final class ChartController {
   public static void findShortestPath(WeightedGraph.Node n, WeightedGraph.Node m) {
     ShortestPath shortestPath = new ShortestPath(elementStore.graph(), n);
 
-    ArrayList<WeightedGraph.Edge> path = shortestPath.path(m);
+    List<WeightedGraph.Edge> path = shortestPath.path(m);
 
     System.out.println("The whole list of edges leading from source to target: " + path);
   }

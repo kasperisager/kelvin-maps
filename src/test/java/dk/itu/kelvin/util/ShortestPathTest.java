@@ -3,15 +3,14 @@
  */
 package dk.itu.kelvin.util;
 
-import java.util.ArrayList;
+// General utilities
+import java.util.List;
 
 // JUnit annotations
 import org.junit.Test;
 
 // JUnit assertions
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertEquals;
 
 public class ShortestPathTest {
 
@@ -28,6 +27,13 @@ public class ShortestPathTest {
     WeightedGraph.Edge e4 = new WeightedGraph.Edge(n2, n4, 4);
     WeightedGraph.Edge e5 = new WeightedGraph.Edge(n3, n4, 1);
 
+    System.out.println("Edge1: " + e1);
+    System.out.println("Edge2: " + e2);
+    System.out.println("Edge3: " + e3);
+    System.out.println("Edge4: " + e4);
+    System.out.println("Edge5: " + e5);
+    System.out.println();
+
     WeightedGraph wg = new WeightedGraph();
     wg.add(e1);
     wg.add(e2);
@@ -38,10 +44,12 @@ public class ShortestPathTest {
     ShortestPath sp = new ShortestPath(wg, n1);
     assertTrue(2 == sp.distTo(n4));
 
-    assertTrue(2 == sp.path(n4).size());
+    List<WeightedGraph.Edge> list = sp.path(n4);
 
-    ArrayList<WeightedGraph.Edge> list = sp.path(n4);
+    System.out.println(list);
 
-    assertTrue(list.contains(e5));
+    assertTrue(2 == list.size());
+
+    assertTrue(list.contains(e5) && list.contains(e2));
   }
 }

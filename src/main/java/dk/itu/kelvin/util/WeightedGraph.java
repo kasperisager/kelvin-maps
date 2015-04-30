@@ -161,6 +161,11 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
       return (n.x() == this.x && n.y() == this.y);
     }
 
+    @Override
+    public String toString() {
+      return "X: " + this.x + " Y: " + this.y;
+    }
+
   }
 
   /**
@@ -228,7 +233,7 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
      */
     @Override
     public boolean equals(final Object object) {
-      if (object == null || !(object instanceof Node)) {
+      if (object == null || !(object instanceof Edge)) {
         return false;
       }
 
