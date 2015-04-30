@@ -48,9 +48,10 @@ public final class MercatorProjection implements Projection {
    * @return  The corresponding spherical latitude.
    */
   public double yToLat(final double y) {
-    return (double) Math.toDegrees(
-      2 * Math.atan(Math.exp(Math.toRadians(y))) - Math.PI / 2
-    ) / -PROJECTION_FACTOR;
+    return Math.toDegrees(
+      2 * Math.atan(Math.exp(Math.toRadians(y / -PROJECTION_FACTOR)))
+        - Math.PI / 2
+    );
   }
 
   /**
@@ -63,7 +64,7 @@ public final class MercatorProjection implements Projection {
    * @return    The corresponding y-coordinate.
    */
   public double latToY(final double lat) {
-    return (double) Math.toDegrees(
+    return Math.toDegrees(
       Math.log(Math.tan(Math.PI / 4 + Math.toRadians(lat) / 2))
     ) * -PROJECTION_FACTOR;
   }
