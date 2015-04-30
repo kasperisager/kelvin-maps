@@ -108,7 +108,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * Point tree for quick search in transportWays elements.
    */
-  private SpatialIndex<Way> transportWaysTree;
+  private RectangleTree<Way> transportWaysTree;
 
   /**
    * Indicates whether waysTree needs to be indexed or not.
@@ -375,7 +375,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * @param ways The collection of roads to be indexed.
    * @return the indexed rectangleTree.
    */
-  public SpatialIndex<Way> indexTransportWays(final Collection<Way> ways) {
+  public RectangleTree<Way> indexTransportWays(final Collection<Way> ways) {
     if (ways == null || ways.isEmpty()) {
       return null;
     }
@@ -384,6 +384,13 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     this.roadsIsDirty = false;
 
     return transportWaysTree;
+  }
+
+  /**
+   * Return the transportWayTree.
+   */
+  public RectangleTree<Way> transportWaysTree() {
+    return this.transportWaysTree;
   }
 
   /**

@@ -4,9 +4,14 @@
 package dk.itu.kelvin.controller;
 
 // General utilities
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
+
+// Utilities
+import dk.itu.kelvin.math.Geometry;
+import dk.itu.kelvin.util.SpatialIndex;
+import dk.itu.kelvin.util.WeightedGraph;
+import dk.itu.kelvin.util.ShortestPath;
 
 // I/O utilities
 import java.io.File;
@@ -52,7 +57,6 @@ import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Relation;
-import dk.itu.kelvin.model.Node;
 
 // Stores
 import dk.itu.kelvin.store.ElementStore;
@@ -255,14 +259,57 @@ public final class ChartController {
   }
 
   public static void findShortestPath(WeightedGraph.Node n, WeightedGraph.Node m) {
-    ShortestPath shortestPath = new ShortestPath(elementStore.graph(), n);
+    SpatialIndex.Point p1 = new SpatialIndex.Point(n.x(), n.y());
+    SpatialIndex.Point p2 = new SpatialIndex.Point(m.x(), m.y());
 
-    List<WeightedGraph.Edge> path = shortestPath.path(m);
+    Way fromWay = elementStore.transportWaysTree().nearest(p1);
+    Way toWay = elementStore.transportWaysTree().nearest(p2);
 
-    System.out.println("The whole list of edges leading from source to target: " + path);
+    double distanceFrom = 0;
+    WeightedGraph.Node from = null;
+    
+    for (Node qu : fromWay.nodes()) {
+      SpatialIndex.Point ptemp = new SpatialIndex.Point(qu.x(), qu.y());
+
+      if (distanceFrom == 0 || Geometry.distance(ptemp, p1) < distanceFrom) {
+        distanceFrom = Geometry.distance(ptemp, p1);
+        from = new WeightedGraph.Node(qu.x(), qu.y());
+      }
+    }
+
+    double distanceTo = 0;
+    WeightedGraph.Node to = null;
+    for (Node qu : toWay.nodes()) {
+      SpatialIndex.Point ptemp = new SpatialIndex.Point(qu.x(), qu.y());
+
+      if (distanceTo == 0 || Geometry.distance(ptemp, p2) < distanceTo) {
+        distanceTo = Geometry.distance(ptemp, p2);
+        to = new WeightedGraph.Node(qu.x(), qu.y());
+      }
+    }
+
+    if (from != null && to != null) {
+      ShortestPath shortestPath = new ShortestPath(elementStore.graph(), from);
+
+      List<WeightedGraph.Edge> path = shortestPath.path(to);
+
+      Way route = new Way();
+
+      for (int i = 0; i < path.size(); i++) {
+        Node n1 = new Node(path.get(i).from().x(), path.get(i).from().y());
+        route.add(n1);
+
+        if (i == path.size() - 1) {
+          Node n2 = new Node(path.get(i).to().x(), path.get(i).to().y());
+          route.add(n2);
+        }
+      }
+
+      route.render();
+    }
   }
 
-  /**
+    /**
    * Store all POI nodes in ElementStore.
    * @param parser for parsing data.
    */
