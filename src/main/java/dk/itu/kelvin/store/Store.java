@@ -4,10 +4,7 @@
 package dk.itu.kelvin.store;
 
 // I/O utilities
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 
 // Functional utilities
 import dk.itu.kelvin.util.function.Callback;
@@ -43,7 +40,13 @@ public abstract class Store<E, C> implements Serializable {
    * @param callback  The callback to invoke once loading has finished.
    */
   public final void load(final File file, final Callback callback) {
-    throw new UnsupportedOperationException();
+    try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))){
+      Store addressStore = (Store)in.readObject();
+      in.close();
+      callback.call();
+    }catch (Exception e){
+      throw new RuntimeException(e);
+    }
   }
 
 }

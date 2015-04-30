@@ -4,11 +4,10 @@
 package dk.itu.kelvin.controller;
 
 // I/O utilities
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 // JavaFX stage utilities
+import dk.itu.kelvin.store.AddressStore;
 import dk.itu.kelvin.util.function.Callback;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -115,8 +114,9 @@ public final class MenuController {
     String filename = "currentMap.bin";
     File file = new File(filename);
     AddressController.getAddressStore().save(file, () -> {
-      System.out.println("success... or not?");
+      System.out.println("Success with storing AddressStore");
     });
+    /*
     ChartController.getElementStore().save(file, () -> {
       System.out.println("success... or not?");
     });
@@ -138,7 +138,28 @@ public final class MenuController {
    */
   @FXML
   private void loadBin() {
-    //do stuff
+    String filename = "currentMap.bin";
+    File file = new File(filename);
+    /*
+    AddressController.instance().getAddressStore().load(file, () -> {
+      System.out.println("Success with loading AddressStore");
+    }); */
+    try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))){
+      AddressStore addressStore = (AddressStore)in.readObject();
+      in.close();
+      AddressController.instance().setAddresses(addressStore);
+    }catch (Exception e){
+      throw new RuntimeException(e);
+    }
+    /*
+    try {
+      FileInputStream fileInputStream = new FileInputStream(file);
+      ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+      AddressStore addressStore = (AddressStore)objectInputStream.readObject();
+      objectInputStream.close();
+    }catch(Exception e){
+
+    }*/
 
   }
 

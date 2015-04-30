@@ -691,4 +691,8 @@ public final class AddressController {
   public static AddressStore getAddressStore(){
     return AddressController.instance.addresses;
   }
+
+  public static void setAddresses(AddressStore addressStore){
+    AddressController.instance.addresses = addressStore;
+  }
 }
