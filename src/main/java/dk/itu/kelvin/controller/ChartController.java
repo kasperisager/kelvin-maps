@@ -575,5 +575,9 @@ public final class ChartController {
   public static ElementStore getElementStore(){
     return ChartController.instance.elementStore;
   }
+
+  public static void setElementStore(ElementStore elementStore){
+    ChartController.instance.elementStore = elementStore;
+  }
 }
 

@@ -8,6 +8,7 @@ import java.io.*;
 
 // JavaFX stage utilities
 import dk.itu.kelvin.store.AddressStore;
+import dk.itu.kelvin.store.ElementStore;
 import dk.itu.kelvin.util.function.Callback;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -113,24 +114,17 @@ public final class MenuController {
     //do stuff.
     String filename = "currentMap.bin";
     File file = new File(filename);
-    AddressController.getAddressStore().save(file, () -> {
-      System.out.println("Success with storing AddressStore");
-    });
 
-    ChartController.getElementStore().save(file, () -> {
-      System.out.println("Success with storing ElementStore");
-    });
-    /*
     try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
 
       out.writeObject(ChartController.getElementStore());
       out.writeObject(AddressController.getAddressStore());
       out.close();
-
+      System.out.println("Saved...");
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    */
+
   }
 
   /**
@@ -145,9 +139,11 @@ public final class MenuController {
       System.out.println("Success with loading AddressStore");
     }); */
     try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))){
+      ElementStore elementStore = (ElementStore)in.readObject();
       AddressStore addressStore = (AddressStore)in.readObject();
       in.close();
-      AddressController.instance().setAddresses(addressStore);
+      ChartController.instance().setElementStore(elementStore);
+      AddressController.instance().setAddressStore(addressStore);
     }catch (Exception e){
       throw new RuntimeException(e);
     }

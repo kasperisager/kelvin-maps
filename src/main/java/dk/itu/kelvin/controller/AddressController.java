@@ -692,7 +692,7 @@ public final class AddressController {
     return AddressController.instance.addresses;
   }
 
-  public static void setAddresses(AddressStore addressStore){
+  public static void setAddressStore(AddressStore addressStore){
     AddressController.instance.addresses = addressStore;
   }
 }
