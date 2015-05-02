@@ -604,4 +604,11 @@ public final class Chart extends Group {
     }
 
   }
+
+  public void setElementStore(ElementStore elementStore){
+    this.elementStore = elementStore;
+  }
+  public ElementStore getElementStore(){
+    return this.elementStore;
+  }
 }

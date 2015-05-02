@@ -573,11 +573,11 @@ public final class ChartController {
    * @return the element store.
    */
   public static ElementStore getElementStore(){
-    return ChartController.instance.elementStore;
+    return ChartController.instance.chart.getElementStore();
   }
 
   public static void setElementStore(ElementStore elementStore){
-    ChartController.instance.elementStore = elementStore;
+    ChartController.instance.chart.setElementStore(elementStore);
   }
 }
 

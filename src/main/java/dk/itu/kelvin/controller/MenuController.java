@@ -120,7 +120,7 @@ public final class MenuController {
       out.writeObject(ChartController.getElementStore());
       out.writeObject(AddressController.getAddressStore());
       out.close();
-      System.out.println("Saved...");
+      System.out.println("Save complete");
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -138,12 +138,14 @@ public final class MenuController {
     AddressController.instance().getAddressStore().load(file, () -> {
       System.out.println("Success with loading AddressStore");
     }); */
+    ChartController.instance().clearMap();
     try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))){
       ElementStore elementStore = (ElementStore)in.readObject();
       AddressStore addressStore = (AddressStore)in.readObject();
       in.close();
       ChartController.instance().setElementStore(elementStore);
       AddressController.instance().setAddressStore(addressStore);
+      System.out.println("Load complete");
     }catch (Exception e){
       throw new RuntimeException(e);
     }
