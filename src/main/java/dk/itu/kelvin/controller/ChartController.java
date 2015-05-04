@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 // Utilities
 import dk.itu.kelvin.math.Geometry;
+import dk.itu.kelvin.model.*;
 import dk.itu.kelvin.util.SpatialIndex;
 import dk.itu.kelvin.util.WeightedGraph;
 import dk.itu.kelvin.util.ShortestPath;
@@ -52,10 +53,6 @@ import dk.itu.kelvin.parser.Parser;
 import dk.itu.kelvin.layout.Chart;
 
 // Models
-import dk.itu.kelvin.model.Node;
-import dk.itu.kelvin.model.Address;
-import dk.itu.kelvin.model.Way;
-import dk.itu.kelvin.model.Relation;
 
 // Stores
 import dk.itu.kelvin.store.ElementStore;
@@ -290,15 +287,20 @@ public final class ChartController {
 
       Way route = new Way();
 
+      List<Element> js = new ArrayList<>();
       for (int i = 0; i < path.size(); i++) {
         Node n1 = new Node(path.get(i).from().x(), path.get(i).from().y());
         route.add(n1);
+        js.add(n1);
 
         if (i == path.size() - 1) {
           Node n2 = new Node(path.get(i).to().x(), path.get(i).to().y());
           route.add(n2);
+          js.add(n2);
         }
       }
+      route.tag("meta", "direction");
+
 
       route.render();
     }
