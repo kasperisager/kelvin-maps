@@ -722,33 +722,29 @@ public class RectangleTree<E extends RectangleTree.Index>
         );
       });
 
+      // Keep track of the smallest minimax distance.
+      double minimumMinimaxDistance = Double.POSITIVE_INFINITY;
+
+      for (Node<E> node: abl) {
+        double minimaxDistance = RectangleTree.minimaxDistance(
+          point, node.bounds()
+        );
+
+        if (minimumMinimaxDistance > minimaxDistance) {
+          minimumMinimaxDistance = minimaxDistance;
+        }
+      }
+
       // Search pruning, strategy 1: "an MBR M with MINDIST(P,M) greater than
       // the MINMAXDIST(P,M') of another MBR M' is discarded because it cannot
       // contain the NN (theorems 1 and 2). We use this in downward pruning."
-      outer:
       for (int i = 0; i < abl.size(); i++) {
-        if (abl.get(i) == null) {
-          continue;
-        }
-
-        double minimum = RectangleTree.minimumDistance(
-          point, abl.get(i).bounds()
+        double minimumDistance = RectangleTree.minimumDistance(
+          point, abl.get(i)
         );
 
-        inner:
-        for (int j = i + 1; j < abl.size(); j++) {
-          if (abl.get(j) == null) {
-            continue;
-          }
-
-          double minimax = RectangleTree.minimaxDistance(
-            point, abl.get(j).bounds()
-          );
-
-          if (minimum > minimax) {
-            abl.remove(i--);
-            continue outer;
-          }
+        if (minimumDistance > minimumMinimaxDistance) {
+          abl.remove(i--);
         }
       }
 
