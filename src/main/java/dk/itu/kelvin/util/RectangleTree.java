@@ -397,6 +397,24 @@ public class RectangleTree<E extends RectangleTree.Index>
   }
 
   /**
+   * Find the actual distance from an element to a point.
+   *
+   * @param point   The point to find the distance to.
+   * @param element The element to find the distance from.
+   * @return        The actual distance from the element to the point.
+   */
+  private static <E extends Index> double actualDistance(
+    final Point point,
+    final E element
+  ) {
+    if (point == null || element == null) {
+      return Double.POSITIVE_INFINITY;
+    }
+
+    return RectangleTree.minimumDistance(point, element.bounds());
+  }
+
+  /**
    * The {@link Index} interface describes an object that is indexable by the
    * rectangle tree.
    */
@@ -722,33 +740,29 @@ public class RectangleTree<E extends RectangleTree.Index>
         );
       });
 
+      // Keep track of the smallest minimax distance.
+      double minimumMinimaxDistance = Double.POSITIVE_INFINITY;
+
+      for (Node<E> node: abl) {
+        double minimaxDistance = RectangleTree.minimaxDistance(
+          point, node.bounds()
+        );
+
+        if (minimumMinimaxDistance > minimaxDistance) {
+          minimumMinimaxDistance = minimaxDistance;
+        }
+      }
+
       // Search pruning, strategy 1: "an MBR M with MINDIST(P,M) greater than
       // the MINMAXDIST(P,M') of another MBR M' is discarded because it cannot
       // contain the NN (theorems 1 and 2). We use this in downward pruning."
-      outer:
       for (int i = 0; i < abl.size(); i++) {
-        if (abl.get(i) == null) {
-          continue;
-        }
-
-        double minimum = RectangleTree.minimumDistance(
+        double minimumDistance = RectangleTree.minimumDistance(
           point, abl.get(i).bounds()
         );
 
-        inner:
-        for (int j = i + 1; j < abl.size(); j++) {
-          if (abl.get(j) == null) {
-            continue;
-          }
-
-          double minimax = RectangleTree.minimaxDistance(
-            point, abl.get(j).bounds()
-          );
-
-          if (minimum > minimax) {
-            abl.remove(i--);
-            continue outer;
-          }
+        if (minimumDistance > minimumMinimaxDistance) {
+          abl.remove(i--);
         }
       }
 
@@ -771,12 +785,8 @@ public class RectangleTree<E extends RectangleTree.Index>
           nearest = estimate;
         }
         else {
-          double distNearest = RectangleTree.minimumDistance(
-            point, nearest.bounds()
-          );
-          double distEstimate = RectangleTree.minimumDistance(
-            point, estimate.bounds()
-          );
+          double distNearest = RectangleTree.actualDistance(point, nearest);
+          double distEstimate = RectangleTree.actualDistance(point, estimate);
 
           if (distNearest > distEstimate) {
             nearest = estimate;
@@ -910,12 +920,8 @@ public class RectangleTree<E extends RectangleTree.Index>
           nearest = element;
         }
         else {
-          double distNearest = RectangleTree.minimumDistance(
-            point, nearest.bounds()
-          );
-          double distElement = RectangleTree.minimumDistance(
-            point, element.bounds()
-          );
+          double distNearest = RectangleTree.actualDistance(point, nearest);
+          double distElement = RectangleTree.actualDistance(point, element);
 
           if (distNearest > distElement) {
             nearest = element;
