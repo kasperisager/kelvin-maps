@@ -920,12 +920,8 @@ public class RectangleTree<E extends RectangleTree.Index>
           nearest = element;
         }
         else {
-          double distNearest = RectangleTree.minimumDistance(
-            point, nearest.bounds()
-          );
-          double distElement = RectangleTree.minimumDistance(
-            point, element.bounds()
-          );
+          double distNearest = RectangleTree.actualDistance(point, nearest);
+          double distElement = RectangleTree.actualDistance(point, element);
 
           if (distNearest > distElement) {
             nearest = element;
