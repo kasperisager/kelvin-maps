@@ -464,7 +464,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
 
   public void addEdge(final Way way) {
     for (int i = 0; i < way.nodes().size(); i++) {
-      if (i + 1 >= way.nodes().size()-1) {
+      if (i + 1 >= way.nodes().size()) {
         break;
       }
 
