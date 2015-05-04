@@ -135,8 +135,8 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
     @Override
     public int hashCode() {
       long bits = 7L;
-      bits = 31L * bits + Double.doubleToLongBits(this.x);
-      bits = 31L * bits + Double.doubleToLongBits(this.y);
+      bits = 31L * bits + Float.hashCode(this.x);
+      bits = 31L * bits + Float.hashCode(this.y);
 
       return (int) (bits ^ (bits >> 32));
     }
@@ -219,7 +219,7 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
     @Override
     public int hashCode() {
       long bits = 7L;
-      bits = 31L * bits + Double.doubleToLongBits(this.weight);
+      bits = 31L * bits + Float.hashCode(this.weight);
       bits = 31L * bits + this.from.hashCode();
       bits = 31L * bits + this.to.hashCode();
 

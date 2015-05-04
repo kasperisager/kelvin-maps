@@ -445,6 +445,7 @@ public final class AddressController {
       return;
     }
 
+
     WeightedGraph.Node n = new WeightedGraph.Node(currentAddress.x(), currentAddress.y());
     WeightedGraph.Node m = new WeightedGraph.Node(destinationAddress.x(), destinationAddress.y());
     ChartController.instance().findShortestPath(n, m);

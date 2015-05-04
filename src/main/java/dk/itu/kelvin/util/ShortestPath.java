@@ -68,41 +68,63 @@ public class ShortestPath {
         relax(e);
       }
     }
+
+    for (Node node: this.distance.keySet()) {
+      if (this.distance.get(node) < Float.POSITIVE_INFINITY) {
+        System.out.println(node + "   dist: " + this.distance.get(node));
+      }
+    }
   }
 
   // relax edge e and update queue if changed
-  private void relax(Edge e) {
-    Node v = e.from(), w = e.to();
+  private void relax(Edge edge) {
+    if (edge == null) {
+      return;
+    }
 
-    if (this.distance.get(w) > this.distance.get(v) + e.weight()) {
-      this.distance.put(w, this.distance.get(v) + e.weight());
-      this.edgeTo.put(w, e);
+    Node from = edge.from();
+    Node to = edge.to();
 
-      if (queue.contains(w)) {
-        this.queue.remove(w);
+    float distFrom = this.distance.get(from);
+    float distTo = this.distance.get(to);
+
+    if (distTo > distFrom + edge.weight()) {
+      this.distance.put(to, distFrom + edge.weight());
+      this.edgeTo.put(to, edge);
+
+      if (queue.contains(to)) {
+        this.queue.remove(to);
       }
 
-      this.queue.add(w);
+      this.queue.add(to);
     }
   }
 
   /**
    * Returns the length of a shortest path from the source.
-   * @param v the destination vertex.
+   * @param node the destination vertex.
    * @return the length of a shortest path.
    * Float.POSITIVE_INFINITY if no such path
    */
-  public float distTo(final Node v) {
-    return this.distance.get(v);
+  public float distTo(final Node node) {
+    if (node == null) {
+      return Float.POSITIVE_INFINITY;
+    }
+
+    return this.distance.get(node);
   }
 
   /**
    * Is there a path from the source vertex to the param vertex.
-   * @param v the destination vertex.
+   * @param node the destination vertex.
    * @return true if there is a path, false otherwise.
    */
-  public boolean hasPathTo(final Node v) {
-    return this.distance.get(v) < Float.POSITIVE_INFINITY;
+  public boolean hasPathTo(final Node node) {
+    if (!this.distance.containsKey(node)) {
+      return false;
+    }
+
+    return this.distance.get(node) < Float.POSITIVE_INFINITY;
   }
 
   /**

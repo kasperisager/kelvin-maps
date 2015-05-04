@@ -215,6 +215,7 @@ public abstract class Element<T extends Node> implements Serializable {
    */
   public abstract T render();
 
+
   /**
    * Compare two elements taking into account their drawing order and layer.
    *
