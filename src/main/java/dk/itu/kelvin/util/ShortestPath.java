@@ -100,6 +100,10 @@ public class ShortestPath {
     }
   }
 
+  public HashMap map(){
+    return this.distance;
+  }
+
   /**
    * Returns the length of a shortest path from the source.
    * @param node the destination vertex.

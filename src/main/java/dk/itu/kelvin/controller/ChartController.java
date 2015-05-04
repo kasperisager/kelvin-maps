@@ -246,7 +246,7 @@ public final class ChartController {
   }
 
   public static void findShortestPath(WeightedGraph.Node n, WeightedGraph.Node m) {
-   /*SpatialIndex.Point p1 = new SpatialIndex.Point(n.x(), n.y());
+   SpatialIndex.Point p1 = new SpatialIndex.Point(n.x(), n.y());
     SpatialIndex.Point p2 = new SpatialIndex.Point(m.x(), m.y());
 
     Way fromWay = elementStore.transportWaysTree().nearest(p1);
@@ -273,17 +273,21 @@ public final class ChartController {
         distanceTo = Geometry.distance(ptemp, p2);
         to = new WeightedGraph.Node(qu.x(), qu.y());
       }
-    }*/
+    }
 
-    //ChartController.instance().chart.center(new Node(n.x(), n.y()));
-    ChartController.instance().chart.center(new Node(377549.94f, -2019005.9f));
+    ChartController.instance().chart.center(new Node(n.x(), n.y()));
+    /*ChartController.instance().chart.center(new Node(377549.94f, -2019005.9f));
     WeightedGraph.Node from = new WeightedGraph.Node(377549.94f, -2019005.9f);
     WeightedGraph.Node to = new WeightedGraph.Node(377536.78f, -2018934.4f);
-
+*/
     if (from != null && to != null) {
       ShortestPath shortestPath = new ShortestPath(elementStore.graph(), from);
 
       List<WeightedGraph.Edge> path = shortestPath.path(to);
+
+      for(WeightedGraph.Edge e : path){
+        System.out.println("path: " + e);
+      }
 
       Way route = new Way();
 
@@ -301,8 +305,8 @@ public final class ChartController {
       }
       route.tag("meta", "direction");
 
+      ChartController.instance().chart.getChildren().add(route.render());
 
-      route.render();
     }
   }
 
