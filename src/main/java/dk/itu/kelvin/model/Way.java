@@ -273,7 +273,7 @@ public final class Way extends Element<Polyline>
 
     for (Map.Entry<String, String> tag: this.tags().entrySet()) {
       polyline.getStyleClass().add(tag.getKey());
-      polyline.getStyleClass().add(tag.getValue());
+      polyline.getStyleClass().add(tag.getKey() + "-" + tag.getValue());
     }
 
     if (this.nodes != null) {
