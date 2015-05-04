@@ -157,7 +157,7 @@ public final class Relation extends Element<Group>
 
     for (Map.Entry<String, String> tag: this.tags().entrySet()) {
       group.getStyleClass().add(tag.getKey());
-      group.getStyleClass().add(tag.getValue());
+      group.getStyleClass().add(tag.getKey() + "-" + tag.getValue());
     }
 
     String type = this.tag("type");
