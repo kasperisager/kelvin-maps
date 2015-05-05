@@ -11,15 +11,8 @@
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.control.Label?>
 
-<!-- JavaFX shapes -->
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.shape.LineTo?>
-<?import javafx.scene.shape.MoveTo?>
-<?import javafx.scene.shape.Path?>
-
 <!-- Layout -->
 <?import dk.itu.kelvin.layout.Chart?>
-
 
 <StackPane
   fx:id ="mainStackPane"
@@ -50,13 +43,9 @@
 
   <fx:include source="Address.fxml" />
 
-  <HBox
-    alignment="BOTTOM_LEFT"
-    pickOnBounds="false"
-    fx:id="scaleVBox"
-  >
+  <HBox alignment="BOTTOM_LEFT" pickOnBounds="false" fx:id="scaleVBox">
     <children>
-      <Label styleClass="scaleIndicator" fx:id="scaleIndicatorLabel"></Label>
+      <Label styleClass="scaleIndicator" fx:id="scaleIndicatorLabel" />
     </children>
   </HBox>
 
@@ -68,23 +57,15 @@
     fillWidth="false"
   >
     <children>
-      <Button
-        text="&#xF218;"
-        styleClass="icon"
-        onAction="#zoomIn"
-      >
+      <Button text="&#xF218;" styleClass="icon" onAction="#zoomIn">
         <tooltip>
-          <Tooltip text="Zoom in"/>
+          <Tooltip text="Zoom in" />
         </tooltip>
       </Button>
 
-      <Button
-        text="&#xF209;"
-        styleClass="icon"
-        onAction="#zoomOut"
-      >
+      <Button text="&#xF209;" styleClass="icon" onAction="#zoomOut">
         <tooltip>
-          <Tooltip text="Zoom out"/>
+          <Tooltip text="Zoom out" />
         </tooltip>
       </Button>
     </children>

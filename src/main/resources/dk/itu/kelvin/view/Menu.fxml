@@ -15,25 +15,25 @@
   <menus>
     <Menu text="File">
       <items>
-        <MenuItem text="Open file" onAction="#pickFile"/>
-        <MenuItem text="Save as .bin" onAction="#saveBin"/>
-        <MenuItem text="Load last .bin" onAction="#loadBin"/>
-        <MenuItem text="Load default .bin" onAction="#defaultBin"/>
-        <MenuItem text="Exit" onAction="#close"/>
+        <MenuItem text="Open file" onAction="#pickFile" />
+        <MenuItem text="Save as .bin" onAction="#saveBin" />
+        <MenuItem text="Load last .bin" onAction="#loadBin" />
+        <MenuItem text="Load default .bin" onAction="#defaultBin" />
+        <MenuItem text="Exit" onAction="#close" />
       </items>
     </Menu>
     <Menu text="View">
       <items>
-        <CheckMenuItem text="Public transit" selected="true"/>
-        <CheckMenuItem text="Bicycle"/>
-        <CheckMenuItem text="Color blind"/>
+        <CheckMenuItem text="Public transit" selected="true" />
+        <CheckMenuItem text="Bicycle" />
+        <CheckMenuItem text="Color blind" />
       </items>
     </Menu>
     <Menu text="Help">
       <items>
-        <MenuItem text="Reset everything to default" onAction="#resetAll"/>
-        <MenuItem text="User manual" onAction="#showManual"/>
-        <MenuItem text="About" onAction="#showAbout"/>
+        <MenuItem text="Reset everything to default" onAction="#resetAll" />
+        <MenuItem text="User manual" onAction="#showManual" />
+        <MenuItem text="About" onAction="#showAbout" />
       </items>
     </Menu>
   </menus>
