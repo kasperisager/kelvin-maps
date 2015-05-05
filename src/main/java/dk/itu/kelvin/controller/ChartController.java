@@ -301,18 +301,11 @@ public final class ChartController {
     }
 
     ChartController.instance().chart.center(new Node(n.x(), n.y()));
-    /*ChartController.instance().chart.center(new Node(377549.94f, -2019005.9f));
-    WeightedGraph.Node from = new WeightedGraph.Node(377549.94f, -2019005.9f);
-    WeightedGraph.Node to = new WeightedGraph.Node(377536.78f, -2018934.4f);
-*/
+
     if (from != null && to != null) {
       ShortestPath shortestPath = new ShortestPath(elementStore.graph(), from);
 
       List<WeightedGraph.Edge> path = shortestPath.path(to);
-
-      for(WeightedGraph.Edge e : path){
-        System.out.println("path: " + e);
-      }
 
       if (routeRender != null) {
         ChartController.instance().chart.getChildren().remove(routeRender);
@@ -321,16 +314,20 @@ public final class ChartController {
 
       route = new Way();
 
-      List<Element> js = new ArrayList<>();
       for (int i = 0; i < path.size(); i++) {
+        if (i == 0) {
+          // Add the address from node.
+          route.add(new Node(n.x(), n.y()));
+
+        }
         Node n1 = new Node(path.get(i).from().x(), path.get(i).from().y());
         route.add(n1);
-        js.add(n1);
 
         if (i == path.size() - 1) {
           Node n2 = new Node(path.get(i).to().x(), path.get(i).to().y());
           route.add(n2);
-          js.add(n2);
+          // Add the address to node.
+          route.add(new Node(m.x(), m.y()));
         }
       }
       route.tag("meta", "direction");

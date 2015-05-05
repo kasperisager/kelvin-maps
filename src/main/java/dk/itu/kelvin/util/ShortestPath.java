@@ -71,7 +71,6 @@ public class ShortestPath {
 
     for (Node node: this.distance.keySet()) {
       if (this.distance.get(node) < Float.POSITIVE_INFINITY) {
-        System.out.println(node + "   dist: " + this.distance.get(node));
       }
     }
   }
