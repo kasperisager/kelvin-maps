@@ -132,6 +132,8 @@ public final class Chart extends Group {
    */
   private double mapHeight;
 
+  private BoundingBox bounds;
+
   /**
    * Initialize the chart.
    */
@@ -156,6 +158,7 @@ public final class Chart extends Group {
     if (bounds == null) {
       return;
     }
+    this.bounds = bounds;
 
     this.mapWidth = Math.abs(bounds.maxX() - bounds.minX());
     this.mapHeight = Math.abs(bounds.maxY() - bounds.minY());
@@ -605,10 +608,10 @@ public final class Chart extends Group {
 
   }
 
-  public void setElementStore(ElementStore elementStore){
-    this.elementStore = elementStore;
-  }
   public ElementStore getElementStore(){
     return this.elementStore;
+  }
+  public BoundingBox getBounds(){
+    return this.bounds;
   }
 }

@@ -7,6 +7,7 @@ package dk.itu.kelvin.controller;
 import java.io.File;
 
 // JavaFX application utilities
+import dk.itu.kelvin.model.*;
 import javafx.application.Platform;
 
 // JavaFX layout
@@ -42,10 +43,6 @@ import dk.itu.kelvin.parser.Parser;
 import dk.itu.kelvin.layout.Chart;
 
 // Models
-import dk.itu.kelvin.model.Address;
-import dk.itu.kelvin.model.Way;
-import dk.itu.kelvin.model.Relation;
-import dk.itu.kelvin.model.Node;
 
 // Stores
 import dk.itu.kelvin.store.ElementStore;
@@ -167,14 +164,21 @@ public final class ChartController {
    */
   @FXML
   private void initialize() throws Exception {
+    System.out.println("chart");
     ChartController.instance(this);
 
     // Sets the parent element inactive until done loading.
-    this.mainStackPane.setDisable(true);
+    //this.mainStackPane.setDisable(true);
 
     this.compassArrow.getTransforms().add(this.compassTransform);
 
     this.initLocationPointer();
+
+    Platform.runLater(() ->{
+      MenuController.loadDefault();
+      ApplicationController.removeIcon();
+    });
+    /*
     File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
 
     Parser parser = Parser.probe(file);
@@ -210,8 +214,9 @@ public final class ChartController {
         // Sets the chart active after load.
         this.mainStackPane.setDisable(false);
         ApplicationController.removeIcon();
+        MenuController.loadDefault();
       });
-    });
+    });*/
   }
 
   /**
@@ -536,7 +541,7 @@ public final class ChartController {
 
     parser.read(file, () -> {
       // Get all addresses from parser.
-      for (Address address: parser.addresses()) {
+      for (Address address : parser.addresses()) {
         AddressController.instance().addAddress(address);
       }
       // Sets all POI from initialized nodes.
@@ -576,8 +581,27 @@ public final class ChartController {
     return ChartController.instance.chart.getElementStore();
   }
 
-  public static void setElementStore(ElementStore elementStore){
-    ChartController.instance.chart.setElementStore(elementStore);
+  /**
+   *
+   * @return
+   */
+  public static BoundingBox getBounds(){
+    return ChartController.instance.chart.getBounds();
   }
+
+  /**
+   *
+   * @param elementStore
+   * @param bounds
+   */
+  public static void loadBinMap(ElementStore elementStore, BoundingBox bounds){
+    ChartController.instance.chart.elementStore(elementStore);
+    System.out.println(bounds.minX() + " : " + bounds.maxX());
+    System.out.println(bounds.minY() + " : " + bounds.maxY());
+    ChartController.instance.chart.bounds(bounds);
+
+
+  }
+
 }
 

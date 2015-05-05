@@ -23,14 +23,7 @@ public abstract class Store<E, C> implements Serializable {
    * @param callback  The callback to invoke once saving has finished.
    */
   public final void save(final File file, final Callback callback) {
-    try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))){
-      out.writeObject(this);
-      out.close();
-      callback.call();
-    }catch (Exception e){
-      throw new RuntimeException(e);
-    }
-    //throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -40,13 +33,7 @@ public abstract class Store<E, C> implements Serializable {
    * @param callback  The callback to invoke once loading has finished.
    */
   public final void load(final File file, final Callback callback) {
-    try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))){
-      Store addressStore = (Store)in.readObject();
-      in.close();
-      callback.call();
-    }catch (Exception e){
-      throw new RuntimeException(e);
-    }
+    throw new UnsupportedOperationException();
   }
 
 }

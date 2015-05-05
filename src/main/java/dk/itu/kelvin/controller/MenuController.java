@@ -7,6 +7,8 @@ package dk.itu.kelvin.controller;
 import java.io.*;
 
 // JavaFX stage utilities
+import com.sun.glass.ui.Menu;
+import dk.itu.kelvin.model.BoundingBox;
 import dk.itu.kelvin.store.AddressStore;
 import dk.itu.kelvin.store.ElementStore;
 import dk.itu.kelvin.util.function.Callback;
@@ -42,10 +44,12 @@ public final class MenuController {
    */
   private static final String CUR_VERSION = "0.4.0";
 
+  private static final String CURRENT_BIN = "currentMap.bin";
+
   /**
    * Location for default bin file.
    */
-  private static final String DEFAULT_BIN = "";
+  private static final String DEFAULT_BIN = "defaultMap.bin";
 
   /**
    * Manual PopOver.
@@ -84,7 +88,16 @@ public final class MenuController {
    */
   @FXML
   private void initialize() {
+    System.out.println("menu");
     MenuController.instance(this);
+
+    /*
+    ApplicationController.addIcon();
+
+    defaultBin();
+
+    ApplicationController.removeIcon();
+    */
   }
   /**
    * Choose an .OSM file to be loaded.
@@ -112,11 +125,10 @@ public final class MenuController {
   @FXML
   private void saveBin() {
     //do stuff.
-    String filename = "currentMap.bin";
-    File file = new File(filename);
+    File file = new File(CURRENT_BIN);
 
-    try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
-
+    try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
+      out.writeObject(ChartController.getBounds());
       out.writeObject(ChartController.getElementStore());
       out.writeObject(AddressController.getAddressStore());
       out.close();
@@ -132,33 +144,24 @@ public final class MenuController {
    */
   @FXML
   private void loadBin() {
-    String filename = "currentMap.bin";
-    File file = new File(filename);
+    File file = new File(CURRENT_BIN);
     /*
     AddressController.instance().getAddressStore().load(file, () -> {
       System.out.println("Success with loading AddressStore");
     }); */
     ChartController.instance().clearMap();
     try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))){
-      ElementStore elementStore = (ElementStore)in.readObject();
-      AddressStore addressStore = (AddressStore)in.readObject();
+      BoundingBox bounds = (BoundingBox) in.readObject();
+      ElementStore elementStore = (ElementStore) in.readObject();
+      AddressStore addressStore = (AddressStore) in.readObject();
       in.close();
-      ChartController.instance().setElementStore(elementStore);
+
+      ChartController.instance().loadBinMap(elementStore, bounds);
       AddressController.instance().setAddressStore(addressStore);
       System.out.println("Load complete");
     }catch (Exception e){
       throw new RuntimeException(e);
     }
-    /*
-    try {
-      FileInputStream fileInputStream = new FileInputStream(file);
-      ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-      AddressStore addressStore = (AddressStore)objectInputStream.readObject();
-      objectInputStream.close();
-    }catch(Exception e){
-
-    }*/
-
   }
 
   /**
@@ -166,7 +169,28 @@ public final class MenuController {
    */
   @FXML
   private void defaultBin() {
-    //do stuff.
+    MenuController.instance.loadDefault();
+  }
+
+  /**
+   *
+   */
+  public static void loadDefault(){
+    File file = new File(DEFAULT_BIN);
+
+    ChartController.instance().clearMap();
+    try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))){
+      BoundingBox bounds = (BoundingBox) in.readObject();
+      ElementStore elementStore = (ElementStore) in.readObject();
+      AddressStore addressStore = (AddressStore) in.readObject();
+      in.close();
+
+      ChartController.instance().loadBinMap(elementStore, bounds);
+      AddressController.instance().setAddressStore(addressStore);
+      System.out.println("Load complete");
+    }catch (Exception e){
+      throw new RuntimeException(e);
+    }
   }
 
   /**

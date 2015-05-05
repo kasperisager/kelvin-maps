@@ -184,6 +184,7 @@ public final class AddressController {
    */
   @FXML
   private void initialize() {
+    System.out.println("address");
     AddressController.instance(this);
 
     this.autoCompleteSuggestions = HashObjObjMaps.newMutableMap(
