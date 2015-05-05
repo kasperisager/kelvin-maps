@@ -464,44 +464,58 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
 
   public void addEdge(final Way way) {
 
-    float maxSpeed;
+    double maxSpeed = 0.0;
 
-    if(way.tags().containsKey("maxspeed")){
-      maxSpeed = Float.parseFloat(way.tags().get("maxspeed"));
+    boolean oneway = false;
+
+    for(String s : way.tags().keySet()){
+      switch (s) {
+        case "maxspeed":
+          maxSpeed = Double.parseDouble(way.tags().get("maxspeed"));
+          break;
+        case "oneway":
+          oneway = true;
+          break;
+
+        default:
+          maxSpeed = 50;
+      }
     }
-
 
     for (int i = 0; i < way.nodes().size(); i++) {
       if (i + 1 >= way.nodes().size()) {
         break;
       }
 
-
-
       Node from = way.nodes().get(i);
       Node to = way.nodes().get(i + 1);
 
 
-
-      float distance = (float) Geometry.distance(
+      float distancePx = (float) Geometry.distance(
         new Geometry.Point(from.x(), from.y()),
         new Geometry.Point(to.x(), to.y())
       );
 
+      float distanceSpeed = (float) (Geometry.distance(
+        new Geometry.Point(from.x(), from.y()),
+        new Geometry.Point(to.x(), to.y()))
+        /maxSpeed);
 
-      WeightedGraph.Edge edge = new WeightedGraph.Edge(
+
+      WeightedGraph.Edge edgeCar = new WeightedGraph.Edge(
         new WeightedGraph.Node(from.x(), from.y()),
-        new WeightedGraph.Node(to.x(), to.y()), distance
+        new WeightedGraph.Node(to.x(), to.y()), distanceSpeed
       );
+      this.roadsWeightedGraph.add(edgeCar);
 
-      this.roadsWeightedGraph.add(edge);
+      if(!oneway) {
+        WeightedGraph.Edge edgeCar2 = new WeightedGraph.Edge(
+          new WeightedGraph.Node(to.x(), to.y()),
+          new WeightedGraph.Node(from.x(), from.y()), distanceSpeed
+        );
 
-      WeightedGraph.Edge e = new WeightedGraph.Edge(
-        new WeightedGraph.Node(to.x(), to.y()),
-        new WeightedGraph.Node(from.x(), from.y()), distance
-      );
-
-      this.roadsWeightedGraph.add(e);
+        this.roadsWeightedGraph.add(edgeCar2);
+      }
 
     }
   }
