@@ -19,7 +19,7 @@ public final class Haversine {
    * @see <a href="http://en.wikipedia.org/wiki/Earth_radius">
    *      http://en.wikipedia.org/wiki/Earth_radius</a>
    */
-  public static final float R = 6372.8f;
+  public static final double R = 6372.8;
 
   /**
    * Don't allow instantiation of the class.
@@ -46,11 +46,11 @@ public final class Haversine {
    * @param lon2  The longitude of the second coordinate.
    * @return      The distance between the two coordinates in kilometers.
    */
-  public static float distance(
-    final float lat1,
-    final float lon1,
-    final float lat2,
-    final float lon2
+  public static double distance(
+    final double lat1,
+    final double lon1,
+    final double lat2,
+    final double lon2
   ) {
     double dLat = Math.toRadians(lat2 - lat1);
     double dLon = Math.toRadians(lon2 - lon1);
@@ -63,6 +63,6 @@ public final class Haversine {
 
     double c = 2 * Math.asin(Math.sqrt(a));
 
-    return (float) (R * c);
+    return R * c;
   }
 }
