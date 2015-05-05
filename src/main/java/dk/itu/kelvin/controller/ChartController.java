@@ -19,7 +19,6 @@ import javafx.scene.shape.Path;
 // JavaFX inputs
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.RotateEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.ZoomEvent;
 
@@ -101,11 +100,6 @@ public final class ChartController {
   private double initialMouseScrollY;
 
   /**
-   * Affine transformation for chart compass.
-   */
-  private Affine compassTransform = new Affine();
-
-  /**
    * Text(icon) representing the found address.
    */
   private Text locationPointer;
@@ -122,16 +116,10 @@ public final class ChartController {
   private Chart chart;
 
   /**
-   * The compass arrow.
+   * The VBox surrounding the scale indicator.
    */
   @FXML
-  private Path compassArrow;
-
-  /**
-   * The VBox surrounding all compass elements.
-   */
-  @FXML
-  private HBox compassVBox;
+  private HBox scaleVBox;
 
   /**
    * Indicator for scale.
@@ -171,8 +159,6 @@ public final class ChartController {
 
     // Sets the parent element inactive until done loading.
     this.mainStackPane.setDisable(true);
-
-    this.compassArrow.getTransforms().add(this.compassTransform);
 
     this.initLocationPointer();
     File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
@@ -227,11 +213,11 @@ public final class ChartController {
   }
 
   /**
-   * Moves the compass VBox relative to BOTTOM_LEFT.
-   * @param x how much to move compass along x-axis [px].
+   * Moves the scale VBox relative to BOTTOM_LEFT.
+   * @param x how much to move scale indicator along x-axis [px].
    */
-  public static void moveCompass(final double x) {
-    ChartController.instance().compassVBox.setTranslateX(x);
+  public static void moveScale(final double x) {
+    ChartController.instance().scaleVBox.setTranslateX(x);
   }
 
   /**
@@ -249,14 +235,6 @@ public final class ChartController {
         ChartController.instance().elementStore.add(n);
       }
     }
-  }
-
-  /**
-   * Will reset the compass, so it points north.
-   */
-  @FXML
-  private void compassReset() {
-    //to be continued
   }
 
   /**
@@ -473,21 +451,6 @@ public final class ChartController {
   }
 
   /**
-   * On rotate event.
-   *
-   * @param e The rotate event.
-   */
-  @FXML
-  private void onRotate(final RotateEvent e) {
-    this.chart.rotate(
-      e.getAngle(),
-      this.initialMouseScrollX,
-      this.initialMouseScrollY
-    );
-    this.compassTransform.prependRotation(e.getAngle(), 4, 40);
-  }
-
-  /**
    * On key pressed event.
    *
    * @param e The key event.
@@ -527,16 +490,6 @@ public final class ChartController {
       case MINUS:
       case UNDERSCORE:
         this.chart.zoom(Math.pow(ZOOM_OUT, 8));
-        e.consume();
-        break;
-      case Q:
-        this.chart.rotate(-10);
-        this.compassTransform.prependRotation(-10, 4, 40);
-        e.consume();
-        break;
-      case E:
-        this.chart.rotate(10);
-        this.compassTransform.prependRotation(10, 4, 40);
         e.consume();
         break;
       default:

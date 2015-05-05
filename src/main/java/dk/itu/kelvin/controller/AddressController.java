@@ -513,7 +513,7 @@ public final class AddressController {
   @FXML
   private void hidePOI() {
     this.propertiesGridPane.getChildren().remove(this.poiContainer);
-    ChartController.instance().moveCompass(0);
+    ChartController.instance().moveScale(0);
   }
 
   /**
@@ -522,7 +522,7 @@ public final class AddressController {
   @FXML
   private void hideDirections() {
     this.propertiesGridPane.getChildren().remove(this.directionsContainer);
-    ChartController.instance().moveCompass(0);
+    ChartController.instance().moveScale(0);
 
   }
 
@@ -532,7 +532,7 @@ public final class AddressController {
   private void showPOI() {
     if (!this.propertiesGridPane.getChildren().contains(this.poiContainer)) {
       this.propertiesGridPane.getChildren().add(this.poiContainer);
-      ChartController.instance().moveCompass(200);
+      ChartController.instance().moveScale(200);
     }
   }
 
@@ -543,7 +543,7 @@ public final class AddressController {
     if (!this.propertiesGridPane.getChildren().
       contains(this.directionsContainer)) {
       this.propertiesGridPane.getChildren().add(this.directionsContainer);
-      ChartController.instance().moveCompass(400);
+      ChartController.instance().moveScale(400);
     }
   }
 

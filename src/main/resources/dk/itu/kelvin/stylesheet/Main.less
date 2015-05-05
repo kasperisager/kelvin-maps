@@ -94,22 +94,6 @@
 @textFill-hover--menuButton: #333;
 @textFill-showing--menuButton: #000;
 
-// Compass ------------------------------------------------------------------ //
-
-@padding-base--compass: 16px;
-
-// Compass arrow
-@fill-base--compassArrow: @color-white;
-@stroke-base--compassArrow: @color-white;
-@strokeLineJoin-base--compassArrow: round;
-@effect-base--compassArrow: @effect-base--input;
-
-// Compass disc
-@fill-base--compassDisc: none;
-@stroke-base--compassDisc: @stroke-base--compassArrow;
-@strokeWidth-base--compassDisc: 4px;
-@effect-base--compassDisc: @effect-base--compassArrow;
-
 // Properties box -------------------------------------------------------- //
 
 @padding-base--propertiesBox: 4px;
@@ -320,34 +304,6 @@
   }
 }
 
-// Compass ------------------------------------------------------------------ //
-
-.compass {
-  -fx-padding: @padding-base--compass;
-}
-
-.compass-arrow {
-  -fx-fill: @fill-base--compassArrow;
-  -fx-stroke: @stroke-base--compassArrow;
-  -fx-stroke-line-join: @strokeLineJoin-base--compassArrow;
-  -fx-effect: @effect-base--compassArrow;
-}
-
-.compass-disc {
-   -fx-fill: @fill-base--compassDisc;
-   -fx-stroke: @stroke-base--compassDisc;
-   -fx-stroke-width: @strokeWidth-base--compassDisc;
-   -fx-effect: @effect-base--compassDisc;
-}
-
-.compass-reset {
-  -fx-padding: 10px 0 0;
-
-  .button {
-    -fx-background-radius: 1000px;
-  }
-}
-
 // Properties box -------------------------------------------------------- //
 
 .properties-box {
@@ -401,12 +357,15 @@
 
 // Scale -------------------------------------------------------------------- //
 
+#scaleVBox {
+  -fx-padding: 10px;
+}
+
 .scaleIndicator {
   -fx-border-insets: 0 1 0 1;
   -fx-border-width: 0 2 0 2;
   -fx-border-color: @color-gray;
   -fx-background-color: rgba(98,98,98,0.3);
-  -fx-translate-y: -16px;
   -fx-alignment: center;
 }
 

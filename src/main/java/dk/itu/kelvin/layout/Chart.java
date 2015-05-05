@@ -353,52 +353,6 @@ public final class Chart extends Group {
   }
 
   /**
-   * Rotate the chart.
-   *
-   * @param angle The angle of the rotation.
-   * @param x     The x-coordinate of the pivot point.
-   * @param y     The y-coordinate of the pivot point.
-   */
-  public void rotate(final double angle, final double x, final double y) {
-    double oldAngle = this.getRotate();
-    double newAngle = oldAngle + angle;
-
-    this.setRotate(newAngle);
-
-    // Get the layout bounds of the chart in local coordinates.
-    Bounds bounds = this.localToScene(this.getLayoutBounds());
-
-    double dx = x - (bounds.getMinX() + bounds.getWidth() / 2);
-    double dy = y - (bounds.getMinY() + bounds.getHeight() / 2);
-    double dt = Math.toRadians(newAngle - oldAngle);
-
-    this.setTranslateX(
-      this.getTranslateX()
-    + (dx - dx * Math.cos(dt) + dy * Math.sin(dt))
-    );
-
-    this.setTranslateY(
-      this.getTranslateY()
-    + (dy - dx * Math.sin(dt) - dy * Math.cos(dt))
-    );
-
-    this.layoutTiles();
-  }
-
-  /**
-   * Rotate the chart, using the center of the scene as the pivot point.
-   *
-   * @param angle The angle of the rotation.
-   */
-  public void rotate(final double angle) {
-    this.rotate(
-      angle,
-      this.getScene().getWidth() / 2,
-      this.getScene().getHeight() / 2
-    );
-  }
-
-  /**
    * Sets a specific scale on both x and y.
    * @param scale the scale to set.
    */
