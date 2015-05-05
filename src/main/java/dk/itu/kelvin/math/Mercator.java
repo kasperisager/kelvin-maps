@@ -4,9 +4,9 @@
 package dk.itu.kelvin.math;
 
 /**
- * Mercator projection class.
+ * Mercator class.
  */
-public final class MercatorProjection implements Projection {
+public final class Mercator implements Projection {
   /**
    * Factor with which to scale the lat/lon projection coordinates.
    */

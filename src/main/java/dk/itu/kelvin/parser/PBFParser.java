@@ -36,7 +36,7 @@ import crosby.binary.Osmformat.PrimitiveGroup;
 
 // Math
 import dk.itu.kelvin.math.Projection;
-import dk.itu.kelvin.math.MercatorProjection;
+import dk.itu.kelvin.math.Mercator;
 
 // Models
 import dk.itu.kelvin.model.Address;
@@ -60,7 +60,7 @@ public final class PBFParser extends Parser {
   /**
    * Projection to use for the parsed coordinates.
    */
-  private final Projection projection = new MercatorProjection();
+  private final Projection projection = new Mercator();
 
   /**
    * The string table containing all parsed strings.

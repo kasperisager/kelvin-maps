@@ -22,16 +22,17 @@ import javafx.scene.shape.Rectangle;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 
-// Kelvin Math
-import dk.itu.kelvin.math.Haversine;
-import dk.itu.kelvin.math.MercatorProjection;
-
-// Kelvin Controllers
-import dk.itu.kelvin.controller.ChartController;
-
 // Koloboke collections
 import net.openhft.koloboke.collect.set.hash.HashObjSets;
 import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
+
+// Math
+import dk.itu.kelvin.math.Haversine;
+import dk.itu.kelvin.math.Mercator;
+import dk.itu.kelvin.math.Projection;
+
+// Controllers
+import dk.itu.kelvin.controller.ChartController;
 
 // Models
 import dk.itu.kelvin.model.Address;
@@ -176,10 +177,9 @@ public final class Chart extends Group {
     double centerY = bounds.minY() + (this.mapHeight / 2);
 
     Node centerNode = new Node(centerX, centerY);
-    /**
-     * The 10.000 is default padding to ensure it still works for really small
-     * maps with coastlines.
-     */
+
+    // The 10.000 is default padding to ensure it still works for really small
+    // maps with coastlines.
     double paddingX = 10000 + this.mapWidth;
     double paddingY = 10000 + this.mapHeight;
 
@@ -194,13 +194,13 @@ public final class Chart extends Group {
     this.getChildren().add(wrapper);
     this.landLayer.setClip(bounds.render());
 
-    MercatorProjection mp = new MercatorProjection();
+    Projection mp = new Mercator();
 
     double mapLength = Haversine.distance(
-      (float) mp.yToLat(bounds.minY()),
-      (float) mp.xToLon(bounds.minX()),
-      (float) mp.yToLat(bounds.minY()),
-      (float) mp.xToLon(bounds.maxX())
+      mp.yToLat(bounds.minY()),
+      mp.xToLon(bounds.minX()),
+      mp.yToLat(bounds.minY()),
+      mp.xToLon(bounds.maxX())
     ) * 1000;
     double unitPrPx = mapLength / (this.mapWidth / 100);
     this.unitPrM = 100 / unitPrPx;
@@ -585,6 +585,5 @@ public final class Chart extends Group {
 
       return (int) (bits ^ (bits >> 32));
     }
-
   }
 }
