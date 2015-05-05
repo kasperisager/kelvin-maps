@@ -56,12 +56,9 @@ public final class Geometry {
 
     return (
       Epsilon.lessOrEqual(a.min.x, b.max.x)
-      &&
-      Epsilon.greaterOrEqual(a.max.x, b.min.x)
-      &&
-      Epsilon.lessOrEqual(a.min.y, b.max.y)
-      &&
-      Epsilon.greaterOrEqual(a.max.y, b.min.y)
+      && Epsilon.greaterOrEqual(a.max.x, b.min.x)
+      && Epsilon.lessOrEqual(a.min.y, b.max.y)
+      && Epsilon.greaterOrEqual(a.max.y, b.min.y)
     );
   }
 
@@ -222,10 +219,10 @@ public final class Geometry {
      * @return The bounds of the point.
      */
     public final Bounds bounds() {
-      return new Bounds(
-        new Point(this.x, this.y),
-        new Point(this.x, this.y)
-      );
+      int x = this.x;
+      int y = this.y;
+
+      return new Bounds(new Point(x, y), new Point(x, y));
     }
 
     @Override
@@ -343,15 +340,12 @@ public final class Geometry {
      * @return The bounds of the line.
      */
     public final Bounds bounds() {
+      Point start = this.start;
+      Point end = this.end;
+
       return new Bounds(
-        new Point(
-          Math.min(this.start.x, this.end.x),
-          Math.min(this.start.y, this.end.y)
-        ),
-        new Point(
-          Math.max(this.start.x, this.end.x),
-          Math.max(this.start.y, this.end.y)
-        )
+        new Point(Math.min(start.x, end.x), Math.min(start.y, end.y)),
+        new Point(Math.max(start.x, end.x), Math.max(start.y, end.y))
       );
     }
 
@@ -377,15 +371,22 @@ public final class Geometry {
     /**
      * Initialize a polyline.
      *
-     * @param points The  points contained within the polyline.
+     * @param points The points contained within the polyline.
      */
-    public Polyline(final Point[] points) {
+    public Polyline(final Point... points) {
       if (points == null || points.length < 2) {
         throw new RuntimeException(
           "A valid Polyline must contain at least two points"
         );
       }
 
+      for (Point point: points) {
+        if (point == null) {
+          throw new NullPointerException();
+        }
+      }
+
+      // Defensively copy the array of points.
       this.points = Arrays.copyOf(points, points.length);
     }
 
@@ -419,8 +420,7 @@ public final class Geometry {
 
       return (
         Epsilon.equal(this.start().x, this.end().x)
-        &&
-        Epsilon.equal(this.start().y, this.end().y)
+        && Epsilon.equal(this.start().y, this.end().y)
       );
     }
 
@@ -611,14 +611,8 @@ public final class Geometry {
      */
     public final Bounds bounds() {
       return new Bounds(
-        new Point(
-          this.center.x - this.radius,
-          this.center.y - this.radius
-        ),
-        new Point(
-          this.center.x + this.radius,
-          this.center.y + this.radius
-        )
+        new Point(this.center.x - this.radius, this.center.y - this.radius),
+        new Point(this.center.x + this.radius, this.center.y + this.radius)
       );
     }
 
@@ -803,14 +797,8 @@ public final class Geometry {
         );
       }
 
-      this.min = new Point(
-        Math.min(min.x, max.x),
-        Math.min(min.y, max.y)
-      );
-      this.max = new Point(
-        Math.max(min.x, max.x),
-        Math.max(min.y, max.y)
-      );
+      this.min = new Point(Math.min(min.x, max.x), Math.min(min.y, max.y));
+      this.max = new Point(Math.max(min.x, max.x), Math.max(min.y, max.y));
     }
 
     /**
