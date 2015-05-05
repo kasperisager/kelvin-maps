@@ -164,17 +164,16 @@ public final class ChartController {
    */
   @FXML
   private void initialize() throws Exception {
-    System.out.println("chart");
     ChartController.instance(this);
 
-    // Sets the parent element inactive until done loading.
-    //this.mainStackPane.setDisable(true);
+
 
     this.compassArrow.getTransforms().add(this.compassTransform);
 
     this.initLocationPointer();
 
     Platform.runLater(() ->{
+      ApplicationController.instance().addIcon();
       MenuController.loadDefault();
       ApplicationController.removeIcon();
     });
@@ -582,25 +581,21 @@ public final class ChartController {
   }
 
   /**
-   *
-   * @return
+   * Gets the current BoundingBox of the chart map.
+   * @return BoundingBox of the chart.
    */
   public static BoundingBox getBounds(){
     return ChartController.instance.chart.getBounds();
   }
 
   /**
-   *
+   * Sets the elementStore with all elements and sets the bounds.
    * @param elementStore
    * @param bounds
    */
   public static void loadBinMap(ElementStore elementStore, BoundingBox bounds){
     ChartController.instance.chart.elementStore(elementStore);
-    System.out.println(bounds.minX() + " : " + bounds.maxX());
-    System.out.println(bounds.minY() + " : " + bounds.maxY());
     ChartController.instance.chart.bounds(bounds);
-
-
   }
 
 }

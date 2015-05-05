@@ -686,14 +686,18 @@ public final class AddressController {
   };
 
   /**
-   * Gets the address store and returns it
-   * @return the address store
+   * Gets the address store and returns it.
+   * @return the address store.
    */
-  public static AddressStore getAddressStore(){
+  public static AddressStore getAddressStore() {
     return AddressController.instance.addresses;
   }
 
-  public static void setAddressStore(AddressStore addressStore){
+  /**
+   * Sets the addressStore.
+   * @param addressStore the addressStore.
+   */
+  public static void setAddressStore(final AddressStore addressStore) {
     AddressController.instance.addresses = addressStore;
   }
 }

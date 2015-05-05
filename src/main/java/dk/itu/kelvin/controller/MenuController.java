@@ -88,19 +88,10 @@ public final class MenuController {
    */
   @FXML
   private void initialize() {
-    System.out.println("menu");
     MenuController.instance(this);
-
-    /*
-    ApplicationController.addIcon();
-
-    defaultBin();
-
-    ApplicationController.removeIcon();
-    */
   }
   /**
-   * Choose an .OSM file to be loaded.
+   * Choose an .OSM, .XML, .PBF file to be loaded.
    */
   @FXML
   private void pickFile() {
@@ -120,7 +111,7 @@ public final class MenuController {
   }
 
   /**
-   * Saves current OSM file as bin.
+   * Saves current map file as bin.
    */
   @FXML
   private void saveBin() {
@@ -140,7 +131,7 @@ public final class MenuController {
   }
 
   /**
-   * Loads the last used bin file.
+   * Loads the last saved bin map.
    */
   @FXML
   private void loadBin() {
@@ -165,7 +156,7 @@ public final class MenuController {
   }
 
   /**
-   * Loads the default bin file.
+   * Loads the default bin map.
    */
   @FXML
   private void defaultBin() {
@@ -173,7 +164,7 @@ public final class MenuController {
   }
 
   /**
-   *
+   * Static method for loading the default map that can't be changed.
    */
   public static void loadDefault(){
     File file = new File(DEFAULT_BIN);
