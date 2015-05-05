@@ -59,7 +59,6 @@ public final class ApplicationController {
    */
   @FXML
   private void initialize() {
-    System.out.println("application");
     ApplicationController.instance(this);
     ApplicationController.instance().rt = new RotateTransition(
       Duration.millis(10000), ApplicationController.instance().loadIcon);

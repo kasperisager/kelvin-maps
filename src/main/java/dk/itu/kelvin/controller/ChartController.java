@@ -166,8 +166,6 @@ public final class ChartController {
   private void initialize() throws Exception {
     ChartController.instance(this);
 
-
-
     this.compassArrow.getTransforms().add(this.compassTransform);
 
     this.initLocationPointer();
@@ -177,45 +175,7 @@ public final class ChartController {
       MenuController.loadDefault();
       ApplicationController.removeIcon();
     });
-    /*
-    File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
 
-    Parser parser = Parser.probe(file);
-
-    parser.read(file, () -> {
-      // Get all addresses from parser.
-      for (Address address: parser.addresses()) {
-        AddressController.instance().addAddress(address);
-      }
-
-      // Sets all POI from initialized nodes.
-      this.storePoi(parser);
-
-      // Schedule rendering of the chart nodes.
-      Platform.runLater(() -> {
-        for (Way l : parser.land()) {
-          this.elementStore.addLand(l);
-        }
-
-        for (Way w : parser.ways()) {
-          this.elementStore.add(w);
-        }
-
-        for (Relation r : parser.relations()) {
-          this.elementStore.add(r);
-        }
-
-        this.elementStore.add(parser.bounds());
-
-        this.chart.elementStore(this.elementStore);
-        this.chart.bounds(parser.bounds());
-
-        // Sets the chart active after load.
-        this.mainStackPane.setDisable(false);
-        ApplicationController.removeIcon();
-        MenuController.loadDefault();
-      });
-    });*/
   }
 
   /**
@@ -525,6 +485,7 @@ public final class ChartController {
    */
   public static void clearMap() {
     ChartController.instance.chart.clear();
+    ChartController.instance().elementStore = new ElementStore();
   }
 
   /**
@@ -534,7 +495,6 @@ public final class ChartController {
   public static void loadMap(final File file) {
     ApplicationController.instance().addIcon();
     //ApplicationController.instance().rotateIcon();
-    ChartController.instance.mainStackPane.setDisable(true);
 
     Parser parser = Parser.probe(file);
 
@@ -566,7 +526,6 @@ public final class ChartController {
         ChartController.instance().chart.bounds(parser.bounds());
 
         // Sets the chart active after load.
-        ChartController.instance().mainStackPane.setDisable(false);
         ApplicationController.removeIcon();
       });
     });

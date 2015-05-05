@@ -173,14 +173,17 @@ public final class Chart extends Group {
      */
     double paddingX = 10000 + this.mapWidth;
     double paddingY = 10000 + this.mapHeight;
-
     Rectangle wrapper = new Rectangle(
       bounds.minX() - paddingX,
       bounds.minY() - paddingY,
       Math.abs(bounds.maxX() - bounds.minX() + paddingX),
       Math.abs(bounds.maxY() - bounds.minY() + paddingY)
     );
-    wrapper.getStyleClass().add("boundingBox");
+    if(this.getChildren().contains(wrapper)) {
+      this.getChildren().remove(wrapper);
+    }
+
+      wrapper.getStyleClass().add("boundingBox");
 
     this.getChildren().add(wrapper);
     this.landLayer.setClip(bounds.render());
@@ -543,6 +546,7 @@ public final class Chart extends Group {
   public void clear() {
     this.landLayer.getChildren().clear();
     this.metaLayer.getChildren().clear();
+    this.showing.clear();
     this.elementStore = new ElementStore();
   }
 
