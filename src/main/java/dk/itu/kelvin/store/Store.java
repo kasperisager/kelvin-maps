@@ -4,7 +4,8 @@
 package dk.itu.kelvin.store;
 
 // I/O utilities
-import java.io.*;
+import java.io.File;
+import java.io.Serializable;
 
 // Functional utilities
 import dk.itu.kelvin.util.function.Callback;

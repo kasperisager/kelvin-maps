@@ -13,9 +13,6 @@ import java.io.Serializable;
 // JavaFX scene utilities
 import javafx.scene.Node;
 
-// Koloboke collections
-import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
-
 // Utilities
 import dk.itu.kelvin.util.StringPool;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;

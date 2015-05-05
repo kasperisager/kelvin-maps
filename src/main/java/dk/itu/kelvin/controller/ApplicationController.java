@@ -45,6 +45,9 @@ public final class ApplicationController {
   @FXML
   private StackPane stackPane;
 
+  /**
+   * Main parent StackPane for ChartController.
+   */
   @FXML
   private StackPane chart;
 
@@ -62,13 +65,8 @@ public final class ApplicationController {
     ApplicationController.instance(this);
     ApplicationController.instance().rt = new RotateTransition(
       Duration.millis(10000), ApplicationController.instance().loadIcon);
-    ApplicationController.instance().stackPane.getChildren().remove(this.loadIcon);
-
-
-    //ApplicationController.instance.addIcon();
-    //MenuController.instance().loadDefault();
-    //ApplicationController.removeIcon();
-
+    ApplicationController.instance().stackPane.getChildren().remove(
+      this.loadIcon);
   }
 
   /**

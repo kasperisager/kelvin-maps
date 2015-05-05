@@ -132,6 +132,9 @@ public final class Chart extends Group {
    */
   private double mapHeight;
 
+  /**
+   * The bounds of the chart.
+   */
   private BoundingBox bounds;
 
   /**
@@ -179,7 +182,7 @@ public final class Chart extends Group {
       Math.abs(bounds.maxX() - bounds.minX() + paddingX),
       Math.abs(bounds.maxY() - bounds.minY() + paddingY)
     );
-    if(this.getChildren().contains(wrapper)) {
+    if (this.getChildren().contains(wrapper)) {
       this.getChildren().remove(wrapper);
     }
 
@@ -609,13 +612,21 @@ public final class Chart extends Group {
 
       return (int) (bits ^ (bits >> 32));
     }
-
   }
 
-  public ElementStore getElementStore(){
+  /**
+   * Gets the elementStore of all elements.
+   * @return the elementStore.
+   */
+  public ElementStore getElementStore() {
     return this.elementStore;
   }
-  public BoundingBox getBounds(){
+
+  /**
+   * Gets the bounds BoundingBox of the map.
+   * @return the bounds.
+   */
+  public BoundingBox getBounds() {
     return this.bounds;
   }
 }

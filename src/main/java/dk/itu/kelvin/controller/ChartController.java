@@ -7,7 +7,6 @@ package dk.itu.kelvin.controller;
 import java.io.File;
 
 // JavaFX application utilities
-import dk.itu.kelvin.model.*;
 import javafx.application.Platform;
 
 // JavaFX layout
@@ -43,6 +42,11 @@ import dk.itu.kelvin.parser.Parser;
 import dk.itu.kelvin.layout.Chart;
 
 // Models
+import dk.itu.kelvin.model.Address;
+import dk.itu.kelvin.model.Way;
+import dk.itu.kelvin.model.Relation;
+import dk.itu.kelvin.model.Node;
+import dk.itu.kelvin.model.BoundingBox;
 
 // Stores
 import dk.itu.kelvin.store.ElementStore;
@@ -170,7 +174,7 @@ public final class ChartController {
 
     this.initLocationPointer();
 
-    Platform.runLater(() ->{
+    Platform.runLater(() -> {
       ApplicationController.instance().addIcon();
       MenuController.loadDefault();
       ApplicationController.removeIcon();
@@ -535,7 +539,7 @@ public final class ChartController {
    * Gets the element store and returns it.
    * @return the element store.
    */
-  public static ElementStore getElementStore(){
+  public static ElementStore getElementStore() {
     return ChartController.instance.chart.getElementStore();
   }
 
@@ -543,16 +547,19 @@ public final class ChartController {
    * Gets the current BoundingBox of the chart map.
    * @return BoundingBox of the chart.
    */
-  public static BoundingBox getBounds(){
+  public static BoundingBox getBounds() {
     return ChartController.instance.chart.getBounds();
   }
 
   /**
    * Sets the elementStore with all elements and sets the bounds.
-   * @param elementStore
-   * @param bounds
+   * @param elementStore the elementStore to set.
+   * @param bounds the BoundingBox to set.
    */
-  public static void loadBinMap(ElementStore elementStore, BoundingBox bounds){
+  public static void loadBinMap(
+    final ElementStore elementStore,
+    final BoundingBox bounds
+  ) {
     ChartController.instance.chart.elementStore(elementStore);
     ChartController.instance.chart.bounds(bounds);
   }
