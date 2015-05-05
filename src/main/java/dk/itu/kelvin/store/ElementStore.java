@@ -463,18 +463,31 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   }
 
   public void addEdge(final Way way) {
+
+    float maxSpeed;
+
+    if(way.tags().containsKey("maxspeed")){
+      maxSpeed = Float.parseFloat(way.tags().get("maxspeed"));
+    }
+
+
     for (int i = 0; i < way.nodes().size(); i++) {
       if (i + 1 >= way.nodes().size()) {
         break;
       }
 
+
+
       Node from = way.nodes().get(i);
       Node to = way.nodes().get(i + 1);
+
+
 
       float distance = (float) Geometry.distance(
         new Geometry.Point(from.x(), from.y()),
         new Geometry.Point(to.x(), to.y())
       );
+
 
       WeightedGraph.Edge edge = new WeightedGraph.Edge(
         new WeightedGraph.Node(from.x(), from.y()),
@@ -482,6 +495,14 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
       );
 
       this.roadsWeightedGraph.add(edge);
+
+      WeightedGraph.Edge e = new WeightedGraph.Edge(
+        new WeightedGraph.Node(to.x(), to.y()),
+        new WeightedGraph.Node(from.x(), from.y()), distance
+      );
+
+      this.roadsWeightedGraph.add(e);
+
     }
   }
 

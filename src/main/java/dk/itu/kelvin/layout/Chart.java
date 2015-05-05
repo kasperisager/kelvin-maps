@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 // JavaFX scene utilities
+import dk.itu.kelvin.math.Geometry;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 
@@ -113,6 +114,7 @@ public final class Chart extends Group {
    * Current largest y-coordinate of the chart viewport.
    */
   private int maxY;
+
 
   /**
    * Layer of land elements.

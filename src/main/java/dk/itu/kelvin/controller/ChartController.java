@@ -26,6 +26,7 @@ import javafx.scene.layout.HBox;
 
 // JavaFX shapes
 import javafx.scene.shape.Path;
+import javafx.scene.shape.Polyline;
 
 // JavaFX inputs
 import javafx.scene.input.KeyEvent;
@@ -117,10 +118,24 @@ public final class ChartController {
    */
   private Text locationPointer;
 
+
+  /**
+   *
+   */
+  private Text distinationPointer;
   /**
    * Element store storing all elements.
    */
   private static ElementStore elementStore = new ElementStore();
+
+  /**
+   *
+   */
+  private static Way route = null;
+
+
+  private static Polyline routeRender = null;
+
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -185,6 +200,7 @@ public final class ChartController {
     this.compassArrow.getTransforms().add(this.compassTransform);
 
     this.initLocationPointer();
+    this.initDistinationPointer();
     File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
 
     Parser parser = Parser.probe(file);
@@ -234,6 +250,15 @@ public final class ChartController {
     this.locationPointer.setText("\uf456");
     this.locationPointer.setVisible(false);
     this.chart.getChildren().add(this.locationPointer);
+  }
+
+  private void initDistinationPointer() {
+    this.distinationPointer = new Text();
+    this.distinationPointer.getStyleClass().add("icon");
+    this.distinationPointer.getStyleClass().add("address-label");
+    this.distinationPointer.setText("\uf456");
+    this.distinationPointer.setVisible(false);
+    this.chart.getChildren().add(this.distinationPointer);
   }
 
   /**
@@ -289,7 +314,12 @@ public final class ChartController {
         System.out.println("path: " + e);
       }
 
-      Way route = new Way();
+      if (routeRender != null) {
+        ChartController.instance().chart.getChildren().remove(routeRender);
+        routeRender = null;
+      }
+
+      route = new Way();
 
       List<Element> js = new ArrayList<>();
       for (int i = 0; i < path.size(); i++) {
@@ -305,7 +335,9 @@ public final class ChartController {
       }
       route.tag("meta", "direction");
 
-      ChartController.instance().chart.getChildren().add(route.render());
+      routeRender = route.render();
+
+      ChartController.instance().chart.getChildren().add(routeRender);
 
     }
   }
@@ -396,6 +428,12 @@ public final class ChartController {
     ChartController.instance.locationPointer.setLayoutX(x);
     ChartController.instance.locationPointer.setLayoutY(y);
     ChartController.instance.locationPointer.setVisible(true);
+  }
+
+  public static void setDistinationPointer(final double x, final double y) {
+    ChartController.instance.distinationPointer.setLayoutX(x);
+    ChartController.instance.distinationPointer.setLayoutY(y);
+    ChartController.instance.distinationPointer.setVisible(true);
   }
 
   /**
