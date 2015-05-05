@@ -657,17 +657,20 @@ public final class AddressController {
       AddressController.instance.autoCompletePopOverVBox.setOnMouseEntered((
         e4 -> {
           AddressController.instance.removeHighlightStyle();
-      }));
+        }
+      ));
 
       // Adds highlight again on mouse exit.
       AddressController.instance.autoCompletePopOverVBox.setOnMouseExited((
         e4 -> {
-        AddressController.instance.addHighlightStyle();
-      }));
+          AddressController.instance.addHighlightStyle();
+        }
+      ));
 
       // Adds the VBox to the popover.
       AddressController.instance.autoCompletePopOver.setContentNode(
-        AddressController.instance.autoCompletePopOverVBox);
+        AddressController.instance.autoCompletePopOverVBox
+      );
 
       // Makes the popover visible.
       if (!AddressController.instance.autoCompletePopOver.isShowing()) {
