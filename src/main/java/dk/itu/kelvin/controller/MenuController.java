@@ -28,7 +28,6 @@ import org.controlsfx.control.PopOver;
  * MenuBar controller class.
  */
 public final class MenuController {
-
   /**
    * The menu controller instance.
    */
@@ -59,6 +58,20 @@ public final class MenuController {
    */
   @FXML
   private MenuBar mainMenuBar;
+
+  /**
+   * Initialize a new menu controller.
+   *
+   * <p>
+   * <b>OBS:</b> This constructor can only ever be called once by JavaFX.
+   */
+  public MenuController() {
+    super();
+
+    if (MenuController.instance != null) {
+      throw new RuntimeException("Only a single controller instance can exist");
+    }
+  }
 
   /**
    * Getting MenuController instance.
@@ -97,9 +110,9 @@ public final class MenuController {
 
     if (file != null) {
       //do something with the file.
-      AddressController.instance().clearAddresses();
-      ChartController.instance().clearMap();
-      ChartController.instance().loadMap(file);
+      AddressController.clearAddresses();
+      ChartController.clearMap();
+      ChartController.loadMap(file);
     }
   }
 

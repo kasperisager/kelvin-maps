@@ -41,11 +41,8 @@ public final class StringPool implements Serializable {
 
     if (!this.pool.containsKey(string)) {
       this.pool.put(string, string);
+    }
 
-      return string;
-    }
-    else {
-      return this.pool.get(string);
-    }
+    return this.pool.get(string);
   }
 }

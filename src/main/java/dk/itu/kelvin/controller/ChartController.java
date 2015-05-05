@@ -13,17 +13,11 @@ import javafx.application.Platform;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.HBox;
 
-// JavaFX shapes
-import javafx.scene.shape.Path;
-
 // JavaFX inputs
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.ZoomEvent;
-
-// JavaFX transformations
-import javafx.scene.transform.Affine;
 
 // JavaFX text
 import javafx.scene.text.Text;
@@ -53,7 +47,6 @@ import dk.itu.kelvin.store.ElementStore;
  * Chart controller class.
  */
 public final class ChartController {
-
   /**
    * The ChartController instance.
    */
@@ -134,19 +127,17 @@ public final class ChartController {
   private StackPane mainStackPane;
 
   /**
-   * Getting ChartsController instance.
-   * @return ChartController instance.
+   * Initialize a new chart controller.
+   *
+   * <p>
+   * <b>OBS:</b> This constructor can only ever be called once by JavaFX.
    */
-  public static ChartController instance() {
-    return ChartController.instance;
-  }
+  public ChartController() {
+    super();
 
-  /**
-   * Initializing the ChartController instance.
-   * @param instance the ChartController instance.
-   */
-  private static void instance(final ChartController instance) {
-    ChartController.instance = instance;
+    if (ChartController.instance != null) {
+      throw new RuntimeException("Only a single controller instance can exist");
+    }
   }
 
   /**
@@ -155,12 +146,13 @@ public final class ChartController {
    */
   @FXML
   private void initialize() throws Exception {
-    ChartController.instance(this);
+    ChartController.instance = this;
 
     // Sets the parent element inactive until done loading.
     this.mainStackPane.setDisable(true);
 
     this.initLocationPointer();
+
     File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
 
     Parser parser = Parser.probe(file);
@@ -168,7 +160,7 @@ public final class ChartController {
     parser.read(file, () -> {
       // Get all addresses from parser.
       for (Address address : parser.addresses()) {
-        AddressController.instance().addAddress(address);
+        AddressController.addAddress(address);
       }
 
       // Sets all POI from initialized nodes.
@@ -217,7 +209,7 @@ public final class ChartController {
    * @param x how much to move scale indicator along x-axis [px].
    */
   public static void moveScale(final double x) {
-    ChartController.instance().scaleVBox.setTranslateX(x);
+    ChartController.instance.scaleVBox.setTranslateX(x);
   }
 
   /**
@@ -228,11 +220,11 @@ public final class ChartController {
     for (Node n : parser.nodes()) {
 
       if (n.tag("amenity") != null) {
-        ChartController.instance().elementStore.add(n);
+        ChartController.instance.elementStore.add(n);
 
       }
       if (n.tag("shop") != null) {
-        ChartController.instance().elementStore.add(n);
+        ChartController.instance.elementStore.add(n);
       }
     }
   }
@@ -315,7 +307,7 @@ public final class ChartController {
    * @param tag tag to show on map.
    */
   public static void showPoi(final String tag) {
-    ChartController.instance().chart.showSelectedPoi(tag);
+    ChartController.instance.chart.showSelectedPoi(tag);
   }
 
   /**
@@ -324,7 +316,7 @@ public final class ChartController {
    * @param tag to hide on map.
    */
   public static void hidePoi(final String tag) {
-    ChartController.instance().chart.hidePointsOfInterests(tag);
+    ChartController.instance.chart.hidePointsOfInterests(tag);
   }
 
   /**
@@ -525,8 +517,8 @@ public final class ChartController {
    * @param file the map file to load.
    */
   public static void loadMap(final File file) {
-    ApplicationController.instance().addIcon();
-    //ApplicationController.instance().rotateIcon();
+    ApplicationController.addIcon();
+
     ChartController.instance.mainStackPane.setDisable(true);
 
     Parser parser = Parser.probe(file);
@@ -534,32 +526,33 @@ public final class ChartController {
     parser.read(file, () -> {
       // Get all addresses from parser.
       for (Address address: parser.addresses()) {
-        AddressController.instance().addAddress(address);
+        AddressController.addAddress(address);
       }
       // Sets all POI from initialized nodes.
-      ChartController.instance().storePoi(parser);
+      ChartController.instance.storePoi(parser);
 
       Platform.runLater(() -> {
-        for (Way l : parser.land()) {
-          ChartController.instance().elementStore.addLand(l);
+        for (Way l: parser.land()) {
+          ChartController.instance.elementStore.addLand(l);
         }
 
-        for (Way w : parser.ways()) {
-          ChartController.instance().elementStore.add(w);
+        for (Way w: parser.ways()) {
+          ChartController.instance.elementStore.add(w);
         }
 
-        for (Relation r : parser.relations()) {
-          ChartController.instance().elementStore.add(r);
+        for (Relation r: parser.relations()) {
+          ChartController.instance.elementStore.add(r);
         }
 
-        ChartController.instance().elementStore.add(parser.bounds());
+        ChartController.instance.elementStore.add(parser.bounds());
 
-        ChartController.instance().chart.elementStore(
-          ChartController.instance().elementStore);
-        ChartController.instance().chart.bounds(parser.bounds());
+        ChartController.instance.chart.elementStore(
+          ChartController.instance.elementStore
+        );
+        ChartController.instance.chart.bounds(parser.bounds());
 
         // Sets the chart active after load.
-        ChartController.instance().mainStackPane.setDisable(false);
+        ChartController.instance.mainStackPane.setDisable(false);
         ApplicationController.removeIcon();
       });
     });

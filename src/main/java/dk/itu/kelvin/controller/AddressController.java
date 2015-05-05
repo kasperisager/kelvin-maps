@@ -50,7 +50,6 @@ import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
  * AddressField controller.
  */
 public final class AddressController {
-
   /**
    * The AddressController instance.
    */
@@ -164,19 +163,17 @@ public final class AddressController {
   private static Address destinationAddress;
 
   /**
-   * Getting AddressController instance.
-   * @return AddressController instance.
+   * Initialize a new address controller.
+   *
+   * <p>
+   * <b>OBS:</b> This constructor can only ever be called once by JavaFX.
    */
-  public static AddressController instance() {
-    return AddressController.instance;
-  }
+  public AddressController() {
+    super();
 
-  /**
-   * Initializing the AddressController instance.
-   * @param instance the AddressController instance.
-   */
-  private static void instance(final AddressController instance) {
-    AddressController.instance = instance;
+    if (AddressController.instance != null) {
+      throw new RuntimeException("Only a single controller instance can exist");
+    }
   }
 
   /**
@@ -184,7 +181,7 @@ public final class AddressController {
    */
   @FXML
   private void initialize() {
-    AddressController.instance(this);
+    AddressController.instance = this;
 
     this.autoCompleteSuggestions = HashObjObjMaps.newMutableMap(
       AUTOCOMPLETE_MAX_ITEMS
@@ -276,10 +273,10 @@ public final class AddressController {
 
       cb.selectedProperty().addListener((ob, ov, nv) -> {
         if (nv) {
-          ChartController.instance().showPoi(s);
+          ChartController.showPoi(s);
           //this.showPointsOfInterests(s);
         } else {
-          ChartController.instance().hidePoi(s);
+          ChartController.hidePoi(s);
           //this.hidePointsOfInterests(s);
         }
 
@@ -513,7 +510,7 @@ public final class AddressController {
   @FXML
   private void hidePOI() {
     this.propertiesGridPane.getChildren().remove(this.poiContainer);
-    ChartController.instance().moveScale(0);
+    ChartController.moveScale(0);
   }
 
   /**
@@ -522,7 +519,7 @@ public final class AddressController {
   @FXML
   private void hideDirections() {
     this.propertiesGridPane.getChildren().remove(this.directionsContainer);
-    ChartController.instance().moveScale(0);
+    ChartController.moveScale(0);
 
   }
 
@@ -532,7 +529,7 @@ public final class AddressController {
   private void showPOI() {
     if (!this.propertiesGridPane.getChildren().contains(this.poiContainer)) {
       this.propertiesGridPane.getChildren().add(this.poiContainer);
-      ChartController.instance().moveScale(200);
+      ChartController.moveScale(200);
     }
   }
 
@@ -543,7 +540,7 @@ public final class AddressController {
     if (!this.propertiesGridPane.getChildren().
       contains(this.directionsContainer)) {
       this.propertiesGridPane.getChildren().add(this.directionsContainer);
-      ChartController.instance().moveScale(400);
+      ChartController.moveScale(400);
     }
   }
 

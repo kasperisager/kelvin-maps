@@ -3,15 +3,15 @@
  */
 package dk.itu.kelvin.model;
 
+// General utilities
+import java.util.Map;
+
 // JavaFX controls
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.Label;
 
 // Utilities
 import dk.itu.kelvin.util.PointTree;
-import javafx.scene.paint.Color;
-
-import java.util.Map;
 
 /**
  * A node describes a 2-dimensional coordinate within a chart.

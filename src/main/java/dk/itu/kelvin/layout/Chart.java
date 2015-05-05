@@ -357,7 +357,7 @@ public final class Chart extends Group {
    * @param scale the scale to set.
    */
   private void setScale(final double scale) {
-    ChartController.instance().setScaleLength(this.unitPrM * scale);
+    ChartController.setScaleLength(this.unitPrM * scale);
     this.setScaleX(scale);
     this.setScaleY(scale);
   }
