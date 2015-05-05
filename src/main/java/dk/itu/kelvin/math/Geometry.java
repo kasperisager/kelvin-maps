@@ -219,8 +219,8 @@ public final class Geometry {
      * @return The bounds of the point.
      */
     public final Bounds bounds() {
-      int x = this.x;
-      int y = this.y;
+      double x = this.x;
+      double y = this.y;
 
       return new Bounds(new Point(x, y), new Point(x, y));
     }
