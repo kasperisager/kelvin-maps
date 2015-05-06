@@ -300,7 +300,7 @@ public final class ChartController {
       }
     }
 
-    ChartController.instance().chart.center(new Node(n.x(), n.y()));
+    //ChartController.instance().chart.center(new Node(n.x(), n.y()));
 
     if (from != null && to != null) {
       ShortestPath shortestPath = new ShortestPath(elementStore.graph(), from);
@@ -440,6 +440,10 @@ public final class ChartController {
    */
   public static void centerChart(final Address a, final double scale) {
     ChartController.instance.chart.center(a, scale);
+  }
+
+  public static void centerChart(final Address addr1, final Address addr2) {
+    ChartController.instance.chart.center(addr1, addr2);
   }
 
   /**
@@ -691,7 +695,7 @@ public final class ChartController {
 
     parser.read(file, () -> {
       // Get all addresses from parser.
-      for (Address address: parser.addresses()) {
+      for (Address address : parser.addresses()) {
         AddressController.instance().addAddress(address);
       }
       // Sets all POI from initialized nodes.
