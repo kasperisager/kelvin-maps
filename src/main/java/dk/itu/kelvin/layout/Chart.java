@@ -304,6 +304,11 @@ public final class Chart extends Group {
     this.center(address);
   }
 
+  /**
+   * Centering chart on two addresses and adjust the scale.
+   * @param addr1 the from address.
+   * @param addr2 the destination address.
+   */
   public void center(final Address addr1, final Address addr2) {
     double deltaX = addr2.x() - addr1.x();
     double deltaY = addr2.y() - addr1.y();

@@ -442,6 +442,11 @@ public final class ChartController {
     ChartController.instance.chart.center(a, scale);
   }
 
+  /**
+   * Centers chart on two addresses and adjust the scale.
+   * @param addr1 the first address.
+   * @param addr2 the second address.
+   */
   public static void centerChart(final Address addr1, final Address addr2) {
     ChartController.instance.chart.center(addr1, addr2);
   }
