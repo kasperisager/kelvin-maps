@@ -15,6 +15,8 @@ import javafx.scene.Node;
 
 // Utilities
 import dk.itu.kelvin.util.StringPool;
+
+// Fast utils
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 /**
  * Abstract base class that all OSM Elements must extend.
