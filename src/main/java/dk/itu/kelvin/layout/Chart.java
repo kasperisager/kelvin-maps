@@ -302,6 +302,19 @@ public final class Chart extends Group {
     this.center(address);
   }
 
+  public void center(final Address addr1, final Address addr2) {
+    double deltaX = addr1.x() - addr2.x();
+    double deltaY = addr1.y() - addr2.y();
+    Node center = new Node(addr1.x() + (deltaX / 2), addr1.y() + (deltaY / 2));
+
+    double xDist = 50 + Math.abs(addr1.x() - addr2.x());
+    double yDist = 50 + Math.abs(addr1.y() - addr2.y());
+    double scaleX = xDist / this.getScene().getWidth();
+    double scaleY = yDist / this.getScene().getHeight();
+    double scaleMax = Math.max(scaleX, scaleY);
+    this.center(center, scaleMax);
+  }
+
   /**
    * Zoom the chart.
    *
