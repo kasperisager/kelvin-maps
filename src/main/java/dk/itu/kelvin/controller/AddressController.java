@@ -445,13 +445,15 @@ public final class AddressController {
       return;
     }
 
+
     WeightedGraph.Node n = new WeightedGraph.Node(currentAddress.x(), currentAddress.y());
     WeightedGraph.Node m = new WeightedGraph.Node(destinationAddress.x(), destinationAddress.y());
     ChartController.instance().findShortestPath(n, m);
+    ChartController.setDistinationPointer(destinationAddress.x(),destinationAddress.y());
 
-    System.out.println("X: " + this.currentAddress.x() + " " + "Y: "
+    System.out.println("FRA:            X: " + this.currentAddress.x() + " " + "Y: "
       + this.currentAddress.y());
-    System.out.println("X: " + this.destinationAddress.x() + " " + "Y: "
+    System.out.println("TIL             X: " + this.destinationAddress.x() + " " + "Y: "
       + this.destinationAddress.y());
 
     this.autoCompletePopOver.hide();

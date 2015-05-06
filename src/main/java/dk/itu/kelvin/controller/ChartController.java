@@ -9,13 +9,13 @@ import java.util.ArrayList;
 
 // Utilities
 import dk.itu.kelvin.math.Geometry;
+import dk.itu.kelvin.model.*;
 import dk.itu.kelvin.util.SpatialIndex;
 import dk.itu.kelvin.util.WeightedGraph;
 import dk.itu.kelvin.util.ShortestPath;
 
 // I/O utilities
 import java.io.File;
-import java.util.Map;
 
 // JavaFX application utilities
 import javafx.application.Platform;
@@ -26,6 +26,7 @@ import javafx.scene.layout.HBox;
 
 // JavaFX shapes
 import javafx.scene.shape.Path;
+import javafx.scene.shape.Polyline;
 
 // JavaFX inputs
 import javafx.scene.input.KeyEvent;
@@ -53,16 +54,9 @@ import dk.itu.kelvin.parser.Parser;
 import dk.itu.kelvin.layout.Chart;
 
 // Models
-import dk.itu.kelvin.model.Node;
-import dk.itu.kelvin.model.Address;
-import dk.itu.kelvin.model.Way;
-import dk.itu.kelvin.model.Relation;
 
 // Stores
 import dk.itu.kelvin.store.ElementStore;
-
-// Koloboke collections
-import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
 
 /**
  * Chart controller class.
@@ -124,10 +118,24 @@ public final class ChartController {
    */
   private Text locationPointer;
 
+
+  /**
+   *
+   */
+  private Text distinationPointer;
   /**
    * Element store storing all elements.
    */
   private static ElementStore elementStore = new ElementStore();
+
+  /**
+   *
+   */
+  private static Way route = null;
+
+
+  private static Polyline routeRender = null;
+
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -158,11 +166,6 @@ public final class ChartController {
    */
   @FXML
   private StackPane mainStackPane;
-
-  /**
-   * Map indicating the different scales the map can show.
-   */
-  private Map<Integer, Integer> scaleUnit;
 
   /**
    * Getting ChartsController instance.
@@ -196,8 +199,8 @@ public final class ChartController {
 
     this.compassArrow.getTransforms().add(this.compassTransform);
 
-    this.createScaleUnits();
     this.initLocationPointer();
+    this.initDistinationPointer();
     File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
 
     Parser parser = Parser.probe(file);
@@ -249,6 +252,15 @@ public final class ChartController {
     this.chart.getChildren().add(this.locationPointer);
   }
 
+  private void initDistinationPointer() {
+    this.distinationPointer = new Text();
+    this.distinationPointer.getStyleClass().add("icon");
+    this.distinationPointer.getStyleClass().add("address-label");
+    this.distinationPointer.setText("\uf456");
+    this.distinationPointer.setVisible(false);
+    this.chart.getChildren().add(this.distinationPointer);
+  }
+
   /**
    * Moves the compass VBox relative to BOTTOM_LEFT.
    *
@@ -259,7 +271,7 @@ public final class ChartController {
   }
 
   public static void findShortestPath(WeightedGraph.Node n, WeightedGraph.Node m) {
-    SpatialIndex.Point p1 = new SpatialIndex.Point(n.x(), n.y());
+   SpatialIndex.Point p1 = new SpatialIndex.Point(n.x(), n.y());
     SpatialIndex.Point p2 = new SpatialIndex.Point(m.x(), m.y());
 
     Way fromWay = elementStore.transportWaysTree().nearest(p1);
@@ -267,7 +279,7 @@ public final class ChartController {
 
     double distanceFrom = 0;
     WeightedGraph.Node from = null;
-    
+
     for (Node qu : fromWay.nodes()) {
       SpatialIndex.Point ptemp = new SpatialIndex.Point(qu.x(), qu.y());
 
@@ -288,24 +300,42 @@ public final class ChartController {
       }
     }
 
+    ChartController.instance().chart.center(new Node(n.x(), n.y()));
+
     if (from != null && to != null) {
       ShortestPath shortestPath = new ShortestPath(elementStore.graph(), from);
 
       List<WeightedGraph.Edge> path = shortestPath.path(to);
 
-      Way route = new Way();
+      if (routeRender != null) {
+        ChartController.instance().chart.getChildren().remove(routeRender);
+        routeRender = null;
+      }
+
+      route = new Way();
 
       for (int i = 0; i < path.size(); i++) {
+        if (i == 0) {
+          // Add the address from node.
+          route.add(new Node(n.x(), n.y()));
+
+        }
         Node n1 = new Node(path.get(i).from().x(), path.get(i).from().y());
         route.add(n1);
 
         if (i == path.size() - 1) {
           Node n2 = new Node(path.get(i).to().x(), path.get(i).to().y());
           route.add(n2);
+          // Add the address to node.
+          route.add(new Node(m.x(), m.y()));
         }
       }
+      route.tag("meta", "direction");
 
-      route.render();
+      routeRender = route.render();
+
+      ChartController.instance().chart.getChildren().add(routeRender);
+
     }
   }
 
@@ -335,20 +365,6 @@ public final class ChartController {
   }
 
   /**
-   * Creates the hash table used for managing scales units and length.
-   */
-  private void createScaleUnits() {
-    int scaleCycle = 7;
-    this.scaleUnit = HashObjObjMaps.newMutableMap(scaleCycle * 3);
-    int count = 1;
-    for (int i = 0; i < scaleCycle; i++) {
-      this.scaleUnit.put(count++, 1 * (int) (Math.pow(10, i)));
-      this.scaleUnit.put(count++, 2 * (int) (Math.pow(10, i)));
-      this.scaleUnit.put(count++, 5 * (int) (Math.pow(10, i)));
-    }
-  }
-
-  /**
    * Sets the text of scaleIndicator.
    * @param text the text to be set in scale.
    */
@@ -365,18 +381,39 @@ public final class ChartController {
     int count = 1;
     double temp = length;
     while (temp < minLength) {
-      temp = length * ChartController.instance.scaleUnit.get(++count);
+      temp = length * ChartController.instance.findScale(++count);
     }
-    if (ChartController.instance.scaleUnit.get(count) >= 1000) {
+    if (ChartController.instance.findScale(count) >= 1000) {
       ChartController.instance.setScaleText(
-        ChartController.instance.scaleUnit.get(count) / 1000 + " km"
+        ChartController.instance.findScale(count) / 1000 + " km"
       );
     } else {
       ChartController.instance.setScaleText(
-        ChartController.instance.scaleUnit.get(count) + " m"
+        ChartController.instance.findScale(count) + " m"
       );
     }
     ChartController.instance.scaleIndicatorLabel.setPrefWidth(temp);
+  }
+
+  /**
+   * Finds a scale value in the cycle of 1, 2, 5, 10, 20,... that correlates to
+   * the count value.
+   * @param count the count to correlate to a specific scale.
+   * @return the scale that correlates to the count.
+   */
+  private static int findScale(final int count) {
+    int scaleCase = count % 3;
+    int multiplier = (int) Math.ceil(count / 3) + 1;
+    switch (scaleCase) {
+      case 0:
+        return 1 * (int) (Math.pow(10, multiplier));
+      case 1:
+        return 2 * (int) (Math.pow(10, multiplier));
+      case 2:
+        return 5 * (int) (Math.pow(10, multiplier));
+      default:
+        return 0;
+    }
   }
 
   /**
@@ -388,6 +425,12 @@ public final class ChartController {
     ChartController.instance.locationPointer.setLayoutX(x);
     ChartController.instance.locationPointer.setLayoutY(y);
     ChartController.instance.locationPointer.setVisible(true);
+  }
+
+  public static void setDistinationPointer(final double x, final double y) {
+    ChartController.instance.distinationPointer.setLayoutX(x);
+    ChartController.instance.distinationPointer.setLayoutY(y);
+    ChartController.instance.distinationPointer.setVisible(true);
   }
 
   /**

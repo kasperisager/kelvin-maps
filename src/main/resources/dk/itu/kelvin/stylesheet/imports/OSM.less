@@ -77,54 +77,54 @@
   -fx-fill: none;
   -fx-stroke: none;
 
-  &.unclassified,
-  &.residential,
-  &.living_street,
-  &.pedestrian,
-  &.road {
+  &-unclassified,
+  &-residential,
+  &-living_street,
+  &-pedestrian,
+  &-road {
     -fx-stroke: #FEFEFE;
     -fx-stroke-width: 3px;
   }
 
-  &.track {
+  &-track {
     -fx-stroke: #a17e16;
     -fx-stroke-width: 1px;
   }
 
-  &.cycleway,
-  &.steps,
-  &.footway {
+  &-cycleway,
+  &-steps,
+  &-footway {
     -fx-stroke: #d5d4c8;
     -fx-stroke-width: 1px;
   }
 
-  &.service   { -fx-stroke: #FDFDFD; -fx-stroke-width: 2px; }
-  &.bridleway { -fx-stroke: #248E23; -fx-stroke-width: 1px; }
-  &.path      { -fx-stroke: #7E7D7B; -fx-stroke-width: 1px; }
+  &-service   { -fx-stroke: #FDFDFD; -fx-stroke-width: 2px; }
+  &-bridleway { -fx-stroke: #248E23; -fx-stroke-width: 1px; }
+  &-path      { -fx-stroke: #7E7D7B; -fx-stroke-width: 1px; }
 
-  &.tertiary,
-  &.tertiary_link { -fx-stroke: #ffffff; -fx-stroke-width: 4px; }
+  &-tertiary,
+  &-tertiary_link { -fx-stroke: #ffffff; -fx-stroke-width: 4px; }
 
-  &.secondary,
-  &.secondary_link { -fx-stroke: #F8D5A9; -fx-stroke-width: 6px; }
+  &-secondary,
+  &-secondary_link { -fx-stroke: #F8D5A9; -fx-stroke-width: 6px; }
 
-  &.primary,
-  &.primary_link { -fx-stroke: #ffe169; -fx-stroke-width: 6px; }
+  &-primary,
+  &-primary_link { -fx-stroke: #ffe169; -fx-stroke-width: 6px; }
 
-  &.motorway,
-  &.motorway_link,
-  &.trunk,
-  &.trunk_link { -fx-stroke: #ffffff; -fx-stroke-width: 8px; }
+  &-motorway,
+  &-motorway_link,
+  &-trunk,
+  &-trunk_link { -fx-stroke: #ffffff; -fx-stroke-width: 8px; }
 
-  &.path { -fx-stroke-dash-array: 3; }
+  &-path { -fx-stroke-dash-array: 3; }
 
-  &.track,
-  &.bridleway,
-  &.path  { -fx-stroke-dash-array: 2; }
+  &-track,
+  &-bridleway,
+  &-path  { -fx-stroke-dash-array: 2; }
 
-  &.footway,
-  &.cycleway,
-  &.steps { -fx-stroke-dash-array: 1 2; }
+  &-footway,
+  &-cycleway,
+  &-steps { -fx-stroke-dash-array: 1 2; }
 }
 
 // Waterway.
@@ -135,15 +135,15 @@
   -fx-stroke: @color-water;
   -fx-stroke-width: 0;
 
-  &.river  { -fx-stroke-width: 8px; }
-  &.stream { -fx-stroke-width: 3px; }
-  &.canal  { -fx-stroke-width: 6px; }
-  &.drain  { -fx-stroke-width: 1px; }
-  &.ditch  { -fx-stroke-width: 2px; }
+  &-river  { -fx-stroke-width: 8px; }
+  &-stream { -fx-stroke-width: 3px; }
+  &-canal  { -fx-stroke-width: 6px; }
+  &-drain  { -fx-stroke-width: 1px; }
+  &-ditch  { -fx-stroke-width: 2px; }
 
-  &.riverbank,
-  &.dock,
-  &.boatyard {
+  &-riverbank,
+  &-dock,
+  &-boatyard {
     &, .member {
       -fx-fill: @color-water;
     }
@@ -160,32 +160,32 @@
     -fx-stroke: none;
   }
 
-  &.allotments              { &, .member { -fx-fill: #E5C7AB; } }
-  &.basin                   { &, .member { -fx-fill: #B5D0D0; } }
-  &.brownfield              { &, .member { -fx-fill: #B6B592; } }
-  &.cemetery                { &, .member { -fx-fill: #87B38C; } }
-  &.commercial              { &, .member { -fx-fill: #EFC8C8; } }
-  &.construction            { &, .member { -fx-fill: #B6B592; } }
-  &.farmland                { &, .member { -fx-fill: #ECDDC9; } }
-  &.farmyard                { &, .member { -fx-fill: #EED5B5; } }
-  &.forest                  { &, .member { -fx-fill: #A0CF85; } }
-  &.garages                 { &, .member { -fx-fill: #DEDDCD; } }
-  &.greenfield              { &, .member { -fx-fill: #CFECA8; } }
-  &.greenhouse_horticulture { &, .member { -fx-fill: #DCEAEE; } }
-  &.industrial              { &, .member { -fx-fill: #DFD1D6; } }
-  &.landfill                { &, .member { -fx-fill: #B6B592; } }
-  &.meadow                  { &, .member { -fx-fill: #CFECA8; } }
-  &.orchard                 { &, .member { -fx-fill: #9ED88F; } }
-  &.quarry                  { &, .member { -fx-fill: #C5C3C3; } }
-  &.railway                 { &, .member { -fx-fill: #DED0D5; } }
-  &.recreation_ground       { &, .member { -fx-fill: #CFECA8; } }
-  &.reservoir               { &, .member { -fx-fill: #B5D0D0; } }
-  &.residential             { &, .member { -fx-fill: #E1E1E1; } }
-  &.retail                  { &, .member { -fx-fill: #F0D9D9; } }
-  &.village_green           { &, .member { -fx-fill: #CFECA8; } }
-  &.vineyard                { &, .member { -fx-fill: #B3E2A8; } }
+  &-allotments              { &, .member { -fx-fill: #E5C7AB; } }
+  &-basin                   { &, .member { -fx-fill: #B5D0D0; } }
+  &-brownfield              { &, .member { -fx-fill: #B6B592; } }
+  &-cemetery                { &, .member { -fx-fill: #87B38C; } }
+  &-commercial              { &, .member { -fx-fill: #EFC8C8; } }
+  &-construction            { &, .member { -fx-fill: #B6B592; } }
+  &-farmland                { &, .member { -fx-fill: #ECDDC9; } }
+  &-farmyard                { &, .member { -fx-fill: #EED5B5; } }
+  &-forest                  { &, .member { -fx-fill: #A0CF85; } }
+  &-garages                 { &, .member { -fx-fill: #DEDDCD; } }
+  &-greenfield              { &, .member { -fx-fill: #CFECA8; } }
+  &-greenhouse_horticulture { &, .member { -fx-fill: #DCEAEE; } }
+  &-industrial              { &, .member { -fx-fill: #DFD1D6; } }
+  &-landfill                { &, .member { -fx-fill: #B6B592; } }
+  &-meadow                  { &, .member { -fx-fill: #CFECA8; } }
+  &-orchard                 { &, .member { -fx-fill: #9ED88F; } }
+  &-quarry                  { &, .member { -fx-fill: #C5C3C3; } }
+  &-railway                 { &, .member { -fx-fill: #DED0D5; } }
+  &-recreation_ground       { &, .member { -fx-fill: #CFECA8; } }
+  &-reservoir               { &, .member { -fx-fill: #B5D0D0; } }
+  &-residential             { &, .member { -fx-fill: #E1E1E1; } }
+  &-retail                  { &, .member { -fx-fill: #F0D9D9; } }
+  &-village_green           { &, .member { -fx-fill: #CFECA8; } }
+  &-vineyard                { &, .member { -fx-fill: #B3E2A8; } }
 
-  &.military {
+  &-military {
     &, .member {
       -fx-fill: rgba(246,172,168,.25);
       -fx-stroke: rgba(246,172,168,.5);
@@ -203,20 +203,20 @@
     -fx-stroke: none;
   }
 
-  &.wood      { &, .member { -fx-fill: #AED1A0; } }
-  &.scrub     { &, .member { -fx-fill: #B5E3B5; } }
-  &.heath     { &, .member { -fx-fill: #D6D99F; } }
-  &.grassland { &, .member { -fx-fill: #C6E4B4; } }
-  &.fell      { &, .member { -fx-fill: #D6D99F; } }
-  &.bare_rock { &, .member { -fx-fill: #E9E0D9; } }
-  &.scree     { &, .member { -fx-fill: #EBE2DB; } }
-  &.sand      { &, .member { -fx-fill: #F4E9C6; } }
-  &.mud       { &, .member { -fx-fill: #E6DCD1; } }
-  &.wetland   { &, .member { -fx-fill: #F1EEE9; } }
-  &.glacier   { &, .member { -fx-fill: #DDECEC; } }
-  &.beach     { &, .member { -fx-fill: #FFF1BA; } }
+  &-wood      { &, .member { -fx-fill: #AED1A0; } }
+  &-scrub     { &, .member { -fx-fill: #B5E3B5; } }
+  &-heath     { &, .member { -fx-fill: #D6D99F; } }
+  &-grassland { &, .member { -fx-fill: #C6E4B4; } }
+  &-fell      { &, .member { -fx-fill: #D6D99F; } }
+  &-bare_rock { &, .member { -fx-fill: #E9E0D9; } }
+  &-scree     { &, .member { -fx-fill: #EBE2DB; } }
+  &-sand      { &, .member { -fx-fill: #F4E9C6; } }
+  &-mud       { &, .member { -fx-fill: #E6DCD1; } }
+  &-wetland   { &, .member { -fx-fill: #F1EEE9; } }
+  &-glacier   { &, .member { -fx-fill: #DDECEC; } }
+  &-beach     { &, .member { -fx-fill: #FFF1BA; } }
 
-  &.water     { -fx-fill: #a0c3ff; }
+  &-water     { -fx-fill: #a0c3ff; }
 }
 
 // Leisure.
@@ -228,14 +228,14 @@
     -fx-stroke: none;
   }
 
-  &.garden          { &, .member { -fx-fill: #CFECA8; } }
-  &.golf_course     { &, .member { -fx-fill: #B5E3B5; } }
-  &.nature_reserve  { &, .member { -fx-fill: #F1EEE8; } }
-  &.park            { &, .member { -fx-fill: #cbdfaa; } }
-  &.pitch           { &, .member { -fx-fill: #8AD3AF; } }
-  &.playground      { &, .member { -fx-fill: #CCFDF1; } }
-  &.sports_centre   { &, .member { -fx-fill: #31CC99; } }
-  &.stadium         { &, .member { -fx-fill: #31CC99; } }
+  &-garden          { &, .member { -fx-fill: #CFECA8; } }
+  &-golf_course     { &, .member { -fx-fill: #B5E3B5; } }
+  &-nature_reserve  { &, .member { -fx-fill: #F1EEE8; } }
+  &-park            { &, .member { -fx-fill: #cbdfaa; } }
+  &-pitch           { &, .member { -fx-fill: #8AD3AF; } }
+  &-playground      { &, .member { -fx-fill: #CCFDF1; } }
+  &-sports_centre   { &, .member { -fx-fill: #31CC99; } }
+  &-stadium         { &, .member { -fx-fill: #31CC99; } }
 }
 
 // Barriers
@@ -246,11 +246,11 @@
   -fx-stroke: #b4b2ae;
   -fx-stroke-width: .5px;
 
-  &.fence,
-  &.kerb,
-  &.wall { -fx-stroke: #b4b2ae; -fx-stroke-width: .5px; }
+  &-fence,
+  &-kerb,
+  &-wall { -fx-stroke: #b4b2ae; -fx-stroke-width: .5px; }
 
-  &.hedge {
+  &-hedge {
     -fx-stroke: #a9d09b;
 
     &.area {
@@ -264,21 +264,21 @@
 // @see <a href="http://wiki.openstreetmap.org/wiki/Map_Features#Amenity">
 //      http://wiki.openstreetmap.org/wiki/Map_Features#Amenity</a>
 .amenity {
-  &.parking {
+  &-parking {
     -fx-fill: #f6efb3;
     -fx-stroke: #f1e380;
     -fx-stroke-width: .25px;
     -fx-stroke-type: inside;
   }
 
-  &.place_of_worship {
+  &-place_of_worship {
     -fx-fill: #ae9c8c;
     -fx-stroke: #7d6959;
     -fx-stroke-width: .25px;
     -fx-stroke-type: inside;
   }
 
-  &.school {
+  &-school {
     -fx-fill: #f0f0d7;
     -fx-stroke: #d9b3a2;
     -fx-stroke-width: .25px;
@@ -302,5 +302,5 @@
 }
 
 .meta-direction {
-  -fx-fill: blue;
+  -fx-stroke: blue;
 }

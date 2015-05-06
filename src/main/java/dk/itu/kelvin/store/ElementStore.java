@@ -463,25 +463,60 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   }
 
   public void addEdge(final Way way) {
+
+    double maxSpeed = 0.0;
+
+    boolean oneway = false;
+
+    for(String s : way.tags().keySet()){
+      switch (s) {
+        case "maxspeed":
+          maxSpeed = Double.parseDouble(way.tags().get("maxspeed"));
+          break;
+        case "oneway":
+          oneway = true;
+          break;
+
+        default:
+          maxSpeed = 50;
+      }
+    }
+
     for (int i = 0; i < way.nodes().size(); i++) {
-      if (i + 1 >= way.nodes().size()-1) {
+      if (i + 1 >= way.nodes().size()) {
         break;
       }
 
       Node from = way.nodes().get(i);
       Node to = way.nodes().get(i + 1);
 
-      float distance = (float) Geometry.distance(
+
+      float distancePx = (float) Geometry.distance(
         new Geometry.Point(from.x(), from.y()),
         new Geometry.Point(to.x(), to.y())
       );
 
-      WeightedGraph.Edge edge = new WeightedGraph.Edge(
-        new WeightedGraph.Node(from.x(), from.y()),
-        new WeightedGraph.Node(to.x(), to.y()), distance
-      );
+      float distanceSpeed = (float) (Geometry.distance(
+        new Geometry.Point(from.x(), from.y()),
+        new Geometry.Point(to.x(), to.y()))
+        /maxSpeed);
 
-      this.roadsWeightedGraph.add(edge);
+
+      WeightedGraph.Edge edgeCar = new WeightedGraph.Edge(
+        new WeightedGraph.Node(from.x(), from.y()),
+        new WeightedGraph.Node(to.x(), to.y()), distanceSpeed
+      );
+      this.roadsWeightedGraph.add(edgeCar);
+
+      if(!oneway) {
+        WeightedGraph.Edge edgeCar2 = new WeightedGraph.Edge(
+          new WeightedGraph.Node(to.x(), to.y()),
+          new WeightedGraph.Node(from.x(), from.y()), distanceSpeed
+        );
+
+        this.roadsWeightedGraph.add(edgeCar2);
+      }
+
     }
   }
 
@@ -587,7 +622,4 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
       return ElementStore.this.search(this);
     }
   }
-
-
-
 }
