@@ -615,7 +615,6 @@ public final class AddressController {
 
         if (AddressController.instance.address.number() == null) {
           for (String a : streetNames.keySet()) {
-            System.out.println("added to list");
             AddressController.instance.autoCompleteSuggestionsList.put(
               a, streetNames.get(a)
             );
@@ -633,7 +632,6 @@ public final class AddressController {
 
         else {
           for (Address a: results) {
-            System.out.println("added to suggest");
             AddressController.instance.autoCompleteSuggestions.put(
               a.street()
               + " " + a.number()
@@ -656,7 +654,6 @@ public final class AddressController {
       // Hide the popover if there are no suggestions.
       if (AddressController.instance.autoCompleteSuggestions.size() <= 0 && AddressController.instance.autoCompleteSuggestionsList.size() <= 0) {
         AddressController.instance.autoCompletePopOver.hide(Duration.ONE);
-        System.out.println("breaking");
         return;
       }
 

@@ -135,7 +135,15 @@ public final class AddressStore extends Store<Address, String> {
       }
 
       if (a.number() != null && b.number() != null) {
-        return a.number().compareTo(b.number());
+        if (a.number().length() < b.number().length()) {
+          return -1;
+        }
+        if (a.number().length() == b.number().length()) {
+          return a.number().compareTo(b.number());
+        }
+        if (a.number().length() > b.number().length()) {
+          return 1;
+        }
       }
 
       return 0;
