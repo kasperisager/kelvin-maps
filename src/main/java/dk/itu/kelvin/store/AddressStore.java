@@ -7,6 +7,7 @@ package dk.itu.kelvin.store;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 // Koloboke collections
 import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
@@ -115,6 +116,30 @@ public final class AddressStore extends Store<Address, String> {
         }
       }
     }
+
+    Collections.sort(results, (a,b) -> {
+      if (a == b) {
+        return 0;
+      }
+      if (a == null) {
+        return -1;
+      }
+      if (b == null) {
+        return 1;
+      }
+      if (!a.street().equals(b.street()) && a.street() != null && b.street() != null) {
+        return a.street().compareTo(b.street());
+      }
+      if (address.number() == null && a.postcode() != null && b.postcode() != null) {
+        return a.postcode().compareTo(b.postcode());
+      }
+
+      if (a.number() != null && b.number() != null) {
+        return a.number().compareTo(b.number());
+      }
+
+      return 0;
+    });
 
     return results;
   }

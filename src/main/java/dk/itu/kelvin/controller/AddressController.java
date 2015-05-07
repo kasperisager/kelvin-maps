@@ -1,4 +1,13 @@
+/**
+ * Copyright (C) 2015 The Authors.
+ */
 package dk.itu.kelvin.controller;
+
+// General Utilities
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 // Kelvin Model
 import dk.itu.kelvin.model.Address;
@@ -30,7 +39,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-// JavaFX Util
+// JavaFX Utilities
 import javafx.util.Duration;
 
 // JavaFX FXML
@@ -38,10 +47,6 @@ import javafx.fxml.FXML;
 
 // ControlsFX
 import org.controlsfx.control.PopOver;
-
-// Java Util
-import java.util.List;
-import java.util.Map;
 
 // Koloboke collections
 import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
@@ -144,7 +149,12 @@ public final class AddressController {
   private static VBox autoCompletePopOverVBox;
 
   /**
-   * Map for suggestions.
+   * Map for street names.
+   */
+  private static Map<String, List<Address>> autoCompleteSuggestionsList;
+
+  /**
+   * Map for full suggestions.
    */
   private static Map<String, Address> autoCompleteSuggestions;
 
@@ -162,6 +172,11 @@ public final class AddressController {
    * The location the user tries to navigate to, found in findRouteTextField.
    */
   private static Address destinationAddress;
+
+  /**
+   * Address object.
+   */
+  private static Address address;
 
   /**
    * Getting AddressController instance.
@@ -187,6 +202,10 @@ public final class AddressController {
     AddressController.instance(this);
 
     this.autoCompleteSuggestions = HashObjObjMaps.newMutableMap(
+      AUTOCOMPLETE_MAX_ITEMS
+    );
+
+    this.autoCompleteSuggestionsList = HashObjObjMaps.newMutableMap(
       AUTOCOMPLETE_MAX_ITEMS
     );
 
@@ -300,7 +319,6 @@ public final class AddressController {
     this.autoCompletePopOver.setDetachable(false);
   }
 
-
   /**
    * Initializing event handler for text fields and content of
    * autoCompletePopOver.
@@ -311,7 +329,8 @@ public final class AddressController {
 
     // Updating the highlight.
     tf.setOnKeyReleased((event -> {
-      if (autoCompleteSuggestions.size() > 0) {
+      if (autoCompleteSuggestions.size() > 0
+      || autoCompleteSuggestionsList.size() > 0) {
         autoCompletePopOverVBox.setOnKeyPressed((e2) -> {
           // Removes the current highlight.
           this.removeHighlightStyle();
@@ -324,7 +343,6 @@ public final class AddressController {
         });
       }
     }));
-
   }
 
   /**
@@ -358,7 +376,8 @@ public final class AddressController {
         e.consume();
         break;
       case DOWN:
-        if (this.pointer < this.autoCompleteSuggestions.size() - 1) {
+        if (this.pointer < this.autoCompleteSuggestions.size() - 1
+          || this.pointer < this.autoCompleteSuggestionsList.size() - 1 ) {
           this.pointer++;
         }
         e.consume();
@@ -380,7 +399,8 @@ public final class AddressController {
       this.findAddress(this.currentAddress);
 
       this.findAddressTextField.textProperty().removeListener(
-        this.addressFieldListener);
+      this.addressFieldListener
+      );
       this.findAddressTextField.setText(b.getText());
       this.findAddressTextField.textProperty().addListener(
         this.addressFieldListener);
@@ -496,7 +516,6 @@ public final class AddressController {
    */
   @FXML
   private void routeByCar() {
-
   }
 
   /**
@@ -504,7 +523,6 @@ public final class AddressController {
    */
   @FXML
   private void routeByFoot() {
-
   }
 
   /**
@@ -523,7 +541,6 @@ public final class AddressController {
   private void hideDirections() {
     this.propertiesGridPane.getChildren().remove(this.directionsContainer);
     ChartController.instance().moveCompass(0);
-
   }
 
   /**
@@ -584,28 +601,62 @@ public final class AddressController {
         List<Address> results =
           AddressController.instance.addresses.search(tf.getText());
 
-        for (Address a : results) {
-          AddressController.instance.autoCompleteSuggestions.put(
-            a.street()
-              + " " + a.number()
-              + ", " + a.postcode()
-              + " " + a.city(), a
-          );
+        Map<String, List<Address>> streetNames = new HashMap<>();
+        for (Address a: results) {
+          String key = a.street() + ", " + a.postcode() + " " + a.city();
+          if (!streetNames.containsKey(key)) {
+            streetNames.put(key, new ArrayList<>());
+          }
 
-          // End the foreach loop
-          // if AutoComplete_max_items limit has been reached.
-          if (
-            AddressController.instance.autoCompleteSuggestions.size()
-              > AddressController.instance.AUTOCOMPLETE_MAX_ITEMS
-            ) {
-            break;
+          streetNames.get(key).add(a);
+        }
+
+        AddressController.instance.address = Address.parse(tf.getText());
+
+        if (AddressController.instance.address.number() == null) {
+          for (String a : streetNames.keySet()) {
+            System.out.println("added to list");
+            AddressController.instance.autoCompleteSuggestionsList.put(
+              a, streetNames.get(a)
+            );
+
+            // End the foreach loop
+            // if AutoComplete_max_items limit has been reached.
+            if (
+              AddressController.instance.autoCompleteSuggestionsList.size()
+                > AddressController.instance.AUTOCOMPLETE_MAX_ITEMS
+              ) {
+              break;
+            }
+          }
+        }
+
+        else {
+          for (Address a: results) {
+            System.out.println("added to suggest");
+            AddressController.instance.autoCompleteSuggestions.put(
+              a.street()
+              + " " + a.number()
+              + " " + a.postcode()
+              + " " + a.city(), a
+            );
+
+            // End the foreach loop
+            // if AutoComplete_max_items limit has been reached.
+            if (
+              AddressController.instance.autoCompleteSuggestions.size()
+                > AddressController.instance.AUTOCOMPLETE_MAX_ITEMS
+              ) {
+              break;
+            }
           }
         }
       }
 
       // Hide the popover if there are no suggestions.
-      if (AddressController.instance.autoCompleteSuggestions.size() <= 0) {
+      if (AddressController.instance.autoCompleteSuggestions.size() <= 0 && AddressController.instance.autoCompleteSuggestionsList.size() <= 0) {
         AddressController.instance.autoCompletePopOver.hide(Duration.ONE);
+        System.out.println("breaking");
         return;
       }
 
@@ -617,37 +668,58 @@ public final class AddressController {
       AddressController.instance.autoCompletePopOverVBox.
         setPrefWidth(bounds.getWidth() + 27);
 
-      // Creates and adds buttons to the VBox.
-      for (
-        String suggestion
-        : AddressController.instance.autoCompleteSuggestions.keySet()
-        ) {
-        Button b = new Button(suggestion);
-        b.setPrefWidth(bounds.getWidth() + 27);
+      if (AddressController.instance.address.number() == null) {
+        // The list of streetnames.
+        for (String s: autoCompleteSuggestionsList.keySet()) {
+          Button b = new Button(s);
+          b.setPrefWidth(bounds.getWidth() + 27);
 
-        b.setOnMouseClicked((e2 -> {
+          b.setOnMouseClicked((e2 -> {
+            tf.textProperty().removeListener(
+              AddressController.instance.addressFieldListener);
+            int comma = s.indexOf(",");
+            StringBuilder builder = new StringBuilder(s);
+            builder.insert(comma, " ");
+            tf.setText(builder.toString());
+            tf.textProperty().addListener(
+              AddressController.instance.addressFieldListener);
+              AddressController.instance.autoCompletePopOver.hide(Duration.ONE);
+              tf.positionCaret(comma + 1);
+          }));
+          AddressController.instance.autoCompletePopOverVBox.getChildren().add(b);
+        }
+      } else {
+        // The full addresses with house number.
+        for (
+          String suggestion
+          : AddressController.instance.autoCompleteSuggestions.keySet()
+          ) {
+          Button b = new Button(suggestion);
+          b.setPrefWidth(bounds.getWidth() + 27);
 
-          tf.textProperty().removeListener(
-            AddressController.instance.addressFieldListener);
-          tf.setText(b.getText());
-          tf.textProperty().addListener(
-            AddressController.instance.addressFieldListener);
-          AddressController.instance.autoCompletePopOver.hide(Duration.ONE);
+          b.setOnMouseClicked((e2 -> {
+            tf.textProperty().removeListener(
+              AddressController.instance.addressFieldListener);
+            tf.setText(b.getText());
+            tf.textProperty().addListener(
+              AddressController.instance.addressFieldListener);
+            AddressController.instance.autoCompletePopOver.hide(Duration.ONE);
 
-          if (tf.getId().equals("findAddressTextField")) {
-            AddressController.instance.currentAddress = AddressController.
-              instance.autoCompleteSuggestions.get(suggestion);
-            AddressController.instance.findAddress(
-              AddressController.instance.currentAddress);
-          } else if (tf.getId().equals("findRouteTextField")) {
-            AddressController.instance.destinationAddress = AddressController.
-              instance.autoCompleteSuggestions.get(suggestion);
-            AddressController.instance.findRoute(
-              AddressController.instance.destinationAddress);
-          }
-        }));
+            if (tf.getId().equals("findAddressTextField")) {
+              AddressController.instance.currentAddress = AddressController.
+                instance.autoCompleteSuggestions.get(suggestion);
+              AddressController.instance.findAddress(
+                AddressController.instance.currentAddress);
+            } else if (tf.getId().equals("findRouteTextField")) {
+              AddressController.instance.destinationAddress = AddressController.
+                instance.autoCompleteSuggestions.get(suggestion);
+              AddressController.instance.findRoute(
+                AddressController.instance.destinationAddress);
+            }
+          }));
 
-        AddressController.instance.autoCompletePopOverVBox.getChildren().add(b);
+          AddressController.instance.autoCompletePopOverVBox.getChildren().add(b);
+        }
       }
 
       // The suggestion highlight pointer.
