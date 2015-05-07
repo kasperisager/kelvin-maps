@@ -445,17 +445,18 @@ public final class AddressController {
       return;
     }
 
-    ChartController.instance().centerChart(this.currentAddress, this.destinationAddress);
-    ChartController.instance().centerChart(this.currentAddress, this.destinationAddress);
+    ChartController.instance().centerChart(
+      this.currentAddress,
+      this.destinationAddress
+    );
+    ChartController.instance().centerChart(
+      this.currentAddress,
+      this.destinationAddress
+    );
     showShortestPath("car");
     ChartController.setDistinationPointer(
       destinationAddress.x(),
       destinationAddress.y());
-
-    System.out.println("FRA:            X: " + this.currentAddress.x() + " " + "Y: "
-      + this.currentAddress.y());
-    System.out.println("TIL             X: " + this.destinationAddress.x() + " " + "Y: "
-      + this.destinationAddress.y());
 
     this.autoCompletePopOver.hide();
 
@@ -464,7 +465,6 @@ public final class AddressController {
     }*/
 
     this.showDirections();
-
 
     // Initialize placeholder text
     int stack = 30;
