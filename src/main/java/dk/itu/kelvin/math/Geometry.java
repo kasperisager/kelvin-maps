@@ -116,12 +116,6 @@ public final class Geometry {
       return null;
     }
 
-    // Check if the rectangular bounds of the lines intersect before doing any
-    // further computations.
-    if (!Geometry.intersects(a, b)) {
-      return null;
-    }
-
     // Compute the denominator.
     double d = (
       (a.start.x - a.end.x) * (b.start.y - b.end.y)
@@ -146,15 +140,48 @@ public final class Geometry {
     - (b.start.x * b.end.y - b.start.y * b.end.x) * (a.start.y - a.end.y)
     ) / d;
 
-    Point p = new Point(px, py);
+    return new Point(px, py);
+  }
 
-    // Check if both lines actually contain the intersection point. If this is
-    // not the case the lines do not intersect within their individual segments.
-    if (!a.contains(p) || !b.contains(p)) {
-      return null;
+  /**
+   * Calculate the angle between three points.
+   *
+   * @param a The first point.
+   * @param b The second point.
+   * @param c The third point.
+   * @return  The angle between the three points or -1 if no angle can be
+   *          calculated.
+   */
+  public static double angle(final Point a, final Point b, final Point c) {
+    if (a == null || b == null || c == null) {
+      return -1;
     }
 
-    return p;
+    // Compute the distances of the different line segments formed by the three
+    // points.
+    double ad = Geometry.distance(b, c);
+    double bd = Geometry.distance(a, c);
+    double cd = Geometry.distance(a, b);
+
+    return Math.toDegrees(Math.acos(
+      (Math.pow(bd, 2) + Math.pow(cd, 2) - Math.pow(ad, 2)) / (2 * bd * cd)
+    ));
+  }
+
+  /**
+   * Calculate the angle between the specified line segments.
+   *
+   * @param a The first line.
+   * @param b The second line.
+   * @return  The angle between the two line segments of -1 if no angle can be
+   *          calculated.
+   */
+  public static double angle(final Line a, final Line b) {
+    if (a == null || b == null) {
+      return -1;
+    }
+
+    return Geometry.angle(Geometry.intersection(a, b), a.start, b.end);
   }
 
   /**
