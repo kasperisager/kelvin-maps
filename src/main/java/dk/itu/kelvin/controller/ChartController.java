@@ -329,8 +329,7 @@ public final class ChartController {
 
       if (type.equals("car")) {
         shortestPath = new ShortestPath(elementStore.carGraph(), from);
-      }
-      else if (type.equals("bicycle")) {
+      } else if (type.equals("bicycle")) {
         shortestPath = new ShortestPath(elementStore.bycicleGraph(), from);
       }
 
@@ -344,16 +343,16 @@ public final class ChartController {
       WeightedGraph.Edge e2 = null;
 
 
-      for(WeightedGraph.Edge e : path){
+      for (WeightedGraph.Edge e : path) {
 
-        if(e1 != null) {
+        if (e1 != null) {
           e2 = e1;
         }
 
         e1 = e;
 
-        if(e2 != null){
-
+        if (e2 != null) {
+/*
           if(//sidste knude er lig destination){
             // print "fortsæt ad vejens forløb til destination" , afstand  = dist
           }
@@ -373,41 +372,42 @@ public final class ChartController {
         else{
           // dist = dist +
           //
+        }*/
+
+
         }
 
-
-      }
-
-      if (routeRender != null) {
-        ChartController.instance().chart.getChildren().remove(routeRender);
-        routeRender = null;
-      }
-
-      route = new Way();
-
-      for (int i = 0; i < path.size(); i++) {
-        if (i == 0) {
-          // Add the address from node.
-          route.add(new Node(n.x(), n.y()));
-
+        if (routeRender != null) {
+          ChartController.instance().chart.getChildren().remove(routeRender);
+          routeRender = null;
         }
-        Node n1 = new Node(path.get(i).from().x(), path.get(i).from().y());
-        route.add(n1);
 
-        if (i == path.size() - 1) {
-          Node n2 = new Node(path.get(i).to().x(), path.get(i).to().y());
-          route.add(n2);
-          // Add the address to node.
-          route.add(new Node(m.x(), m.y()));
+        route = new Way();
+
+        for (int i = 0; i < path.size(); i++) {
+          if (i == 0) {
+            // Add the address from node.
+            route.add(new Node(n.x(), n.y()));
+
+          }
+          Node n1 = new Node(path.get(i).from().x(), path.get(i).from().y());
+          route.add(n1);
+
+          if (i == path.size() - 1) {
+            Node n2 = new Node(path.get(i).to().x(), path.get(i).to().y());
+            route.add(n2);
+            // Add the address to node.
+            route.add(new Node(m.x(), m.y()));
+          }
         }
+        route.tag("meta", "direction");
+
+        routeRender = route.render();
+
+
+        ChartController.instance().chart.getChildren().add(routeRender);
+
       }
-      route.tag("meta", "direction");
-
-      routeRender = route.render();
-
-
-      ChartController.instance().chart.getChildren().add(routeRender);
-
     }
   }
 
