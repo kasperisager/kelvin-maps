@@ -15,7 +15,10 @@ import java.util.Collections;
 import dk.itu.kelvin.util.WeightedGraph.Edge;
 import dk.itu.kelvin.util.WeightedGraph.Node;
 
-public class ShortestPath {
+/**
+ * ShortestPath class.
+ */
+public final class ShortestPath {
   /**
    * Maps the distance from the source to all different vertices in the graph.
    */
@@ -39,7 +42,9 @@ public class ShortestPath {
   public ShortestPath(final WeightedGraph graph, final Node source) {
     for (Edge e : graph.edges()) {
       if (e.weight() < 0) {
-        throw new IllegalArgumentException("edge " + e + " has negative weight");
+        throw new IllegalArgumentException(
+          "edge " + e + " has negative weight"
+        );
       }
     }
 
@@ -51,7 +56,7 @@ public class ShortestPath {
     this.distance.put(source, 0.0f);
 
     // relax vertices in order of distance from s
-    this.queue = new PriorityQueue<>(graph.V(), (a, b) -> {
+    this.queue = new PriorityQueue<>(graph.v(), (a, b) -> {
       // Comparing b to a instead of a to b to make
       // a minimum priority and not maximum priority.
       return this.distance.get(b).compareTo(this.distance.get(a));
@@ -59,24 +64,28 @@ public class ShortestPath {
 
     this.queue.add(source);
 
-    while (!queue.isEmpty()) {
+    while (!this.queue.isEmpty()) {
       Node v = this.queue.poll();
 
       Set<Edge> neighbours = graph.neighbours(v);
 
       for (Edge e: neighbours) {
-        relax(e);
-      }
-    }
-
-    for (Node node: this.distance.keySet()) {
-      if (this.distance.get(node) < Float.POSITIVE_INFINITY) {
+        this.relax(e);
       }
     }
   }
 
-  // relax edge e and update queue if changed
-  private void relax(Edge edge) {
+  public Set<Edge> getNeighbours(final WeightedGraph graph, final Node n) {
+    Set<Edge> neighbours = graph.neighbours(n);
+    return neighbours;
+  }
+
+  /**
+   * Relax edge e and update queue if changed.
+   *
+   * @param edge The edge to relax.
+   */
+  private void relax(final Edge edge) {
     if (edge == null) {
       return;
     }
@@ -91,7 +100,7 @@ public class ShortestPath {
       this.distance.put(to, distFrom + edge.weight());
       this.edgeTo.put(to, edge);
 
-      if (queue.contains(to)) {
+      if (this.queue.contains(to)) {
         this.queue.remove(to);
       }
 
@@ -99,7 +108,11 @@ public class ShortestPath {
     }
   }
 
-  public HashMap map(){
+  /**
+   * Return Hashmap for all different vertices in the graph.
+   * @return distance.
+   */
+  public HashMap map() {
     return this.distance;
   }
 
@@ -143,7 +156,9 @@ public class ShortestPath {
 
     List<Edge> path = new ArrayList<>();
 
-    for (Edge e = this.edgeTo.get(n); e != null; e = this.edgeTo.get(e.from())) {
+    for (Edge e = this.edgeTo.get(n);
+         e != null;
+         e = this.edgeTo.get(e.from())) {
       path.add(e);
     }
 

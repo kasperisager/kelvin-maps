@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 // JavaFX scene utilities
-import dk.itu.kelvin.math.Geometry;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 

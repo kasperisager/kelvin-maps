@@ -447,11 +447,10 @@ public final class AddressController {
 
     ChartController.instance().centerChart(this.currentAddress, this.destinationAddress);
     ChartController.instance().centerChart(this.currentAddress, this.destinationAddress);
-
-    WeightedGraph.Node n = new WeightedGraph.Node(currentAddress.x(), currentAddress.y());
-    WeightedGraph.Node m = new WeightedGraph.Node(destinationAddress.x(), destinationAddress.y());
-    ChartController.instance().findShortestPath(n, m);
-    ChartController.setDistinationPointer(destinationAddress.x(), destinationAddress.y());
+    showShortestPath("car");
+    ChartController.setDistinationPointer(
+      destinationAddress.x(),
+      destinationAddress.y());
 
     System.out.println("FRA:            X: " + this.currentAddress.x() + " " + "Y: "
       + this.currentAddress.y());
@@ -465,6 +464,7 @@ public final class AddressController {
     }*/
 
     this.showDirections();
+
 
     // Initialize placeholder text
     int stack = 30;
@@ -482,6 +482,21 @@ public final class AddressController {
       hbox.getChildren().addAll(icon, label);
       this.directionsContentVBox.getChildren().add(hbox);
     }
+  }
+
+  /**
+   * Find the shortest between 2 adddresses for either cars or bicycles.
+   * @param type the vehicle used for a path.
+   */
+  public static void showShortestPath(final String type) {
+    WeightedGraph.Node n = new WeightedGraph.Node(
+      currentAddress.x(),
+      currentAddress.y());
+
+    WeightedGraph.Node m = new WeightedGraph.Node(
+      destinationAddress.x(),
+      destinationAddress.y());
+    ChartController.instance().findShortestPath(n, m, type);
   }
 
   /**
@@ -505,7 +520,7 @@ public final class AddressController {
    */
   @FXML
   private void routeByCar() {
-
+    showShortestPath("car");
   }
 
   /**
@@ -513,7 +528,7 @@ public final class AddressController {
    */
   @FXML
   private void routeByFoot() {
-
+    showShortestPath("bicycle");
   }
 
   /**

@@ -5,17 +5,18 @@ package dk.itu.kelvin.controller;
 
 // General utilities
 import java.util.List;
-import java.util.ArrayList;
 
 // Utilities
 import dk.itu.kelvin.math.Geometry;
-import dk.itu.kelvin.model.*;
+import dk.itu.kelvin.math.Haversine;
+import dk.itu.kelvin.math.MercatorProjection;
 import dk.itu.kelvin.util.SpatialIndex;
 import dk.itu.kelvin.util.WeightedGraph;
 import dk.itu.kelvin.util.ShortestPath;
 
 // I/O utilities
 import java.io.File;
+import java.util.Set;
 
 // JavaFX application utilities
 import javafx.application.Platform;
@@ -54,6 +55,10 @@ import dk.itu.kelvin.parser.Parser;
 import dk.itu.kelvin.layout.Chart;
 
 // Models
+import dk.itu.kelvin.model.Way;
+import dk.itu.kelvin.model.Address;
+import dk.itu.kelvin.model.Relation;
+import dk.itu.kelvin.model.Node;
 
 // Stores
 import dk.itu.kelvin.store.ElementStore;
@@ -120,22 +125,24 @@ public final class ChartController {
 
 
   /**
-   *
+   * Text(icon) representing the destination address.
    */
-  private Text distinationPointer;
+  private Text destinationPointer;
+
   /**
    * Element store storing all elements.
    */
   private static ElementStore elementStore = new ElementStore();
 
   /**
-   *
+   * Way element to represent a route between to addresses.
    */
   private static Way route = null;
 
-
+  /**
+   * Polyline to represent the route.render().
+   */
   private static Polyline routeRender = null;
-
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -200,7 +207,7 @@ public final class ChartController {
     this.compassArrow.getTransforms().add(this.compassTransform);
 
     this.initLocationPointer();
-    this.initDistinationPointer();
+    this.initDestinationPointer();
     File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
 
     Parser parser = Parser.probe(file);
@@ -252,13 +259,16 @@ public final class ChartController {
     this.chart.getChildren().add(this.locationPointer);
   }
 
-  private void initDistinationPointer() {
-    this.distinationPointer = new Text();
-    this.distinationPointer.getStyleClass().add("icon");
-    this.distinationPointer.getStyleClass().add("address-label");
-    this.distinationPointer.setText("\uf456");
-    this.distinationPointer.setVisible(false);
-    this.chart.getChildren().add(this.distinationPointer);
+  /**
+   * Initializing properties for location destination pointer and adding to chart.
+   */
+  private void initDestinationPointer() {
+    this.destinationPointer = new Text();
+    this.destinationPointer.getStyleClass().add("icon");
+    this.destinationPointer.getStyleClass().add("address-label");
+    this.destinationPointer.setText("\uf456");
+    this.destinationPointer.setVisible(false);
+    this.chart.getChildren().add(this.destinationPointer);
   }
 
   /**
@@ -270,16 +280,27 @@ public final class ChartController {
     ChartController.instance().compassVBox.setTranslateX(x);
   }
 
-  public static void findShortestPath(WeightedGraph.Node n, WeightedGraph.Node m) {
-   SpatialIndex.Point p1 = new SpatialIndex.Point(n.x(), n.y());
+  /**
+   * Find shortest path between 2 nodes.
+   * @param n The from node.
+   * @param m The to node.
+   * @param type The type of graph initiate.
+   */
+  public static void findShortestPath(
+    final WeightedGraph.Node n,
+    final WeightedGraph.Node m,
+    final String type) {
+
+    SpatialIndex.Point p1 = new SpatialIndex.Point(n.x(), n.y());
     SpatialIndex.Point p2 = new SpatialIndex.Point(m.x(), m.y());
 
-    Way fromWay = elementStore.transportWaysTree().nearest(p1);
-    Way toWay = elementStore.transportWaysTree().nearest(p2);
+    Way fromWay =
+      elementStore.transportWaysTree().nearest(p1);
+    Way toWay =
+      elementStore.transportWaysTree().nearest(p2);
 
     double distanceFrom = 0;
     WeightedGraph.Node from = null;
-
     for (Node qu : fromWay.nodes()) {
       SpatialIndex.Point ptemp = new SpatialIndex.Point(qu.x(), qu.y());
 
@@ -302,10 +323,60 @@ public final class ChartController {
 
     //ChartController.instance().chart.center(new Node(n.x(), n.y()));
 
+
     if (from != null && to != null) {
-      ShortestPath shortestPath = new ShortestPath(elementStore.graph(), from);
+      ShortestPath shortestPath = null;
+
+      if (type.equals("car")) {
+        shortestPath = new ShortestPath(elementStore.carGraph(), from);
+      }
+      else if (type.equals("bicycle")) {
+        shortestPath = new ShortestPath(elementStore.bycicleGraph(), from);
+      }
 
       List<WeightedGraph.Edge> path = shortestPath.path(to);
+
+      float dist = 0.0f;
+
+
+      WeightedGraph.Edge e1 = null;
+
+      WeightedGraph.Edge e2 = null;
+
+
+      for(WeightedGraph.Edge e : path){
+
+        if(e1 != null) {
+          e2 = e1;
+        }
+
+        e1 = e;
+
+        if(e2 != null){
+
+          if(//sidste knude er lig destination){
+            // print "fortsæt ad vejens forløb til destination" , afstand  = dist
+          }
+
+          // kald geometry-klassen og find vinklen mellem 3 punkter:
+
+
+        if(70 <= angle <= 100){
+
+          // print "fortsæt ad vejens forløb" , afstand  = dist
+          // print "drej til højre";
+          // dist = 0.0;
+        }
+        else if(250 <= angle <= 290){
+          // drej til venstre
+        }
+        else{
+          // dist = dist +
+          //
+        }
+
+
+      }
 
       if (routeRender != null) {
         ChartController.instance().chart.getChildren().remove(routeRender);
@@ -334,9 +405,27 @@ public final class ChartController {
 
       routeRender = route.render();
 
+
       ChartController.instance().chart.getChildren().add(routeRender);
 
     }
+  }
+
+
+  public static float edgeLength(WeightedGraph.Node n1, WeightedGraph.Node n2){
+    float dist = 0.0f;
+
+    MercatorProjection mer = new MercatorProjection();
+
+    float lat1 = (float) mer.yToLat(n1.y()) * 1000;
+    float lon1 = (float) mer.xToLon(n1.x()) * 1000;
+
+    float lat2 = (float) mer.yToLat(n2.y()) * 1000;
+    float lon2 = (float) mer.xToLon(n2.x()) * 1000;
+
+    dist = Haversine.distance(lat1, lon1, lat2, lon2);
+
+    return dist;
   }
 
     /**
@@ -427,10 +516,15 @@ public final class ChartController {
     ChartController.instance.locationPointer.setVisible(true);
   }
 
+  /**
+   * Sets a pointer at the destination address.
+   * @param x Destination address with the coordinates for the pointer.
+   * @param y Destination address with the coordinates for the pointer.
+   */
   public static void setDistinationPointer(final double x, final double y) {
-    ChartController.instance.distinationPointer.setLayoutX(x);
-    ChartController.instance.distinationPointer.setLayoutY(y);
-    ChartController.instance.distinationPointer.setVisible(true);
+    ChartController.instance.destinationPointer.setLayoutX(x);
+    ChartController.instance.destinationPointer.setLayoutY(y);
+    ChartController.instance.destinationPointer.setVisible(true);
   }
 
   /**

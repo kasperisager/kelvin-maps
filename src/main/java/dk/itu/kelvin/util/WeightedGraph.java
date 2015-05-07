@@ -8,57 +8,62 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
-public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Edge>{
+/**
+ * WeightedGraph class.
+ */
+public final class WeightedGraph
+  implements Graph<WeightedGraph.Node, WeightedGraph.Edge> {
   /**
    * The adjacency list for all vertices and edges in the graph.
    */
-  private HashMap<WeightedGraph.Node, HashSet<WeightedGraph.Edge>> adjacencyList = new HashMap<>();
+  private HashMap<WeightedGraph.Node, HashSet<WeightedGraph.Edge>> adjacencyList
+    = new HashMap<>();
 
   /**
    * Total number of vertices in the graph.
    */
-  private int V = 0;
+  private int v = 0;
 
   /**
    * Total number of edges in the graph.
    */
-  private int E = 0;
+  private int e = 0;
 
   /**
    * Adds an edge to the weighted graph.
    * @param e the edge to add.
    */
-  public void add(Edge e){
-    if (adjacencyList.get(e.from()) == null) {
-      adjacencyList.put(e.from(), new HashSet<>());
-      this.V++;
+  public void add(final Edge e) {
+    if (this.adjacencyList.get(e.from()) == null) {
+      this.adjacencyList.put(e.from(), new HashSet<>());
+      this.v++;
     }
 
-    if (adjacencyList.get(e.to()) == null) {
-      adjacencyList.put(e.to(), new HashSet<>());
-      this.V++;
+    if (this.adjacencyList.get(e.to()) == null) {
+      this.adjacencyList.put(e.to(), new HashSet<>());
+      this.v++;
     }
 
-    adjacencyList.get(e.from()).add(e);
-    this.E++;
-    adjacencyList.get(e.to()).add(e);
-    this.E++;
+    this.adjacencyList.get(e.from()).add(e);
+    this.e++;
+    this.adjacencyList.get(e.to()).add(e);
+    this.e++;
   }
 
   /**
    * Return number of vertices in the graph.
    * @return number of vertices.
    */
-  public int V() {
-    return this.V;
+  public int v() {
+    return this.v;
   }
 
   /**
    * Return number of edges in the graph.
    * @return number of edges.
    */
-  public int E() {
-    return this.E;
+  public int e() {
+    return this.e;
   }
 
   /**
@@ -85,12 +90,11 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
    */
   public List<Edge> edges() {
     List<Edge> list = new ArrayList<>();
-    for(HashSet<Edge> set : this.adjacencyList.values()) {
+    for (HashSet<Edge> set : this.adjacencyList.values()) {
       for (Edge edge : set) {
         list.add(edge);
       }
     }
-
     return list;
   }
 
@@ -98,7 +102,14 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
    * The node class for the graph.
    */
   public static final class Node implements Graph.Node {
+    /**
+     * The x-coordinate of the node.
+     */
     private float x;
+
+    /**
+     * The y-coordinate of the node.
+     */
     private float y;
 
     /**
@@ -106,7 +117,7 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
      * @param x the x-coordinate.
      * @param y the y-coordinate.
      */
-    public Node(final float x, final float y){
+    public Node(final float x, final float y) {
       this.x = x;
       this.y = y;
     }
@@ -116,15 +127,15 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
      * @return x-coordinate of the node.
      */
     public float x() {
-      return x;
+      return this.x;
     }
 
     /**
      * Returns the y-coordinate.
      * @return y-coordinate of the node.
      */
-    public float y(){
-      return y;
+    public float y() {
+      return this.y;
     }
 
     /**
@@ -142,9 +153,11 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
     }
 
     /**
-     * Check if two node objects are equal.
+     * Check if the current node equals the specified object.
      *
-     * @return true or false.
+     * @param object  The object to compare the current node to.
+     * @return        A boolean indicating whether or not the current node
+     *                equals the specified object.
      */
     @Override
     public boolean equals(final Object object) {
@@ -156,32 +169,44 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
         return true;
       }
 
-      Node n = (Node) object;
+      Node node = (Node) object;
 
-      return (n.x() == this.x && n.y() == this.y);
+      return (node.x() == this.x && node.y() == this.y);
     }
 
     @Override
     public String toString() {
       return "X: " + this.x + " Y: " + this.y;
     }
-
   }
 
   /**
    * The edge class for the graph.
    */
   public static final class Edge implements Graph.Edge {
+    /**
+     * The node that the edge starts in.
+     */
     private Node from;
+
+    /**
+     * The node that the edge ends in.
+     */
     private Node to;
+
+    /**
+     * The weight of the edge.
+     */
     private float weight;
 
     /**
-     * Constructor.
-     * @param from the node object the edge starts in.
-     * @param to the node object the edge ends in.
+     * Initialize a new edge.
+     *
+     * @param from    The node object the edge starts in.
+     * @param to      The node object the edge ends in.
+     * @param weight  The weight of the edge.
      */
-    public Edge(final Node from, final Node to, float weight) {
+    public Edge(final Node from, final Node to, final float weight) {
       this.from = from;
       this.to = to;
       this.weight = weight;
@@ -207,13 +232,12 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
      * Returns the weight of the edge object.
      * @return weight.
      */
-    public final float weight() {
-      return weight;
+    public float weight() {
+      return this.weight;
     }
 
     /**
      * Compute the hashcode of the WeightedGraph.Node.
-     *
      * @return The computed hashcode of the Node.
      */
     @Override
@@ -227,9 +251,11 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
     }
 
     /**
-     * Check if two edge objects are equal.
+     * Check if the current edge equals the specified object.
      *
-     * @return true or false.
+     * @param object  The object to compare the current edge to.
+     * @return        A boolean indicating whether or not the current edge
+     *                equals the specified object.
      */
     @Override
     public boolean equals(final Object object) {
@@ -240,7 +266,6 @@ public class WeightedGraph implements Graph<WeightedGraph.Node, WeightedGraph.Ed
       if (this == object) {
         return true;
       }
-
       Edge e = (Edge) object;
 
       return (e.from().equals(this.from)
