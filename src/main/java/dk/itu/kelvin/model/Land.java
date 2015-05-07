@@ -216,9 +216,22 @@ public final class Land extends Element<Group> {
         Line line = this.constructLine(prev, next);
 
         for (Line bound: bounds) {
+          // Check if the rectangular bounds of the lines intersect before
+          // doing any further computations.
+          if (!Geometry.intersects(bound, line)) {
+            continue;
+          }
+
           // Get the intersection point between the bounding line and the line
           // that runs between the previous and current node.
           Point a = Geometry.intersection(bound, line);
+
+          // Check if both lines actually contain the intersection point. If
+          // this is not the case the lines do not intersect within their
+          // individual segments.
+          if (!bound.contains(a) || !line.contains(a)) {
+            continue;
+          }
 
           // Figure out which point on the bounding line to potentially use for
           // closing the coastline.
