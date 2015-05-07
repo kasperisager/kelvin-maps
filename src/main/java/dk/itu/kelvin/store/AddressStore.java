@@ -117,7 +117,7 @@ public final class AddressStore extends Store<Address, String> {
       }
     }
 
-    Collections.sort(results, (a,b) -> {
+    Collections.sort(results, (a, b) -> {
       if (a == b) {
         return 0;
       }
@@ -127,6 +127,7 @@ public final class AddressStore extends Store<Address, String> {
       if (b == null) {
         return 1;
       }
+
       if (!a.street().equals(b.street()) && a.street() != null && b.street() != null) {
         return a.street().compareTo(b.street());
       }

@@ -7,7 +7,7 @@ package dk.itu.kelvin.controller;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 // Kelvin Model
 import dk.itu.kelvin.model.Address;
@@ -201,11 +201,11 @@ public final class AddressController {
   private void initialize() {
     AddressController.instance(this);
 
-    this.autoCompleteSuggestions = HashObjObjMaps.newMutableMap(
+    this.autoCompleteSuggestions = new LinkedHashMap<>(
       AUTOCOMPLETE_MAX_ITEMS
     );
 
-    this.autoCompleteSuggestionsList = HashObjObjMaps.newMutableMap(
+    this.autoCompleteSuggestionsList = new LinkedHashMap<>(
       AUTOCOMPLETE_MAX_ITEMS
     );
 
@@ -601,7 +601,7 @@ public final class AddressController {
         List<Address> results =
           AddressController.instance.addresses.search(tf.getText());
 
-        Map<String, List<Address>> streetNames = new HashMap<>();
+        Map<String, List<Address>> streetNames = new LinkedHashMap<>();
         for (Address a: results) {
           String key = a.street() + ", " + a.postcode() + " " + a.city();
           if (!streetNames.containsKey(key)) {
@@ -642,7 +642,7 @@ public final class AddressController {
             // End the foreach loop
             // if AutoComplete_max_items limit has been reached.
             if (
-              AddressController.instance.autoCompleteSuggestions.size()
+                AddressController.instance.autoCompleteSuggestions.size()
                 > AddressController.instance.AUTOCOMPLETE_MAX_ITEMS
               ) {
               break;
