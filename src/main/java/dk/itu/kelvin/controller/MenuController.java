@@ -44,7 +44,7 @@ public final class MenuController {
   /**
    * Current Version number.
    */
-  private static final String CUR_VERSION = "0.4.0";
+  private static final String CUR_VERSION = "RC1";
 
   /**
    * Current binary file that the user can overwrite by saving or load.
@@ -109,6 +109,7 @@ public final class MenuController {
 
     if (file != null) {
       //do something with the file.
+      AddressController.instance().resetPOI();
       AddressController.instance().clearAddresses();
       ChartController.instance().clearMap();
       ChartController.instance().loadMap(file);
@@ -143,10 +144,8 @@ public final class MenuController {
   @FXML
   private void loadBin() {
     File file = new File(CURRENT_BIN);
-    /*
-    AddressController.instance().getAddressStore().load(file, () -> {
-      System.out.println("Success with loading AddressStore");
-    }); */
+
+    AddressController.instance().resetPOI();
     ChartController.instance().clearMap();
     try (ObjectInputStream in = new ObjectInputStream(
       new FileInputStream(file))
@@ -178,6 +177,7 @@ public final class MenuController {
   public static void loadDefault() {
     File file = new File(DEFAULT_BIN);
 
+    AddressController.instance().resetPOI();
     ChartController.instance().clearMap();
     try (ObjectInputStream in = new ObjectInputStream(
       new FileInputStream(file))
