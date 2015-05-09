@@ -175,7 +175,7 @@ public final class ChartController {
     this.initLocationPointer();
 
     Platform.runLater(() -> {
-      ApplicationController.instance().addIcon();
+      ApplicationController.addIcon();
       MenuController.loadDefault();
       ApplicationController.removeIcon();
     });
@@ -489,7 +489,7 @@ public final class ChartController {
    */
   public static void clearMap() {
     ChartController.instance.chart.clear();
-    ChartController.instance().elementStore = new ElementStore();
+    ChartController.elementStore = new ElementStore();
   }
 
   /**
@@ -497,8 +497,7 @@ public final class ChartController {
    * @param file the map file to load.
    */
   public static void loadMap(final File file) {
-    ApplicationController.instance().addIcon();
-    //ApplicationController.instance().rotateIcon();
+    ApplicationController.addIcon();
 
     Parser parser = Parser.probe(file);
 
@@ -526,7 +525,7 @@ public final class ChartController {
         ChartController.instance().elementStore.add(parser.bounds());
 
         ChartController.instance().chart.elementStore(
-          ChartController.instance().elementStore);
+          ChartController.elementStore);
         ChartController.instance().chart.bounds(parser.bounds());
 
         // Sets the chart active after load.
