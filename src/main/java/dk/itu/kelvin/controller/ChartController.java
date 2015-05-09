@@ -113,7 +113,7 @@ public final class ChartController {
   /**
    * Element store storing all elements.
    */
-  public static ElementStore elementStore = new ElementStore();
+  private static ElementStore elementStore = new ElementStore();
 
   /**
    * The Canvas element to add all the Chart elements to.
