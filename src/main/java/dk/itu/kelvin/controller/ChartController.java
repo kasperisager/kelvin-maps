@@ -170,6 +170,8 @@ public final class ChartController {
   private void initialize() throws Exception {
     ChartController.instance(this);
 
+    this.mainStackPane.setDisable(true);
+
     this.compassArrow.getTransforms().add(this.compassTransform);
 
     this.initLocationPointer();
