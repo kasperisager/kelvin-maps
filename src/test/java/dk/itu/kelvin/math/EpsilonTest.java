@@ -6,12 +6,9 @@ package dk.itu.kelvin.math;
 // JUnit annotations
 import org.junit.Test;
 
+// JUnit assertions
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-// General utilities
-// JUnit annotations
-// JUnit assertions
 
 /**
  * {@link Epsilon} test suite.
@@ -21,7 +18,7 @@ import static org.junit.Assert.assertTrue;
  * <p>
  *
  */
-public class EpsilonTest {
+public final class EpsilonTest {
 
   /**
    * Test if two values are equal.
