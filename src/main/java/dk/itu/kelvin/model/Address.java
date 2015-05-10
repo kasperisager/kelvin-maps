@@ -4,9 +4,11 @@
 package dk.itu.kelvin.model;
 
 // Regex utilities
-import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+// I/O utilities
+import java.io.Serializable;
 
 // Utilities
 import dk.itu.kelvin.util.StringPool;

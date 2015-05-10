@@ -5,7 +5,6 @@ package dk.itu.kelvin.store;
 
 // Models
 import dk.itu.kelvin.model.Element;
-
 import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.BoundingBox;
