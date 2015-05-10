@@ -34,7 +34,7 @@ public final class Geometry {
    * @return  The distance between points {@code a} and {@code b} or {@code -1}
    *          if either of them are {@code null}.
    */
-  private static double distance(final Point a, final Point b) {
+  public static double distance(final Point a, final Point b) {
     if (a == null || b == null) {
       return -1;
     }
@@ -250,6 +250,21 @@ public final class Geometry {
       double y = this.y;
 
       return new Bounds(new Point(x, y), new Point(x, y));
+    }
+
+    @Override
+    public final boolean equals(Object object) {
+      if (this == object) {
+        return true;
+      }
+
+      if (object == null) {
+        return false;
+      }
+
+      Geometry.Point point = (Point) object;
+
+      return (point.x() == this.x() && point.y() == this.y());
     }
 
     @Override
