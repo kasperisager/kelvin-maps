@@ -13,12 +13,11 @@ import java.io.Serializable;
 // JavaFX scene utilities
 import javafx.scene.Node;
 
-// Koloboke collections
-import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
-
 // Utilities
 import dk.itu.kelvin.util.StringPool;
 
+// Fast utils
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 /**
  * Abstract base class that all OSM Elements must extend.
  *
@@ -62,6 +61,7 @@ public abstract class Element<T extends Node> implements Serializable {
    * memory to empty maps.
    */
   private Map<String, String> tags;
+  //private transient Map<String, String> tags;
 
   /**
    * Add a tag to the element.
@@ -83,7 +83,8 @@ public abstract class Element<T extends Node> implements Serializable {
     }
 
     if (this.tags == null) {
-      this.tags = HashObjObjMaps.newMutableMap(INITIAL_TAG_CAPACITY);
+      this.tags = new Object2ObjectOpenHashMap<>(INITIAL_TAG_CAPACITY);
+      //this.tags = HashObjObjMaps.newMutableMap(INITIAL_TAG_CAPACITY);
     }
 
     return this.tags.put(STRING_POOL.get(k), STRING_POOL.get(v));
@@ -116,7 +117,8 @@ public abstract class Element<T extends Node> implements Serializable {
    */
   public final Map<String, String> tags() {
     if (this.tags == null) {
-      this.tags = HashObjObjMaps.newMutableMap(INITIAL_TAG_CAPACITY);
+      this.tags = new Object2ObjectOpenHashMap<>(INITIAL_TAG_CAPACITY);
+      //this.tags = HashObjObjMaps.newMutableMap(INITIAL_TAG_CAPACITY);
     }
 
     return this.tags;

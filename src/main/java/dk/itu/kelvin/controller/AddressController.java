@@ -163,6 +163,12 @@ public final class AddressController {
   private static Address destinationAddress;
 
   /**
+   * Filter for Points Of Interest, linking the OSM tag reference and the
+   * descriptive output to the user.
+   */
+  private static Map<String, String> filter = HashObjObjMaps.newMutableMap();
+
+  /**
    * Initialize a new address controller.
    *
    * <p>
@@ -252,7 +258,7 @@ public final class AddressController {
    * Initializing Points Of Interest container and content of poiContentVBox.
    */
   private void initPoiBox() {
-    Map<String, String> filter = HashObjObjMaps.newMutableMap();
+    filter = HashObjObjMaps.newMutableMap();
     filter.put("bank", "Bank");
     filter.put("toilets", "Toilets");
     filter.put("cafe", "Cafe");
@@ -683,4 +689,31 @@ public final class AddressController {
       }
     }
   };
+
+  /**
+   * Gets the address store and returns it.
+   * @return the address store.
+   */
+  public static AddressStore getAddressStore() {
+    return AddressController.instance.addresses;
+  }
+
+  /**
+   * Sets the addressStore.
+   * @param addressStore the addressStore.
+   */
+  public static void setAddressStore(final AddressStore addressStore) {
+    AddressController.instance.addresses = addressStore;
+  }
+
+  /**
+   * Unchecks all checkboxes in the Points Of Interest box.
+   */
+  public static void resetPOI() {
+    for (int i = 0; i < AddressController.instance.filter.size(); i++) {
+      CheckBox cb = (CheckBox) AddressController.instance.poiContentVBox.
+        getChildren().get(i);
+      cb.setSelected(false);
+    }
+  }
 }

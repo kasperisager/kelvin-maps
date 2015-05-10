@@ -144,6 +144,10 @@ public final class Chart extends Group {
    * A unit for how many pixel it takes to stretch 1 meter.
    */
   private double unitPrM;
+  /**
+   * The bounds of the chart.
+   */
+  private BoundingBox bounds;
 
   /**
    * Initialize the chart.
@@ -169,6 +173,7 @@ public final class Chart extends Group {
     if (bounds == null) {
       return;
     }
+    this.bounds = bounds;
 
     this.mapWidth = Math.abs(bounds.maxX() - bounds.minX());
     this.mapHeight = Math.abs(bounds.maxY() - bounds.minY());
@@ -182,7 +187,6 @@ public final class Chart extends Group {
     // maps with coastlines.
     double paddingX = 10000 + this.mapWidth;
     double paddingY = 10000 + this.mapHeight;
-
     Rectangle wrapper = new Rectangle(
       bounds.minX() - paddingX,
       bounds.minY() - paddingY,
@@ -190,6 +194,11 @@ public final class Chart extends Group {
       this.mapHeight + paddingY * 2
     );
     wrapper.getStyleClass().add("wrapper");
+
+    if (this.getChildren().contains(wrapper)) {
+      this.getChildren().remove(wrapper);
+    }
+
 
     this.getChildren().add(wrapper);
     this.landLayer.setClip(bounds.render());
@@ -523,6 +532,7 @@ public final class Chart extends Group {
   public void clear() {
     this.landLayer.getChildren().clear();
     this.metaLayer.getChildren().clear();
+    this.showing.clear();
     this.elementStore = new ElementStore();
   }
 
@@ -585,5 +595,21 @@ public final class Chart extends Group {
 
       return (int) (bits ^ (bits >> 32));
     }
+  }
+
+  /**
+   * Gets the elementStore of all elements.
+   * @return the elementStore.
+   */
+  public ElementStore getElementStore() {
+    return this.elementStore;
+  }
+
+  /**
+   * Gets the bounds BoundingBox of the map.
+   * @return the bounds.
+   */
+  public BoundingBox getBounds() {
+    return this.bounds;
   }
 }

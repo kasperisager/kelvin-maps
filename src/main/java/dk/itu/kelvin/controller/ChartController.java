@@ -39,6 +39,7 @@ import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.Node;
+import dk.itu.kelvin.model.BoundingBox;
 
 // Stores
 import dk.itu.kelvin.store.ElementStore;
@@ -51,11 +52,6 @@ public final class ChartController {
    * The ChartController instance.
    */
   private static ChartController instance;
-
-  /**
-   * The input file to show in the map viewer.
-   */
-  private static final String MAP_INPUT = "small.osm";
 
   /**
    * Default zoom step factor.
@@ -148,48 +144,7 @@ public final class ChartController {
   private void initialize() throws Exception {
     ChartController.instance = this;
 
-    // Sets the parent element inactive until done loading.
-    this.mainStackPane.setDisable(true);
-
     this.initLocationPointer();
-
-    File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
-
-    Parser parser = Parser.probe(file);
-
-    parser.read(file, () -> {
-      // Get all addresses from parser.
-      for (Address address : parser.addresses()) {
-        AddressController.addAddress(address);
-      }
-
-      // Sets all POI from initialized nodes.
-      this.storePoi(parser);
-
-      // Schedule rendering of the chart nodes.
-      Platform.runLater(() -> {
-        for (Way l : parser.land()) {
-          this.elementStore.addLand(l);
-        }
-
-        for (Way w : parser.ways()) {
-          this.elementStore.add(w);
-        }
-
-        for (Relation r : parser.relations()) {
-          this.elementStore.add(r);
-        }
-
-        this.elementStore.add(parser.bounds());
-
-        this.chart.elementStore(this.elementStore);
-        this.chart.bounds(parser.bounds());
-
-        // Sets the chart active after load.
-        this.mainStackPane.setDisable(false);
-        ApplicationController.removeIcon();
-      });
-    });
   }
 
   /**
@@ -510,6 +465,7 @@ public final class ChartController {
    */
   public static void clearMap() {
     ChartController.instance.chart.clear();
+    ChartController.elementStore = new ElementStore();
   }
 
   /**
@@ -518,8 +474,6 @@ public final class ChartController {
    */
   public static void loadMap(final File file) {
     ApplicationController.addIcon();
-
-    ChartController.instance.mainStackPane.setDisable(true);
 
     Parser parser = Parser.probe(file);
 
@@ -547,15 +501,43 @@ public final class ChartController {
         ChartController.instance.elementStore.add(parser.bounds());
 
         ChartController.instance.chart.elementStore(
-          ChartController.instance.elementStore
-        );
+          ChartController.elementStore);
         ChartController.instance.chart.bounds(parser.bounds());
 
         // Sets the chart active after load.
-        ChartController.instance.mainStackPane.setDisable(false);
         ApplicationController.removeIcon();
       });
     });
   }
+
+  /**
+   * Gets the element store and returns it.
+   * @return the element store.
+   */
+  public static ElementStore getElementStore() {
+    return ChartController.instance.chart.getElementStore();
+  }
+
+  /**
+   * Gets the current BoundingBox of the chart map.
+   * @return BoundingBox of the chart.
+   */
+  public static BoundingBox getBounds() {
+    return ChartController.instance.chart.getBounds();
+  }
+
+  /**
+   * Sets the elementStore with all elements and sets the bounds.
+   * @param elementStore the elementStore to set.
+   * @param bounds the BoundingBox to set.
+   */
+  public static void loadBinMap(
+    final ElementStore elementStore,
+    final BoundingBox bounds
+  ) {
+    ChartController.instance.chart.elementStore(elementStore);
+    ChartController.instance.chart.bounds(bounds);
+  }
+
 }
 

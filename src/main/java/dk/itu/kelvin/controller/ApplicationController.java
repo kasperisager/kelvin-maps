@@ -4,6 +4,7 @@
 package dk.itu.kelvin.controller;
 
 // JavaFX utilities
+import javafx.application.Platform;
 import javafx.util.Duration;
 
 // JavaFX layout
@@ -46,6 +47,12 @@ public final class ApplicationController {
   private StackPane stackPane;
 
   /**
+   * Main parent StackPane for ChartController.
+   */
+  @FXML
+  private StackPane chart;
+
+  /**
    * The loading icon.
    */
   @FXML
@@ -75,6 +82,14 @@ public final class ApplicationController {
     ApplicationController.instance.rt
     = new RotateTransition(Duration.millis(10000), this.loadIcon);
     ApplicationController.instance.rotateIcon();
+    ApplicationController.instance.stackPane.getChildren().remove(
+      this.loadIcon);
+
+    ApplicationController.addIcon();
+    Platform.runLater(() -> {
+      MenuController.loadDefault();
+      ApplicationController.removeIcon();
+    });
   }
 
   /**
@@ -111,10 +126,11 @@ public final class ApplicationController {
    * Stops rotation and removes the icon.
    */
   public static void removeIcon() {
+
     ApplicationController.instance.rt.stop();
     ApplicationController.instance.stackPane.getChildren().remove(
-      ApplicationController.instance.loadIcon
-    );
+      ApplicationController.instance.loadIcon);
+    ApplicationController.instance.chart.setDisable(false);
   }
 
   /**
@@ -122,7 +138,8 @@ public final class ApplicationController {
    */
   public static void addIcon() {
     ApplicationController.instance.stackPane.getChildren().add(
-      ApplicationController.instance.loadIcon
-    );
+      ApplicationController.instance.loadIcon);
+    ApplicationController.instance.rotateIcon();
+    ApplicationController.instance.chart.setDisable(true);
   }
 }
