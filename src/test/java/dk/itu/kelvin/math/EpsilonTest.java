@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
  *
  * <p>
  * Test different epsilon methods which are used in the program.
- *
  * <p>
  *
  */
@@ -60,8 +59,6 @@ public class EpsilonTest {
     assertFalse(Epsilon.less(134, 125));
   }
 
-
-
   /**
    * Test if a value is less than or equal to another .
    */
@@ -85,10 +82,4 @@ public class EpsilonTest {
     assertFalse(Epsilon.greaterOrEqual(-0.011, -0.01));
     assertFalse(Epsilon.greaterOrEqual(125.20, 125.21));
   }
-
-
-
-
-
-
 }
