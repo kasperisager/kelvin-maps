@@ -34,7 +34,7 @@ public final class Geometry {
    * @return  The distance between points {@code a} and {@code b} or {@code -1}
    *          if either of them are {@code null}.
    */
-  private static double distance(final Point a, final Point b) {
+  public static double distance(final Point a, final Point b) {
     if (a == null || b == null) {
       return -1;
     }
@@ -738,6 +738,18 @@ public final class Geometry {
     }
 
     /**
+     * Get the center point of the rectangle.
+     *
+     * @return The center point of the rectangle.
+     */
+    public final Point center() {
+      return new Point(
+        this.position.x + (this.width / 2),
+        this.position.y + (this.height / 2)
+      );
+    }
+
+    /**
      * Add another rectangle to the current rectangle, letting the current
      * rectangle become the union of the two.
      *
@@ -847,6 +859,18 @@ public final class Geometry {
     }
 
     /**
+     * Get the center point of the bounds.
+     *
+     * @return The center point of the bounds.
+     */
+    public final Point center() {
+      return new Point(
+        this.min.x + ((this.max.x - this.min.x) / 2),
+        this.min.y + ((this.max.y - this.min.y) / 2)
+      );
+    }
+
+    /**
      * Check if the bounds contain the specified point.
      *
      * @param point The point to check containment of.
@@ -859,6 +883,21 @@ public final class Geometry {
       }
 
       return Geometry.intersects(this, point.bounds());
+    }
+
+    /**
+     * Check if the current bounds intersect with the specified bounds.
+     *
+     * @param bounds  The bounds to check intersection of.
+     * @return        A boolean indicating whether or not the bounds intersect
+     *                with the specified bounds.
+     */
+    public final boolean intersects(final Bounds bounds) {
+      if (bounds == null) {
+        return false;
+      }
+
+      return Geometry.intersects(this, bounds);
     }
 
     @Override

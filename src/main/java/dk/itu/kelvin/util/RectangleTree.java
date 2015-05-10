@@ -7,10 +7,15 @@ package dk.itu.kelvin.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 // I/O utilities
 import java.io.Serializable;
+
+// Math
+import dk.itu.kelvin.math.Geometry;
+import dk.itu.kelvin.math.Epsilon;
 
 // Functional utilities
 import dk.itu.kelvin.util.function.Filter;
@@ -70,17 +75,8 @@ public class RectangleTree<E extends RectangleTree.Index>
    * @param elements The elements to add to the tree.
    */
   public RectangleTree(final Collection<E> elements) {
-    @SuppressWarnings("unchecked")
-    E[] array = (E[]) new Index[elements.size()];
-
-    int i = 0;
-
-    for (E element: elements) {
-      array[i++] = element;
-    }
-
-    this.root = this.partition(array, 0, array.length);
-    this.size = array.length;
+    this.root = this.partition(new ArrayList<>(elements));
+    this.size = elements.size();
   }
 
   /**
@@ -143,45 +139,61 @@ public class RectangleTree<E extends RectangleTree.Index>
       return null;
     }
 
-    List<E> elements = new ArrayList<>();
-
-    this.root.range(elements, bounds, filter);
-
-    return elements;
+    return this.root.range(bounds, filter);
   }
 
   /**
-   * Partition the specified array of elements between the given indices using
-   * the Sort-Tile-Recursive (STR) algorithm.
+   * Find the element closest to the specified point.
+   *
+   * @param point
+   * @param filter
+   * @return        The element closest to the specified point.
+   */
+  public final E nearest(final Point point) {
+    if (point == null) {
+      return null;
+    }
+
+    return this.nearest(point, (element) -> {
+      return true;
+    });
+  }
+
+  /**
+   * Find the element included in the filter closest to the specified point.
+   *
+   * @param point
+   * @param filter
+   * @return        The element closest to the specified point.
+   */
+  public final E nearest(final Point point, final Filter<E> filter) {
+    if (point == null || filter == null) {
+      return null;
+    }
+
+    return this.root.nearest(point, filter);
+  }
+
+  /**
+   * Partition the specified list of elements using the Sort-Tile-Recursive
+   * (STR) algorithm.
    *
    * @see <a href="http://www.dtic.mil/dtic/tr/fulltext/u2/a324493.pdf">
    *      http://www.dtic.mil/dtic/tr/fulltext/u2/a324493.pdf</a>
    *
    * @param elements  The elements to partition.
-   * @param start     The starting index of the operation.
-   * @param end       The ending index of the operation.
    * @return          A partitioned {@link Node} instance.
    */
-  private Node<E> partition(
-    final E[] elements,
-    final int start,
-    final int end
-  ) {
-    if (elements == null) {
+  private Node<E> partition(final List<E> elements) {
+    if (elements == null || elements.isEmpty()) {
       return null;
     }
 
-    int length = end - start;
-
-    if (length < 0) {
-      return null;
+    if (elements.size() <= BUCKET_MAXIMUM) {
+      return new Bucket<E>(elements);
     }
 
-    if (length <= BUCKET_MAXIMUM) {
-      return new Bucket<E>(Arrays.copyOfRange(elements, start, end));
-    }
-
-    Arrays.sort(elements, start, end, (a, b) -> {
+    Collections.sort(elements, (a, b) -> {
       return Double.compare(
         a.minX() - ((a.maxX() - a.minX()) / 2),
         b.minX() - ((b.maxX() - b.minX()) / 2)
@@ -189,25 +201,25 @@ public class RectangleTree<E extends RectangleTree.Index>
     });
 
     // Compute the number of leaves.
-    int l = (int) Math.ceil(length / (double) BUCKET_MAXIMUM);
+    int l = (int) Math.ceil(elements.size() / (double) BUCKET_MAXIMUM);
 
     // Compute the number of slices.
     int s = (int) Math.ceil(Math.sqrt(l));
 
     for (int i = 0; i < s; i++) {
       int slice = s * BUCKET_MAXIMUM;
-      int sliceStart = start + i * slice;
-      int sliceEnd = sliceStart + slice;
+      int start = i * slice;
+      int end = start + slice;
 
-      if (sliceStart > end) {
+      if (start > elements.size()) {
         break;
       }
 
-      if (sliceEnd > end) {
-        sliceEnd = end;
+      if (end > elements.size()) {
+        end = elements.size();
       }
 
-      Arrays.sort(elements, sliceStart, sliceEnd, (a, b) -> {
+      Collections.sort(elements.subList(start, end), (a, b) -> {
         return Double.compare(
           a.minY() - ((a.maxY() - a.minY()) / 2),
           b.minY() - ((b.maxY() - b.minY()) / 2)
@@ -215,52 +227,191 @@ public class RectangleTree<E extends RectangleTree.Index>
       });
     }
 
-    if (l <= PAGE_MAXIMUM) {
-      @SuppressWarnings("unchecked")
-      Bucket<E>[] buckets = new Bucket[l];
+    // Can the elements fit on a single page?
+    boolean singlePage = l <= PAGE_MAXIMUM;
 
-      for (int i = 0; i < l; i++) {
-        int bucketStart = start + i * BUCKET_MAXIMUM;
-        int bucketEnd = bucketStart + BUCKET_MAXIMUM;
+    // Compute the number of elements per page.
+    int n = (singlePage) ? l : (int) Math.ceil(l / (double) PAGE_MAXIMUM);
 
-        if (bucketStart > end) {
-          break;
-        }
+    List<Node<E>> nodes = new ArrayList<>();
 
-        if (bucketEnd > end) {
-          bucketEnd = end;
-        }
+    for (int i = 0; i < n; i++) {
+      int start;
+      int end;
 
-        buckets[i] = new Bucket<E>(
-          Arrays.copyOfRange(elements, bucketStart, bucketEnd)
-        );
+      if (singlePage) {
+        start = i * BUCKET_MAXIMUM;
+        end = start + BUCKET_MAXIMUM;
+      }
+      else {
+        start = i * BUCKET_MAXIMUM * PAGE_MAXIMUM;
+        end = start + i * BUCKET_MAXIMUM * PAGE_MAXIMUM;
       }
 
-      return new Page<E>(buckets);
+      if (start > elements.size()) {
+        break;
+      }
+
+      if (end > elements.size()) {
+        end = elements.size();
+      }
+
+      // If the elements can fit on a single page, create a bucket.
+      if (singlePage) {
+        nodes.add(new Bucket<E>(elements.subList(start, end)));
+      }
+      // Otherwise, continue recursively partioning the elements.
+      else {
+        nodes.add(this.partition(elements.subList(start, end)));
+      }
+    }
+
+    return new Page<E>(nodes);
+  }
+
+  /**
+   * Check if an element intersects the specified bounds.
+   *
+   * @param <E>     The type of elements to check intersection of.
+   * @param element The element.
+   * @param bounds  The bounds.
+   * @return        A boolean indicating whether or not the element intersects
+   *                the specified bounds.
+   */
+  private static <E extends Index> boolean intersects(
+    final E element,
+    final Bounds bounds
+  ) {
+    if (element == null || bounds == null) {
+      return false;
+    }
+
+    return bounds.intersects(element.bounds());
+  }
+
+  /**
+   * @see <a href="http://www.cs.umd.edu/~nick/papers/nnpaper.pdf">
+   *      http://www.cs.umd.edu/~nick/papers/nnpaper.pdf</a>
+   *
+   * @param point   The point to calculate the minimum distance to.
+   * @param bounds  The bounds to calculate the minimum distance from.
+   * @return        The minimum distance between the specified bounds and the
+   *                given point.
+   */
+  private static double minimumDistance(
+    final Point point,
+    final Bounds bounds
+  ) {
+    if (point == null || bounds == null) {
+      return Double.POSITIVE_INFINITY;
+    }
+
+    double r1 = point.x();
+
+    if (Epsilon.less(point.x(), bounds.min().x())) {
+      r1 = bounds.min().x();
+    }
+    else if (Epsilon.greater(point.x(), bounds.max().x())) {
+      r1 = bounds.max().x();
+    }
+
+    double r2 = point.y();
+
+    if (Epsilon.less(point.y(), bounds.min().y())) {
+      r2 = bounds.min().y();
+    }
+    else if (Epsilon.greater(point.y(), bounds.max().y())) {
+      r2 = bounds.max().y();
+    }
+
+    return Geometry.distance(point, new Point(r1, r2));
+  }
+
+  /**
+   * @see <a href="http://www.cs.umd.edu/~nick/papers/nnpaper.pdf">
+   *      http://www.cs.umd.edu/~nick/papers/nnpaper.pdf</a>
+   *
+   * @param point   The point to calculate the minimax distance to.
+   * @param bounds  The bounds to calculate the minimax distance from.
+   * @return        The minimax distance between the specified bounds and the
+   *                given point.
+   */
+  private static double minimaxDistance(
+    final Point point,
+    final Bounds bounds
+  ) {
+    if (point == null || bounds == null) {
+      return Double.POSITIVE_INFINITY;
+    }
+
+    double rm1;
+    double rm2;
+
+    if (Epsilon.lessOrEqual(
+      point.x(), (bounds.min().x() + bounds.max().x()) / 2.0
+    )) {
+      rm1 = bounds.min().x();
     }
     else {
-      int p = (int) Math.ceil(l / (double) PAGE_MAXIMUM);
-
-      @SuppressWarnings("unchecked")
-      Node<E>[] children = new Node[p];
-
-      for (int i = 0; i < p; i++) {
-        int pageStart = start + i * BUCKET_MAXIMUM * PAGE_MAXIMUM;
-        int pageEnd = pageStart + i * BUCKET_MAXIMUM * PAGE_MAXIMUM;
-
-        if (pageStart > end) {
-          break;
-        }
-
-        if (pageEnd > end) {
-          pageEnd = end;
-        }
-
-        children[i] = this.partition(elements, pageStart, pageEnd);
-      }
-
-      return new Page<E>(children);
+      rm1 = bounds.max().x();
     }
+
+    if (Epsilon.lessOrEqual(
+      point.y(), (bounds.min().y() + bounds.max().y()) / 2.0
+    )) {
+      rm2 = bounds.min().y();
+    }
+    else {
+      rm2 = bounds.max().y();
+    }
+
+    double rM1;
+    double rM2;
+
+    if (Epsilon.greaterOrEqual(
+      point.x(), (bounds.min().x() + bounds.max().x()) / 2.0
+    )) {
+      rM1 = bounds.min().x();
+    }
+    else {
+      rM1 = bounds.max().x();
+    }
+
+    if (Epsilon.greaterOrEqual(
+      point.y(), (bounds.min().y() + bounds.max().y()) / 2.0
+    )) {
+      rM2 = bounds.min().y();
+    }
+    else {
+      rM2 = bounds.max().x();
+    }
+
+    double s = Geometry.distance(point, new Point(rM1, rM2));
+
+    double distance = Math.min(
+      Math.pow(Math.abs(point.x() - rm1), 2) + s,
+      Math.pow(Math.abs(point.y() - rm2), 2) + s
+    );
+
+    return Math.sqrt(distance);
+  }
+
+  /**
+   * Find the actual distance from an element to a point.
+   *
+   * @param point   The point to find the distance to.
+   * @param element The element to find the distance from.
+   * @return        The actual distance from the element to the point.
+   */
+  private static <E extends Index> double actualDistance(
+    final Point point,
+    final E element
+  ) {
+    if (point == null || element == null) {
+      return Double.POSITIVE_INFINITY;
+    }
+
+    return RectangleTree.minimumDistance(point, element.bounds());
   }
 
   /**
@@ -295,6 +446,15 @@ public class RectangleTree<E extends RectangleTree.Index>
      * @return The largest y-coordinate of the object.
      */
     float maxY();
+
+    /**
+     * Get the bounds of the object.
+     *
+     * @return The bounds of the object.
+     */
+    default Bounds bounds() {
+      return new Bounds(this.minX(), this.minY(), this.maxX(), this.maxY());
+    }
   }
 
   /**
@@ -333,6 +493,15 @@ public class RectangleTree<E extends RectangleTree.Index>
     private float maxY;
 
     /**
+     * Get the bounds of the node.
+     *
+     * @return The bounds of the node.
+     */
+    public final Bounds bounds() {
+      return new Bounds(this.minX, this.minY, this.maxX, this.maxY);
+    }
+
+    /**
      * Check if the node intersects the specified bounds.
      *
      * @param bounds  The bounds to check intersection of.
@@ -340,7 +509,7 @@ public class RectangleTree<E extends RectangleTree.Index>
      *                the specified bounds.
      */
     public final boolean intersects(final Bounds bounds) {
-      return bounds.intersects(this.minX, this.minY, this.maxX, this.maxY);
+      return bounds.intersects(this.bounds());
     }
 
     /**
@@ -351,12 +520,7 @@ public class RectangleTree<E extends RectangleTree.Index>
      *                the specified element.
      */
     public final boolean intersects(final E element) {
-      return (
-        this.minX <= element.maxX()
-        && this.maxX >= element.minX()
-        && this.minY <= element.maxY()
-        && this.maxY >= element.maxY()
-      );
+      return RectangleTree.intersects(element, this.bounds());
     }
 
     /**
@@ -387,15 +551,19 @@ public class RectangleTree<E extends RectangleTree.Index>
     /**
      * Find all elements within the range of the specified bounds.
      *
-     * @param elements  The collection to add the found elements to.
-     * @param bounds    The bounds to search for elements within.
-     * @param filter    The filter to apply to the range search.
+     * @param bounds The bounds to search for elements within.
+     * @param filter The filter to apply to the range search.
      */
-    public abstract void range(
-      final Collection<E> elements,
-      final Bounds bounds,
-      final Filter<E> filter
-    );
+    public abstract List<E> range(final Bounds bounds, final Filter<E> filter);
+
+    /**
+     * Find the element in the node closest to the specified point.
+     *
+     * @param point
+     * @param filter
+     * @return        The element closest to the specified point.
+     */
+    public abstract E nearest(final Point point, final Filter<E> filter);
 
     /**
      * Union the bounds of the current node with the bounds of the specified
@@ -453,28 +621,22 @@ public class RectangleTree<E extends RectangleTree.Index>
     /**
      * The nodes associated with the branch.
      */
-    private Node<E>[] nodes;
-
-    /**
-     * The size of the page.
-     */
-    private int size;
+    private List<Node<E>> nodes;
 
     /**
      * Initialize a new page.
      *
      * @param nodes The nodes associated with the page.
      */
-    public Page(final Node<E>[] nodes) {
+    public Page(final List<Node<E>> nodes) {
       this.nodes = nodes;
 
       for (Node<E> node: nodes) {
         if (node == null) {
-          break;
+          continue;
         }
 
         this.union(node);
-        this.size++;
       }
     }
 
@@ -484,7 +646,7 @@ public class RectangleTree<E extends RectangleTree.Index>
      * @return The size of the page.
      */
     public int size() {
-      return this.size;
+      return this.nodes.size();
     }
 
     /**
@@ -495,7 +657,7 @@ public class RectangleTree<E extends RectangleTree.Index>
      *                specified element.
      */
     public boolean contains(final E element) {
-      if (element == null || this.size == 0) {
+      if (element == null || this.size() == 0) {
         return false;
       }
 
@@ -515,32 +677,124 @@ public class RectangleTree<E extends RectangleTree.Index>
     /**
      * Find all elements within the range of the specified bounds.
      *
-     * @param elements  The collection to add the found elements to.
-     * @param bounds    The bounds to search for elements within.
-     * @param filter    The filter to apply to the range search.
+     * @param bounds The bounds to search for elements within.
+     * @param filter The filter to apply to the range search.
      */
-    public void range(
-      final Collection<E> elements,
-      final Bounds bounds,
-      final Filter<E> filter
-    ) {
+    public List<E> range(final Bounds bounds, final Filter<E> filter) {
+      List<E> elements = new ArrayList<>();
+
       if (
-        this.size == 0
-        || elements == null
+        this.size() == 0
         || bounds == null
         || filter == null
         || !this.intersects(bounds)
       ) {
-        return;
+        return elements;
       }
 
       for (Node<E> node: this.nodes) {
         if (node == null) {
-          break;
+          continue;
         }
 
-        node.range(elements, bounds, filter);
+        elements.addAll(node.range(bounds, filter));
       }
+
+      return elements;
+    }
+
+    /**
+     * Find the element in the page closest to the specified point.
+     *
+     * @param point
+     * @param filter
+     * @return        The element closest to the specified point.
+     */
+    public E nearest(final Point point, final Filter<E> filter) {
+      if (point == null || filter == null) {
+        return null;
+      }
+
+      // "During the descending phase, at each newly visited nonleaf node, the
+      // algorithm computes the ordering metric bounds (e.g. MINDIST, Definition
+      // 2) for all its MBRs and sorts them (associated with their corresponding
+      // node) into an Active Branch List (ABL).
+      List<Node<E>> abl = new ArrayList<>(this.nodes);
+
+      Collections.sort(abl, (a, b) -> {
+        if (a == b) {
+          return 0;
+        }
+
+        if (a == null) {
+          return -1;
+        }
+
+        if (b == null) {
+          return 1;
+        }
+
+        return Double.compare(
+          RectangleTree.minimumDistance(point, a.bounds()),
+          RectangleTree.minimumDistance(point, b.bounds())
+        );
+      });
+
+      // Keep track of the smallest minimax distance.
+      double minimumMinimaxDistance = Double.POSITIVE_INFINITY;
+
+      for (Node<E> node: abl) {
+        double minimaxDistance = RectangleTree.minimaxDistance(
+          point, node.bounds()
+        );
+
+        if (minimumMinimaxDistance > minimaxDistance) {
+          minimumMinimaxDistance = minimaxDistance;
+        }
+      }
+
+      // Search pruning, strategy 1: "an MBR M with MINDIST(P,M) greater than
+      // the MINMAXDIST(P,M') of another MBR M' is discarded because it cannot
+      // contain the NN (theorems 1 and 2). We use this in downward pruning."
+      for (int i = 0; i < abl.size(); i++) {
+        double minimumDistance = RectangleTree.minimumDistance(
+          point, abl.get(i).bounds()
+        );
+
+        if (minimumDistance > minimumMinimaxDistance) {
+          abl.remove(i--);
+        }
+      }
+
+      E nearest = null;
+
+      while (abl.size() > 0) {
+        Node<E> next = abl.remove(0);
+
+        if (next == null) {
+          continue;
+        }
+
+        E estimate = next.nearest(point, filter);
+
+        if (estimate == null) {
+          continue;
+        }
+
+        if (nearest == null) {
+          nearest = estimate;
+        }
+        else {
+          double distNearest = RectangleTree.actualDistance(point, nearest);
+          double distEstimate = RectangleTree.actualDistance(point, estimate);
+
+          if (distNearest > distEstimate) {
+            nearest = estimate;
+          }
+        }
+      }
+
+      return nearest;
     }
   }
 
@@ -559,19 +813,14 @@ public class RectangleTree<E extends RectangleTree.Index>
     /**
      * The elements associated with the bucket.
      */
-    private E[] elements;
-
-    /**
-     * The size of the bucket.
-     */
-    private int size;
+    private List<E> elements;
 
     /**
      * Initialize a new bucket.
      *
      * @param elements The elements associated with the bucket.
      */
-    public Bucket(final E[] elements) {
+    public Bucket(final List<E> elements) {
       this.elements = elements;
 
       for (E element: this.elements) {
@@ -580,7 +829,6 @@ public class RectangleTree<E extends RectangleTree.Index>
         }
 
         this.union(element);
-        this.size++;
       }
     }
 
@@ -590,7 +838,7 @@ public class RectangleTree<E extends RectangleTree.Index>
      * @return The size of the bucket.
      */
     public int size() {
-      return this.size;
+      return this.elements.size();
     }
 
     /**
@@ -601,7 +849,7 @@ public class RectangleTree<E extends RectangleTree.Index>
      *                the specified element.
      */
     public boolean contains(final E element) {
-      if (element == null || this.size == 0) {
+      if (element == null || this.size() == 0) {
         return false;
       }
 
@@ -621,23 +869,19 @@ public class RectangleTree<E extends RectangleTree.Index>
     /**
      * Find all elements within the range of the specified bounds.
      *
-     * @param elements  The collection to add the found elements to.
-     * @param bounds    The bounds to search for elements within.
-     * @param filter    The filter to apply to the range search.
+     * @param bounds The bounds to search for elements within.
+     * @param filter The filter to apply to the range search.
      */
-    public void range(
-      final Collection<E> elements,
-      final Bounds bounds,
-      final Filter<E> filter
-    ) {
+    public List<E> range(final Bounds bounds, final Filter<E> filter) {
+      List<E> elements = new ArrayList<>();
+
       if (
-        this.size == 0
-        || elements == null
+        this.size() == 0
         || bounds == null
         || filter == null
         || !this.intersects(bounds)
       ) {
-        return;
+        return elements;
       }
 
       for (E element: this.elements) {
@@ -645,12 +889,47 @@ public class RectangleTree<E extends RectangleTree.Index>
           continue;
         }
 
-        if (bounds.intersects(
-          element.minX(), element.minY(), element.maxX(), element.maxY()
-        )) {
+        if (RectangleTree.intersects(element, bounds)) {
           elements.add(element);
         }
       }
+
+      return elements;
+    }
+
+    /**
+     * Find the element in the bucket closest to the specified point.
+     *
+     * @param point
+     * @param filter
+     * @return        The element closest to the specified point.
+     */
+    public E nearest(final Point point, final Filter<E> filter) {
+      if (this.size() == 0 || point == null || filter == null) {
+        return null;
+      }
+
+      E nearest = null;
+
+      for (E element: this.elements) {
+        if (element == null || !filter.include(element)) {
+          continue;
+        }
+
+        if (nearest == null) {
+          nearest = element;
+        }
+        else {
+          double distNearest = RectangleTree.actualDistance(point, nearest);
+          double distElement = RectangleTree.actualDistance(point, element);
+
+          if (distNearest > distElement) {
+            nearest = element;
+          }
+        }
+      }
+
+      return nearest;
     }
   }
 }
