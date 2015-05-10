@@ -11,9 +11,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 // JavaFX stage utilities
-import dk.itu.kelvin.model.BoundingBox;
-import dk.itu.kelvin.store.AddressStore;
-import dk.itu.kelvin.store.ElementStore;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -24,6 +21,13 @@ import javafx.scene.control.MenuBar;
 
 // JavaFX Geometry
 import javafx.geometry.Pos;
+
+// Kelvin Models
+import dk.itu.kelvin.model.BoundingBox;
+
+// Kelvin Stores
+import dk.itu.kelvin.store.AddressStore;
+import dk.itu.kelvin.store.ElementStore;
 
 // JavaFX FXML
 import javafx.fxml.FXML;
@@ -260,14 +264,14 @@ public final class MenuController {
     Label l1 = new Label("About");
     l1.getStyleClass().add("header");
     Label l9 = new Label("Kelvin Maps");
-    Label l8 = new Label("Version " + this.CUR_VERSION);
+    Label l8 = new Label("Version: " + this.CUR_VERSION);
     Label l10 = new Label("");
     Label l2 = new Label("This software was made by:");
     Label l3 = new Label("Kasper Isager");
     Label l4 = new Label("Mathias Grundtvig Andreasen");
     Label l5 = new Label("Johan Hjalte á Trødni");
-    Label l7 = new Label("Niklas Pelle Michelsen");
-    Label l6 = new Label("Sebastian Molding Bork");
+    Label l7 = new Label("Sebastian Molding Bork");
+    Label l6 = new Label("Niklas Pelle Michelsen");
     vbox.getChildren().addAll(l1, l9, l8, l10, l2, l3, l4, l5, l7, l6);
     vbox.setAlignment(Pos.CENTER);
     vbox.setPrefWidth(500);

@@ -4,7 +4,6 @@
 package dk.itu.kelvin.controller;
 
 // JavaFX utilities
-import javafx.application.Platform;
 import javafx.util.Duration;
 
 // JavaFX layout
@@ -16,6 +15,9 @@ import javafx.scene.control.Label;
 
 // JavaFX animations
 import javafx.animation.RotateTransition;
+
+// JavaFX application
+import javafx.application.Platform;
 
 // FXML utilities
 import javafx.fxml.FXML;
