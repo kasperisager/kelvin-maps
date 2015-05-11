@@ -109,7 +109,6 @@ public final class MenuController {
     File file = filechooser.showOpenDialog(new Stage());
 
     if (file != null) {
-      //do something with the file.
       AddressController.resetPOI();
       AddressController.clearAddresses();
       ChartController.clearMap();
@@ -132,7 +131,6 @@ public final class MenuController {
       out.writeObject(ChartController.getElementStore());
       out.writeObject(AddressController.getAddressStore());
       out.close();
-      System.out.println("Save complete");
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -158,7 +156,6 @@ public final class MenuController {
 
       ChartController.loadBinMap(elementStore, bounds);
       AddressController.setAddressStore(addressStore);
-      System.out.println("Load complete");
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -190,7 +187,6 @@ public final class MenuController {
 
       ChartController.loadBinMap(elementStore, bounds);
       AddressController.setAddressStore(addressStore);
-      System.out.println("Load complete");
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

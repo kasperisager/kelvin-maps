@@ -453,16 +453,7 @@ public final class AddressController {
       return;
     }
 
-    System.out.println("X: " + this.currentAddress.x() + " " + "Y: "
-      + this.currentAddress.y());
-    System.out.println("X: " + this.destinationAddress.x() + " " + "Y: "
-      + this.destinationAddress.y());
-
     this.autoCompletePopOver.hide();
-
-    /*else {
-      // Dialog "The address does not exist."
-    }*/
 
     this.showDirections();
 
