@@ -7,12 +7,12 @@ package dk.itu.kelvin.model;
 import dk.itu.kelvin.math.Epsilon;
 import org.junit.Test;
 
+// Utilities
+import org.junit.Test;
+
 import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-// JUnit annotations
 // JUnit assertions
 
 /**
