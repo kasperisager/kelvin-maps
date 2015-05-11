@@ -8,12 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
-// Kelvin Model
-import dk.itu.kelvin.model.Address;
-
-// Kelvin Store
-import dk.itu.kelvin.store.AddressStore;
-
 // JavaFX Beans
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -49,6 +43,13 @@ import org.controlsfx.control.PopOver;
 
 // Koloboke collections
 import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
+
+// Models
+import dk.itu.kelvin.model.Address;
+import dk.itu.kelvin.model.Node;
+
+// Stores
+import dk.itu.kelvin.store.AddressStore;
 
 /**
  * AddressField controller.
@@ -461,6 +462,19 @@ public final class AddressController {
       return;
     }
 
+    ChartController.centerChart(
+      this.currentAddress,
+      this.destinationAddress
+    );
+    ChartController.centerChart(
+      this.currentAddress,
+      this.destinationAddress
+    );
+    showShortestPath("car");
+    ChartController.setDistinationPointer(
+      destinationAddress.x(),
+      destinationAddress.y());
+
     this.autoCompletePopOver.hide();
 
     this.showDirections();
@@ -481,6 +495,17 @@ public final class AddressController {
       hbox.getChildren().addAll(icon, label);
       this.directionsContentVBox.getChildren().add(hbox);
     }
+  }
+
+  /**
+   * Find the shortest between 2 adddresses for either cars or bicycles.
+   * @param type the vehicle used for a path.
+   */
+  public static void showShortestPath(final String type) {
+    Node n = new Node(currentAddress.x(), currentAddress.y());
+    Node m = new Node(destinationAddress.x(), destinationAddress.y());
+
+    ChartController.findShortestPath(n, m, type);
   }
 
   /**
@@ -506,6 +531,7 @@ public final class AddressController {
    */
   @FXML
   private void routeByCar() {
+    showShortestPath("car");
   }
 
   /**
@@ -513,6 +539,7 @@ public final class AddressController {
    */
   @FXML
   private void routeByFoot() {
+    showShortestPath("bicycle");
   }
 
   /**
