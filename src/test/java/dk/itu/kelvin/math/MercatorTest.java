@@ -6,9 +6,8 @@ package dk.itu.kelvin.math;
 // JUnit annotations
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-
 // JUnit assertions
+import static org.junit.Assert.assertTrue;
 
 /**
  * {@link Mercator} test suite.
@@ -40,14 +39,13 @@ public class MercatorTest {
     Mercator m = new Mercator();
     double lat = m.yToLat(200.03);
 
-    // we set a deviation on 0,1 %.
+    // deviation of 0,1 %.
     double devLat1 = m.latToY(lat) * 1.001;
     double devLat2 = m.latToY(lat) * 0.099;
     double yCoord = 200.03;
 
     assertTrue( yCoord < devLat1);
     assertTrue( yCoord > devLat2);
-
   }
 
 }
