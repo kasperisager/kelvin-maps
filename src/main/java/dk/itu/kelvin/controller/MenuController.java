@@ -173,7 +173,9 @@ public final class MenuController {
    */
   public static void loadDefault() {
     File file = new File(DEFAULT_BIN);
-
+    if (!file.exists()) {
+      return;
+    }
     AddressController.resetPOI();
     ChartController.clearMap();
 
