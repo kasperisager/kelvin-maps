@@ -520,8 +520,6 @@ public final class ChartController {
 
         // Sets the chart active after load.
         ApplicationController.removeIcon();
-        ChartController.instance.chart.pan(250, 0);
-        ChartController.instance.chart.pan(-250, 0);
       });
     });
   }
@@ -553,5 +551,10 @@ public final class ChartController {
   ) {
     ChartController.instance.chart.elementStore(elementStore);
     ChartController.instance.chart.bounds(bounds);
+  }
+
+  public static void forceTiles() {
+    ChartController.instance.chart.pan(500, 0);
+    ChartController.instance.chart.pan(-500, 0);
   }
 }

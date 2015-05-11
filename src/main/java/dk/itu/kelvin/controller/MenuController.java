@@ -109,10 +109,9 @@ public final class MenuController {
     File file = filechooser.showOpenDialog(new Stage());
 
     if (file != null) {
-      AddressController.resetPOI();
-      AddressController.clearAddresses();
-      ChartController.clearMap();
+      MenuController.clearMap();
       ChartController.loadMap(file);
+      ChartController.forceTiles();
     }
   }
 
@@ -142,8 +141,7 @@ public final class MenuController {
   private void loadBin() {
     File file = new File(CURRENT_BIN);
 
-    AddressController.resetPOI();
-    ChartController.clearMap();
+    MenuController.clearMap();
 
     try (ObjectInputStream in = new ObjectInputStream(
       new FileInputStream(file))
@@ -155,6 +153,7 @@ public final class MenuController {
 
       ChartController.loadBinMap(elementStore, bounds);
       AddressController.setAddressStore(addressStore);
+      ChartController.forceTiles();
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -174,8 +173,7 @@ public final class MenuController {
   public static void loadDefault() {
     File file = new File(DEFAULT_BIN);
 
-    AddressController.resetPOI();
-    ChartController.clearMap();
+    MenuController.clearMap();
 
     try (ObjectInputStream in = new ObjectInputStream(
       new FileInputStream(file))
@@ -187,9 +185,16 @@ public final class MenuController {
 
       ChartController.loadBinMap(elementStore, bounds);
       AddressController.setAddressStore(addressStore);
+      ChartController.forceTiles();
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private static void clearMap() {
+    AddressController.resetPOI();
+    AddressController.clearAddresses();
+    ChartController.clearMap();
   }
 
   /**
