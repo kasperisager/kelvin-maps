@@ -156,7 +156,6 @@ public final class XMLParser extends Parser {
 
     reader.setContentHandler(new ContentHandler());
 
-    System.out.println(file.toURI().toURL().toExternalForm());
     reader.parse(file.toURI().toURL().toExternalForm());
   }
 

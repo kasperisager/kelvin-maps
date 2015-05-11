@@ -5,6 +5,12 @@ build/
 .AppleDouble
 .LSOverride
 
+# Data files
+*.bin
+*.osm
+*.bz2
+*.pbf
+
 # Icon must end with two \r
 Icon
 

@@ -24,6 +24,10 @@ import java.util.ArrayList;
  * Common store for storing all elements in the chart.
  */
 public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
+  /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 3081;
 
   /**
    * A list for all land elements.
@@ -540,5 +544,4 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
       return ElementStore.this.search(this);
     }
   }
-
 }

@@ -5,7 +5,6 @@ package dk.itu.kelvin.util;
 
 // General utilities
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -145,9 +144,8 @@ public class RectangleTree<E extends RectangleTree.Index>
   /**
    * Find the element closest to the specified point.
    *
-   * @param point
-   * @param filter
-   * @return        The element closest to the specified point.
+   * @param point The point to look for elements near.
+   * @return      The element closest to the specified point.
    */
   public final E nearest(final Point point) {
     if (point == null) {
@@ -162,8 +160,8 @@ public class RectangleTree<E extends RectangleTree.Index>
   /**
    * Find the element included in the filter closest to the specified point.
    *
-   * @param point
-   * @param filter
+   * @param point   The point to look for elements near.
+   * @param filter  The filter to apply to the search.
    * @return        The element closest to the specified point.
    */
   public final E nearest(final Point point, final Filter<E> filter) {
@@ -399,6 +397,7 @@ public class RectangleTree<E extends RectangleTree.Index>
   /**
    * Find the actual distance from an element to a point.
    *
+   * @param <E>     The type of the element.
    * @param point   The point to find the distance to.
    * @param element The element to find the distance from.
    * @return        The actual distance from the element to the point.
@@ -551,16 +550,17 @@ public class RectangleTree<E extends RectangleTree.Index>
     /**
      * Find all elements within the range of the specified bounds.
      *
-     * @param bounds The bounds to search for elements within.
-     * @param filter The filter to apply to the range search.
+     * @param bounds  The bounds to search for elements within.
+     * @param filter  The filter to apply to the range search.
+     * @return        All elements within the range of the specified bounds.
      */
     public abstract List<E> range(final Bounds bounds, final Filter<E> filter);
 
     /**
      * Find the element in the node closest to the specified point.
      *
-     * @param point
-     * @param filter
+     * @param point   The point to look for elements near.
+     * @param filter  The filter to apply to the search.
      * @return        The element closest to the specified point.
      */
     public abstract E nearest(final Point point, final Filter<E> filter);
@@ -677,8 +677,9 @@ public class RectangleTree<E extends RectangleTree.Index>
     /**
      * Find all elements within the range of the specified bounds.
      *
-     * @param bounds The bounds to search for elements within.
-     * @param filter The filter to apply to the range search.
+     * @param bounds  The bounds to search for elements within.
+     * @param filter  The filter to apply to the range search.
+     * @return        All elements with range of the specified bounds.
      */
     public List<E> range(final Bounds bounds, final Filter<E> filter) {
       List<E> elements = new ArrayList<>();
@@ -706,8 +707,8 @@ public class RectangleTree<E extends RectangleTree.Index>
     /**
      * Find the element in the page closest to the specified point.
      *
-     * @param point
-     * @param filter
+     * @param point   The point to look for elements near.
+     * @param filter  The filter to apply to the search.
      * @return        The element closest to the specified point.
      */
     public E nearest(final Point point, final Filter<E> filter) {
@@ -869,8 +870,9 @@ public class RectangleTree<E extends RectangleTree.Index>
     /**
      * Find all elements within the range of the specified bounds.
      *
-     * @param bounds The bounds to search for elements within.
-     * @param filter The filter to apply to the range search.
+     * @param bounds  The bounds to search for elements within.
+     * @param filter  The filter to apply to the range search.
+     * @return        All elements within range of the specified bounds.
      */
     public List<E> range(final Bounds bounds, final Filter<E> filter) {
       List<E> elements = new ArrayList<>();
@@ -900,8 +902,8 @@ public class RectangleTree<E extends RectangleTree.Index>
     /**
      * Find the element in the bucket closest to the specified point.
      *
-     * @param point
-     * @param filter
+     * @param point   The point to look for elements near.
+     * @param filter  The filter to apply to the search.
      * @return        The element closest to the specified point.
      */
     public E nearest(final Point point, final Filter<E> filter) {

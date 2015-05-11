@@ -282,20 +282,18 @@ public final class AddressController {
     filter.put("recycling", "Recycling");
     filter.put("restaurant", "Restaurant");
 
-    for (String s : filter.keySet()) {
+    for (String s: filter.keySet()) {
       CheckBox cb = new CheckBox(filter.get(s));
       cb.setPrefWidth(200);
 
       cb.selectedProperty().addListener((ob, ov, nv) -> {
         if (nv) {
           ChartController.showPoi(s);
-          //this.showPointsOfInterests(s);
         } else {
           ChartController.hidePoi(s);
-          //this.hidePointsOfInterests(s);
         }
-
       });
+
       this.poiContentVBox.getChildren().add(cb);
     }
   }
@@ -341,8 +339,10 @@ public final class AddressController {
    * Adds the highlight style to selected address suggestion.
    */
   private void addHighlightStyle() {
-    Button b = (Button) this.autoCompletePopOverVBox.getChildren().
-      get(this.pointer);
+    Button b = (Button) this.autoCompletePopOverVBox
+      .getChildren()
+      .get(this.pointer);
+
     b.getStyleClass().add("highlight");
   }
 
@@ -350,8 +350,10 @@ public final class AddressController {
    * Remove the highlight style to selected address suggestion.
    */
   private void removeHighlightStyle() {
-    Button b = (Button) this.autoCompletePopOverVBox.getChildren().
-      get(this.pointer);
+    Button b = (Button) this.autoCompletePopOverVBox
+      .getChildren()
+      .get(this.pointer);
+
     b.getStyleClass().remove("highlight");
   }
 
@@ -384,10 +386,13 @@ public final class AddressController {
   @FXML
   private void findAddress() {
     if (this.autoCompletePopOver.isShowing()) {
-      Button b = (Button) this.autoCompletePopOverVBox.getChildren().
-        get(this.pointer);
-      AddressController.address =
-        Address.parse(this.findAddressTextField.getText());
+      Button b = (Button) this.autoCompletePopOverVBox
+        .getChildren()
+        .get(this.pointer);
+
+      AddressController.address = Address.parse(
+        this.findAddressTextField.getText()
+      );
 
       if (AddressController.address.number() == null) {
         insertStreet(this.findAddressTextField, b.getText());
@@ -416,10 +421,13 @@ public final class AddressController {
   @FXML
   private void findRoute() {
     if (this.autoCompletePopOver.isShowing()) {
-      Button b = (Button) this.autoCompletePopOverVBox.getChildren().
-        get(this.pointer);
-      AddressController.address =
-        Address.parse(this.findRouteTextField.getText());
+      Button b = (Button) this.autoCompletePopOverVBox
+        .getChildren()
+        .get(this.pointer);
+
+      AddressController.address = Address.parse(
+        this.findRouteTextField.getText()
+      );
 
       if (AddressController.address.number() == null) {
         insertStreet(this.findRouteTextField, b.getText());
@@ -453,16 +461,7 @@ public final class AddressController {
       return;
     }
 
-    System.out.println("X: " + this.currentAddress.x() + " " + "Y: "
-      + this.currentAddress.y());
-    System.out.println("X: " + this.destinationAddress.x() + " " + "Y: "
-      + this.destinationAddress.y());
-
     this.autoCompletePopOver.hide();
-
-    /*else {
-      // Dialog "The address does not exist."
-    }*/
 
     this.showDirections();
 
@@ -492,9 +491,11 @@ public final class AddressController {
     Address temp = this.currentAddress;
     this.currentAddress = this.destinationAddress;
     this.destinationAddress = temp;
+
     String from = this.findAddressTextField.getText();
     this.findAddressTextField.setText(this.findRouteTextField.getText());
     this.findRouteTextField.setText(from);
+
     if (this.autoCompletePopOver.isShowing()) {
       this.autoCompletePopOver.hide(new Duration(0));
     }
@@ -593,12 +594,17 @@ public final class AddressController {
           AddressController.addresses.search(tf.getText());
 
         AddressController.address = Address.parse(tf.getText());
+        if (AddressController.address == null) {
+          return;
+        }
 
-        AddressController.autoCompletePopOverVBox =
-          new VBox(AddressController.autoCompleteSuggestions.size());
+        AddressController.autoCompletePopOverVBox = new VBox(
+          AddressController.autoCompleteSuggestions.size()
+        );
 
-        AddressController.autoCompletePopOverVBox.
-          setPrefWidth(bounds.getWidth() + 27);
+        AddressController.autoCompletePopOverVBox.setPrefWidth(
+          bounds.getWidth() + 27
+        );
 
         if (AddressController.address.number() == null) {
           // Create suggestions without street numbers.
@@ -667,14 +673,20 @@ public final class AddressController {
 
               if (tf.getId().equals("findAddressTextField")) {
                 AddressController.currentAddress = AddressController
-                  .autoCompleteSuggestions.get(suggestion);
+                  .autoCompleteSuggestions
+                  .get(suggestion);
+
                 AddressController.instance.findAddress(
-                  AddressController.currentAddress);
+                  AddressController.currentAddress
+                );
               } else if (tf.getId().equals("findRouteTextField")) {
                 AddressController.destinationAddress = AddressController
-                  .autoCompleteSuggestions.get(suggestion);
+                  .autoCompleteSuggestions
+                  .get(suggestion);
+
                 AddressController.instance.findRoute(
-                  AddressController.destinationAddress);
+                  AddressController.destinationAddress
+                );
               }
             }));
 
@@ -693,7 +705,8 @@ public final class AddressController {
 
       // Adds the VBox to the popover.
       AddressController.autoCompletePopOver.setContentNode(
-        AddressController.autoCompletePopOverVBox);
+        AddressController.autoCompletePopOverVBox
+      );
 
       // Makes the popover visible.
       if (!AddressController.autoCompletePopOver.isShowing()) {
@@ -728,8 +741,10 @@ public final class AddressController {
    */
   public static void resetPOI() {
     for (int i = 0; i < AddressController.instance.filter.size(); i++) {
-      CheckBox cb = (CheckBox) AddressController.instance.poiContentVBox.
-        getChildren().get(i);
+      CheckBox cb = (CheckBox) AddressController.instance.poiContentVBox
+        .getChildren()
+        .get(i);
+
       cb.setSelected(false);
     }
   }
@@ -740,10 +755,12 @@ public final class AddressController {
    */
   private static void insertAddress(final TextField tf, final String text) {
     tf.textProperty().removeListener(
-      AddressController.instance.addressFieldListener);
+      AddressController.instance.addressFieldListener
+    );
     tf.setText(text);
     tf.textProperty().addListener(
-      AddressController.instance.addressFieldListener);
+      AddressController.instance.addressFieldListener
+    );
     AddressController.autoCompletePopOver.hide(Duration.ONE);
   }
 
@@ -756,7 +773,8 @@ public final class AddressController {
    */
   private static void insertStreet(final TextField tf, final String text) {
     tf.textProperty().removeListener(
-      AddressController.instance.addressFieldListener);
+      AddressController.instance.addressFieldListener
+    );
 
     int comma = text.indexOf(",");
     StringBuilder builder = new StringBuilder(text);
@@ -764,7 +782,8 @@ public final class AddressController {
     tf.setText(builder.toString());
 
     tf.textProperty().addListener(
-      AddressController.instance.addressFieldListener);
+      AddressController.instance.addressFieldListener
+    );
     AddressController.autoCompletePopOver.hide(Duration.ONE);
     tf.positionCaret(comma + 1);
   }
