@@ -511,8 +511,6 @@ public final class ChartController {
           ChartController.instance.elementStore.add(r);
         }
 
-        //ChartController.instance.elementStore.checkLand();
-
         ChartController.instance.elementStore.add(parser.bounds());
 
         ChartController.instance.chart.elementStore(
