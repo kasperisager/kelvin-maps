@@ -267,7 +267,7 @@ public final class Land extends Element<Group> {
    */
   public Group render() {
     Group group = new Group();
-
+    System.out.println("rendering land");
     for (Way coastline: this.coastlines) {
       group.getChildren().add(coastline.render());
     }
