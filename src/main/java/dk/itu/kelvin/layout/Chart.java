@@ -78,7 +78,7 @@ public final class Chart extends Group {
   /**
    * Minimum zoom factor.
    */
-  private static double minZoomFactor = 0.0000001;
+  private static final double MIN_ZOOM_FACTOR = 0.5;
 
   /**
    * The size of each tile in the chart.
@@ -174,6 +174,7 @@ public final class Chart extends Group {
     if (bounds == null) {
       return;
     }
+
     this.bounds = bounds;
 
     this.mapWidth = Math.abs(bounds.maxX() - bounds.minX());
@@ -215,19 +216,24 @@ public final class Chart extends Group {
     double unitPrPx = mapLength / (this.mapWidth / 100);
     this.unitPrM = 100 / unitPrPx;
 
-    this.calcMinZoomFactor();
-    this.center(centerNode, this.minZoomFactor);
+    this.center(centerNode);
     this.forceTiles();
   }
 
   /**
-   * Recalculates the min zoom factor, in case the user changes the window size.
+   * Gets the elementStore of all elements.
+   * @return the elementStore.
    */
-  private void calcMinZoomFactor() {
-    double scaleX = this.mapWidth / this.getScene().getWidth();
-    double scaleY = this.mapHeight / this.getScene().getHeight();
-    double scaleMax = Math.max(scaleX, scaleY);
-    this.minZoomFactor = 1 / scaleMax;
+  public ElementStore getElementStore() {
+    return this.elementStore;
+  }
+
+  /**
+   * Gets the bounds BoundingBox of the map.
+   * @return the bounds.
+   */
+  public BoundingBox getBounds() {
+    return this.bounds;
   }
 
   /**
@@ -347,7 +353,6 @@ public final class Chart extends Group {
    * @param y       The y-coordinate of the pivot point.
    */
   public void zoom(final double factor, final double x, final double y) {
-    this.calcMinZoomFactor();
     double oldScale = this.getScaleX();
     double newScale = oldScale * factor;
 
@@ -355,7 +360,7 @@ public final class Chart extends Group {
       return;
     }
 
-    if (factor < 1 && newScale < minZoomFactor) {
+    if (factor < 1 && newScale < MIN_ZOOM_FACTOR) {
       return;
     }
 
@@ -627,21 +632,5 @@ public final class Chart extends Group {
 
       return (int) (bits ^ (bits >> 32));
     }
-  }
-
-  /**
-   * Gets the elementStore of all elements.
-   * @return the elementStore.
-   */
-  public ElementStore getElementStore() {
-    return this.elementStore;
-  }
-
-  /**
-   * Gets the bounds BoundingBox of the map.
-   * @return the bounds.
-   */
-  public BoundingBox getBounds() {
-    return this.bounds;
   }
 }
