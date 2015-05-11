@@ -12,11 +12,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class GeometryTest {
-  // HErro
-
-
   /**
-   *
+   * Test the calculation of distance between two points.
    */
   @Test
   public void testDistance() {
@@ -31,7 +28,7 @@ public class GeometryTest {
   }
 
   /**
-   *
+   * Test if two bound objects intersect.
    */
   @Test
   public void testIntersects() {
@@ -49,7 +46,7 @@ public class GeometryTest {
   }
 
   /**
-   *
+   * Test if two rectangle objects intersect.
    */
   @Test
   public void testIntersects2() {
@@ -65,7 +62,7 @@ public class GeometryTest {
   }
 
   /**
-   *
+   * Test if two line objects intersect.
    */
   @Test
   public void testIntersection3() {
@@ -82,6 +79,25 @@ public class GeometryTest {
 
     assertEquals(p5, Geometry.intersection(l1, l2));
     assertEquals(null, Geometry.intersection(l1, l3));
+  }
+
+  /**
+   *
+   */
+  @Test
+  public void testUnion() {
+    Geometry.Point p1 = new Geometry.Point(2, 6);
+    Geometry.Point p2 = new Geometry.Point(3, 5);
+
+    Geometry.Rectangle r1 = new Geometry.Rectangle(p1, 6, 4);
+    Geometry.Rectangle r2 = new Geometry.Rectangle(p2, 4, 5);
+
+    Geometry.Rectangle r3 = Geometry.union(r1, r2);
+    Geometry.Point p3 = new Geometry.Point(2, 5);
+
+    assertEquals(p3, r3.position());
+    assertTrue(r3.width() == 6);
+    assertTrue(r3.height() == 5);
   }
 
   public static class LineTest {
@@ -203,7 +219,6 @@ public class GeometryTest {
       Geometry.Polyline pl1 = new Geometry.Polyline(p1, p2, p3, p4);
       assertTrue(pl1.length() == 30);
     }
-
   }
 
   /**
@@ -229,7 +244,6 @@ public class GeometryTest {
 
       new Geometry.Circle(p1, -8);
     }
-
   }
 
   /**
@@ -265,15 +279,59 @@ public class GeometryTest {
       Geometry.Rectangle r1 = new Geometry.Rectangle(p1, 5, 4);
 
       Geometry.Point p2 = new Geometry.Point(6, 5);
-      Geometry.Rectangle r2 = new Geometry.Rectangle(p1, 3, 4);
+      Geometry.Rectangle r2 = new Geometry.Rectangle(p2, 3, 4);
 
-      Geometry.Rectangle r3 = Geometry.union(r1, r2);
+      r2.add(r1);
 
-      assertEquals(p1, r3.position());
-      assertTrue(r3.width() == 9);
-      assertTrue(r3.height() == 7);
+      assertEquals(p1, r2.position());
+      assertTrue(r2.width() == 9);
+      assertTrue(r2.height() == 7);
     }
 
+    /**
+     * Test calculation of added area through add method.
+     */
+    @Test
+    public void testEnlargement() {
+      Geometry.Point p1 = new Geometry.Point(2, 2);
+      Geometry.Point p2 = new Geometry.Point(4, 4);
+      Geometry.Rectangle r1 = new Geometry.Rectangle(p1, 5, 5);
+      Geometry.Rectangle r2 = new Geometry.Rectangle(p2, 3, 3);
+
+      assertTrue(r1.enlargement(r2) == 25.0);
+    }
+  }
+
+  /**
+   * Test of the Bounds inner class.
+   */
+  public static class Bounds {
+    /**
+     * Test initialization with null point.
+     */
+    @Test (expected = RuntimeException.class)
+    public void testBounds() {
+      Geometry.Point p1 = new Geometry.Point(3, 3);
+      Geometry.Point p2 = null;
+
+      new Geometry.Bounds(p1, p2);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testContains() {
+      Geometry.Point p1 = new Geometry.Point(2, 2);
+      Geometry.Point p2 = new Geometry.Point(5, 5);
+      Geometry.Point p3 = null;
+      Geometry.Point p4 = new Geometry.Point(3, 3);
+
+      Geometry.Bounds b1 = new Geometry.Bounds(p1, p2);
+
+      assertFalse(b1.contains(p3));
+      assertTrue(b1.contains(p4));
+    }
   }
 
 }
