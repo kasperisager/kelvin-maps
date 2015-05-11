@@ -5,9 +5,11 @@ package dk.itu.kelvin.util;
 
 // General utilities
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+// Fast utils
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 /**
  * WeightedGraph class.
@@ -21,7 +23,7 @@ public final class WeightedGraph<
   /**
    * The adjacency list for all vertices and edges in the graph.
    */
-  private Map<N, Map<N, E>> neighbours = new HashMap<>();
+  private Map<N, Map<N, E>> neighbours = new Object2ObjectOpenHashMap<>();
 
   /**
    * Add an edge to the weighted graph.
@@ -37,11 +39,11 @@ public final class WeightedGraph<
       N b = nodes.get(i + 1);
 
       if (!this.neighbours.containsKey(a)) {
-        this.neighbours.put(a, new HashMap<>());
+        this.neighbours.put(a, new Object2ObjectOpenHashMap<>(2));
       }
 
       if (!this.neighbours.containsKey(b)) {
-        this.neighbours.put(b, new HashMap<>());
+        this.neighbours.put(b, new Object2ObjectOpenHashMap<>(2));
       }
 
       switch (direction) {
