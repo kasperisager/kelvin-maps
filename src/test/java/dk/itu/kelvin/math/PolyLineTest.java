@@ -15,7 +15,7 @@ public class PolyLineTest {
    * Test initializing a polyline with too few points.
    */
   @Test (expected = RuntimeException.class)
-  public void testPolyLine() {
+  public void testPolyLineInitializationWithSinglePoint() {
     Geometry.Point p1 = new Geometry.Point(4 , 5);
 
     new Geometry.Polyline(p1);
@@ -25,7 +25,7 @@ public class PolyLineTest {
    * Test initializing a polyline with a point, which is null.
    */
   @Test (expected = NullPointerException.class)
-  public void testPolyLine2() {
+  public void testPolyLineInitalizationWithNullPoint() {
     Geometry.Point p1 = new Geometry.Point(4 , 5);
     Geometry.Point p2 = null;
     Geometry.Point p3 = new Geometry.Point(4 , 5);
@@ -65,6 +65,6 @@ public class PolyLineTest {
     assertTrue(pl1.length() == 30);
   }
 
-  
+
 
 }
