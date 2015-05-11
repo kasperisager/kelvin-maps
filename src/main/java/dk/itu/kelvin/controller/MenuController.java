@@ -90,27 +90,11 @@ public final class MenuController {
   }
 
   /**
-   * Getting MenuController instance.
-   * @return MenuController instance.
-   */
-  public static MenuController instance() {
-    return MenuController.instance;
-  }
-
-  /**
-   * Initializing the MenuController instance.
-   * @param instance the MenuController instance.
-   */
-  private static void instance(final MenuController instance) {
-    MenuController.instance = instance;
-  }
-
-  /**
    * The initialize method.
    */
   @FXML
   private void initialize() {
-    MenuController.instance(this);
+    MenuController.instance = this;
   }
   /**
    * Choose an .OSM, .XML, .PBF file to be loaded.
