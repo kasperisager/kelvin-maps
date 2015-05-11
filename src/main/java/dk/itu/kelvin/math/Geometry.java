@@ -253,6 +253,21 @@ public final class Geometry {
     }
 
     @Override
+    public final boolean equals(Object object) {
+      if (this == object) {
+        return true;
+      }
+
+      if (object == null) {
+        return false;
+      }
+
+      Geometry.Point point = (Point) object;
+
+      return (point.x() == this.x() && point.y() == this.y());
+    }
+
+    @Override
     public final String toString() {
       return "Point["
       + "x = " + this.x
@@ -493,7 +508,7 @@ public final class Geometry {
 
       return false;
     }
-
+    
     /**
      * Get the bounds of the polyline.
      *
