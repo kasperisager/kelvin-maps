@@ -139,24 +139,7 @@ public final class MenuController {
    */
   @FXML
   private void loadBin() {
-    File file = new File(CURRENT_BIN);
-
-    MenuController.clearMap();
-
-    try (ObjectInputStream in = new ObjectInputStream(
-      new FileInputStream(file))
-    ) {
-      BoundingBox bounds = (BoundingBox) in.readObject();
-      ElementStore elementStore = (ElementStore) in.readObject();
-      AddressStore addressStore = (AddressStore) in.readObject();
-      in.close();
-
-      ChartController.loadBinMap(elementStore, bounds);
-      AddressController.setAddressStore(addressStore);
-      ChartController.forceTiles();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    loadBin(CURRENT_BIN);
   }
 
   /**
@@ -164,13 +147,17 @@ public final class MenuController {
    */
   @FXML
   private void defaultBin() {
-    MenuController.instance.loadDefault();
+    loadBin(DEFAULT_BIN);
   }
 
   /**
    * Static method for loading the default map that can't be changed.
    */
   public static void loadDefault() {
+    loadBin(DEFAULT_BIN);
+  }
+
+  private static void loadBin(String filename) {
     File file = new File(DEFAULT_BIN);
 
     MenuController.clearMap();
