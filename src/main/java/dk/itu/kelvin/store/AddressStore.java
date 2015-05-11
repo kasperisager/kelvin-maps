@@ -31,6 +31,11 @@ import dk.itu.kelvin.model.Address;
  */
 public final class AddressStore extends Store<Address, String> {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 3085;
+
+  /**
    * The addresses contained within the store.
    */
   private List<Address> addresses = new ArrayList<>();

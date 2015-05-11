@@ -29,6 +29,11 @@ import dk.itu.kelvin.util.WeightedGraph;
  */
 public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 3081;
+
+  /**
    * Weighted graph for all carRoads.
    */
   private WeightedGraph carGraph = new WeightedGraph();

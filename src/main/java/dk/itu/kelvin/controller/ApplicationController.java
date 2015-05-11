@@ -81,11 +81,13 @@ public final class ApplicationController {
   private void initialize() {
     ApplicationController.instance = this;
 
-    ApplicationController.instance.rt
-    = new RotateTransition(Duration.millis(10000), this.loadIcon);
+    ApplicationController.instance.rt = new RotateTransition(
+      Duration.millis(10000), this.loadIcon
+    );
     ApplicationController.instance.rotateIcon();
     ApplicationController.instance.stackPane.getChildren().remove(
-      this.loadIcon);
+      this.loadIcon
+    );
 
     ApplicationController.addIcon();
     Platform.runLater(() -> {
@@ -99,17 +101,18 @@ public final class ApplicationController {
    * This enables us to change colours of the map.
    */
   public static void highContrast() {
-    if (!ApplicationController.instance.mainBorderPane.getStyleClass().
-      contains("high-contrast")) {
-      ApplicationController.instance.mainBorderPane.getStyleClass().
-      add("high-contrast");
-      System.out.println(ApplicationController.instance.mainBorderPane.
-      getStyleClass());
+    if (
+      !ApplicationController.instance.mainBorderPane
+        .getStyleClass()
+        .contains("high-contrast")
+    ) {
+      ApplicationController.instance.mainBorderPane
+        .getStyleClass()
+        .add("high-contrast");
     } else {
-      ApplicationController.instance.mainBorderPane.getStyleClass().
-      remove("high-contrast");
-      System.out.println(ApplicationController.instance.mainBorderPane.
-      getStyleClass());
+      ApplicationController.instance.mainBorderPane
+        .getStyleClass()
+        .remove("high-contrast");
     }
   }
 
@@ -128,10 +131,10 @@ public final class ApplicationController {
    * Stops rotation and removes the icon.
    */
   public static void removeIcon() {
-
     ApplicationController.instance.rt.stop();
     ApplicationController.instance.stackPane.getChildren().remove(
-      ApplicationController.instance.loadIcon);
+      ApplicationController.instance.loadIcon
+    );
     ApplicationController.instance.chart.setDisable(false);
   }
 
@@ -140,7 +143,8 @@ public final class ApplicationController {
    */
   public static void addIcon() {
     ApplicationController.instance.stackPane.getChildren().add(
-      ApplicationController.instance.loadIcon);
+      ApplicationController.instance.loadIcon
+    );
     ApplicationController.instance.rotateIcon();
     ApplicationController.instance.chart.setDisable(true);
   }

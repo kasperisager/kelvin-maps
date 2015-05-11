@@ -90,27 +90,11 @@ public final class MenuController {
   }
 
   /**
-   * Getting MenuController instance.
-   * @return MenuController instance.
-   */
-  public static MenuController instance() {
-    return MenuController.instance;
-  }
-
-  /**
-   * Initializing the MenuController instance.
-   * @param instance the MenuController instance.
-   */
-  private static void instance(final MenuController instance) {
-    MenuController.instance = instance;
-  }
-
-  /**
    * The initialize method.
    */
   @FXML
   private void initialize() {
-    MenuController.instance(this);
+    MenuController.instance = this;
   }
   /**
    * Choose an .OSM, .XML, .PBF file to be loaded.
@@ -120,12 +104,11 @@ public final class MenuController {
     FileChooser filechooser = new FileChooser();
     filechooser.setTitle("Select file to load");
     filechooser.getExtensionFilters().add(
-      new FileChooser.ExtensionFilter("All Files", "*.osm", "*xml", "*.pbf")
+      new FileChooser.ExtensionFilter("All Files", "*.osm", "*.xml", "*.pbf")
     );
     File file = filechooser.showOpenDialog(new Stage());
 
     if (file != null) {
-      //do something with the file.
       AddressController.resetPOI();
       AddressController.clearAddresses();
       ChartController.clearMap();
@@ -138,7 +121,6 @@ public final class MenuController {
    */
   @FXML
   private void saveBin() {
-    //do stuff.
     File file = new File(CURRENT_BIN);
 
     try (ObjectOutputStream out = new ObjectOutputStream(
@@ -148,11 +130,9 @@ public final class MenuController {
       out.writeObject(ChartController.getElementStore());
       out.writeObject(AddressController.getAddressStore());
       out.close();
-      System.out.println("Save complete");
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-
   }
 
   /**
@@ -164,6 +144,7 @@ public final class MenuController {
 
     AddressController.resetPOI();
     ChartController.clearMap();
+
     try (ObjectInputStream in = new ObjectInputStream(
       new FileInputStream(file))
     ) {
@@ -174,7 +155,6 @@ public final class MenuController {
 
       ChartController.loadBinMap(elementStore, bounds);
       AddressController.setAddressStore(addressStore);
-      System.out.println("Load complete");
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -196,6 +176,7 @@ public final class MenuController {
 
     AddressController.resetPOI();
     ChartController.clearMap();
+
     try (ObjectInputStream in = new ObjectInputStream(
       new FileInputStream(file))
     ) {
@@ -206,7 +187,6 @@ public final class MenuController {
 
       ChartController.loadBinMap(elementStore, bounds);
       AddressController.setAddressStore(addressStore);
-      System.out.println("Load complete");
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -261,18 +241,27 @@ public final class MenuController {
     this.about = new PopOver();
     VBox vbox = new VBox();
     vbox.getStyleClass().add("aboutVBox");
-    Label l1 = new Label("About");
-    l1.getStyleClass().add("header");
-    Label l9 = new Label("Kelvin Maps");
-    Label l8 = new Label("Version: " + this.CUR_VERSION);
-    Label l10 = new Label("");
-    Label l2 = new Label("This software was made by:");
-    Label l3 = new Label("Kasper Isager");
-    Label l4 = new Label("Mathias Grundtvig Andreasen");
-    Label l5 = new Label("Johan Hjalte á Trødni");
-    Label l7 = new Label("Sebastian Molding Bork");
-    Label l6 = new Label("Niklas Pelle Michelsen");
-    vbox.getChildren().addAll(l1, l9, l8, l10, l2, l3, l4, l5, l7, l6);
+
+    Label header = new Label("About");
+    header.getStyleClass().add("header");
+
+    Label version = new Label(
+      "Kelvin Maps"
+    + "\nVersion: " + this.CUR_VERSION
+    );
+
+    Label credits = new Label(
+      "This software was made by:"
+    + "\n"
+    + "\nJohan Hjalte á Trødni"
+    + "\nKasper Kronborg Isager"
+    + "\nMathias Grundtvig Andreasen"
+    + "\nNiklas Pelle Michelsen"
+    + "\nSebastian Molding Bork"
+    + "\n"
+    );
+
+    vbox.getChildren().addAll(header, version, credits);
     vbox.setAlignment(Pos.CENTER);
     vbox.setPrefWidth(500);
 

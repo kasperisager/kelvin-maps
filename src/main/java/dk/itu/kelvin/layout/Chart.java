@@ -461,8 +461,12 @@ public final class Chart extends Group {
     List<Element> elements = this.elementStore.find()
       .types("poi")
       .tag(tag)
-      .bounds(this.minX, this.minY, this.maxX + this.tileSize,
-        this.maxY + this.tileSize)
+      .bounds(
+        this.minX,
+        this.minY,
+        this.maxX + this.tileSize,
+        this.maxY + this.tileSize
+      )
       .get();
 
       for (Element element: elements) {

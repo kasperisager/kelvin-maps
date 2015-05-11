@@ -706,6 +706,19 @@ public final class ChartController {
         for (Way l: parser.land()) {
           ChartController.instance.elementStore.addLand(l);
         }
+        // Adds land around entire bounds if parser doesn't have any coastlines.
+        if (parser.land().isEmpty()) {
+          BoundingBox tempBounds = parser.bounds();
+          Way defaultLand = new Way();
+          defaultLand.add(new Node(tempBounds.minX(), tempBounds.minY()));
+          defaultLand.add(new Node(tempBounds.maxX(), tempBounds.minY()));
+          defaultLand.add(new Node(tempBounds.maxX(), tempBounds.maxY()));
+          defaultLand.add(new Node(tempBounds.minX(), tempBounds.maxY()));
+          defaultLand.add(new Node(tempBounds.minX(), tempBounds.minY()));
+          defaultLand.tag("land", "yes");
+          defaultLand.tag("layer", "-9999");
+          ChartController.instance.elementStore.addLand(defaultLand);
+        }
 
         for (Way w: parser.ways()) {
           ChartController.instance.elementStore.add(w);
@@ -718,7 +731,8 @@ public final class ChartController {
         ChartController.instance.elementStore.add(parser.bounds());
 
         ChartController.instance.chart.elementStore(
-          ChartController.elementStore);
+          ChartController.elementStore
+        );
         ChartController.instance.chart.bounds(parser.bounds());
 
         // Sets the chart active after load.
