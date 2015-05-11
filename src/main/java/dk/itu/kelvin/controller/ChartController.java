@@ -520,8 +520,6 @@ public final class ChartController {
 
         // Sets the chart active after load.
         ApplicationController.removeIcon();
-        ChartController.instance.chart.pan(250, 0);
-        ChartController.instance.chart.pan(-250, 0);
       });
     });
   }

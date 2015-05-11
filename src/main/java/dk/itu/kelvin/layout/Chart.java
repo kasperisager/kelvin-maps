@@ -216,6 +216,7 @@ public final class Chart extends Group {
 
     this.calcMinZoomFactor();
     this.center(centerNode, this.minZoomFactor);
+    this.forceTiles();
   }
 
   /**
@@ -226,6 +227,14 @@ public final class Chart extends Group {
     double scaleY = this.mapHeight / this.getScene().getHeight();
     double scaleMax = Math.max(scaleX, scaleY);
     this.minZoomFactor = 1 / scaleMax;
+  }
+
+  /**
+   * Forces the recalculation of which tiles to show.
+   */
+  private void forceTiles() {
+    this.pan(500, 0);
+    this.pan(-500, 0);
   }
 
   /**
