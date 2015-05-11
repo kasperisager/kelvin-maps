@@ -77,6 +77,10 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
 
       Map<N, E> neighbours = graph.neighbours(next);
 
+      if (neighbours == null || neighbours.isEmpty()) {
+        continue;
+      }
+
       for (Map.Entry<N, E> neighbour: neighbours.entrySet()) {
         N to = neighbour.getKey();
         E edge = neighbour.getValue();
@@ -137,7 +141,7 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
       return false;
     }
 
-    return this.distance.get(node) < Float.POSITIVE_INFINITY;
+    return this.distanceTo(node) < Float.POSITIVE_INFINITY;
   }
 
   /**
@@ -161,7 +165,7 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
       n != null;
       n = this.edgeTo.get(n)
     ) {
-      path.add(node);
+      path.add(n);
     }
 
     // The path is located in reverse order and is therefore backwards. Reverse

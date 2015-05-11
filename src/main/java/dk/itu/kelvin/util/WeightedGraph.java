@@ -94,15 +94,6 @@ public final class WeightedGraph<
   }
 
   /**
-   * Returns the number of edges incident from vertex.
-   * @param node the vertex.
-   * @return the outdegree.
-   */
-  public int outdegree(final N node) {
-    return this.neighbours.get(node).size();
-  }
-
-  /**
    * Returns all edges in the graph.
    * @return all edges.
    */

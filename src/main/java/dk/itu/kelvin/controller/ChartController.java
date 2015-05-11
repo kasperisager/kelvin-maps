@@ -121,14 +121,9 @@ public final class ChartController {
   private static ElementStore elementStore = new ElementStore();
 
   /**
-   * Way element to represent a route between to addresses.
-   */
-  private Way route = null;
-
-  /**
    * Polyline to represent the route.render().
    */
-  private Polyline routeRender = null;
+  private Polyline route = null;
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -225,7 +220,6 @@ public final class ChartController {
     final Node m,
     final String type
   ) {
-
     SpatialIndex.Point p1 = new SpatialIndex.Point(n.x(), n.y());
     SpatialIndex.Point p2 = new SpatialIndex.Point(m.x(), m.y());
 
@@ -269,21 +263,24 @@ public final class ChartController {
 
       float dist = 0.0f;
 
-      if (ChartController.instance.routeRender != null) {
+      if (ChartController.instance.route != null) {
         ChartController.instance.chart.getChildren().remove(
-          ChartController.instance.routeRender
+          ChartController.instance.route
         );
-        ChartController.instance.routeRender = null;
+        ChartController.instance.route = null;
       }
 
-      ChartController.instance.route = new Way();
-      ChartController.instance.route.add(path);
-      ChartController.instance.route.tag("meta", "direction");
-      ChartController.instance.routeRender = ChartController.instance.route
-        .render();
+      Way route = new Way();
+
+      route.add(n);
+      route.add(path);
+      route.add(m);
+
+      route.tag("meta", "direction");
+      ChartController.instance.route = route.render();
 
       ChartController.instance.chart.getChildren().add(
-        ChartController.instance.routeRender
+        ChartController.instance.route
       );
     }
   }

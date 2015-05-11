@@ -127,4 +127,48 @@ public final class Node extends Element<Label>
 
     return label;
   }
+
+  /**
+   * Compute the hashcode of the current node.
+   *
+   * @return The computed hashcode of the current node.
+   */
+  @Override
+  public int hashCode() {
+    long bits = 7L;
+    bits = 31L * bits + Float.hashCode(this.x);
+    bits = 31L * bits + Float.hashCode(this.y);
+
+    return (int) (bits ^ (bits >> 32));
+  }
+
+  /**
+   * Check if the current node equals the specified object.
+   *
+   * @param object  The object to compare the current node to.
+   * @return        A boolean indicating whether or not the current node
+   *                equals the specified object.
+   */
+  @Override
+  public boolean equals(final Object object) {
+    if (object == null || !(object instanceof Node)) {
+      return false;
+    }
+
+    if (this == object) {
+      return true;
+    }
+
+    Node node = (Node) object;
+
+    return (node.x() == this.x && node.y() == this.y);
+  }
+
+  @Override
+  public String toString() {
+    return "Node["
+    + "x = " + this.x
+    + ", y = " + this.y
+    + "]";
+  }
 }
