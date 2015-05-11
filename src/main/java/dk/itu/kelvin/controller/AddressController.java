@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 
 // JavaFX Beans
-import dk.itu.kelvin.util.WeightedGraph;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -47,6 +46,7 @@ import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
 
 // Models
 import dk.itu.kelvin.model.Address;
+import dk.itu.kelvin.model.Node;
 
 // Stores
 import dk.itu.kelvin.store.AddressStore;
@@ -502,13 +502,9 @@ public final class AddressController {
    * @param type the vehicle used for a path.
    */
   public static void showShortestPath(final String type) {
-    WeightedGraph.Node n = new WeightedGraph.Node(
-      currentAddress.x(),
-      currentAddress.y());
+    Node n = new Node(currentAddress.x(), currentAddress.y());
+    Node m = new Node(destinationAddress.x(), destinationAddress.y());
 
-    WeightedGraph.Node m = new WeightedGraph.Node(
-      destinationAddress.x(),
-      destinationAddress.y());
     ChartController.findShortestPath(n, m, type);
   }
 

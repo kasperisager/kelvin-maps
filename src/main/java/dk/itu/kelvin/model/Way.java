@@ -12,7 +12,12 @@ import java.util.Map;
 import javafx.scene.shape.Polyline;
 
 // Utilities
+import dk.itu.kelvin.util.Graph;
 import dk.itu.kelvin.util.RectangleTree;
+import dk.itu.kelvin.util.WeightedGraph;
+
+// Math
+import dk.itu.kelvin.math.Geometry;
 
 /**
  * A way is an ordered list of 2 to 2,000 nodes.
@@ -21,7 +26,7 @@ import dk.itu.kelvin.util.RectangleTree;
  *      http://wiki.openstreetmap.org/wiki/Way</a>
  */
 public final class Way extends Element<Polyline>
-  implements RectangleTree.Index {
+  implements RectangleTree.Index, WeightedGraph.Edge<Node> {
   /**
    * UID for identifying serialized objects.
    */
@@ -256,6 +261,39 @@ public final class Way extends Element<Polyline>
     }
 
     this.add(way.nodes());
+  }
+
+  public double weight(final Node a, final Node b) {
+    if (a == null || b == null) {
+      return Double.POSITIVE_INFINITY;
+    }
+
+    Geometry.Point ap = new Geometry.Point(a.x(), a.y());
+    Geometry.Point bp = new Geometry.Point(b.x(), b.y());
+
+    double maxspeed = 50.0;
+
+    if (this.tag("maxspeed") != null) {
+      maxspeed = Double.parseDouble(this.tag("maxspeed"));
+    }
+
+    return Geometry.distance(ap, bp) / maxspeed;
+  }
+
+  /**
+   * Get the direction of the way.
+   *
+   * @return The direction of the way.
+   */
+  public Graph.Direction direction() {
+    String oneway = this.tag("oneway");
+
+    if (oneway != null && oneway.equals("yes")) {
+      return Graph.Direction.UNI;
+    }
+    else {
+      return Graph.Direction.BI;
+    }
   }
 
   /**

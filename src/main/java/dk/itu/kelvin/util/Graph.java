@@ -3,6 +3,9 @@
  */
 package dk.itu.kelvin.util;
 
+// General utilities
+import java.util.List;
+
 // I/O utilities
 import java.io.Serializable;
 
@@ -12,50 +15,39 @@ import java.io.Serializable;
  * @param <N> The type of nodes in the graph.
  * @param <E> The type of edges in the graph.
  */
-public interface Graph<N extends Graph.Node, E extends Graph.Edge>
+public interface Graph<N extends Graph.Node, E extends Graph.Edge<N>>
   extends Serializable {
-
   /**
    * Add edge to graph.
    * @param edge The edge to add.
    */
   void add(final E edge);
 
+  List<E> edges();
+
   /**
    * Inner class Node.
    */
   public interface Node {
-    /**
-     * Get x coordinate for Node.
-     *
-     * @return x coordinate.
-     */
-    float x();
-
-    /**
-     * Get y coordinate for Node.
-     *
-     * @return y coordinate.
-     */
-    float y();
+    // No common methods. Yet.
   }
 
   /**
    * Inner class Edge.
    */
-  public interface Edge {
-    /**
-     * Get from node.
-     *
-     * @return Node that the edge starts in.
-     */
-    Node from();
+  public interface Edge<N extends Node> {
+    void add(final N node);
 
-    /**
-     * Get to node.
-     *
-     * @return Node that the edge ends in.
-     */
-    Node to();
+    void add(final List<N> nodes);
+
+    List<N> nodes();
+
+    Direction direction();
+  }
+
+  public enum Direction {
+    UNI,
+
+    BI;
   }
 }

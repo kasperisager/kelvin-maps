@@ -42,7 +42,6 @@ import dk.itu.kelvin.math.Haversine;
 import dk.itu.kelvin.math.Mercator;
 import dk.itu.kelvin.math.Projection;
 import dk.itu.kelvin.util.SpatialIndex;
-import dk.itu.kelvin.util.WeightedGraph;
 import dk.itu.kelvin.util.ShortestPath;
 
 // Parser
@@ -124,12 +123,12 @@ public final class ChartController {
   /**
    * Way element to represent a route between to addresses.
    */
-  private static Way route = null;
+  private Way route = null;
 
   /**
    * Polyline to represent the route.render().
    */
-  private static Polyline routeRender = null;
+  private Polyline routeRender = null;
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -222,132 +221,74 @@ public final class ChartController {
    * @param type The type of graph initiate.
    */
   public static void findShortestPath(
-    final WeightedGraph.Node n,
-    final WeightedGraph.Node m,
-    final String type) {
+    final Node n,
+    final Node m,
+    final String type
+  ) {
 
     SpatialIndex.Point p1 = new SpatialIndex.Point(n.x(), n.y());
     SpatialIndex.Point p2 = new SpatialIndex.Point(m.x(), m.y());
 
-    Way fromWay =
-      elementStore.transportWaysTree().nearest(p1);
-    Way toWay =
-      elementStore.transportWaysTree().nearest(p2);
+    Way fromWay = elementStore.transportWaysTree().nearest(p1);
+    Way toWay = elementStore.transportWaysTree().nearest(p2);
 
     double distanceFrom = 0;
-    WeightedGraph.Node from = null;
-    for (Node qu : fromWay.nodes()) {
+    Node from = null;
+
+    for (Node qu: fromWay.nodes()) {
       SpatialIndex.Point ptemp = new SpatialIndex.Point(qu.x(), qu.y());
 
       if (distanceFrom == 0 || Geometry.distance(ptemp, p1) < distanceFrom) {
         distanceFrom = Geometry.distance(ptemp, p1);
-        from = new WeightedGraph.Node(qu.x(), qu.y());
+        from = new Node(qu.x(), qu.y());
       }
     }
 
     double distanceTo = 0;
-    WeightedGraph.Node to = null;
-    for (Node qu : toWay.nodes()) {
+    Node to = null;
+
+    for (Node qu: toWay.nodes()) {
       SpatialIndex.Point ptemp = new SpatialIndex.Point(qu.x(), qu.y());
 
       if (distanceTo == 0 || Geometry.distance(ptemp, p2) < distanceTo) {
         distanceTo = Geometry.distance(ptemp, p2);
-        to = new WeightedGraph.Node(qu.x(), qu.y());
+        to = new Node(qu.x(), qu.y());
       }
     }
 
-    //ChartController.instance.chart.center(new Node(n.x(), n.y()));
-
-
     if (from != null && to != null) {
-      ShortestPath shortestPath = null;
+      ShortestPath<Node, Way> shortestPath = null;
 
       if (type.equals("car")) {
-        shortestPath = new ShortestPath(elementStore.carGraph(), from);
+        shortestPath = new ShortestPath<>(elementStore.carGraph(), from);
       } else if (type.equals("bicycle")) {
-        shortestPath = new ShortestPath(elementStore.bycicleGraph(), from);
+        shortestPath = new ShortestPath<>(elementStore.bycicleGraph(), from);
       }
 
-      List<WeightedGraph.Edge> path = shortestPath.path(to);
+      List<Node> path = shortestPath.path(to);
 
       float dist = 0.0f;
 
-
-      WeightedGraph.Edge e1 = null;
-
-      WeightedGraph.Edge e2 = null;
-
-
-      for (WeightedGraph.Edge e : path) {
-
-        if (e1 != null) {
-          e2 = e1;
-        }
-
-        e1 = e;
-
-        if (e2 != null) {
-/*
-          if(//sidste knude er lig destination){
-            // print "fortsæt ad vejens forløb til destination" , afstand  = dist
-          }
-
-          // kald geometry-klassen og find vinklen mellem 3 punkter:
-
-
-        if(70 <= angle <= 100){
-
-          // print "fortsæt ad vejens forløb" , afstand  = dist
-          // print "drej til højre";
-          // dist = 0.0;
-        }
-        else if(250 <= angle <= 290){
-          // drej til venstre
-        }
-        else{
-          // dist = dist +
-          //
-        }*/
-
-
-        }
-
-        if (routeRender != null) {
-          ChartController.instance.chart.getChildren().remove(routeRender);
-          routeRender = null;
-        }
-
-        route = new Way();
-
-        for (int i = 0; i < path.size(); i++) {
-          if (i == 0) {
-            // Add the address from node.
-            route.add(new Node(n.x(), n.y()));
-
-          }
-          Node n1 = new Node(path.get(i).from().x(), path.get(i).from().y());
-          route.add(n1);
-
-          if (i == path.size() - 1) {
-            Node n2 = new Node(path.get(i).to().x(), path.get(i).to().y());
-            route.add(n2);
-            // Add the address to node.
-            route.add(new Node(m.x(), m.y()));
-          }
-        }
-        route.tag("meta", "direction");
-
-        routeRender = route.render();
-
-
-        ChartController.instance.chart.getChildren().add(routeRender);
-
+      if (ChartController.instance.routeRender != null) {
+        ChartController.instance.chart.getChildren().remove(
+          ChartController.instance.routeRender
+        );
+        ChartController.instance.routeRender = null;
       }
+
+      ChartController.instance.route = new Way();
+      ChartController.instance.route.add(path);
+      ChartController.instance.route.tag("meta", "direction");
+      ChartController.instance.routeRender = ChartController.instance.route
+        .render();
+
+      ChartController.instance.chart.getChildren().add(
+        ChartController.instance.routeRender
+      );
     }
   }
 
-
-  public static float edgeLength(WeightedGraph.Node n1, WeightedGraph.Node n2){
+  public static float edgeLength(final Node n1, final Node n2){
     float dist = 0.0f;
 
     Projection mer = new Mercator();
@@ -369,11 +310,10 @@ public final class ChartController {
    */
   private static void storePoi(final Parser parser) {
     for (Node n : parser.nodes()) {
-
       if (n.tag("amenity") != null) {
         ChartController.instance.elementStore.add(n);
-
       }
+
       if (n.tag("shop") != null) {
         ChartController.instance.elementStore.add(n);
       }

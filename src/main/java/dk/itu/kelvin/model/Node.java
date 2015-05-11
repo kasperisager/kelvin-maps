@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 
 // Utilities
 import dk.itu.kelvin.util.PointTree;
+import dk.itu.kelvin.util.WeightedGraph;
 
 /**
  * A node describes a 2-dimensional coordinate within a chart.
@@ -19,7 +20,8 @@ import dk.itu.kelvin.util.PointTree;
  * @see <a href="http://wiki.openstreetmap.org/wiki/Node">
  *      http://wiki.openstreetmap.org/wiki/Node</a>
  */
-public final class Node extends Element<Label> implements PointTree.Index {
+public final class Node extends Element<Label>
+  implements PointTree.Index, WeightedGraph.Node {
   /**
    * UID for identifying serialized objects.
    */

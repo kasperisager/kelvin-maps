@@ -36,12 +36,12 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * Weighted graph for all carRoads.
    */
-  private WeightedGraph carGraph = new WeightedGraph();
+  private WeightedGraph<Node, Way> carGraph = new WeightedGraph<>();
 
   /**
    * Weighted graph for all roads.
    */
-  private WeightedGraph bicycleGraph = new WeightedGraph();
+  private WeightedGraph<Node, Way> bicycleGraph = new WeightedGraph<>();
 
   /**
    * A list for all land elements.
@@ -230,7 +230,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * Accessor to carGraph.
    * @return A graph for to shortest path for cars.
    */
-  public WeightedGraph carGraph() {
+  public WeightedGraph<Node, Way> carGraph() {
     return this.carGraph;
   }
 
@@ -238,7 +238,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * Accessor to bicycleGraph.
    * @return A graph for to shortest path for bicycles.
    */
-  public WeightedGraph bycicleGraph() {
+  public WeightedGraph<Node, Way> bycicleGraph() {
     return this.bicycleGraph;
   }
 
@@ -488,105 +488,12 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * @param way A way to split into edges.
    */
   public void addEdge(final Way way) {
-
-    double maxSpeed = 0.0;
-
-    boolean oneway = false;
-
-    for (String s : way.tags().keySet()) {
-      switch (s) {
-        case "maxspeed":
-          maxSpeed = Double.parseDouble(way.tags().get("maxspeed"));
-          break;
-        case "oneway":
-          oneway = true;
-          break;
-
-        default:
-          maxSpeed = 50;
-      }
+    if (way == null) {
+      return;
     }
 
-    for (int i = 0; i < way.nodes().size(); i++) {
-      if (i + 1 >= way.nodes().size()) {
-        break;
-      }
-
-      Node from = way.nodes().get(i);
-      Node to = way.nodes().get(i + 1);
-
-      float distancePx = (float) Geometry.distance(
-        new Geometry.Point(from.x(), from.y()),
-        new Geometry.Point(to.x(), to.y())
-      );
-
-      float distanceSpeed = (float) (Geometry.distance(
-        new Geometry.Point(from.x(), from.y()),
-        new Geometry.Point(to.x(), to.y()))
-        / maxSpeed);
-
-
-      // add edge to carGraph
-      WeightedGraph.Edge carEdge = this.edge(
-        from.x(),
-        from.y(),
-        to.x(),
-        to.y(),
-        distanceSpeed);
-      this.carGraph.add(carEdge);
-
-      // add edge to bicycleGraph
-      WeightedGraph.Edge edgeBicycle = this.edge(
-        from.x(),
-        from.y(),
-        to.x(),
-        to.y(),
-        distancePx);
-      this.bicycleGraph.add(edgeBicycle);
-
-      // add edge to bicycleGraph
-      WeightedGraph.Edge edgeBicycle2 =  this.edge(
-        to.x(),
-        to.y(),
-        from.x(),
-        from.y(),
-        distancePx);
-      this.bicycleGraph.add(edgeBicycle2);
-
-      if (!oneway) {
-        // add edge to carGraph
-        WeightedGraph.Edge carEdge2 = this.edge(
-          to.x(),
-          to.y(),
-          from.x(),
-          from.y(),
-          distanceSpeed);
-        this.carGraph.add(carEdge2);
-      }
-    }
-  }
-
-  /**
-   * Initialize a WeightedGraph.Edge.
-   * @param fromX X coordinate for from node.
-   * @param fromY Y coordinate for from node.
-   * @param toX X coordinate for to node.
-   * @param toY Y coordinate for to node.
-   * @param weight The weight of the edge.
-   * @return WeightedGraph.Edge.
-   */
-  public WeightedGraph.Edge edge(
-    final float fromX,
-    final float fromY,
-    final float toX,
-    final float toY,
-    final float weight) {
-
-    WeightedGraph.Edge edge = new WeightedGraph.Edge(
-      new WeightedGraph.Node(fromX, fromY),
-      new WeightedGraph.Node(toX, toY), weight
-    );
-    return edge;
+    this.carGraph.add(way);
+    this.bicycleGraph.add(way);
   }
 
   /**
