@@ -34,9 +34,8 @@ import static org.junit.Assert.*;
  * number + door number as well as the postcode + city:
  */
 public final class AddressTest {
-
   /**
-   *
+   * Test coordinates of address.
    */
   @Test
   public void testCoordinates() {
