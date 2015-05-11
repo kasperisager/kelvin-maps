@@ -77,7 +77,8 @@ public class GeometryTest {
     Geometry.Line l2 = new Geometry.Line(p3, p4);
     Geometry.Line l3 = null;
 
-    assertEquals(p5, Geometry.intersection(l1, l2));
+    assertTrue(Geometry.intersection(l1, l2).x() == p5.x());
+    assertTrue(Geometry.intersection(l1, l2).y() == p5.y());
     assertEquals(null, Geometry.intersection(l1, l3));
   }
 
@@ -95,7 +96,8 @@ public class GeometryTest {
     Geometry.Rectangle r3 = Geometry.union(r1, r2);
     Geometry.Point p3 = new Geometry.Point(2, 5);
 
-    assertEquals(p3, r3.position());
+    assertTrue(r3.position().x() == p3.x());
+    assertTrue(r3.position().y() == p3.y());
     assertTrue(r3.width() == 6);
     assertTrue(r3.height() == 5);
   }
@@ -353,7 +355,8 @@ public class GeometryTest {
 
       r2.add(r1);
 
-      assertEquals(p1, r2.position());
+      assertTrue(r2.position().x() == p1.x());
+      assertTrue(r2.position().y() == p1.y());
       assertTrue(r2.width() == 6);
       assertTrue(r2.height() == 6);
     }
