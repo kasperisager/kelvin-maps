@@ -104,7 +104,7 @@ public final class MenuController {
     FileChooser filechooser = new FileChooser();
     filechooser.setTitle("Select file to load");
     filechooser.getExtensionFilters().add(
-      new FileChooser.ExtensionFilter("All Files", "*.osm", "*xml", "*.pbf")
+      new FileChooser.ExtensionFilter("All Files", "*.osm", "*.xml", "*.pbf")
     );
     File file = filechooser.showOpenDialog(new Stage());
 
