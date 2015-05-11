@@ -8,7 +8,6 @@ import java.util.List;
 
 // I/O utilities
 import java.io.File;
-import java.util.Set;
 
 // JavaFX application utilities
 import javafx.application.Platform;
@@ -18,7 +17,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.HBox;
 
 // JavaFX shapes
-import javafx.scene.shape.Path;
 import javafx.scene.shape.Polyline;
 
 // JavaFX inputs
@@ -38,9 +36,6 @@ import javafx.fxml.FXML;
 
 // Utilities
 import dk.itu.kelvin.math.Geometry;
-import dk.itu.kelvin.math.Haversine;
-import dk.itu.kelvin.math.Mercator;
-import dk.itu.kelvin.math.Projection;
 import dk.itu.kelvin.util.SpatialIndex;
 import dk.itu.kelvin.util.ShortestPath;
 
@@ -189,7 +184,8 @@ public final class ChartController {
   }
 
   /**
-   * Initializing properties for location destination pointer and adding to chart.
+   * Initializing properties for location destination pointer and adding to
+   * chart.
    */
   private void initDestinationPointer() {
     this.destinationPointer = new Text();
@@ -285,23 +281,7 @@ public final class ChartController {
     }
   }
 
-  public static float edgeLength(final Node n1, final Node n2){
-    float dist = 0.0f;
-
-    Projection mer = new Mercator();
-
-    float lat1 = (float) mer.yToLat(n1.y()) * 1000;
-    float lon1 = (float) mer.xToLon(n1.x()) * 1000;
-
-    float lat2 = (float) mer.yToLat(n2.y()) * 1000;
-    float lon2 = (float) mer.xToLon(n2.x()) * 1000;
-
-    dist = (float) Haversine.distance(lat1, lon1, lat2, lon2);
-
-    return dist;
-  }
-
-    /**
+  /**
    * Store all POI nodes in ElementStore.
    * @param parser for parsing data.
    */

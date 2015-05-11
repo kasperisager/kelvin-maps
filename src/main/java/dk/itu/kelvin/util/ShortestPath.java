@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.PriorityQueue;
 
 // Utilities
@@ -18,6 +17,9 @@ import dk.itu.kelvin.util.WeightedGraph.Node;
 
 /**
  * ShortestPath class.
+ *
+ * @param <N> The type of nodes to find paths for.
+ * @param <E> The type of edges to find paths for.
  */
 public final class ShortestPath<N extends Node, E extends Edge<N>> {
   /**
@@ -64,7 +66,7 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
     this.distance.put(source, 0.0f);
 
     // relax vertices in order of distance from s
-    this.queue = new PriorityQueue<>(graph.n(), (a, b) -> {
+    this.queue = new PriorityQueue<>(11, (a, b) -> {
       // Comparing b to a instead of a to b to make
       // a minimum priority and not maximum priority.
       return this.distance.get(b).compareTo(this.distance.get(a));
@@ -91,9 +93,11 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
   }
 
   /**
-   * Relax edge e and update queue if changed.
+   * Relax edge and update queue if changed.
    *
-   * @param edge The edge to relax.
+   * @param from  The first node.
+   * @param to    The second node.
+   * @param edge  The edge between the nodes.
    */
   private void relax(final N from, final N to, final E edge) {
     if (from == null || to == null || edge == null) {
@@ -146,7 +150,7 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
 
   /**
    * Returns a shortest path.
-   * @param n the destination vertex.
+   * @param node the destination vertex.
    * @return shortest path from the source vertex to the param vertex
    * as an iterable of edges, and null if no such path.
    */

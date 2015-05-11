@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Collection;
 import java.util.ArrayList;
 
-// Math
-import dk.itu.kelvin.math.Geometry;
-
 // Models
 import dk.itu.kelvin.model.Element;
 import dk.itu.kelvin.model.Way;

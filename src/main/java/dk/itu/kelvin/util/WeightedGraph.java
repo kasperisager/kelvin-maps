@@ -5,14 +5,15 @@ package dk.itu.kelvin.util;
 
 // General utilities
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * WeightedGraph class.
+ *
+ * @param <N> The type of nodes to use within the weighted graph.
+ * @param <E> The type of edges to use within the weighted graph.
  */
 public final class WeightedGraph<
   N extends WeightedGraph.Node, E extends WeightedGraph.Edge<N>
@@ -23,18 +24,9 @@ public final class WeightedGraph<
   private Map<N, Map<N, E>> neighbours = new HashMap<>();
 
   /**
-   * Total number of nodes in the graph.
-   */
-  private int n;
-
-  /**
-   * Total number of edges in the graph.
-   */
-  private int e;
-
-  /**
-   * Adds an edge to the weighted graph.
-   * @param e the edge to add.
+   * Add an edge to the weighted graph.
+   *
+   * @param edge The edge to add to the weighted graph.
    */
   public void add(final E edge) {
     List<N> nodes = edge.nodes();
@@ -63,25 +55,6 @@ public final class WeightedGraph<
           this.neighbours.get(b).put(a, edge);
       }
     }
-
-    this.n += nodes.size();
-    this.e++;
-  }
-
-  /**
-   * Return number of nodes in the graph.
-   * @return number of nodes.
-   */
-  public int n() {
-    return this.n;
-  }
-
-  /**
-   * Return number of edges in the graph.
-   * @return number of edges.
-   */
-  public int e() {
-    return this.e;
   }
 
   /**
@@ -109,11 +82,26 @@ public final class WeightedGraph<
     return edges;
   }
 
+  /**
+   * The {@link Node} interface describes a node within a weighted graph.
+   */
   public interface Node extends Graph.Node {
     // No common methods. Yet.
   }
 
+  /**
+   * The {@link Edge} interface describes an edge within a weighted graph.
+   *
+   * @param <N> The type of nodes to use within the edge.
+   */
   public interface Edge<N extends WeightedGraph.Node> extends Graph.Edge<N> {
-    double weight(final N from, final N to);
+    /**
+     * Get the weight between the specified nodes.
+     *
+     * @param a The first node.
+     * @param b The second node.
+     * @return  The weight between the specified nodes.
+     */
+    double weight(final N a, final N b);
   }
 }

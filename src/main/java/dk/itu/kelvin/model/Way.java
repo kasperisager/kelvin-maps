@@ -263,6 +263,13 @@ public final class Way extends Element<Polyline>
     this.add(way.nodes());
   }
 
+  /**
+   * Get the weight between the specified nodes.
+   *
+   * @param a The first node.
+   * @param b The second node.
+   * @return  The weight between the specified nodes.
+   */
   public double weight(final Node a, final Node b) {
     if (a == null || b == null) {
       return Double.POSITIVE_INFINITY;
