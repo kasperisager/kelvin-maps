@@ -489,6 +489,16 @@ public final class ChartController {
         for (Way l: parser.land()) {
           ChartController.instance.elementStore.addLand(l);
         }
+        if (parser.land().isEmpty()) {
+          BoundingBox bounds = parser.bounds();
+          Way emptyLand = new Way();
+          emptyLand.add(new Node(bounds.minX(), bounds.minY()));
+          emptyLand.add(new Node(bounds.maxX(), bounds.minY()));
+          emptyLand.add(new Node(bounds.maxX(), bounds.maxY()));
+          emptyLand.add(new Node(bounds.minX(), bounds.maxY()));
+          emptyLand.add(new Node(bounds.minX(), bounds.minY()));
+          ChartController.instance.elementStore.addLand(emptyLand);
+        }
 
         for (Way w: parser.ways()) {
           ChartController.instance.elementStore.add(w);
@@ -497,6 +507,8 @@ public final class ChartController {
         for (Relation r: parser.relations()) {
           ChartController.instance.elementStore.add(r);
         }
+
+        //ChartController.instance.elementStore.checkLand();
 
         ChartController.instance.elementStore.add(parser.bounds());
 
