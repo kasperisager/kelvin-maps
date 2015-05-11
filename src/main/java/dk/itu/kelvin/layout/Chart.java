@@ -115,6 +115,7 @@ public final class Chart extends Group {
    */
   private int maxY;
 
+
   /**
    * Layer of land elements.
    */
@@ -318,6 +319,24 @@ public final class Chart extends Group {
   public void center(final Address address, final double scale) {
     this.setScale(scale);
     this.center(address);
+  }
+
+  /**
+   * Centering chart on two addresses and adjust the scale.
+   * @param addr1 the from address.
+   * @param addr2 the destination address.
+   */
+  public void center(final Address addr1, final Address addr2) {
+    double deltaX = addr2.x() - addr1.x();
+    double deltaY = addr2.y() - addr1.y();
+    Node center = new Node(addr1.x() + (deltaX / 2), addr1.y() + (deltaY / 2));
+
+    double xDist = 50 + Math.abs(addr1.x() - addr2.x());
+    double yDist = 200 + Math.abs(addr1.y() - addr2.y());
+    double scaleX = xDist / this.getScene().getWidth();
+    double scaleY = yDist / this.getScene().getHeight();
+    double scaleMax = Math.max(scaleX, scaleY);
+    this.center(center, 1 / scaleMax);
   }
 
   /**

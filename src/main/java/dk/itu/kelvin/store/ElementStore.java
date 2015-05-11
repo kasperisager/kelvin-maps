@@ -3,6 +3,11 @@
  */
 package dk.itu.kelvin.store;
 
+// General utilities
+import java.util.List;
+import java.util.Collection;
+import java.util.ArrayList;
+
 // Models
 import dk.itu.kelvin.model.Element;
 import dk.itu.kelvin.model.Way;
@@ -14,11 +19,7 @@ import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.util.SpatialIndex;
 import dk.itu.kelvin.util.PointTree;
 import dk.itu.kelvin.util.RectangleTree;
-
-// General utilities
-import java.util.List;
-import java.util.Collection;
-import java.util.ArrayList;
+import dk.itu.kelvin.util.WeightedGraph;
 
 /**
  * Common store for storing all elements in the chart.
@@ -28,6 +29,16 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * UID for identifying serialized objects.
    */
   private static final long serialVersionUID = 3081;
+
+  /**
+   * Weighted graph for all carRoads.
+   */
+  private WeightedGraph<Node, Way> carGraph = new WeightedGraph<>();
+
+  /**
+   * Weighted graph for all roads.
+   */
+  private WeightedGraph<Node, Way> bicycleGraph = new WeightedGraph<>();
 
   /**
    * A list for all land elements.
@@ -102,7 +113,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * Point tree for quick search in transportWays elements.
    */
-  private SpatialIndex<Way> transportWaysTree;
+  private RectangleTree<Way> transportWaysTree;
 
   /**
    * Indicates whether waysTree needs to be indexed or not.
@@ -163,11 +174,13 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
         case "road":
           this.roads.add(w);
           this.transportWays.add(w);
+          this.addEdge(w);
           this.roadsIsDirty = true;
           break;
         case "cycleway":
           this.cycleways.add(w);
           this.transportWays.add(w);
+          this.addEdge(w);
           this.cyclewaysIsDirty = true;
           break;
         default:
@@ -185,6 +198,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
         case "shared_lane":
           this.cycleways.add(w);
           this.transportWays.add(w);
+          this.addEdge(w);
           this.cyclewaysIsDirty = true;
           break;
         default:
@@ -196,6 +210,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
         case "yes":
           this.cycleways.add(w);
           this.transportWays.add(w);
+          this.addEdge(w);
           this.cyclewaysIsDirty = true;
           break;
         default:
@@ -206,7 +221,22 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
       this.ways.add(w);
       this.waysIsDirty = true;
     }
+  }
 
+  /**
+   * Accessor to carGraph.
+   * @return A graph for to shortest path for cars.
+   */
+  public WeightedGraph<Node, Way> carGraph() {
+    return this.carGraph;
+  }
+
+  /**
+   * Accessor to bicycleGraph.
+   * @return A graph for to shortest path for bicycles.
+   */
+  public WeightedGraph<Node, Way> bycicleGraph() {
+    return this.bicycleGraph;
   }
 
   /**
@@ -362,7 +392,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * @param ways The collection of roads to be indexed.
    * @return the indexed rectangleTree.
    */
-  public SpatialIndex<Way> indexTransportWays(final Collection<Way> ways) {
+  public RectangleTree<Way> indexTransportWays(final Collection<Way> ways) {
     if (ways == null || ways.isEmpty()) {
       return null;
     }
@@ -371,6 +401,14 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     this.roadsIsDirty = false;
 
     return transportWaysTree;
+  }
+
+  /**
+   * Return the transportWayTree.
+   * @return transportWaysTree.
+   */
+  public RectangleTree<Way> transportWaysTree() {
+    return this.transportWaysTree;
   }
 
   /**
@@ -440,6 +478,19 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     this.poiIsDirty = false;
 
     return poiTree;
+  }
+
+  /**
+   * Split a way into edges and add them to graph.
+   * @param way A way to split into edges.
+   */
+  public void addEdge(final Way way) {
+    if (way == null) {
+      return;
+    }
+
+    this.carGraph.add(way);
+    this.bicycleGraph.add(way);
   }
 
   /**

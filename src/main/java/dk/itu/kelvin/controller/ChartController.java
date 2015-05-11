@@ -3,6 +3,9 @@
  */
 package dk.itu.kelvin.controller;
 
+// General utilities
+import java.util.List;
+
 // I/O utilities
 import java.io.File;
 
@@ -12,6 +15,9 @@ import javafx.application.Platform;
 // JavaFX layout
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.HBox;
+
+// JavaFX shapes
+import javafx.scene.shape.Polyline;
 
 // JavaFX inputs
 import javafx.scene.input.KeyEvent;
@@ -28,6 +34,11 @@ import javafx.scene.control.Label;
 // FXML utilities
 import javafx.fxml.FXML;
 
+// Utilities
+import dk.itu.kelvin.math.Geometry;
+import dk.itu.kelvin.util.SpatialIndex;
+import dk.itu.kelvin.util.ShortestPath;
+
 // Parser
 import dk.itu.kelvin.parser.Parser;
 
@@ -35,8 +46,8 @@ import dk.itu.kelvin.parser.Parser;
 import dk.itu.kelvin.layout.Chart;
 
 // Models
-import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Way;
+import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.model.BoundingBox;
@@ -93,10 +104,21 @@ public final class ChartController {
    */
   private Text locationPointer;
 
+
+  /**
+   * Text(icon) representing the destination address.
+   */
+  private Text destinationPointer;
+
   /**
    * Element store storing all elements.
    */
   private static ElementStore elementStore = new ElementStore();
+
+  /**
+   * Polyline to represent the route.render().
+   */
+  private Polyline route = null;
 
   /**
    * The Canvas element to add all the Chart elements to.
@@ -138,6 +160,7 @@ public final class ChartController {
 
   /**
    * Initialize the controller.
+   *
    * @throws Exception In case of an error. Duh.
    */
   @FXML
@@ -145,6 +168,7 @@ public final class ChartController {
     ChartController.instance = this;
 
     this.initLocationPointer();
+    this.initDestinationPointer();
   }
 
   /**
@@ -160,11 +184,101 @@ public final class ChartController {
   }
 
   /**
+   * Initializing properties for location destination pointer and adding to
+   * chart.
+   */
+  private void initDestinationPointer() {
+    this.destinationPointer = new Text();
+    this.destinationPointer.getStyleClass().add("icon");
+    this.destinationPointer.getStyleClass().add("address-label");
+    this.destinationPointer.setText("\uf456");
+    this.destinationPointer.setVisible(false);
+    this.chart.getChildren().add(this.destinationPointer);
+  }
+
+  /**
    * Moves the scale VBox relative to BOTTOM_LEFT.
+   *
    * @param x how much to move scale indicator along x-axis [px].
    */
   public static void moveScale(final double x) {
     ChartController.instance.scaleVBox.setTranslateX(x);
+  }
+
+  /**
+   * Find shortest path between 2 nodes.
+   * @param n The from node.
+   * @param m The to node.
+   * @param type The type of graph initiate.
+   */
+  public static void findShortestPath(
+    final Node n,
+    final Node m,
+    final String type
+  ) {
+    SpatialIndex.Point p1 = new SpatialIndex.Point(n.x(), n.y());
+    SpatialIndex.Point p2 = new SpatialIndex.Point(m.x(), m.y());
+
+    Way fromWay = elementStore.transportWaysTree().nearest(p1);
+    Way toWay = elementStore.transportWaysTree().nearest(p2);
+
+    double distanceFrom = 0;
+    Node from = null;
+
+    for (Node qu: fromWay.nodes()) {
+      SpatialIndex.Point ptemp = new SpatialIndex.Point(qu.x(), qu.y());
+
+      if (distanceFrom == 0 || Geometry.distance(ptemp, p1) < distanceFrom) {
+        distanceFrom = Geometry.distance(ptemp, p1);
+        from = new Node(qu.x(), qu.y());
+      }
+    }
+
+    double distanceTo = 0;
+    Node to = null;
+
+    for (Node qu: toWay.nodes()) {
+      SpatialIndex.Point ptemp = new SpatialIndex.Point(qu.x(), qu.y());
+
+      if (distanceTo == 0 || Geometry.distance(ptemp, p2) < distanceTo) {
+        distanceTo = Geometry.distance(ptemp, p2);
+        to = new Node(qu.x(), qu.y());
+      }
+    }
+
+    if (from != null && to != null) {
+      ShortestPath<Node, Way> shortestPath = null;
+
+      if (type.equals("car")) {
+        shortestPath = new ShortestPath<>(elementStore.carGraph(), from);
+      } else if (type.equals("bicycle")) {
+        shortestPath = new ShortestPath<>(elementStore.bycicleGraph(), from);
+      }
+
+      List<Node> path = shortestPath.path(to);
+
+      float dist = 0.0f;
+
+      if (ChartController.instance.route != null) {
+        ChartController.instance.chart.getChildren().remove(
+          ChartController.instance.route
+        );
+        ChartController.instance.route = null;
+      }
+
+      Way route = new Way();
+
+      route.add(n);
+      route.add(path);
+      route.add(m);
+
+      route.tag("meta", "direction");
+      ChartController.instance.route = route.render();
+
+      ChartController.instance.chart.getChildren().add(
+        ChartController.instance.route
+      );
+    }
   }
 
   /**
@@ -173,11 +287,10 @@ public final class ChartController {
    */
   private static void storePoi(final Parser parser) {
     for (Node n : parser.nodes()) {
-
       if (n.tag("amenity") != null) {
         ChartController.instance.elementStore.add(n);
-
       }
+
       if (n.tag("shop") != null) {
         ChartController.instance.elementStore.add(n);
       }
@@ -248,12 +361,32 @@ public final class ChartController {
   }
 
   /**
+   * Sets a pointer at the destination address.
+   * @param x Destination address with the coordinates for the pointer.
+   * @param y Destination address with the coordinates for the pointer.
+   */
+  public static void setDistinationPointer(final double x, final double y) {
+    ChartController.instance.destinationPointer.setLayoutX(x);
+    ChartController.instance.destinationPointer.setLayoutY(y);
+    ChartController.instance.destinationPointer.setVisible(true);
+  }
+
+  /**
    * Centering chart around and x, y coordinate.
    * @param a the address to center around.
    * @param scale the new scale for the map.
    */
   public static void centerChart(final Address a, final double scale) {
     ChartController.instance.chart.center(a, scale);
+  }
+
+  /**
+   * Centers chart on two addresses and adjust the scale.
+   * @param addr1 the first address.
+   * @param addr2 the second address.
+   */
+  public static void centerChart(final Address addr1, final Address addr2) {
+    ChartController.instance.chart.center(addr1, addr2);
   }
 
   /**
@@ -482,6 +615,7 @@ public final class ChartController {
       for (Address address: parser.addresses()) {
         AddressController.addAddress(address);
       }
+
       // Sets all POI from initialized nodes.
       ChartController.instance.storePoi(parser);
 
