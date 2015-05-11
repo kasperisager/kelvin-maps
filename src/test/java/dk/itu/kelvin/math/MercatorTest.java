@@ -39,7 +39,7 @@ public class MercatorTest {
     Mercator m = new Mercator();
     double lat = m.yToLat(200.03);
 
-    // deviation of 0,1 %.
+    // deviation accept a deviation of 0,1 %.
     double devLat1 = m.latToY(lat) * 1.001;
     double devLat2 = m.latToY(lat) * 0.099;
     double yCoord = 200.03;
