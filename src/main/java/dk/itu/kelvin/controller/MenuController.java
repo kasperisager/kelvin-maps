@@ -108,10 +108,9 @@ public final class MenuController {
     );
     File file = filechooser.showOpenDialog(new Stage());
 
-    if (file != null) {
+    if (file != null && file.exists()) {
       MenuController.clearMap();
       ChartController.loadMap(file);
-      ChartController.forceTiles();
     }
   }
 
@@ -157,8 +156,15 @@ public final class MenuController {
     loadBin(DEFAULT_BIN);
   }
 
+  /**
+   * Loads a map from binary file based on filename.
+   * @param filename a String for representing the file directory.
+   */
   private static void loadBin(String filename) {
-    File file = new File(DEFAULT_BIN);
+    File file = new File(filename);
+    if (!file.exists()) {
+      return;
+    }
 
     MenuController.clearMap();
 
@@ -172,12 +178,14 @@ public final class MenuController {
 
       ChartController.loadBinMap(elementStore, bounds);
       AddressController.setAddressStore(addressStore);
-      ChartController.forceTiles();
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
+  /**
+   * Calls methods for resetting all relevant data when loading new map file.
+   */
   private static void clearMap() {
     AddressController.resetPOI();
     AddressController.clearAddresses();
