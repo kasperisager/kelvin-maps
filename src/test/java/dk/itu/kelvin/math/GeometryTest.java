@@ -219,10 +219,48 @@ public class GeometryTest {
       Geometry.Polyline pl1 = new Geometry.Polyline(p1, p2, p3, p4);
       assertTrue(pl1.length() == 30);
     }
+
+    /**
+     * Testing finding bounds of a poly line object.
+     */
+    @Test
+    public void testBounds() {
+      Geometry.Point p1 = new Geometry.Point(1, 1);
+      Geometry.Point p2 = new Geometry.Point(11, 32);
+      Geometry.Point p3 = new Geometry.Point(21, 25);
+      Geometry.Point p4 = new Geometry.Point(16, 90);
+
+      Geometry.Polyline pl1 = new Geometry.Polyline(p1, p2 ,p3 ,p4);
+
+      Geometry.Point p5 = new Geometry.Point(1, 1);
+      Geometry.Point p6 = new Geometry.Point(21, 90);
+      Geometry.Bounds b1 = new Geometry.Bounds(p5, p6);
+
+      assertTrue(pl1.bounds().min().x() == b1.min().x());
+      assertTrue(pl1.bounds().min().y() == b1.min().y());
+      assertTrue(pl1.bounds().max().x() == b1.max().x());
+      assertTrue(pl1.bounds().max().y() == b1.max().y());
+    }
+
+    /**
+     * Testing the toString method.
+     */
+    @Test
+    public void testToString() {
+      Geometry.Point p1 = new Geometry.Point(1, 1);
+      Geometry.Point p2 = new Geometry.Point(11, 32);
+
+      Geometry.Polyline pl1 = new Geometry.Polyline(p1, p2);
+
+      String polyString = "Polyline[points = [Point[x = 1.0, y = 1.0], Point[x = 11.0, y = 32.0]]]";
+
+      assertEquals(polyString, pl1.toString());
+
+    }
   }
 
   /**
-   *
+   * Testing of the inner class Circle.
    */
   public class testCircle {
     /**
@@ -243,6 +281,19 @@ public class GeometryTest {
       Geometry.Point p1 = new Geometry.Point(5, 5);
 
       new Geometry.Circle(p1, -8);
+    }
+
+    /**
+     * Testing the toString method of the circle inner class.
+     */
+    @Test
+    public void testToString() {
+      Geometry.Point p1 = new Geometry.Point(3, 4);
+      Geometry.Circle c1 = new Geometry.Circle(p1, 15);
+
+      String circleString = "Circle[center = Point[3.0, 4.0], radius = 15.0]";
+
+      assertTrue(circleString.equals(c1.toString()));
     }
   }
 
@@ -284,8 +335,8 @@ public class GeometryTest {
       r2.add(r1);
 
       assertEquals(p1, r2.position());
-      assertTrue(r2.width() == 9);
-      assertTrue(r2.height() == 7);
+      assertTrue(r2.width() == 6);
+      assertTrue(r2.height() == 6);
     }
 
     /**
@@ -296,9 +347,9 @@ public class GeometryTest {
       Geometry.Point p1 = new Geometry.Point(2, 2);
       Geometry.Point p2 = new Geometry.Point(4, 4);
       Geometry.Rectangle r1 = new Geometry.Rectangle(p1, 5, 5);
-      Geometry.Rectangle r2 = new Geometry.Rectangle(p2, 3, 3);
+      Geometry.Rectangle r2 = new Geometry.Rectangle(p2, 4, 4);
 
-      assertTrue(r1.enlargement(r2) == 25.0);
+      assertTrue(r1.enlargement(r2) == 11);
     }
   }
 

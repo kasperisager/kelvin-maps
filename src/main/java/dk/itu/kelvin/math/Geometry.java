@@ -508,7 +508,7 @@ public final class Geometry {
 
       return false;
     }
-
+    
     /**
      * Get the bounds of the polyline.
      *
