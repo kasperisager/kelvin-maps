@@ -82,15 +82,4 @@ public class geometryTest {
     assertEquals(null, Geometry.intersection(l1, l3));
   }
 
-  /**
-   *
-   */
-  @Test (expected = RuntimeException.class)
-  public void testListClass() {
-    Geometry.Point p1 = new Geometry.Point(5, 5);
-    Geometry.Point p2 = null;
-
-    new Geometry.Line(p1, p2);
-  }
-
 }
