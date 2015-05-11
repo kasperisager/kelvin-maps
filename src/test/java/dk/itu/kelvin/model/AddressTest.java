@@ -7,9 +7,8 @@ package dk.itu.kelvin.model;
 import org.junit.Test;
 
 // JUnit assertions
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
+
 
 /**
  * {@link Address} test suite.
@@ -35,6 +34,20 @@ import static org.junit.Assert.assertNotNull;
  * number + door number as well as the postcode + city:
  */
 public final class AddressTest {
+
+  /**
+   *
+   */
+  @Test
+  public void testCoordinates() {
+    Address a1 = Address.parse("Foo");
+    a1.x(20.02f);
+    assertTrue(20.02f == a1.x());
+
+    a1.y(300.11f);
+    assertTrue(300.11f == a1.y());
+  }
+
   /**
    * The Address parser should handle null input without blowing up.
    */
