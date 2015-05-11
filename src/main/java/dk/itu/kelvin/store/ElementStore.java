@@ -287,11 +287,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
           elementList.addAll(this.waysTree.range(q.bounds));
           break;
         case "land":
-          try {
-            elementList.addAll(this.landTree.range(q.bounds));
-          }catch (Exception e){
-
-          }
+          elementList.addAll(this.landTree.range(q.bounds));
           break;
         case "relation":
           elementList.addAll(this.relationsTree.range(q.bounds));
@@ -544,13 +540,4 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
       return ElementStore.this.search(this);
     }
   }
-
-  public void checkLand(){
-    if (land.isEmpty()) {
-      Way bounds = new Way();
-      bounds.start(new Node(bounds));
-      land.add(bounds);
-    }
-  }
-
 }
