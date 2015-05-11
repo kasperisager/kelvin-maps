@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 public class GeometryTest {
   // HErro
-  
+
 
   /**
    *
@@ -82,6 +82,198 @@ public class GeometryTest {
 
     assertEquals(p5, Geometry.intersection(l1, l2));
     assertEquals(null, Geometry.intersection(l1, l3));
+  }
+
+  public static class LineTest {
+    /**
+     * Test the constructor.
+     */
+    @Test (expected = RuntimeException.class)
+    public void testLine() {
+      Geometry.Point p1 = new Geometry.Point(5, 5);
+      Geometry.Point p2 = null;
+
+      new Geometry.Line(p1, p2);
+    }
+
+    /**
+     * Test whether a line is vertical or not.
+     */
+    @Test
+    public void testIsVertical() {
+      Geometry.Point p1 = new Geometry.Point(4, 90);
+      Geometry.Point p2 = new Geometry.Point(4, 1);
+      Geometry.Line l1 = new Geometry.Line(p1, p2);
+
+      assertTrue(l1.isVertical());
+
+      Geometry.Point p3 = new Geometry.Point(4, 90);
+      Geometry.Point p4 = new Geometry.Point(5, 1);
+      Geometry.Line l2 = new Geometry.Line(p3, p4);
+
+      assertFalse(l2.isVertical());
+    }
+
+    /**
+     * Test whether a line is horizontal or not.
+     */
+    @Test
+    public void testIsHorizontal() {
+      Geometry.Point p1 = new Geometry.Point(99, 6);
+      Geometry.Point p2 = new Geometry.Point(300, 6);
+      Geometry.Line l1 = new Geometry.Line(p1, p2);
+
+      assertTrue(l1.isHorizontal());
+
+      Geometry.Point p3 = new Geometry.Point(4, 90);
+      Geometry.Point p4 = new Geometry.Point(15, 1);
+      Geometry.Line l2 = new Geometry.Line(p3, p4);
+
+      assertFalse(l2.isHorizontal());
+    }
+
+    /**
+     * Test wether a point is contained within a line ojbect.
+     */
+    @Test
+    public void testContains() {
+      Geometry.Point p1 = new Geometry.Point(3, 6);
+      Geometry.Point p2 = new Geometry.Point(30, 6);
+      Geometry.Line l1 = new Geometry.Line(p1, p2);
+
+      Geometry.Point p3 = new Geometry.Point(16, 6);
+      Geometry.Point p4 = new Geometry.Point(16, 19);
+
+      assertTrue(l1.contains(p3));
+      assertFalse(l1.contains(p4));
+    }
+  }
+
+  public static class PolyLineTest {
+    /**
+     * Test initializing a polyline with too few points.
+     */
+    @Test (expected = RuntimeException.class)
+    public void testPolyLineInitializationWithSinglePoint() {
+      Geometry.Point p1 = new Geometry.Point(4 , 5);
+
+      new Geometry.Polyline(p1);
+    }
+
+    /**
+     * Test initializing a polyline with a point, which is null.
+     */
+    @Test (expected = NullPointerException.class)
+    public void testPolyLineInitalizationWithNullPoint() {
+      Geometry.Point p1 = new Geometry.Point(4 , 5);
+      Geometry.Point p2 = null;
+      Geometry.Point p3 = new Geometry.Point(4 , 5);
+
+      new Geometry.Polyline(p1, p2, p3);
+    }
+
+    /**
+     * Test whether a poly line is closed.
+     * This means if the poly line starts and ends in the same point.
+     */
+    @Test
+    public void testIsClosed() {
+      Geometry.Point p1 = new Geometry.Point(4, 90);
+      Geometry.Point p2 = new Geometry.Point(100, 13);
+      Geometry.Point p3 = new Geometry.Point(60, 4);
+      Geometry.Point p4 = new Geometry.Point(4, 90);
+
+      Geometry.Polyline pl1 = new Geometry.Polyline(p1, p2, p3, p4);
+      assertTrue(pl1.isClosed());
+
+      Geometry.Polyline pl2 = new Geometry.Polyline(p1, p2, p4, p3);
+      assertFalse(pl2.isClosed());
+    }
+
+    /**
+     * Test the calculation of a length of a poly line.
+     */
+    @Test
+    public void testLength() {
+      Geometry.Point p1 = new Geometry.Point(1, 90);
+      Geometry.Point p2 = new Geometry.Point(11, 90);
+      Geometry.Point p3 = new Geometry.Point(21, 90);
+      Geometry.Point p4 = new Geometry.Point(31, 90);
+
+      Geometry.Polyline pl1 = new Geometry.Polyline(p1, p2, p3, p4);
+      assertTrue(pl1.length() == 30);
+    }
+
+  }
+
+  /**
+   *
+   */
+  public class testCircle {
+    /**
+     * Test constructor with null point.
+     */
+    @Test (expected = RuntimeException.class)
+    public void testCircleInitializeWithNullCenter() {
+      Geometry.Point p1 = null;
+
+      new Geometry.Circle(p1, 8);
+    }
+
+    /**
+     * Test constructor with a negative radius.
+     */
+    @Test (expected = RuntimeException.class)
+    public void testCircleInitializeWithNegativeRadius() {
+      Geometry.Point p1 = new Geometry.Point(5, 5);
+
+      new Geometry.Circle(p1, -8);
+    }
+
+  }
+
+  /**
+   * Test of the inner class Rectangle.
+   */
+  public static class Rectangle {
+    /**
+     * Test initializing a rectangle with a null point.
+     */
+    @Test (expected = RuntimeException.class)
+    public void testRectangleInitializeWithNullPoint() {
+      Geometry.Point p1 = null;
+
+      new Geometry.Rectangle(p1, 3, 4);
+    }
+
+    /**
+     * Test initializing a rectangle with a negative width.
+     */
+    @Test (expected = RuntimeException.class)
+    public void testRectangleInitializeWithNegativeWidth() {
+      Geometry.Point p1 = new Geometry.Point(3, 90);
+
+      new Geometry.Rectangle(p1, -3, 4);
+    }
+
+    /**
+     * Test of adding two rectangles together.
+     */
+    @Test
+    public void testAdd() {
+      Geometry.Point p1 = new Geometry.Point(3, 3);
+      Geometry.Rectangle r1 = new Geometry.Rectangle(p1, 5, 4);
+
+      Geometry.Point p2 = new Geometry.Point(6, 5);
+      Geometry.Rectangle r2 = new Geometry.Rectangle(p1, 3, 4);
+
+      Geometry.Rectangle r3 = Geometry.union(r1, r2);
+
+      assertEquals(p1, r3.position());
+      assertTrue(r3.width() == 9);
+      assertTrue(r3.height() == 7);
+    }
+
   }
 
 }
