@@ -489,7 +489,7 @@ public final class ChartController {
         for (Way l: parser.land()) {
           ChartController.instance.elementStore.addLand(l);
         }
-        // Adds land around entire bounds if, parser doesn't have any coastlines.
+        // Adds land around entire bounds if parser doesn't have any coastlines.
         if (parser.land().isEmpty()) {
           BoundingBox tempBounds = parser.bounds();
           Way defaultLand = new Way();
