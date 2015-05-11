@@ -340,6 +340,7 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
      * @param depth   The current tree depth.
      * @param bounds  The bounds to search for elements within.
      * @param filter  The filter to apply to the range search.
+     * @return        All elements within range of the specified bounds.
      */
     public abstract List<E> range(
       final int depth,
@@ -438,6 +439,7 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
      * @param depth   The current tree depth.
      * @param bounds  The bounds to search for elements within.
      * @param filter  The filter to apply to the range search.
+     * @return        All elements within range of the specified bounds.
      */
     public List<E> range(
       final int depth,
@@ -536,6 +538,7 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
      * @param depth   The current tree depth.
      * @param bounds  The bounds to search for elements within.
      * @param filter  The filter to apply to the range search.
+     * @return        All elements within range of the specified bounds.
      */
     public List<E> range(
       final int depth,
