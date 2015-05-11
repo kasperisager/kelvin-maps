@@ -217,7 +217,7 @@ public class RectangleTree<E extends RectangleTree.Index>
         end = elements.size();
       }
 
-      Collections.sort(elements.subList(start, end), (a, b) -> {
+      Collections.sort(new ArrayList<>(elements.subList(start, end)), (a, b) -> {
         return Double.compare(
           a.minY() - ((a.maxY() - a.minY()) / 2),
           b.minY() - ((b.maxY() - b.minY()) / 2)
@@ -256,11 +256,11 @@ public class RectangleTree<E extends RectangleTree.Index>
 
       // If the elements can fit on a single page, create a bucket.
       if (singlePage) {
-        nodes.add(new Bucket<E>(elements.subList(start, end)));
+        nodes.add(new Bucket<E>(new ArrayList<>(elements.subList(start, end))));
       }
       // Otherwise, continue recursively partioning the elements.
       else {
-        nodes.add(this.partition(elements.subList(start, end)));
+        nodes.add(this.partition(new ArrayList<>(elements.subList(start, end))));
       }
     }
 
