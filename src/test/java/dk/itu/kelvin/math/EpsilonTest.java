@@ -25,11 +25,20 @@ public final class EpsilonTest {
    */
   @Test
   public void testEqual() {
-    assertTrue(Epsilon.equal(3, 3));
+    // test float && double
+    assertTrue(Epsilon.equal(113.2, 113.2));
     assertTrue(Epsilon.equal(0.05, 0.05));
 
     assertFalse(Epsilon.equal(11010, 11010.01));
     assertFalse(Epsilon.equal(11010.02, 11010.01));
+
+    // test short
+    Short s1 =  2;
+    Short s2 = 1;
+    Short s3 = 2;
+    assertTrue(Epsilon.equal(s1, s3));
+    assertFalse(Epsilon.equal(s2, s1));
+
   }
 
   /**
@@ -37,10 +46,18 @@ public final class EpsilonTest {
    */
   @Test
   public void testGreater() {
-    assertTrue(Epsilon.greater(3.01, 3));
-    assertTrue(Epsilon.greater(11102.99, 11102.9));
+    // test float && double
+    assertTrue(Epsilon.greater(3.03, 3.02));
+    assertTrue(Epsilon.greater(11102.99f, 11102.9f));
 
-    assertFalse(Epsilon.greater(11102.91, 11102.93));
+    assertFalse(Epsilon.greater(11102.91f, 11102.93f));
+    assertFalse(Epsilon.greater(4.03, 4.04));
+
+    // test short
+    Short s1 =  2;
+    Short s2 = 1;
+    assertTrue(Epsilon.greater(s1, s2));
+    assertFalse(Epsilon.greater(s2, s1));
   }
 
   /**
@@ -48,12 +65,15 @@ public final class EpsilonTest {
    */
   @Test
   public void testLess() {
-    assertTrue(Epsilon.less(32766.8, 32766.81));
-    assertTrue(Epsilon.less(-32766.81, -32766.80));
-    assertTrue(Epsilon.less(-0.01, 0));
+    // test float && double
+    assertTrue(Epsilon.less(0.80, 0.81));
+    assertFalse(Epsilon.less(0.10, 0.09));
 
-    assertFalse(Epsilon.less(0.02, -0.01));
-    assertFalse(Epsilon.less(134, 125));
+    // test short
+    Short s1 =  1;
+    Short s2 = 21;
+    assertTrue(Epsilon.less(s1, s2));
+    assertFalse(Epsilon.less(s2, s1));
   }
 
   /**
@@ -61,11 +81,23 @@ public final class EpsilonTest {
    */
   @Test
   public void testLessOrEqual() {
-    assertTrue(Epsilon.lessOrEqual(5.21, 5.21));
-    assertTrue(Epsilon.lessOrEqual(4.39, 4.42));
+    // test float && double
+    assertTrue(Epsilon.lessOrEqual(-32766.81, -32766.80));
+    assertTrue(Epsilon.lessOrEqual(-0.01, 0));
+    assertTrue(Epsilon.lessOrEqual(-32766.8102, -32766.8102));
+    assertTrue(Epsilon.lessOrEqual(0.80f, 0.81f));
+    assertFalse(Epsilon.lessOrEqual(0.10f, 0.09f));
 
-    assertFalse(Epsilon.lessOrEqual(0.02, -0.01));
+    assertFalse(Epsilon.lessOrEqual(0.020, -0.019));
     assertFalse(Epsilon.lessOrEqual(134.9, 134.7));
+
+    // test short
+    Short s1 =  2;
+    Short s2 = 1;
+    Short s3 = 2;
+    assertTrue(Epsilon.lessOrEqual(s1, s3));
+    assertTrue(Epsilon.lessOrEqual(s2, s3));
+    assertFalse(Epsilon.lessOrEqual(s1, s2));
   }
 
   /**
@@ -73,10 +105,23 @@ public final class EpsilonTest {
    */
   @Test
   public void testGreaterOrEqual() {
+    // test float && double
     assertTrue(Epsilon.greaterOrEqual(5.21, 5.21));
-    assertTrue(Epsilon.greaterOrEqual(4.42, 4.39));
+    assertTrue(Epsilon.greaterOrEqual(65.21f, 55.21f));
+    assertTrue(Epsilon.greaterOrEqual(54.42f, 34.39f));
+
 
     assertFalse(Epsilon.greaterOrEqual(-0.011, -0.01));
     assertFalse(Epsilon.greaterOrEqual(125.20, 125.21));
+    assertFalse(Epsilon.greaterOrEqual(44.42f, 54.42f));
+
+    // test short
+    Short s1 =  2;
+    Short s2 = 1;
+    Short s3 = 2;
+    assertTrue(Epsilon.greaterOrEqual(s1, s3));
+    assertTrue(Epsilon.greaterOrEqual(s3, s2));
+    assertFalse(Epsilon.greaterOrEqual(s2, s1));
+
   }
 }
