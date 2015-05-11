@@ -149,7 +149,7 @@ public class GeometryTest {
     }
 
     /**
-     * Test wether a point is contained within a line ojbect.
+     * Test whether a point is contained within a line ojbect.
      */
     @Test
     public void testContains() {
@@ -163,9 +163,28 @@ public class GeometryTest {
       assertTrue(l1.contains(p3));
       assertFalse(l1.contains(p4));
     }
+
+    /**
+     *  Test the bounding of line objects.
+     */
+    @Test
+    public void testBounds() {
+      Geometry.Point p1 = new Geometry.Point(11, 34);
+      Geometry.Point p2 = new Geometry.Point(30, 16);
+      Geometry.Line l1 = new Geometry.Line(p1, p2);
+
+      Geometry.Point p3 = new Geometry.Point(11, 16);
+      Geometry.Point p4 = new Geometry.Point(30, 34);
+      Geometry.Bounds b1 = new Geometry.Bounds(p3, p4);
+
+      assertTrue(b1.min().x() == l1.bounds().min().x());
+      assertTrue(b1.min().y() == l1.bounds().min().y());
+      assertTrue(b1.max().x() == l1.bounds().max().x());
+      assertTrue(b1.max().y() == l1.bounds().max().y());
+    }
   }
 
-  public static class PolyLineTest {
+  public static class PolylineTest {
     /**
      * Test initializing a polyline with too few points.
      */
@@ -262,7 +281,7 @@ public class GeometryTest {
   /**
    * Testing of the inner class Circle.
    */
-  public class testCircle {
+  public static class CircleTest {
     /**
      * Test constructor with null point.
      */
@@ -291,16 +310,16 @@ public class GeometryTest {
       Geometry.Point p1 = new Geometry.Point(3, 4);
       Geometry.Circle c1 = new Geometry.Circle(p1, 15);
 
-      String circleString = "Circle[center = Point[3.0, 4.0], radius = 15.0]";
+      String circleString = "Circle[center = Point[x = 3.0, y = 4.0], radius = 15.0]";
 
-      assertTrue(circleString.equals(c1.toString()));
+      assertEquals(circleString, c1.toString());
     }
   }
 
   /**
    * Test of the inner class Rectangle.
    */
-  public static class Rectangle {
+  public static class RectangleTest {
     /**
      * Test initializing a rectangle with a null point.
      */
@@ -356,7 +375,7 @@ public class GeometryTest {
   /**
    * Test of the Bounds inner class.
    */
-  public static class Bounds {
+  public static class BoundsTest {
     /**
      * Test initialization with null point.
      */
