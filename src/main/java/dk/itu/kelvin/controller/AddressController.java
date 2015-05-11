@@ -593,7 +593,7 @@ public final class AddressController {
           AddressController.addresses.search(tf.getText());
 
         AddressController.address = Address.parse(tf.getText());
-        if (address == null) {
+        if (AddressController.address == null) {
           return;
         }
         AddressController.autoCompletePopOverVBox =
