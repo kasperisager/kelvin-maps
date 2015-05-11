@@ -92,7 +92,6 @@ public final class ApplicationController {
     ApplicationController.addIcon();
     Platform.runLater(() -> {
       MenuController.loadDefault();
-      ApplicationController.removeIcon();
     });
   }
 
@@ -132,9 +131,13 @@ public final class ApplicationController {
    */
   public static void removeIcon() {
     ApplicationController.instance.rt.stop();
-    ApplicationController.instance.stackPane.getChildren().remove(
+    if (ApplicationController.instance.stackPane.getChildren().contains(
       ApplicationController.instance.loadIcon
-    );
+    )) {
+      ApplicationController.instance.stackPane.getChildren().remove(
+        ApplicationController.instance.loadIcon
+      );
+    }
     ApplicationController.instance.chart.setDisable(false);
   }
 
@@ -142,9 +145,13 @@ public final class ApplicationController {
    * Adds the loading icon to the stack pane.
    */
   public static void addIcon() {
-    ApplicationController.instance.stackPane.getChildren().add(
+    if (!ApplicationController.instance.stackPane.getChildren().contains(
       ApplicationController.instance.loadIcon
-    );
+    )) {
+      ApplicationController.instance.stackPane.getChildren().add(
+        ApplicationController.instance.loadIcon
+      );
+    }
     ApplicationController.instance.rotateIcon();
     ApplicationController.instance.chart.setDisable(true);
   }
