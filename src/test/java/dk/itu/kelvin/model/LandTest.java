@@ -22,11 +22,14 @@ public class LandTest {
     Land land = new Land(new BoundingBox(4, 6, 2, 1));
     Way way = new Way();
 
-    land.add(way);
-    assertTrue(1 == land.coastlines().size());
-
+    // test add way = null
     Way way1 = null;
     land.add(way1);
+    assertTrue(0 == land.coastlines().size());
+
+    // test size of coastlines when added 1 one
+    land.add(way);
+    assertTrue(1 == land.coastlines().size());
 
   }
 }
