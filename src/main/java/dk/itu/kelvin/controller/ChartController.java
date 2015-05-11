@@ -501,7 +501,8 @@ public final class ChartController {
         ChartController.instance.elementStore.add(parser.bounds());
 
         ChartController.instance.chart.elementStore(
-          ChartController.elementStore);
+          ChartController.elementStore
+        );
         ChartController.instance.chart.bounds(parser.bounds());
 
         // Sets the chart active after load.
@@ -540,6 +541,4 @@ public final class ChartController {
     ChartController.instance.chart.elementStore(elementStore);
     ChartController.instance.chart.bounds(bounds);
   }
-
 }
-

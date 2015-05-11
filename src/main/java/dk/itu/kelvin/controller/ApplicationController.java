@@ -131,10 +131,10 @@ public final class ApplicationController {
    * Stops rotation and removes the icon.
    */
   public static void removeIcon() {
-
     ApplicationController.instance.rt.stop();
     ApplicationController.instance.stackPane.getChildren().remove(
-      ApplicationController.instance.loadIcon);
+      ApplicationController.instance.loadIcon
+    );
     ApplicationController.instance.chart.setDisable(false);
   }
 
@@ -143,7 +143,8 @@ public final class ApplicationController {
    */
   public static void addIcon() {
     ApplicationController.instance.stackPane.getChildren().add(
-      ApplicationController.instance.loadIcon);
+      ApplicationController.instance.loadIcon
+    );
     ApplicationController.instance.rotateIcon();
     ApplicationController.instance.chart.setDisable(true);
   }

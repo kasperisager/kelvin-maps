@@ -121,7 +121,6 @@ public final class MenuController {
    */
   @FXML
   private void saveBin() {
-    //do stuff.
     File file = new File(CURRENT_BIN);
 
     try (ObjectOutputStream out = new ObjectOutputStream(
@@ -134,7 +133,6 @@ public final class MenuController {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-
   }
 
   /**
@@ -146,6 +144,7 @@ public final class MenuController {
 
     AddressController.resetPOI();
     ChartController.clearMap();
+
     try (ObjectInputStream in = new ObjectInputStream(
       new FileInputStream(file))
     ) {
@@ -177,6 +176,7 @@ public final class MenuController {
 
     AddressController.resetPOI();
     ChartController.clearMap();
+
     try (ObjectInputStream in = new ObjectInputStream(
       new FileInputStream(file))
     ) {
