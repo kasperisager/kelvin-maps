@@ -261,18 +261,27 @@ public final class MenuController {
     this.about = new PopOver();
     VBox vbox = new VBox();
     vbox.getStyleClass().add("aboutVBox");
-    Label l1 = new Label("About");
-    l1.getStyleClass().add("header");
-    Label l9 = new Label("Kelvin Maps");
-    Label l8 = new Label("Version: " + this.CUR_VERSION);
-    Label l10 = new Label("");
-    Label l2 = new Label("This software was made by:");
-    Label l3 = new Label("Kasper Isager");
-    Label l4 = new Label("Mathias Grundtvig Andreasen");
-    Label l5 = new Label("Johan Hjalte á Trødni");
-    Label l7 = new Label("Sebastian Molding Bork");
-    Label l6 = new Label("Niklas Pelle Michelsen");
-    vbox.getChildren().addAll(l1, l9, l8, l10, l2, l3, l4, l5, l7, l6);
+
+    Label header = new Label("About");
+    header.getStyleClass().add("header");
+
+    Label version = new Label(
+      "Kelvin Maps"
+    + "\nVersion: " + this.CUR_VERSION
+    );
+
+    Label credits = new Label(
+      "This software was made by:"
+    + "\n"
+    + "\nJohan Hjalte á Trødni"
+    + "\nKasper Kronborg Isager"
+    + "\nMathias Grundtvig Andreasen"
+    + "\nNiklas Pelle Michelsen"
+    + "\nSebastian Molding Bork"
+    + "\n"
+    );
+
+    vbox.getChildren().addAll(header, version, credits);
     vbox.setAlignment(Pos.CENTER);
     vbox.setPrefWidth(500);
 
