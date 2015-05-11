@@ -138,7 +138,7 @@ public final class MenuController {
    */
   @FXML
   private void loadBin() {
-    loadBin(CURRENT_BIN);
+    this.loadBin(CURRENT_BIN);
   }
 
   /**
@@ -146,21 +146,21 @@ public final class MenuController {
    */
   @FXML
   private void defaultBin() {
-    loadBin(DEFAULT_BIN);
+    this.loadBin(DEFAULT_BIN);
   }
 
   /**
    * Static method for loading the default map that can't be changed.
    */
   public static void loadDefault() {
-    loadBin(DEFAULT_BIN);
+    MenuController.loadBin(DEFAULT_BIN);
   }
 
   /**
    * Loads a map from binary file based on filename.
    * @param filename a String for representing the file directory.
    */
-  private static void loadBin(String filename) {
+  private static void loadBin(final String filename) {
     File file = new File(filename);
     if (!file.exists()) {
       return;
