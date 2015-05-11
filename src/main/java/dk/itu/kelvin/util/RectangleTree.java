@@ -256,9 +256,7 @@ public class RectangleTree<E extends RectangleTree.Index>
 
       // If the elements can fit on a single page, create a bucket.
       if (singlePage) {
-        nodes.add(new Bucket<E>(new ArrayList<E>(elements.subList(
-          start, end
-        ))));
+        nodes.add(new Bucket<E>(elements.subList(start, end)));
       }
       // Otherwise, continue recursively partioning the elements.
       else {
@@ -826,7 +824,7 @@ public class RectangleTree<E extends RectangleTree.Index>
      * @param elements The elements associated with the bucket.
      */
     public Bucket(final List<E> elements) {
-      this.elements = elements;
+      this.elements = new ArrayList<>(elements);
 
       for (E element: this.elements) {
         if (element == null) {
