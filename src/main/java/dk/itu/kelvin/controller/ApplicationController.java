@@ -91,7 +91,7 @@ public final class ApplicationController {
 
     ApplicationController.addIcon();
     Platform.runLater(() -> {
-      MenuController.loadDefault();
+      //MenuController.loadDefault();
       ApplicationController.removeIcon();
     });
   }

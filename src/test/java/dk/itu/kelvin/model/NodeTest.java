@@ -4,13 +4,14 @@
 package dk.itu.kelvin.model;
 
 // General utilities
-import java.util.Map;
-
-// JUnit annotations
 import org.junit.Test;
 
-// JUnit assertions
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
+
+// JUnit annotations
+// JUnit assertions
 
 /**
  * {@link Node} test suite.
@@ -54,5 +55,21 @@ public final class NodeTest {
     //if the value is null.
     n1.tag("eee", null);
     assertEquals(null, tags.get("eee"));
+  }
+
+
+  @Test
+  public void testRender() {
+    /*Node n1 = new Node(1, 2);
+    n1.tag("amenity", "pub");
+    n1.tag("name", "something");
+
+    n1.render();
+
+    assertTrue(testLabel.getText().equals("\uf26a"));
+    assertTrue(testLabel.getLayoutX() == 1);
+    assertTrue(testLabel.getLayoutY() == 2);
+    assertTrue(testLabel.getStyleClass().contains("icon"));*/
+
   }
 }
