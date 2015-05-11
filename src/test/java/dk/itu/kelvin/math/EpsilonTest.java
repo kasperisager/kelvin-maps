@@ -33,6 +33,14 @@ public class EpsilonTest {
 
     assertFalse(Epsilon.equal(11010, 11010.01));
     assertFalse(Epsilon.equal(11010.02, 11010.01));
+
+    // test Math.abs(a - b) < E^-8 (double)
+    assertTrue(Epsilon.equal(1.0, 1.00000001));
+    assertFalse(Epsilon.equal(1.0, 1.0000001));
+
+    // test Math.abs(a - b) < E^-4 (float) - virker kun på E^-5
+    //assertTrue(Epsilon.equal(1.0, 1.0001));
+    //assertFalse(Epsilon.equal(1.0f, 1.001f));
   }
 
   /**
