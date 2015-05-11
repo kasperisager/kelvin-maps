@@ -4,13 +4,16 @@
 package dk.itu.kelvin.model;
 
 // General utilities
-import java.util.Map;
-
-// JUnit annotations
+import dk.itu.kelvin.math.Epsilon;
 import org.junit.Test;
 
-// JUnit assertions
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+// JUnit annotations
+// JUnit assertions
 
 /**
  * {@link Node} test suite.
@@ -22,8 +25,15 @@ public final class NodeTest {
   @Test
   public void testInitialization() {
     Node n1 = new Node(15, 25);
-    assertEquals(15, n1.x(), 0);
-    assertEquals(25, n1.y(), 0);
+    assertTrue(15 == n1.x());
+    assertTrue(25 == n1.y());
+
+    // test initialization with double
+    Node n2 = new Node(1.5, 4.2);
+
+    // we use epsilon since double -> float
+    assertTrue(Epsilon.equal(1.5f, n2.x()));
+    assertTrue(Epsilon.equal(4.2f, n2.y()));
   }
 
   /**
