@@ -7,9 +7,9 @@ package dk.itu.kelvin.math;
 import org.junit.Test;
 
 // JUnit assertions
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import javax.xml.bind.SchemaOutputResolver;
+
+import static org.junit.Assert.*;
 
 public class GeometryTest {
   /**
@@ -65,7 +65,7 @@ public class GeometryTest {
    * Test if two line objects intersect.
    */
   @Test
-  public void testIntersection3() {
+  public void testIntersection() {
     Geometry.Point p1 = new Geometry.Point(2, 2);
     Geometry.Point p2 = new Geometry.Point(8, 8);
     Geometry.Point p3 = new Geometry.Point(2, 8);
@@ -80,6 +80,51 @@ public class GeometryTest {
     assertTrue(Geometry.intersection(l1, l2).x() == p5.x());
     assertTrue(Geometry.intersection(l1, l2).y() == p5.y());
     assertEquals(null, Geometry.intersection(l1, l3));
+  }
+
+  /**
+   * Test the angles between the points.
+   * We accept a deviation of 2%.
+   */
+  @Test
+  public void testAngleBetweenPoints() {
+    Geometry.Point p1 = new Geometry.Point(2, 2);
+    Geometry.Point p2 = new Geometry.Point(2, 8);
+    Geometry.Point p3 = new Geometry.Point(8, 2);
+    Geometry.Point p4 = null;
+
+    assertTrue(Geometry.angle(p1, p2, p4) == -1);
+
+    double expectedAngle = 90 * 1.01;
+    double expectedAngle2 = 90 * 0.99;
+    double angle = Geometry.angle(p1, p2 ,p3);
+
+    assertTrue(angle < expectedAngle);
+    assertTrue(angle > expectedAngle2);
+  }
+
+  /**
+   * Test the angle between two lines.
+   */
+  @Test
+  public void testAngleBetweenLines() {
+    Geometry.Point p1 = new Geometry.Point(1, 2);
+    Geometry.Point p2 = new Geometry.Point(8, 2);
+    Geometry.Point p3 = new Geometry.Point(2, 1);
+    Geometry.Point p4 = new Geometry.Point(2, 8);
+
+    Geometry.Line l1 = new Geometry.Line(p1, p2);
+    Geometry.Line l2 = new Geometry.Line(p3, p4);
+    Geometry.Line l3 = null;
+
+    double expectedAngle = 90 * 1.01;
+    double expectedAngle2 = 90 * 0.99;
+    double angle = Geometry.angle(l1, l2);
+
+    assertTrue(angle < expectedAngle);
+    assertTrue(angle > expectedAngle2);
+
+    assertTrue(Geometry.angle(l1, l3) == -1);
   }
 
   /**
@@ -242,6 +287,23 @@ public class GeometryTest {
     }
 
     /**
+     * Testing if a polyline contains a point.
+     */
+    @Test
+    public void testContains() {
+      Geometry.Point p1 = new Geometry.Point(1, 90);
+      Geometry.Point p2 = new Geometry.Point(11, 90);
+      Geometry.Point p3 = new Geometry.Point(21, 90);
+      Geometry.Point p4 = new Geometry.Point(31, 90);
+      Geometry.Point p5 = new Geometry.Point(26, 90);
+      Geometry.Point p6 = new Geometry.Point(70, 34);
+
+      Geometry.Polyline pl1 = new Geometry.Polyline(p1, p2 ,p3 ,p4);
+      assertTrue(pl1.contains(p5));
+      assertFalse(pl1.contains(p6));
+    }
+
+    /**
      * Testing finding bounds of a poly line object.
      */
     @Test
@@ -373,6 +435,18 @@ public class GeometryTest {
 
       assertTrue(r1.enlargement(r2) == 11);
     }
+
+    /**
+     * Test the string representation of rectangle.
+     */
+    @Test
+    public void testToString() {
+      Geometry.Point p1 = new Geometry.Point(2, 2);
+      Geometry.Rectangle r1 = new Geometry.Rectangle(p1, 5, 5);
+
+      String rectangleString = "Rectangle[position = Point[x = 2.0, y = 2.0], width = 5.0, height = 5.0]";
+      assertEquals(r1.toString(), rectangleString);
+    }
   }
 
   /**
@@ -391,7 +465,31 @@ public class GeometryTest {
     }
 
     /**
-     *
+     * Testing center method.
+     */
+    @Test
+    public void testCenter() {
+      Geometry.Point p1 = new Geometry.Point(1, 1);
+      Geometry.Point p2 = new Geometry.Point(11, 11);
+
+      Geometry.Bounds b1 = new Geometry.Bounds(p1, p2);
+      Geometry.Point p3 = new Geometry.Point(6, 6);
+
+      assertTrue(b1.center().x() == p3.x());
+      assertTrue(b1.center().y() == p3.y());
+
+      Geometry.Point p4 = new Geometry.Point(10, -200);
+      Geometry.Point p5 = new Geometry.Point(40, -20);
+
+      Geometry.Bounds b2 = new Geometry.Bounds(p4, p5);
+      Geometry.Point p6 = new Geometry.Point(25, -110);
+
+      assertTrue(b2.center().x() == p6.x());
+      assertTrue(b2.center().y() == p6.y());
+    }
+
+    /**
+     * Test if a point is contained within bounds.
      */
     @Test
     public void testContains() {
@@ -405,6 +503,21 @@ public class GeometryTest {
       assertFalse(b1.contains(p3));
       assertTrue(b1.contains(p4));
     }
+
+    /**
+     *  Test the string representation of bounds.
+     */
+    @Test
+    public void testToString() {
+      Geometry.Point p1 = new Geometry.Point(2, 2);
+      Geometry.Point p2 = new Geometry.Point(5, 5);
+
+      Geometry.Bounds b1 = new Geometry.Bounds(p1, p2);
+
+      String boundsString = "Bounds[min = Point[x = 2.0, y = 2.0], max = Point[x = 5.0, y = 5.0]]";
+      assertEquals(b1.toString(), boundsString);
+    }
+
   }
 
 }
