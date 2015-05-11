@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 // JavaFX stage utilities
+import javafx.application.Platform;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -120,17 +121,22 @@ public final class MenuController {
   @FXML
   private void saveBin() {
     File file = new File(CURRENT_BIN);
+    ApplicationController.addIcon();
 
-    try (ObjectOutputStream out = new ObjectOutputStream(
-      new FileOutputStream(file))
-    ) {
-      out.writeObject(ChartController.getBounds());
-      out.writeObject(ChartController.getElementStore());
-      out.writeObject(AddressController.getAddressStore());
-      out.close();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    Platform.runLater(() -> {
+      try (ObjectOutputStream out = new ObjectOutputStream(
+        new FileOutputStream(file))
+      ) {
+        out.writeObject(ChartController.getBounds());
+        out.writeObject(ChartController.getElementStore());
+        out.writeObject(AddressController.getAddressStore());
+        out.close();
+
+        ApplicationController.removeIcon();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    });
   }
 
   /**
@@ -165,22 +171,25 @@ public final class MenuController {
     if (!file.exists()) {
       return;
     }
+    ApplicationController.addIcon();
 
     MenuController.clearMap();
+    Platform.runLater(() -> {
+      try (ObjectInputStream in = new ObjectInputStream(
+        new FileInputStream(file))
+      ) {
+        BoundingBox bounds = (BoundingBox) in.readObject();
+        ElementStore elementStore = (ElementStore) in.readObject();
+        AddressStore addressStore = (AddressStore) in.readObject();
+        in.close();
 
-    try (ObjectInputStream in = new ObjectInputStream(
-      new FileInputStream(file))
-    ) {
-      BoundingBox bounds = (BoundingBox) in.readObject();
-      ElementStore elementStore = (ElementStore) in.readObject();
-      AddressStore addressStore = (AddressStore) in.readObject();
-      in.close();
-
-      ChartController.loadBinMap(elementStore, bounds);
-      AddressController.setAddressStore(addressStore);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+        ChartController.loadBinMap(elementStore, bounds);
+        AddressController.setAddressStore(addressStore);
+        ApplicationController.removeIcon();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    });
   }
 
   /**
