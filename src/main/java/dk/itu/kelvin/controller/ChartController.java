@@ -6,14 +6,6 @@ package dk.itu.kelvin.controller;
 // General utilities
 import java.util.List;
 
-// Utilities
-import dk.itu.kelvin.math.Geometry;
-import dk.itu.kelvin.math.Haversine;
-import dk.itu.kelvin.math.MercatorProjection;
-import dk.itu.kelvin.util.SpatialIndex;
-import dk.itu.kelvin.util.WeightedGraph;
-import dk.itu.kelvin.util.ShortestPath;
-
 // I/O utilities
 import java.io.File;
 import java.util.Set;
@@ -32,12 +24,8 @@ import javafx.scene.shape.Polyline;
 // JavaFX inputs
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.RotateEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.ZoomEvent;
-
-// JavaFX transformations
-import javafx.scene.transform.Affine;
 
 // JavaFX text
 import javafx.scene.text.Text;
@@ -47,6 +35,15 @@ import javafx.scene.control.Label;
 
 // FXML utilities
 import javafx.fxml.FXML;
+
+// Utilities
+import dk.itu.kelvin.math.Geometry;
+import dk.itu.kelvin.math.Haversine;
+import dk.itu.kelvin.math.Mercator;
+import dk.itu.kelvin.math.Projection;
+import dk.itu.kelvin.util.SpatialIndex;
+import dk.itu.kelvin.util.WeightedGraph;
+import dk.itu.kelvin.util.ShortestPath;
 
 // Parser
 import dk.itu.kelvin.parser.Parser;
@@ -59,6 +56,7 @@ import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Address;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.Node;
+import dk.itu.kelvin.model.BoundingBox;
 
 // Stores
 import dk.itu.kelvin.store.ElementStore;
@@ -67,16 +65,10 @@ import dk.itu.kelvin.store.ElementStore;
  * Chart controller class.
  */
 public final class ChartController {
-
   /**
    * The ChartController instance.
    */
   private static ChartController instance;
-
-  /**
-   * The input file to show in the map viewer.
-   */
-  private static final String MAP_INPUT = "small.osm";
 
   /**
    * Default zoom step factor.
@@ -114,11 +106,6 @@ public final class ChartController {
   private double initialMouseScrollY;
 
   /**
-   * Affine transformation for chart compass.
-   */
-  private Affine compassTransform = new Affine();
-
-  /**
    * Text(icon) representing the found address.
    */
   private Text locationPointer;
@@ -151,16 +138,10 @@ public final class ChartController {
   private Chart chart;
 
   /**
-   * The compass arrow.
+   * The VBox surrounding the scale indicator.
    */
   @FXML
-  private Path compassArrow;
-
-  /**
-   * The VBox surrounding all compass elements.
-   */
-  @FXML
-  private HBox compassVBox;
+  private HBox scaleVBox;
 
   /**
    * Indicator for scale.
@@ -175,21 +156,17 @@ public final class ChartController {
   private StackPane mainStackPane;
 
   /**
-   * Getting ChartsController instance.
+   * Initialize a new chart controller.
    *
-   * @return ChartController instance.
+   * <p>
+   * <b>OBS:</b> This constructor can only ever be called once by JavaFX.
    */
-  public static ChartController instance() {
-    return ChartController.instance;
-  }
+  public ChartController() {
+    super();
 
-  /**
-   * Initializing the ChartController instance.
-   *
-   * @param instance the ChartController instance.
-   */
-  private static void instance(final ChartController instance) {
-    ChartController.instance = instance;
+    if (ChartController.instance != null) {
+      throw new RuntimeException("Only a single controller instance can exist");
+    }
   }
 
   /**
@@ -199,52 +176,10 @@ public final class ChartController {
    */
   @FXML
   private void initialize() throws Exception {
-    ChartController.instance(this);
-
-    // Sets the parent element inactive until done loading.
-    this.mainStackPane.setDisable(true);
-
-    this.compassArrow.getTransforms().add(this.compassTransform);
+    ChartController.instance = this;
 
     this.initLocationPointer();
     this.initDestinationPointer();
-    File file = new File(Parser.class.getResource(MAP_INPUT).toURI());
-
-    Parser parser = Parser.probe(file);
-
-    parser.read(file, () -> {
-      // Get all addresses from parser.
-      for (Address address : parser.addresses()) {
-        AddressController.instance().addAddress(address);
-      }
-
-      // Sets all POI from initialized nodes.
-      this.storePoi(parser);
-
-      // Schedule rendering of the chart nodes.
-      Platform.runLater(() -> {
-        for (Way l : parser.land()) {
-          this.elementStore.addLand(l);
-        }
-
-        for (Way w : parser.ways()) {
-          this.elementStore.add(w);
-        }
-
-        for (Relation r : parser.relations()) {
-          this.elementStore.add(r);
-        }
-
-        this.elementStore.add(parser.bounds());
-
-        this.chart.elementStore(this.elementStore);
-        this.chart.bounds(parser.bounds());
-
-        // Sets the chart active after load.
-        this.mainStackPane.setDisable(false);
-        ApplicationController.removeIcon();
-      });
-    });
   }
 
   /**
@@ -272,12 +207,12 @@ public final class ChartController {
   }
 
   /**
-   * Moves the compass VBox relative to BOTTOM_LEFT.
+   * Moves the scale VBox relative to BOTTOM_LEFT.
    *
-   * @param x how much to move compass along x-axis [px].
+   * @param x how much to move scale indicator along x-axis [px].
    */
-  public static void moveCompass(final double x) {
-    ChartController.instance().compassVBox.setTranslateX(x);
+  public static void moveScale(final double x) {
+    ChartController.instance.scaleVBox.setTranslateX(x);
   }
 
   /**
@@ -321,7 +256,7 @@ public final class ChartController {
       }
     }
 
-    //ChartController.instance().chart.center(new Node(n.x(), n.y()));
+    //ChartController.instance.chart.center(new Node(n.x(), n.y()));
 
 
     if (from != null && to != null) {
@@ -378,7 +313,7 @@ public final class ChartController {
         }
 
         if (routeRender != null) {
-          ChartController.instance().chart.getChildren().remove(routeRender);
+          ChartController.instance.chart.getChildren().remove(routeRender);
           routeRender = null;
         }
 
@@ -405,7 +340,7 @@ public final class ChartController {
         routeRender = route.render();
 
 
-        ChartController.instance().chart.getChildren().add(routeRender);
+        ChartController.instance.chart.getChildren().add(routeRender);
 
       }
     }
@@ -415,7 +350,7 @@ public final class ChartController {
   public static float edgeLength(WeightedGraph.Node n1, WeightedGraph.Node n2){
     float dist = 0.0f;
 
-    MercatorProjection mer = new MercatorProjection();
+    Projection mer = new Mercator();
 
     float lat1 = (float) mer.yToLat(n1.y()) * 1000;
     float lon1 = (float) mer.xToLon(n1.x()) * 1000;
@@ -423,7 +358,7 @@ public final class ChartController {
     float lat2 = (float) mer.yToLat(n2.y()) * 1000;
     float lon2 = (float) mer.xToLon(n2.x()) * 1000;
 
-    dist = Haversine.distance(lat1, lon1, lat2, lon2);
+    dist = (float) Haversine.distance(lat1, lon1, lat2, lon2);
 
     return dist;
   }
@@ -436,21 +371,13 @@ public final class ChartController {
     for (Node n : parser.nodes()) {
 
       if (n.tag("amenity") != null) {
-        ChartController.instance().elementStore.add(n);
+        ChartController.instance.elementStore.add(n);
 
       }
       if (n.tag("shop") != null) {
-        ChartController.instance().elementStore.add(n);
+        ChartController.instance.elementStore.add(n);
       }
     }
-  }
-
-  /**
-   * Will reset the compass, so it points north.
-   */
-  @FXML
-  private void compassReset() {
-    //to be continued
   }
 
   /**
@@ -551,7 +478,7 @@ public final class ChartController {
    * @param tag tag to show on map.
    */
   public static void showPoi(final String tag) {
-    ChartController.instance().chart.showSelectedPoi(tag);
+    ChartController.instance.chart.showSelectedPoi(tag);
   }
 
   /**
@@ -560,7 +487,7 @@ public final class ChartController {
    * @param tag to hide on map.
    */
   public static void hidePoi(final String tag) {
-    ChartController.instance().chart.hidePointsOfInterests(tag);
+    ChartController.instance.chart.hidePointsOfInterests(tag);
   }
 
   /**
@@ -687,21 +614,6 @@ public final class ChartController {
   }
 
   /**
-   * On rotate event.
-   *
-   * @param e The rotate event.
-   */
-  @FXML
-  private void onRotate(final RotateEvent e) {
-    this.chart.rotate(
-      e.getAngle(),
-      this.initialMouseScrollX,
-      this.initialMouseScrollY
-    );
-    this.compassTransform.prependRotation(e.getAngle(), 4, 40);
-  }
-
-  /**
    * On key pressed event.
    *
    * @param e The key event.
@@ -743,16 +655,6 @@ public final class ChartController {
         this.chart.zoom(Math.pow(ZOOM_OUT, 8));
         e.consume();
         break;
-      case Q:
-        this.chart.rotate(-10);
-        this.compassTransform.prependRotation(-10, 4, 40);
-        e.consume();
-        break;
-      case E:
-        this.chart.rotate(10);
-        this.compassTransform.prependRotation(10, 4, 40);
-        e.consume();
-        break;
       default:
         return;
     }
@@ -779,6 +681,7 @@ public final class ChartController {
    */
   public static void clearMap() {
     ChartController.instance.chart.clear();
+    ChartController.elementStore = new ElementStore();
   }
 
   /**
@@ -786,44 +689,72 @@ public final class ChartController {
    * @param file the map file to load.
    */
   public static void loadMap(final File file) {
-    ApplicationController.instance().addIcon();
-    //ApplicationController.instance().rotateIcon();
-    ChartController.instance.mainStackPane.setDisable(true);
+    ApplicationController.addIcon();
 
     Parser parser = Parser.probe(file);
 
     parser.read(file, () -> {
       // Get all addresses from parser.
-      for (Address address : parser.addresses()) {
-        AddressController.instance().addAddress(address);
+      for (Address address: parser.addresses()) {
+        AddressController.addAddress(address);
       }
+
       // Sets all POI from initialized nodes.
-      ChartController.instance().storePoi(parser);
+      ChartController.instance.storePoi(parser);
 
       Platform.runLater(() -> {
-        for (Way l : parser.land()) {
-          ChartController.instance().elementStore.addLand(l);
+        for (Way l: parser.land()) {
+          ChartController.instance.elementStore.addLand(l);
         }
 
-        for (Way w : parser.ways()) {
-          ChartController.instance().elementStore.add(w);
+        for (Way w: parser.ways()) {
+          ChartController.instance.elementStore.add(w);
         }
 
-        for (Relation r : parser.relations()) {
-          ChartController.instance().elementStore.add(r);
+        for (Relation r: parser.relations()) {
+          ChartController.instance.elementStore.add(r);
         }
 
-        ChartController.instance().elementStore.add(parser.bounds());
+        ChartController.instance.elementStore.add(parser.bounds());
 
-        ChartController.instance().chart.elementStore(
-          ChartController.instance().elementStore);
-        ChartController.instance().chart.bounds(parser.bounds());
+        ChartController.instance.chart.elementStore(
+          ChartController.elementStore);
+        ChartController.instance.chart.bounds(parser.bounds());
 
         // Sets the chart active after load.
-        ChartController.instance().mainStackPane.setDisable(false);
         ApplicationController.removeIcon();
+        ChartController.instance.chart.pan(250, 0);
+        ChartController.instance.chart.pan(-250, 0);
       });
     });
   }
-}
 
+  /**
+   * Gets the element store and returns it.
+   * @return the element store.
+   */
+  public static ElementStore getElementStore() {
+    return ChartController.instance.chart.getElementStore();
+  }
+
+  /**
+   * Gets the current BoundingBox of the chart map.
+   * @return BoundingBox of the chart.
+   */
+  public static BoundingBox getBounds() {
+    return ChartController.instance.chart.getBounds();
+  }
+
+  /**
+   * Sets the elementStore with all elements and sets the bounds.
+   * @param elementStore the elementStore to set.
+   * @param bounds the BoundingBox to set.
+   */
+  public static void loadBinMap(
+    final ElementStore elementStore,
+    final BoundingBox bounds
+  ) {
+    ChartController.instance.chart.elementStore(elementStore);
+    ChartController.instance.chart.bounds(bounds);
+  }
+}

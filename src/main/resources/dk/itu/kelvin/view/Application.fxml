@@ -10,20 +10,19 @@
 <BorderPane
   fx:controller="dk.itu.kelvin.controller.ApplicationController"
   xmlns:fx="http://javafx.com/fxml"
-  fx:id="borderPane"
+  fx:id="mainBorderPane"
 >
   <center>
     <StackPane fx:id="stackPane">
       <children>
         <fx:include fx:id="chart" source="Chart.fxml" />
-      </children>
-      <children>
+
         <Label
           fx:id="loadIcon"
           styleClass="icon, load-icon"
           text="&#xf29d;"
-          alignment="CENTER">
-        </Label>
+          alignment="CENTER"
+        />
       </children>
     </StackPane>
   </center>

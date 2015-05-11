@@ -22,16 +22,17 @@ import javafx.scene.shape.Rectangle;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 
-// Kelvin Math
-import dk.itu.kelvin.math.Haversine;
-import dk.itu.kelvin.math.MercatorProjection;
-
-// Kelvin Controllers
-import dk.itu.kelvin.controller.ChartController;
-
 // Koloboke collections
 import net.openhft.koloboke.collect.set.hash.HashObjSets;
 import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
+
+// Math
+import dk.itu.kelvin.math.Haversine;
+import dk.itu.kelvin.math.Mercator;
+import dk.itu.kelvin.math.Projection;
+
+// Controllers
+import dk.itu.kelvin.controller.ChartController;
 
 // Models
 import dk.itu.kelvin.model.Address;
@@ -144,6 +145,10 @@ public final class Chart extends Group {
    * A unit for how many pixel it takes to stretch 1 meter.
    */
   private double unitPrM;
+  /**
+   * The bounds of the chart.
+   */
+  private BoundingBox bounds;
 
   /**
    * Initialize the chart.
@@ -169,6 +174,7 @@ public final class Chart extends Group {
     if (bounds == null) {
       return;
     }
+    this.bounds = bounds;
 
     this.mapWidth = Math.abs(bounds.maxX() - bounds.minX());
     this.mapHeight = Math.abs(bounds.maxY() - bounds.minY());
@@ -177,13 +183,11 @@ public final class Chart extends Group {
     double centerY = bounds.minY() + (this.mapHeight / 2);
 
     Node centerNode = new Node(centerX, centerY);
-    /**
-     * The 10.000 is default padding to ensure it still works for really small
-     * maps with coastlines.
-     */
+
+    // The 10.000 is default padding to ensure it still works for really small
+    // maps with coastlines.
     double paddingX = 10000 + this.mapWidth;
     double paddingY = 10000 + this.mapHeight;
-
     Rectangle wrapper = new Rectangle(
       bounds.minX() - paddingX,
       bounds.minY() - paddingY,
@@ -192,16 +196,21 @@ public final class Chart extends Group {
     );
     wrapper.getStyleClass().add("wrapper");
 
+    if (this.getChildren().contains(wrapper)) {
+      this.getChildren().remove(wrapper);
+    }
+
+
     this.getChildren().add(wrapper);
     this.landLayer.setClip(bounds.render());
 
-    MercatorProjection mp = new MercatorProjection();
+    Projection mp = new Mercator();
 
     double mapLength = Haversine.distance(
-      (float) mp.yToLat(bounds.minY()),
-      (float) mp.xToLon(bounds.minX()),
-      (float) mp.yToLat(bounds.minY()),
-      (float) mp.xToLon(bounds.maxX())
+      mp.yToLat(bounds.minY()),
+      mp.xToLon(bounds.minX()),
+      mp.yToLat(bounds.minY()),
+      mp.xToLon(bounds.maxX())
     ) * 1000;
     double unitPrPx = mapLength / (this.mapWidth / 100);
     this.unitPrM = 100 / unitPrPx;
@@ -372,57 +381,11 @@ public final class Chart extends Group {
   }
 
   /**
-   * Rotate the chart.
-   *
-   * @param angle The angle of the rotation.
-   * @param x     The x-coordinate of the pivot point.
-   * @param y     The y-coordinate of the pivot point.
-   */
-  public void rotate(final double angle, final double x, final double y) {
-    double oldAngle = this.getRotate();
-    double newAngle = oldAngle + angle;
-
-    this.setRotate(newAngle);
-
-    // Get the layout bounds of the chart in local coordinates.
-    Bounds bounds = this.localToScene(this.getLayoutBounds());
-
-    double dx = x - (bounds.getMinX() + bounds.getWidth() / 2);
-    double dy = y - (bounds.getMinY() + bounds.getHeight() / 2);
-    double dt = Math.toRadians(newAngle - oldAngle);
-
-    this.setTranslateX(
-      this.getTranslateX()
-    + (dx - dx * Math.cos(dt) + dy * Math.sin(dt))
-    );
-
-    this.setTranslateY(
-      this.getTranslateY()
-    + (dy - dx * Math.sin(dt) - dy * Math.cos(dt))
-    );
-
-    this.layoutTiles();
-  }
-
-  /**
-   * Rotate the chart, using the center of the scene as the pivot point.
-   *
-   * @param angle The angle of the rotation.
-   */
-  public void rotate(final double angle) {
-    this.rotate(
-      angle,
-      this.getScene().getWidth() / 2,
-      this.getScene().getHeight() / 2
-    );
-  }
-
-  /**
    * Sets a specific scale on both x and y.
    * @param scale the scale to set.
    */
   private void setScale(final double scale) {
-    ChartController.instance().setScaleLength(this.unitPrM * scale);
+    ChartController.setScaleLength(this.unitPrM * scale);
     this.setScaleX(scale);
     this.setScaleY(scale);
   }
@@ -588,6 +551,7 @@ public final class Chart extends Group {
   public void clear() {
     this.landLayer.getChildren().clear();
     this.metaLayer.getChildren().clear();
+    this.showing.clear();
     this.elementStore = new ElementStore();
   }
 
@@ -650,6 +614,21 @@ public final class Chart extends Group {
 
       return (int) (bits ^ (bits >> 32));
     }
+  }
 
+  /**
+   * Gets the elementStore of all elements.
+   * @return the elementStore.
+   */
+  public ElementStore getElementStore() {
+    return this.elementStore;
+  }
+
+  /**
+   * Gets the bounds BoundingBox of the map.
+   * @return the bounds.
+   */
+  public BoundingBox getBounds() {
+    return this.bounds;
   }
 }

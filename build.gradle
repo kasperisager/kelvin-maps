@@ -47,6 +47,7 @@ dependencies {
   // ControlsFX
   compile group: "org.controlsfx", name: "controlsfx", version: "8.+"
   compile group: "net.openhft", name: "koloboke-api-jdk8", version: "0.6.6"
+  compile group: "fastutil", name: "fastutil", version: "5.0.9"
 
   runtime group: "net.openhft", name: "koloboke-impl-jdk8", version: "0.6.6"
 

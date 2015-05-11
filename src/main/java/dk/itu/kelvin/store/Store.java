@@ -36,5 +36,4 @@ public abstract class Store<E, C> implements Serializable {
   public final void load(final File file, final Callback callback) {
     throw new UnsupportedOperationException();
   }
-
 }

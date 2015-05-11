@@ -3,12 +3,16 @@
  */
 package dk.itu.kelvin.store;
 
-// Models
-import dk.itu.kelvin.model.Element;
+// General utilities
+import java.util.List;
+import java.util.Collection;
+import java.util.ArrayList;
 
 // Math
 import dk.itu.kelvin.math.Geometry;
 
+// Models
+import dk.itu.kelvin.model.Element;
 import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.BoundingBox;
@@ -20,16 +24,10 @@ import dk.itu.kelvin.util.PointTree;
 import dk.itu.kelvin.util.RectangleTree;
 import dk.itu.kelvin.util.WeightedGraph;
 
-// General utilities
-import java.util.List;
-import java.util.Collection;
-import java.util.ArrayList;
-
 /**
  * Common store for storing all elements in the chart.
  */
 public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
-
   /**
    * Weighted graph for all carRoads.
    */
@@ -71,7 +69,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   private List<Relation> relations = new ArrayList<>();
 
   /**
-   * A list for all POI.
+   * A list for all Points Of Interest.
    */
   private List<Node> pois = new ArrayList<>();
 

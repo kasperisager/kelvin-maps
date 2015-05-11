@@ -7,6 +7,9 @@ package dk.itu.kelvin.model;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// I/O utilities
+import java.io.Serializable;
+
 // Utilities
 import dk.itu.kelvin.util.StringPool;
 
@@ -36,7 +39,7 @@ import dk.itu.kelvin.util.StringPool;
  * {@link Address} {@code objects} a {@code String} representation to be used
  * in auto-suggestions.
  */
-public final class Address {
+public final class Address implements Serializable {
   /**
    * Internal string pool for addresses.
    */

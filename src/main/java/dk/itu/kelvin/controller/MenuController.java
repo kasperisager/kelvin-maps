@@ -5,6 +5,10 @@ package dk.itu.kelvin.controller;
 
 // I/O utilities
 import java.io.File;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 // JavaFX stage utilities
 import javafx.stage.FileChooser;
@@ -18,6 +22,13 @@ import javafx.scene.control.MenuBar;
 // JavaFX Geometry
 import javafx.geometry.Pos;
 
+// Kelvin Models
+import dk.itu.kelvin.model.BoundingBox;
+
+// Kelvin Stores
+import dk.itu.kelvin.store.AddressStore;
+import dk.itu.kelvin.store.ElementStore;
+
 // JavaFX FXML
 import javafx.fxml.FXML;
 
@@ -28,7 +39,6 @@ import org.controlsfx.control.PopOver;
  * MenuBar controller class.
  */
 public final class MenuController {
-
   /**
    * The menu controller instance.
    */
@@ -37,12 +47,17 @@ public final class MenuController {
   /**
    * Current Version number.
    */
-  private static final String CUR_VERSION = "0.10.0";
+  private static final String CUR_VERSION = "RC1";
 
   /**
-   * Location for default bin file.
+   * Current binary file that the user can overwrite by saving or load.
    */
-  private static final String DEFAULT_BIN = "";
+  private static final String CURRENT_BIN = "currentMap.bin";
+
+  /**
+   * Location for default bin file. Default bin can't be changed.
+   */
+  private static final String DEFAULT_BIN = "defaultMap.bin";
 
   /**
    * Manual PopOver.
@@ -59,6 +74,20 @@ public final class MenuController {
    */
   @FXML
   private MenuBar mainMenuBar;
+
+  /**
+   * Initialize a new menu controller.
+   *
+   * <p>
+   * <b>OBS:</b> This constructor can only ever be called once by JavaFX.
+   */
+  public MenuController() {
+    super();
+
+    if (MenuController.instance != null) {
+      throw new RuntimeException("Only a single controller instance can exist");
+    }
+  }
 
   /**
    * Getting MenuController instance.
@@ -84,7 +113,7 @@ public final class MenuController {
     MenuController.instance(this);
   }
   /**
-   * Choose an .OSM file to be loaded.
+   * Choose an .OSM, .XML, .PBF file to be loaded.
    */
   @FXML
   private void pickFile() {
@@ -97,34 +126,90 @@ public final class MenuController {
 
     if (file != null) {
       //do something with the file.
-      AddressController.instance().clearAddresses();
-      ChartController.instance().clearMap();
-      ChartController.instance().loadMap(file);
+      AddressController.resetPOI();
+      AddressController.clearAddresses();
+      ChartController.clearMap();
+      ChartController.loadMap(file);
     }
   }
 
   /**
-   * Saves current OSM file as bin.
+   * Saves current map file as bin.
    */
   @FXML
   private void saveBin() {
     //do stuff.
+    File file = new File(CURRENT_BIN);
+
+    try (ObjectOutputStream out = new ObjectOutputStream(
+      new FileOutputStream(file))
+    ) {
+      out.writeObject(ChartController.getBounds());
+      out.writeObject(ChartController.getElementStore());
+      out.writeObject(AddressController.getAddressStore());
+      out.close();
+      System.out.println("Save complete");
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+
   }
 
   /**
-   * Loads the last used bin file.
+   * Loads the last saved bin map.
    */
   @FXML
   private void loadBin() {
-    //do stuff
+    File file = new File(CURRENT_BIN);
+
+    AddressController.resetPOI();
+    ChartController.clearMap();
+    try (ObjectInputStream in = new ObjectInputStream(
+      new FileInputStream(file))
+    ) {
+      BoundingBox bounds = (BoundingBox) in.readObject();
+      ElementStore elementStore = (ElementStore) in.readObject();
+      AddressStore addressStore = (AddressStore) in.readObject();
+      in.close();
+
+      ChartController.loadBinMap(elementStore, bounds);
+      AddressController.setAddressStore(addressStore);
+      System.out.println("Load complete");
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
-   * Loads the default bin file.
+   * Loads the default bin map.
    */
   @FXML
   private void defaultBin() {
-    //do stuff.
+    MenuController.instance.loadDefault();
+  }
+
+  /**
+   * Static method for loading the default map that can't be changed.
+   */
+  public static void loadDefault() {
+    File file = new File(DEFAULT_BIN);
+
+    AddressController.resetPOI();
+    ChartController.clearMap();
+    try (ObjectInputStream in = new ObjectInputStream(
+      new FileInputStream(file))
+    ) {
+      BoundingBox bounds = (BoundingBox) in.readObject();
+      ElementStore elementStore = (ElementStore) in.readObject();
+      AddressStore addressStore = (AddressStore) in.readObject();
+      in.close();
+
+      ChartController.loadBinMap(elementStore, bounds);
+      AddressController.setAddressStore(addressStore);
+      System.out.println("Load complete");
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -179,14 +264,14 @@ public final class MenuController {
     Label l1 = new Label("About");
     l1.getStyleClass().add("header");
     Label l9 = new Label("Kelvin Maps");
-    Label l8 = new Label("Version " + this.CUR_VERSION);
+    Label l8 = new Label("Version: " + this.CUR_VERSION);
     Label l10 = new Label("");
     Label l2 = new Label("This software was made by:");
     Label l3 = new Label("Kasper Isager");
     Label l4 = new Label("Mathias Grundtvig Andreasen");
     Label l5 = new Label("Johan Hjalte á Trødni");
-    Label l7 = new Label("Niklas Pelle Michelsen");
-    Label l6 = new Label("Sebastian Molding Bork");
+    Label l7 = new Label("Sebastian Molding Bork");
+    Label l6 = new Label("Niklas Pelle Michelsen");
     vbox.getChildren().addAll(l1, l9, l8, l10, l2, l3, l4, l5, l7, l6);
     vbox.setAlignment(Pos.CENTER);
     vbox.setPrefWidth(500);

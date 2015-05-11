@@ -3,15 +3,15 @@
  */
 package dk.itu.kelvin.model;
 
+// General utilities
+import java.util.Map;
+
 // JavaFX controls
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.Label;
 
 // Utilities
 import dk.itu.kelvin.util.PointTree;
-import javafx.scene.paint.Color;
-
-import java.util.Map;
 
 /**
  * A node describes a 2-dimensional coordinate within a chart.
@@ -81,69 +81,48 @@ public final class Node extends Element<Label> implements PointTree.Index {
    * @return The JavaFX representation of the node.
    */
   public Label render() {
-    for (Map.Entry<String, String> tag: this.tags().entrySet()) {
-      //String key = tag.getKey();
-      String value = tag.getValue();
+    Label label = new Label();
 
-      switch (value) {
-        case "pub":
-          return this.createLabel("\uf26a", value, Color.YELLOW);
-        case "cafe":
-          return this.createLabel("\uF272", value, Color.BLACK);
-        case "restaurant":
-          return this.createLabel("\uF3AA", value, Color.BLACK);
-        case "taxi":
-          return this.createLabel("\uf36f", value, Color.YELLOW);
-        case "supermarket":
-          return this.createLabel("\uf3f8", value, Color.BLACK);
-        case "bank":
-          return this.createLabel("\uf316", value, Color.YELLOW);
-        case "fast_food":
-          return this.createLabel("\uf2a8", value, Color.YELLOW);
-        case "toilets":
-          return this.createLabel("\uf25d|\uf202", value, Color.YELLOW);
-        case "post_box":
-          return this.createLabel("\uf423", value, Color.YELLOW);
-        case "telephone":
-          return this.createLabel("\uf2d2", value, Color.YELLOW);
-        case "compressed_air":
-          return this.createLabel("\uf369", value, Color.YELLOW);
-        case "solarium":
-          return this.createLabel("\uf4b7", value, Color.YELLOW);
-        case "recycling":
-          return this.createLabel("\uf253", value, Color.YELLOW);
+    label.setLayoutX(this.x);
+    label.setLayoutY(this.y);
+
+    label.getStyleClass().add("icon");
+
+    String name = this.tag("name");
+
+    if (name != null) {
+      label.setTooltip(new Tooltip(name));
+    }
+
+    String icon = null;
+
+    for (Map.Entry<String, String> tag: this.tags().entrySet()) {
+      label.getStyleClass().add(tag.getKey());
+      label.getStyleClass().add(tag.getKey() + "-" + tag.getValue());
+
+      switch (tag.getValue()) {
+        case "pub":             icon = "\uf26a"; break;
+        case "cafe":            icon = "\uF272"; break;
+        case "restaurant":      icon = "\uF3AA"; break;
+        case "taxi":            icon = "\uf36f"; break;
+        case "supermarket":     icon = "\uf3f8"; break;
+        case "bank":            icon = "\uf316"; break;
+        case "fast_food":       icon = "\uf2a8"; break;
+        case "post_box":        icon = "\uf423"; break;
+        case "telephone":       icon = "\uf2d2"; break;
+        case "compressed_air":  icon = "\uf369"; break;
+        case "solarium":        icon = "\uf4b7"; break;
+        case "recycling":       icon = "\uf253"; break;
+        case "toilets":         icon = "\uf25d|\uf202"; break;
         default:
-          // Do nothing.
+          continue;
       }
     }
 
-    return null;
-  }
-
-  /**
-   * Create a label for a unique POI.
-   *
-   * @param icon defines a unique icon for each key.
-   * @param value defines the key.
-   * @param color defines the color of the icon.
-   * @return label.
-   */
-  private Label createLabel(
-    final String icon,
-    final String value,
-    final Color color
-  ) {
-    Label l = new Label();
-    l.setText(icon);
-    l.getStyleClass().add("icon");
-
-    l.setLayoutX(this.x());
-    l.setLayoutY(this.y());
-
-    if (this.tags().get("name") != null) {
-      String name = this.tags().get("name");
-      l.setTooltip(new Tooltip(name));
+    if (icon != null) {
+      label.setText(icon);
     }
-    return l;
+
+    return label;
   }
 }

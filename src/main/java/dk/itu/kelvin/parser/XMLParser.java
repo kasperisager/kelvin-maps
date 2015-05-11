@@ -25,7 +25,7 @@ import net.openhft.koloboke.collect.map.hash.HashLongObjMaps;
 
 // Math
 import dk.itu.kelvin.math.Projection;
-import dk.itu.kelvin.math.MercatorProjection;
+import dk.itu.kelvin.math.Mercator;
 
 // Models
 import dk.itu.kelvin.model.Address;
@@ -43,7 +43,7 @@ public final class XMLParser extends Parser {
   /**
    * Projection to use for the parsed coordinates.
    */
-  private final Projection projection = new MercatorProjection();
+  private final Projection projection = new Mercator();
 
   /**
    * Bounding box.

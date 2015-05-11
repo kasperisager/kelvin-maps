@@ -16,6 +16,9 @@ import javafx.scene.control.Label;
 // JavaFX animations
 import javafx.animation.RotateTransition;
 
+// JavaFX application
+import javafx.application.Platform;
+
 // FXML utilities
 import javafx.fxml.FXML;
 
@@ -46,36 +49,49 @@ public final class ApplicationController {
   private StackPane stackPane;
 
   /**
+   * Main parent StackPane for ChartController.
+   */
+  @FXML
+  private StackPane chart;
+
+  /**
    * The loading icon.
    */
   @FXML
   private Label loadIcon;
 
   /**
+   * Initialize a new application controller.
+   *
+   * <p>
+   * <b>OBS:</b> This constructor can only ever be called once by JavaFX.
+   */
+  public ApplicationController() {
+    super();
+
+    if (ApplicationController.instance != null) {
+      throw new RuntimeException("Only a single controller instance can exist");
+    }
+  }
+
+  /**
    * JavaFX constructor for the ApplicationController.
    */
   @FXML
   private void initialize() {
-    ApplicationController.instance(this);
-    ApplicationController.instance().rt
+    ApplicationController.instance = this;
+
+    ApplicationController.instance.rt
     = new RotateTransition(Duration.millis(10000), this.loadIcon);
-    ApplicationController.instance().rotateIcon();
-  }
+    ApplicationController.instance.rotateIcon();
+    ApplicationController.instance.stackPane.getChildren().remove(
+      this.loadIcon);
 
-  /**
-   * Get the application controller instance.
-   * @return The application controller instance.
-   */
-  public static ApplicationController instance() {
-    return ApplicationController.instance;
-  }
-
-  /**
-   * Set the application controller instance.
-   * @param instance The application controller instance.
-   */
-  private static void instance(final ApplicationController instance) {
-    ApplicationController.instance = instance;
+    ApplicationController.addIcon();
+    Platform.runLater(() -> {
+      MenuController.loadDefault();
+      ApplicationController.removeIcon();
+    });
   }
 
   /**
@@ -83,16 +99,16 @@ public final class ApplicationController {
    * This enables us to change colours of the map.
    */
   public static void highContrast() {
-    if (!ApplicationController.instance().mainBorderPane.getStyleClass().
+    if (!ApplicationController.instance.mainBorderPane.getStyleClass().
       contains("high-contrast")) {
-      ApplicationController.instance().mainBorderPane.getStyleClass().
+      ApplicationController.instance.mainBorderPane.getStyleClass().
       add("high-contrast");
-      System.out.println(ApplicationController.instance().mainBorderPane.
+      System.out.println(ApplicationController.instance.mainBorderPane.
       getStyleClass());
     } else {
-      ApplicationController.instance().mainBorderPane.getStyleClass().
+      ApplicationController.instance.mainBorderPane.getStyleClass().
       remove("high-contrast");
-      System.out.println(ApplicationController.instance().mainBorderPane.
+      System.out.println(ApplicationController.instance.mainBorderPane.
       getStyleClass());
     }
   }
@@ -101,26 +117,31 @@ public final class ApplicationController {
    * To rotate the load icon.
    */
   public static void rotateIcon() {
-    ApplicationController.instance().rt.setByAngle(360);
-    ApplicationController.instance()
-    .rt.setCycleCount(RotateTransition.INDEFINITE);
-    ApplicationController.instance().rt.play();
+    ApplicationController.instance.rt.setByAngle(360);
+    ApplicationController.instance.rt.setCycleCount(
+      RotateTransition.INDEFINITE
+    );
+    ApplicationController.instance.rt.play();
   }
 
   /**
    * Stops rotation and removes the icon.
    */
   public static void removeIcon() {
-    ApplicationController.instance().rt.stop();
-    ApplicationController.instance().stackPane
-    .getChildren().remove(ApplicationController.instance().loadIcon);
+
+    ApplicationController.instance.rt.stop();
+    ApplicationController.instance.stackPane.getChildren().remove(
+      ApplicationController.instance.loadIcon);
+    ApplicationController.instance.chart.setDisable(false);
   }
 
   /**
    * Adds the loading icon to the stack pane.
    */
   public static void addIcon() {
-    ApplicationController.instance().stackPane
-      .getChildren().add(ApplicationController.instance().loadIcon);
+    ApplicationController.instance.stackPane.getChildren().add(
+      ApplicationController.instance.loadIcon);
+    ApplicationController.instance.rotateIcon();
+    ApplicationController.instance.chart.setDisable(true);
   }
 }
