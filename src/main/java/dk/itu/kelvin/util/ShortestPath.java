@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Properties;
 
 // Utilities
 import dk.itu.kelvin.util.WeightedGraph.Edge;
@@ -25,24 +26,49 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
   /**
    * Maps the distance from the source to all different vertices in the graph.
    */
-  private Map<N, Float> distance = new HashMap<>();
+  private final Map<N, Float> distance = new HashMap<>();
 
   /**
    * Maps vertices with the last edge on the vertex's shortest path.
    */
-  private Map<N, N> edgeTo = new HashMap<>();
+  private final Map<N, N> edgeTo = new HashMap<>();
 
   /**
    * Priority queue holding all vertices.
    */
-  private PriorityQueue<N> queue;
+  private final PriorityQueue<N> queue;
 
   /**
-   * Constructor setting all distances to infinity.
-   * @param graph weighted graph.
-   * @param source starting point for the shortest path.
+   * Configuration map of custom properties.
+   */
+  private final Properties properties;
+
+  /**
+   * Initialize a new shortest path instance given a weighted graph and a
+   * source node.
+   *
+   * @param graph   The weighted graph to use for constructing the path tree.
+   * @param source  Starting point for the shortest path.
    */
   public ShortestPath(final WeightedGraph<N, E> graph, final N source) {
+    this(graph, source, new Properties());
+  }
+
+  /**
+   * Initialize a new shortest path instance given a weighted graph and a
+   * source node along with any custom properties.
+   *
+   * @param graph       The weighted graph to use for constructing the path tree.
+   * @param source      Starting point for the shortest path.
+   * @param properties  A configuration map of custom properties.
+   */
+  public ShortestPath(
+    final WeightedGraph<N, E> graph,
+    final N source,
+    final Properties properties
+  ) {
+    this.properties = properties;
+
     List<E> edges = graph.edges();
 
     for (E edge: edges) {
@@ -52,7 +78,7 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
         N a = nodes.get(i);
         N b = nodes.get(i + 1);
 
-        if (edge.weight(a, b) < 0) {
+        if (edge.weight(a, b, this.properties) < 0) {
           throw new IllegalArgumentException(
             "Weights of edges cannot be negative"
           );
@@ -65,7 +91,7 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
 
     this.distance.put(source, 0.0f);
 
-    // relax vertices in order of distance from s
+    // Relax vertices in order of distance from s
     this.queue = new PriorityQueue<>(11, (a, b) -> {
       // Comparing b to a instead of a to b to make
       // a minimum priority and not maximum priority.
@@ -104,7 +130,7 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
       return;
     }
 
-    float weight = (float) edge.weight(from, to);
+    float weight = (float) edge.weight(from, to, this.properties);
 
     float distFrom = this.distance.get(from);
     float distTo = this.distance.get(to);

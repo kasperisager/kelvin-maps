@@ -5,6 +5,7 @@ package dk.itu.kelvin.controller;
 
 // General utilities
 import java.util.List;
+import java.util.Properties;
 
 // I/O utilities
 import java.io.File;
@@ -35,9 +36,12 @@ import javafx.scene.control.Label;
 import javafx.fxml.FXML;
 
 // Utilities
-import dk.itu.kelvin.math.Geometry;
 import dk.itu.kelvin.util.SpatialIndex;
 import dk.itu.kelvin.util.ShortestPath;
+import dk.itu.kelvin.util.WeightedGraph;
+
+// Math
+import dk.itu.kelvin.math.Geometry;
 
 // Parser
 import dk.itu.kelvin.parser.Parser;
@@ -246,39 +250,52 @@ public final class ChartController {
       }
     }
 
-    if (from != null && to != null) {
-      ShortestPath<Node, Way> shortestPath = null;
+    if (from == null || to == null) {
+      return;
+    }
 
-      if (type.equals("car")) {
-        shortestPath = new ShortestPath<>(elementStore.carGraph(), from);
-      } else if (type.equals("bicycle")) {
-        shortestPath = new ShortestPath<>(elementStore.bycicleGraph(), from);
-      }
+    WeightedGraph<Node, Way> graph = null;
+    Properties properties = new Properties();
 
-      List<Node> path = shortestPath.path(to);
+    switch (type.toLowerCase()) {
+      case "bicycle":
+        graph = elementStore.bycicleGraph();
+        properties.setProperty("bicycle", "yes");
+        break;
 
-      float dist = 0.0f;
+      case "car":
+      default:
+        graph = elementStore.carGraph();
+        properties.setProperty("bicycle", "no");
+    }
 
-      if (ChartController.instance.route != null) {
-        ChartController.instance.chart.getChildren().remove(
-          ChartController.instance.route
-        );
-        ChartController.instance.route = null;
-      }
+    ShortestPath<Node, Way> shortestPath = new ShortestPath<Node, Way>(
+      graph, from, properties
+    );
 
-      Way route = new Way();
+    List<Node> path = shortestPath.path(to);
 
-      route.add(n);
-      route.add(path);
-      route.add(m);
+    float dist = 0.0f;
 
-      route.tag("meta", "direction");
-      ChartController.instance.route = route.render();
-
-      ChartController.instance.chart.getChildren().add(
+    if (ChartController.instance.route != null) {
+      ChartController.instance.chart.getChildren().remove(
         ChartController.instance.route
       );
+      ChartController.instance.route = null;
     }
+
+    Way route = new Way();
+
+    route.add(n);
+    route.add(path);
+    route.add(m);
+
+    route.tag("meta", "direction");
+    ChartController.instance.route = route.render();
+
+    ChartController.instance.chart.getChildren().add(
+      ChartController.instance.route
+    );
   }
 
   /**

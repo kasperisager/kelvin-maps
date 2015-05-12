@@ -5,6 +5,7 @@ package dk.itu.kelvin.util;
 
 // General utilities
 import java.util.List;
+import java.util.Properties;
 
 // I/O utilities
 import java.io.Serializable;
@@ -68,9 +69,10 @@ public interface Graph<N extends Graph.Node, E extends Graph.Edge<N>>
     /**
      * Get the direction of the edge.
      *
-     * @return The direction of the edge.
+     * @param properties  A configuration map of custom properties.
+     * @return            The direction of the edge.
      */
-    Direction direction();
+    Direction direction(final Properties properties);
   }
 
   /**

@@ -7,6 +7,7 @@ package dk.itu.kelvin.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 // Fast utils
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -23,7 +24,28 @@ public final class WeightedGraph<
   /**
    * The adjacency list for all vertices and edges in the graph.
    */
-  private Map<N, Map<N, E>> neighbours = new Object2ObjectOpenHashMap<>();
+  private final Map<N, Map<N, E>> neighbours = new Object2ObjectOpenHashMap<>();
+
+  /**
+   * Configuration map of custom properties.
+   */
+  private final Properties properties;
+
+  /**
+   * Initialize a new weighted graph.
+   */
+  public WeightedGraph() {
+    this.properties = new Properties();
+  }
+
+  /**
+   * Initialize a new weighted graph with the specified properties.
+   *
+   * @param properties A configuration map of custom properties.
+   */
+  public WeightedGraph(final Properties properties) {
+    this.properties = properties;
+  }
 
   /**
    * Add an edge to the weighted graph.
@@ -32,7 +54,7 @@ public final class WeightedGraph<
    */
   public void add(final E edge) {
     List<N> nodes = edge.nodes();
-    Direction direction = edge.direction();
+    Direction direction = edge.direction(this.properties);
 
     for (int i = 0; i < nodes.size() - 1; i++) {
       N a = nodes.get(i);
@@ -100,10 +122,11 @@ public final class WeightedGraph<
     /**
      * Get the weight between the specified nodes.
      *
-     * @param a The first node.
-     * @param b The second node.
-     * @return  The weight between the specified nodes.
+     * @param a           The first node.
+     * @param b           The second node.
+     * @param properties  A configuration map of custom properties.
+     * @return            The weight between the specified nodes.
      */
-    double weight(final N a, final N b);
+    double weight(final N a, final N b, final Properties properties);
   }
 }
