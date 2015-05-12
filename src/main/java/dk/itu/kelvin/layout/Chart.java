@@ -95,6 +95,8 @@ public final class Chart extends Group {
    */
   private Map<Anchor, Group> showing = HashObjObjMaps.newMutableMap();
 
+  private Map<Anchor, Group> showingPOI = HashObjObjMaps.newMutableMap();
+
   /**
    * Current smallest x-coordinate of the chart viewport.
    */
@@ -464,6 +466,7 @@ public final class Chart extends Group {
 
       this.show(anchor);
     }
+    this.checkPOI();
   }
 
   /**
