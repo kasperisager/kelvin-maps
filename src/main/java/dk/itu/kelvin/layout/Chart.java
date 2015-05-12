@@ -142,14 +142,6 @@ public final class Chart extends Group {
   private Group metaLayer = new Group();
 
   /**
-<<<<<<< HEAD
-   * Map of points currently being shown.
-   */
-  private Map<Node, Label> points = new Object2ObjectOpenHashMap<>();
-
-  /**
-=======
->>>>>>> hotfix/dynamic-load-poi
    * The width of the map.
    */
   private double mapWidth;
