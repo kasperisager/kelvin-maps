@@ -46,8 +46,14 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
    */
   private final Properties properties;
 
+  /**
+   * The starting node.
+   */
   private final N from;
 
+  /**
+   * The ending node.
+   */
   private final N to;
 
   /**
@@ -70,7 +76,8 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
    * Initialize a new shortest path instance given a weighted graph and a
    * source node along with any custom properties.
    *
-   * @param graph       The weighted graph to use for constructing the path tree.
+   * @param graph       The weighted graph to use for constructing the path
+   *                    tree.
    * @param from        Starting point for the shortest path.
    * @param to          Ending point for the shortest path.
    * @param properties  A configuration map of custom properties.
@@ -153,14 +160,29 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
     }
   }
 
+  /**
+   * Get the distance of the shortest path.
+   *
+   * @return The distance of the shortest path.
+   */
   public float distance() {
     return this.distance.get(this.to);
   }
 
+  /**
+   * Check if a path exists.
+   *
+   * @return A boolean indicating whether or not a path exists.
+   */
   public boolean hasPath() {
     return this.distance() < Float.POSITIVE_INFINITY;
   }
 
+  /**
+   * Get the nodes in the shortest path.
+   *
+   * @return A list of nodes in the shortest path.
+   */
   public List<N> path() {
     if (!this.hasPath()) {
       return null;
