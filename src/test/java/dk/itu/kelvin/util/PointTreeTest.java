@@ -1,18 +1,18 @@
 package dk.itu.kelvin.util;
 
+// General utilities
+import java.util.ArrayList;
+import java.util.List;
+
 // JUnit annotations
 import dk.itu.kelvin.model.Node;
-import dk.itu.kelvin.model.Way;
-import dk.itu.kelvin.util.function.Filter;
 import org.junit.Before;
 import org.junit.Test;
 
 // JUnit assertions
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 
 public class PointTreeTest {
 
