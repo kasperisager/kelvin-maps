@@ -4,9 +4,10 @@
 package dk.itu.kelvin.store;
 
 // General utilities
-import java.util.List;
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Properties;
 
 // Models
 import dk.itu.kelvin.model.Element;
@@ -33,12 +34,12 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * Weighted graph for all carRoads.
    */
-  private WeightedGraph<Node, Way> carGraph = new WeightedGraph<>();
+  private final WeightedGraph<Node, Way> carGraph;
 
   /**
    * Weighted graph for all roads.
    */
-  private WeightedGraph<Node, Way> bicycleGraph = new WeightedGraph<>();
+  private final WeightedGraph<Node, Way> bicycleGraph;
 
   /**
    * A list for all land elements.
@@ -144,6 +145,20 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * Indicates whether poiTree needs to be indexed or not.
    */
   private boolean poiIsDirty;
+
+  /**
+   * Initialize a new element store.
+   */
+  public ElementStore() {
+    Properties carProperties = new Properties();
+    carProperties.setProperty("bicycle", "no");
+
+    Properties bicycleProperties = new Properties();
+    bicycleProperties.setProperty("bicycle", "yes");
+
+    this.carGraph = new WeightedGraph<>(carProperties);
+    this.bicycleGraph = new WeightedGraph<>(bicycleProperties);
+  }
 
   /**
    * Adds a way element to the associated list.
@@ -484,7 +499,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * Split a way into edges and add them to graph.
    * @param way A way to split into edges.
    */
-  public void addEdge(final Way way) {
+  private void addEdge(final Way way) {
     if (way == null) {
       return;
     }
