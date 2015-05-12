@@ -169,6 +169,7 @@ public final class MenuController {
   private static void loadBin(final String filename) {
     File file = new File(filename);
     if (!file.exists()) {
+      ApplicationController.removeIcon();
       return;
     }
     ApplicationController.addIcon();
