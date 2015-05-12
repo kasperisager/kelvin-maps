@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * {@link Geometry} test suite.
  */
-public class GeometryTest {
+public final class GeometryTest {
   /**
    * Test the calculation of distance between two points.
    */

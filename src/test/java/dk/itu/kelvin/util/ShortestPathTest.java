@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNull;
 /**
  * {@link ShortestPath} test suite.
  */
-public class ShortestPathTest {
+public final class ShortestPathTest {
   /**
    * Test the path methods returns the shortest path.
    */
