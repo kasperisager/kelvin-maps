@@ -77,6 +77,14 @@ public class rectangleTreeTest {
     assertFalse(rectTree.contains(null));
 
     assertTrue(rectTree.contains(way));
+
+    // test contains work correct
+    Way w1 = new Way();
+    w1.add(new Node(2,2));
+    w1.add(new Node(23,21));
+    ways.add(w1);
+    rectTree = new RectangleTree<>(ways);
+    assertTrue(rectTree.contains(w1));
   }
 
   /**
@@ -89,7 +97,6 @@ public class rectangleTreeTest {
 
     // root equals null.
     assertTrue(rectTree.range(null) == null);
-
 
     // specified bounds.
     assertTrue(rectTree.range(new SpatialIndex.Bounds(-1, -1, 3, 3)) == null);
@@ -258,9 +265,89 @@ public class rectangleTreeTest {
     assertTrue(testWay.equals(w1));
   }
 
+  /**
+   * Test the if important methods work when bucket_max is transcended.
+   */
+  @Test
+  public void testBucket(){
+    List<Way> ways = new ArrayList<>();
+    for(int i = 0; i < 513; i++) {
+      Node n = new Node(i, i);
+      Way way = new Way();
+      way.add(n);
+      ways.add(way);
+    }
+
+    RectangleTree<Way> rectTree = new RectangleTree<>(ways);
+
+    assertFalse(rectTree.contains(new Way()));
 
 
+    List<Way> expected = new ArrayList<>();
+    List<Way> result = rectTree.range(new SpatialIndex.Bounds(1, 1, 512, 512));
+    assertTrue(rectTree.range(null) == null);
 
 
+    Way w1 = new Way();
+    w1.add(new Node(50, 50));
 
+    Way w2 = new Way();
+    w1.add(new Node(51, 51));
+    expected.add(w1);
+    expected.add(w2);
+
+
+    for (Way way : result) {
+      // Bug, when the rectTree size exceed Maximum Bucket size(512) the
+      // does not work..
+     assertFalse(expected.contains(way));
+      expected.remove(way);
+    }
+  }
+
+  /**
+   * Test the if important methods work when page_max is transcended.
+   */
+  @Test
+  public void testPage2(){
+    List<Way> ways = new ArrayList<>();
+    for(int i = 0; i < 7500; i++) {
+      Way way = new Way();
+      way.add(new Node(i*5-2, i*4+3));
+      ways.add(way);
+
+    }
+
+    Way w1 = new Way();
+    Node n1 = new Node(1902, 4600);
+    w1.add(n1);
+    w1.tag("key", "test value");
+    n1.tag("key2", "test multi-tags");
+
+    Way w2 = new Way();
+    Node n2 = new Node(5001, 4600);
+    w2.add(n2);
+    n2.tag("key3", "test multi-tags");
+
+    ways.add(w1);
+    ways.add(w2);
+
+    RectangleTree<Way> rectTree = new RectangleTree<>(ways);
+
+    List<Way> result = rectTree.range(new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) ->{
+      return element.tags().containsValue("test multi-tags");
+    });
+    List<Node> expected = new ArrayList<>();
+    expected.add(n1);
+    expected.add(n2);
+    for (Way way: result) {
+      assertTrue(expected.contains(way));
+    }
+
+    result = rectTree.range(new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) ->{
+      return element.tags().containsValue("test value");
+    });
+    assertTrue(result.contains(w1));
+    assertFalse(result.contains(w2));
+  }
 }
