@@ -143,11 +143,6 @@ public final class Chart extends Group {
   private Group metaLayer = new Group();
 
   /**
-   * Map of points currently being shown.
-   */
-  private Map<Node, Label> points = HashObjObjMaps.newMutableMap();
-
-  /**
    * The width of the map.
    */
   private double mapWidth;
@@ -423,7 +418,7 @@ public final class Chart extends Group {
   /**
    * Layout the tiles of the chart.
    */
-  public void layoutTiles() {
+  private void layoutTiles() {
     Scene scene = this.getScene();
 
     if (scene == null) {
