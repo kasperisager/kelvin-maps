@@ -93,7 +93,9 @@ public final class Chart extends Group {
 
   private Map<Anchor, Group> showingPOI = HashObjObjMaps.newMutableMap();
 
-  private Map<Anchor, HashSet<String>> anchorTags = HashObjObjMaps.newMutableMap();
+  //private Map<Anchor, HashSet<String>> anchorTags = HashObjObjMaps.newMutableMap();
+
+  private HashSet<String> activeTags = new HashSet<>();
 
   private HashSet<String> currentTags = new HashSet<>();
   /**
@@ -423,14 +425,16 @@ public final class Chart extends Group {
     int maxX = (int) (this.tileSize * Math.floor(max.getX() / this.tileSize));
     int maxY = (int) (this.tileSize * Math.floor(max.getY() / this.tileSize));
 
+    /*
     if (
       minX == this.minX
       && minY == this.minY
       && maxX == this.maxX
       && maxY == this.maxY
     ) {
+      System.out.println("hoho haha");
       return;
-    }
+    }*/
 
     this.minX = minX;
     this.minY = minY;
@@ -444,7 +448,7 @@ public final class Chart extends Group {
         anchors.add(new Anchor(x, y));
       }
     }
-
+    System.out.println("achor size: " + anchors.size());
     Iterator<Anchor> it = this.showing.keySet().iterator();
 
     while (it.hasNext()) {
@@ -473,7 +477,11 @@ public final class Chart extends Group {
       Anchor anchor = it.next();
 
       if (anchors.contains(anchor)) {
-        if(anchorTags.get(anchor).containsAll(currentTags)){
+        if(
+          activeTags.containsAll(this.currentTags)
+          && activeTags.size() == this.currentTags.size()
+        ){
+          System.out.println("already have it");
           continue;
         }
       }
@@ -483,7 +491,10 @@ public final class Chart extends Group {
     }
     for (Anchor anchor: anchors) {
       if (this.showingPOI.containsKey(anchor)) {
-        if (this.anchorTags.get(anchor).containsAll(currentTags)) {
+        if (
+          this.activeTags.containsAll(this.currentTags)
+          && activeTags.size() == this.currentTags.size()
+        ) {
           continue;
         }
       }
@@ -497,7 +508,7 @@ public final class Chart extends Group {
    * @param tag unique type of POI.
    */
   public void showSelectedPoi(final String tag) {
-    currentTags.add(tag);
+    this.currentTags.add(tag);
     layoutTiles();
   }
 
@@ -507,7 +518,7 @@ public final class Chart extends Group {
    * @param tag unique key in POI.
    */
   public void hidePointsOfInterests(final String tag) {
-    currentTags.remove(tag);
+    this.currentTags.remove(tag);
     layoutTiles();
   }
 
@@ -525,7 +536,7 @@ public final class Chart extends Group {
 
     Group group = new Group();
 
-    for (String tag: currentTags) {
+    for (String tag: this.currentTags) {
       List<Element> elements = this.elementStore.find()
         .types("poi")
         .tag(tag)
@@ -542,8 +553,8 @@ public final class Chart extends Group {
     group.setCache(true);
 
     this.metaLayer.getChildren().add(group);
-
-    this.anchorTags.put(anchor, currentTags);
+    System.out.println("show POI " + this.currentTags.size());
+    this.activeTags = new HashSet<>(this.currentTags);
     this.showingPOI.put(anchor, group);
   }
 
@@ -555,7 +566,7 @@ public final class Chart extends Group {
     if (anchor == null) {
       return;
     }
-    anchorTags.remove(anchor);
+    System.out.println("removed POI "+ this.currentTags.size());
     Group group = this.showingPOI.get(anchor);
 
     this.metaLayer.getChildren().remove(group);
