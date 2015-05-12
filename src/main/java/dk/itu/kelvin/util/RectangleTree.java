@@ -4,19 +4,20 @@
 package dk.itu.kelvin.util;
 
 // General utilities
-import dk.itu.kelvin.math.Epsilon;
-import dk.itu.kelvin.math.Geometry;
-import dk.itu.kelvin.util.function.Filter;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 // I/O utilities
+import java.io.Serializable;
+
 // Math
+import dk.itu.kelvin.math.Epsilon;
+import dk.itu.kelvin.math.Geometry;
+
 // Functional utilities
+import dk.itu.kelvin.util.function.Filter;
 
 /**
  * Rectangle tree class.
