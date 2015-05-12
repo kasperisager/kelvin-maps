@@ -22,9 +22,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 
-// Koloboke collections
-import net.openhft.koloboke.collect.set.hash.HashObjSets;
-import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
+// Fast utils
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 // Math
 import dk.itu.kelvin.math.Haversine;
@@ -93,7 +93,7 @@ public final class Chart extends Group {
   /**
    * Keep track of the tiles currently showing.
    */
-  private Map<Anchor, Group> showing = HashObjObjMaps.newMutableMap();
+  private Map<Anchor, Group> showing = new Object2ObjectOpenHashMap<>();
 
   /**
    * Current smallest x-coordinate of the chart viewport.
@@ -129,7 +129,7 @@ public final class Chart extends Group {
   /**
    * Map of points currently being shown.
    */
-  private Map<Node, Label> points = HashObjObjMaps.newMutableMap();
+  private Map<Node, Label> points = new Object2ObjectOpenHashMap<>();
 
   /**
    * The width of the map.
@@ -436,7 +436,7 @@ public final class Chart extends Group {
     this.maxX = maxX;
     this.maxY = maxY;
 
-    Set<Anchor> anchors = HashObjSets.newMutableSet();
+    Set<Anchor> anchors = new ObjectOpenHashSet<>();
 
     for (int x = minX; x <= maxX; x += this.tileSize) {
       for (int y = minY; y <= maxY; y += this.tileSize) {

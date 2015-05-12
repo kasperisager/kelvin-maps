@@ -117,7 +117,6 @@ public abstract class Element<T extends Node> implements Serializable {
   public final Map<String, String> tags() {
     if (this.tags == null) {
       this.tags = new Object2ObjectOpenHashMap<>(INITIAL_TAG_CAPACITY);
-      //this.tags = HashObjObjMaps.newMutableMap(INITIAL_TAG_CAPACITY);
     }
 
     return this.tags;

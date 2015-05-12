@@ -41,8 +41,8 @@ import javafx.fxml.FXML;
 // ControlsFX
 import org.controlsfx.control.PopOver;
 
-// Koloboke collections
-import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
+// Fast utils
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 // Models
 import dk.itu.kelvin.model.Address;
@@ -268,7 +268,7 @@ public final class AddressController {
    * Initializing Points Of Interest container and content of poiContentVBox.
    */
   private void initPoiBox() {
-    filter = HashObjObjMaps.newMutableMap();
+    filter = new Object2ObjectOpenHashMap<>();
     filter.put("bank", "Bank");
     filter.put("toilets", "Toilets");
     filter.put("cafe", "Cafe");

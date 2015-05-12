@@ -20,8 +20,8 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-// Koloboke collections
-import net.openhft.koloboke.collect.map.hash.HashLongObjMaps;
+// Fast utils
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 // Math
 import dk.itu.kelvin.math.Projection;
@@ -56,19 +56,19 @@ public final class XMLParser extends Parser {
   private Land land;
 
   /**
-   * Store nodes.
+   * The parsed nodes mapped to their IDs.
    */
-  private Map<Long, Node> nodes = HashLongObjMaps.newMutableMap();
+  private Map<Long, Node> nodes = new Long2ObjectOpenHashMap<>();
 
   /**
-   * Store ways.
+   * The parsed ways mapped to their IDs.
    */
-  private Map<Long, Way> ways = HashLongObjMaps.newMutableMap();
+  private Map<Long, Way> ways = new Long2ObjectOpenHashMap<>();
 
   /**
-   * Store relations.
+   * The parsed relations mapped to their IDs.
    */
-  private Map<Long, Relation> relations = HashLongObjMaps.newMutableMap();
+  private Map<Long, Relation> relations = new Long2ObjectOpenHashMap<>();
 
   /**
    * Store addresses.

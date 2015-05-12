@@ -9,8 +9,8 @@ import java.util.Map;
 // I/O utilities
 import java.io.Serializable;
 
-// Koloboke collections
-import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
+// Fast utils
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 /**
  * String pool class.
@@ -25,7 +25,7 @@ public final class StringPool implements Serializable {
   /**
    * Internal map of strings.
    */
-  private Map<String, String> pool = HashObjObjMaps.newMutableMap();
+  private Map<String, String> pool = new Object2ObjectOpenHashMap<>();
 
   /**
    * Get the interned version of the specified string, interning it if it's not

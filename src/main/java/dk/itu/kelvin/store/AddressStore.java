@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Collections;
 
-// Koloboke collections
-import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
+// Fast utils
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 // Utilities
 import dk.itu.kelvin.util.PrefixTree;
@@ -176,7 +176,7 @@ public final class AddressStore extends Store<Address, String> {
    * Construct the search index of the addresses in the store.
    */
   private void createAddressIndex() {
-    Map<String, List<Address>> entries = HashObjObjMaps.newMutableMap();
+    Map<String, List<Address>> entries = new Object2ObjectOpenHashMap<>();
 
     for (Address address: this.addresses) {
       String key = this.key(address);

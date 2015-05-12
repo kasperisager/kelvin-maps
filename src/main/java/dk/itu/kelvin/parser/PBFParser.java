@@ -19,8 +19,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-// Koloboke collections
-import net.openhft.koloboke.collect.map.hash.HashLongObjMaps;
+// Fast utils
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 // Protocol Buffer File entities
 import crosby.binary.Fileformat.Blob;
@@ -133,17 +133,17 @@ public final class PBFParser extends Parser {
   /**
    * The parsed nodes mapped to their IDs.
    */
-  private Map<Long, Node> nodes = HashLongObjMaps.newMutableMap();
+  private Map<Long, Node> nodes = new Long2ObjectOpenHashMap<>();
 
   /**
    * The parsed ways mapped to their IDs.
    */
-  private Map<Long, Way> ways = HashLongObjMaps.newMutableMap();
+  private Map<Long, Way> ways = new Long2ObjectOpenHashMap<>();
 
   /**
    * The parsed relations mapped to their IDs.
    */
-  private Map<Long, Relation> relations = HashLongObjMaps.newMutableMap();
+  private Map<Long, Relation> relations = new Long2ObjectOpenHashMap<>();
 
   /**
    * The parsed land.

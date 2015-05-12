@@ -12,8 +12,8 @@ import java.util.Map;
 // I/O utilities
 import java.io.Serializable;
 
-// Koloboke collections
-import net.openhft.koloboke.collect.map.hash.HashObjObjMaps;
+// Fast utils
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 /**
  * Ternary search tree class.
@@ -259,7 +259,7 @@ public class TernarySearchTree<V> implements PrefixTree<V> {
    * @return        A map of matching keys and their associated values.
    */
   public final Map<String, V> search(final String prefix) {
-    Map<String, V> results = HashObjObjMaps.newMutableMap();
+    Map<String, V> results = new Object2ObjectOpenHashMap<>();
 
     if (prefix == null) {
       return results;
