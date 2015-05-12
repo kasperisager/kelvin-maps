@@ -397,25 +397,6 @@ public class RectangleTree<E extends RectangleTree.Index>
   }
 
   /**
-   * Find the actual distance from an element to a point.
-   *
-   * @param <E>     The type of the element.
-   * @param point   The point to find the distance to.
-   * @param element The element to find the distance from.
-   * @return        The actual distance from the element to the point.
-   */
-  private static <E extends Index> double actualDistance(
-    final Point point,
-    final E element
-  ) {
-    if (point == null || element == null) {
-      return Double.POSITIVE_INFINITY;
-    }
-
-    return RectangleTree.minimumDistance(point, element.bounds());
-  }
-
-  /**
    * The {@link Index} interface describes an object that is indexable by the
    * rectangle tree.
    */
@@ -447,6 +428,14 @@ public class RectangleTree<E extends RectangleTree.Index>
      * @return The largest y-coordinate of the object.
      */
     float maxY();
+
+    /**
+     * Get the actual distance to the specified point from the index.
+     *
+     * @param point The point to find the distance to.
+     * @return      The distance to the specified point from the index.
+     */
+    double distance(final Point point);
 
     /**
      * Get the bounds of the object.
@@ -788,8 +777,8 @@ public class RectangleTree<E extends RectangleTree.Index>
           nearest = estimate;
         }
         else {
-          double distNearest = RectangleTree.actualDistance(point, nearest);
-          double distEstimate = RectangleTree.actualDistance(point, estimate);
+          double distNearest = nearest.distance(point);
+          double distEstimate = estimate.distance(point);
 
           if (distNearest > distEstimate) {
             nearest = estimate;
@@ -924,8 +913,8 @@ public class RectangleTree<E extends RectangleTree.Index>
           nearest = element;
         }
         else {
-          double distNearest = RectangleTree.actualDistance(point, nearest);
-          double distElement = RectangleTree.actualDistance(point, element);
+          double distNearest = nearest.distance(point);
+          double distElement = element.distance(point);
 
           if (distNearest > distElement) {
             nearest = element;

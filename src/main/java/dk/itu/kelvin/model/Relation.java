@@ -19,6 +19,10 @@ import javafx.scene.shape.Path;
 
 // Utilities
 import dk.itu.kelvin.util.RectangleTree;
+import dk.itu.kelvin.util.SpatialIndex;
+
+// Math
+import dk.itu.kelvin.math.Geometry;
 
 /**
  * A relation is an ordered list of one or more members (nodes, ways, or even
@@ -143,6 +147,46 @@ public final class Relation extends Element<Group>
     }
 
     return this.members;
+  }
+
+  /**
+   * Get the actual distance to the specified point from the relation.
+   *
+   * @param point The point to find the distance to.
+   * @return      The distance to the specified point from the relation.
+   */
+  public double distance(final SpatialIndex.Point point) {
+    double distance = Double.POSITIVE_INFINITY;
+
+    if (point == null || this.members == null) {
+      return distance;
+    }
+
+    for (Element element: this.members) {
+      double estimate = Double.POSITIVE_INFINITY;
+
+      if (element instanceof Way) {
+        estimate = ((Way) element).distance(point);
+      }
+
+      if (element instanceof Node) {
+        Node node = (Node) element;
+
+        estimate = Geometry.distance(
+          point, new Geometry.Point(node.x(), node.y())
+        );
+      }
+
+      if (element instanceof Relation) {
+        estimate = ((Relation) element).distance(point);
+      }
+
+      if (estimate < distance) {
+        distance = estimate;
+      }
+    }
+
+    return distance;
   }
 
   /**

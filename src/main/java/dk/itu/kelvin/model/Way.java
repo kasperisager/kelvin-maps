@@ -19,6 +19,7 @@ import javafx.scene.shape.Polyline;
 // Utilities
 import dk.itu.kelvin.util.Graph;
 import dk.itu.kelvin.util.RectangleTree;
+import dk.itu.kelvin.util.SpatialIndex;
 import dk.itu.kelvin.util.WeightedGraph;
 
 // Math
@@ -266,6 +267,32 @@ public final class Way extends Element<Polyline>
     }
 
     this.add(way.nodes());
+  }
+
+  /**
+   * Get the actual distance to the specified point from the way.
+   *
+   * @param point The point to find the distance to.
+   * @return      The distance to the specified point from the way.
+   */
+  public double distance(final SpatialIndex.Point point) {
+    double distance = Double.POSITIVE_INFINITY;
+
+    if (point == null || this.nodes == null) {
+      return distance;
+    }
+
+    for (Node node: this.nodes) {
+      double estimate = Geometry.distance(
+        point, new Geometry.Point(node.x(), node.y())
+      );
+
+      if (estimate < distance) {
+        distance = estimate;
+      }
+    }
+
+    return distance;
   }
 
   /**
