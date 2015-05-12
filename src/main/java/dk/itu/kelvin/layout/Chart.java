@@ -4,7 +4,12 @@
 package dk.itu.kelvin.layout;
 
 // General utilities
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 // JavaFX scene utilities
 import javafx.scene.Group;
@@ -91,13 +96,21 @@ public final class Chart extends Group {
    */
   private Map<Anchor, Group> showing = HashObjObjMaps.newMutableMap();
 
+  /**
+   * Keep track of the tiles of POI currently showing.
+   */
   private Map<Anchor, Group> showingPOI = HashObjObjMaps.newMutableMap();
 
-  //private Map<Anchor, HashSet<String>> anchorTags = HashObjObjMaps.newMutableMap();
-
+  /**
+   * HashSet representing the POI tags currently being shown on the map.
+   */
   private HashSet<String> activeTags = new HashSet<>();
 
+  /**
+   * HashSet representing the POI tags that is selected by the user.
+   */
   private HashSet<String> currentTags = new HashSet<>();
+
   /**
    * Current smallest x-coordinate of the chart viewport.
    */
@@ -256,7 +269,7 @@ public final class Chart extends Group {
   public void pan(final double x, final double y) {
     this.setTranslateX(this.getTranslateX() + x);
     this.setTranslateY(this.getTranslateY() + y);
-    //this.layoutTiles();
+    this.layoutTiles();
   }
 
   /**
@@ -425,17 +438,6 @@ public final class Chart extends Group {
     int maxX = (int) (this.tileSize * Math.floor(max.getX() / this.tileSize));
     int maxY = (int) (this.tileSize * Math.floor(max.getY() / this.tileSize));
 
-    /*
-    if (
-      minX == this.minX
-      && minY == this.minY
-      && maxX == this.maxX
-      && maxY == this.maxY
-    ) {
-      System.out.println("hoho haha");
-      return;
-    }*/
-
     this.minX = minX;
     this.minY = minY;
     this.maxX = maxX;
@@ -448,7 +450,6 @@ public final class Chart extends Group {
         anchors.add(new Anchor(x, y));
       }
     }
-    System.out.println("achor size: " + anchors.size());
     Iterator<Anchor> it = this.showing.keySet().iterator();
 
     while (it.hasNext()) {
@@ -470,30 +471,27 @@ public final class Chart extends Group {
       this.show(anchor);
     }
 
-
     it = this.showingPOI.keySet().iterator();
 
     while (it.hasNext()) {
       Anchor anchor = it.next();
 
       if (anchors.contains(anchor)) {
-        if(
-          activeTags.containsAll(this.currentTags)
-          && activeTags.size() == this.currentTags.size()
-        ){
-          System.out.println("already have it");
+        if (
+          this.activeTags.containsAll(this.currentTags)
+          && this.activeTags.size() == this.currentTags.size()
+        ) {
           continue;
         }
       }
       this.hidePOI(anchor);
       it.remove();
-
     }
     for (Anchor anchor: anchors) {
       if (this.showingPOI.containsKey(anchor)) {
         if (
           this.activeTags.containsAll(this.currentTags)
-          && activeTags.size() == this.currentTags.size()
+          && this.activeTags.size() == this.currentTags.size()
         ) {
           continue;
         }
@@ -509,7 +507,7 @@ public final class Chart extends Group {
    */
   public void showSelectedPoi(final String tag) {
     this.currentTags.add(tag);
-    layoutTiles();
+    this.layoutTiles();
   }
 
   /**
@@ -519,14 +517,14 @@ public final class Chart extends Group {
    */
   public void hidePointsOfInterests(final String tag) {
     this.currentTags.remove(tag);
-    layoutTiles();
+    this.layoutTiles();
   }
 
   /**
    * Shows all current POI on a specific anchor.
    * @param anchor the anchor to show.
    */
-  private void showPOI(Anchor anchor) {
+  private void showPOI(final Anchor anchor) {
     if (anchor == null) {
       return;
     }
@@ -553,7 +551,6 @@ public final class Chart extends Group {
     group.setCache(true);
 
     this.metaLayer.getChildren().add(group);
-    System.out.println("show POI " + this.currentTags.size());
     this.activeTags = new HashSet<>(this.currentTags);
     this.showingPOI.put(anchor, group);
   }
@@ -562,11 +559,11 @@ public final class Chart extends Group {
    * Hides a specific anchor of POI.
    * @param anchor The anchor to hide.
    */
-  private void hidePOI(Anchor anchor) {
+  private void hidePOI(final Anchor anchor) {
     if (anchor == null) {
       return;
     }
-    System.out.println("removed POI "+ this.currentTags.size());
+
     Group group = this.showingPOI.get(anchor);
 
     this.metaLayer.getChildren().remove(group);
