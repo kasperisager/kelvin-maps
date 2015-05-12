@@ -99,17 +99,17 @@ public final class Chart extends Group {
   /**
    * Keep track of the tiles of POI currently showing.
    */
-  private Map<Anchor, Group> showingPOI = HashObjObjMaps.newMutableMap();
+  private Map<Anchor, Group> showingPOI = new Object2ObjectOpenHashMap<>();
 
   /**
    * HashSet representing the POI tags currently being shown on the map.
    */
-  private HashSet<String> activeTags = new HashSet<>();
+  private HashSet<String> activeTags = new ObjectOpenHashSet<>();
 
   /**
    * HashSet representing the POI tags that is selected by the user.
    */
-  private HashSet<String> currentTags = new HashSet<>();
+  private HashSet<String> currentTags = new ObjectOpenHashSet<>();
 
   /**
    * Current smallest x-coordinate of the chart viewport.
@@ -546,7 +546,7 @@ public final class Chart extends Group {
     group.setCache(true);
 
     this.metaLayer.getChildren().add(group);
-    this.activeTags = new HashSet<>(this.currentTags);
+    this.activeTags = new ObjectOpenHashSet<>(this.currentTags);
     this.showingPOI.put(anchor, group);
   }
 
