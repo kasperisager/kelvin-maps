@@ -285,11 +285,7 @@ public final class ChartController {
     }
 
     Way route = new Way();
-
-    route.add(n);
     route.add(path);
-    route.add(m);
-
     route.tag("meta", "direction");
     ChartController.instance.route = route.render();
 

@@ -16,6 +16,9 @@ import java.util.Properties;
 import dk.itu.kelvin.util.WeightedGraph.Edge;
 import dk.itu.kelvin.util.WeightedGraph.Node;
 
+// Math
+import dk.itu.kelvin.math.Epsilon;
+
 /**
  * ShortestPath class.
  *
@@ -82,29 +85,15 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
     this.to = to;
     this.properties = properties;
 
-    List<E> edges = graph.edges();
-
-    for (E edge: edges) {
-      List<N> nodes = edge.nodes();
-
-      for (int i = 0; i < nodes.size() - 1; i++) {
-        N a = nodes.get(i);
-        N b = nodes.get(i + 1);
-
-        if (edge.weight(a, b, this.properties) < 0) {
-          throw new IllegalArgumentException(
-            "Weights of edges cannot be negative"
-          );
-        }
-
-        this.distance.put(a, Float.POSITIVE_INFINITY);
-        this.distance.put(b, Float.POSITIVE_INFINITY);
+    for (E edge: graph.edges()) {
+      for (N node: edge.nodes()) {
+        this.distance.put(node, Float.POSITIVE_INFINITY);
       }
     }
 
     this.distance.put(from, 0.0f);
 
-    this.queue = new PriorityQueue<>(11, (a, b) -> {
+    this.queue = new PriorityQueue<>(this.distance.size(), (a, b) -> {
       return this.distance.get(a).compareTo(this.distance.get(b));
     });
 
@@ -152,17 +141,14 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
 
     weight += estimateFrom - estimateTo;
 
-    float distFrom = this.distance.get(from);
-    float distTo = this.distance.get(to);
+    double distFrom = this.distance.get(from);
+    double distTo = this.distance.get(to);
 
-    if (distTo > distFrom + (float) weight) {
-      this.distance.put(to, distFrom + (float) weight);
+    if (Epsilon.greater(distTo, distFrom + weight)) {
+      this.distance.put(to, (float) (distFrom + weight));
       this.edgeTo.put(to, from);
 
-      if (this.queue.contains(to)) {
-        this.queue.remove(to);
-      }
-
+      this.queue.remove(to);
       this.queue.add(to);
     }
   }
