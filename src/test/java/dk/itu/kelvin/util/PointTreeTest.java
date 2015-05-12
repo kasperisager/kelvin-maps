@@ -2,6 +2,7 @@ package dk.itu.kelvin.util;
 
 // JUnit annotations
 import dk.itu.kelvin.model.Node;
+import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.util.function.Filter;
 import org.junit.Before;
 import org.junit.Test;
@@ -128,6 +129,7 @@ public class PointTreeTest {
     for(int i = 0; i < 2049; i++) {
       nodes.add(new Node(i, i));
     }
+
     PointTree<Node> pointTree = new PointTree<>(nodes);
     // Bug, when the PointTree size exceed Maximum Bucket size(2048) the
     // contains method doesn't work.
@@ -149,6 +151,40 @@ public class PointTreeTest {
 
     assertTrue(pointTree.range(new SpatialIndex.Bounds(1, 1, 1, 1)) != null);
 
+  }
+
+  @Test
+  public void testBucket2(){
+    List<Node> nodes = new ArrayList<>();
+    for(int i = 0; i < 7500; i++) {
+      nodes.add(new Node(i*5-2, i*4+3));
+    }
+
+    Node n1 = new Node(1902, 4600);
+    Node n2 = new Node(5001, 4600);
+    n1.tag("key", "test value");
+    n1.tag("key2", "test multi-tags");
+    n2.tag("key3", "test multi-tags");
+    nodes.add(n1);
+    nodes.add(n2);
+
+    PointTree<Node> pointTree = new PointTree<>(nodes);
+
+    List<Node> result = pointTree.range(new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) ->{
+      return element.tags().containsValue("test multi-tags");
+    });
+    List<Node> expected = new ArrayList<>();
+    expected.add(n1);
+    expected.add(n2);
+    for (Node n: result) {
+      assertTrue(expected.contains(n));
+    }
+
+    result = pointTree.range(new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) ->{
+      return element.tags().containsValue("test value");
+    });
+    assertTrue(result.contains(n1));
+    assertFalse(result.contains(n2));
   }
 
 }
