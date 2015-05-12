@@ -482,8 +482,10 @@ public final class Chart extends Group {
 
     }
     for (Anchor anchor: anchors) {
-      if(this.anchorTags.get(anchor).containsAll(currentTags)) {
-        continue;
+      if (this.showingPOI.containsKey(anchor)) {
+        if (this.anchorTags.get(anchor).containsAll(currentTags)) {
+          continue;
+        }
       }
       this.showPOI(anchor);
     }
@@ -573,7 +575,13 @@ public final class Chart extends Group {
   }
 
   private void hidePOI(Anchor anchor) {
+    if (anchor == null) {
+      return;
+    }
 
+    Group group = this.showingPOI.get(anchor);
+
+    this.metaLayer.getChildren().remove(group);
   }
 
   /**
