@@ -226,11 +226,6 @@ public final class ChartController {
     Way fromWay = elementStore.transportWaysTree().nearest(p1);
     Way toWay = elementStore.transportWaysTree().nearest(p2);
 
-    if (fromWay == null) {
-      System.out.println("sorry... ");
-      return;
-    }
-
     double distanceFrom = 0;
     Node from = null;
 
