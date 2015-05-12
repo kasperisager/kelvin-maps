@@ -137,29 +137,6 @@
       </children>
     </VBox>
 
-    <VBox
-      styleClass="properties-box"
-      fx:id="directionsContainer"
-      prefWidth="400"
-      layoutX="0"
-      layoutY="0"
-      VBox.vgrow="SOMETIMES"
-    >
-      <children>
-        <HBox>
-          <Label prefWidth="345" styleClass="header" alignment="CENTER">
-            Directions
-          </Label>
-
-          <Button styleClass="icon" text="&#xf12a;" onAction="#hideDirections" />
-        </HBox>
-
-        <ScrollPane VBox.vgrow="SOMETIMES" hbarPolicy="NEVER">
-          <VBox fx:id="directionsContentVBox" />
-        </ScrollPane>
-      </children>
-    </VBox>
-
     <rowConstraints>
       <RowConstraints minHeight="10.0" percentHeight="100" />
     </rowConstraints>

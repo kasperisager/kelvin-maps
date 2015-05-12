@@ -121,18 +121,6 @@ public final class AddressController {
   private VBox poiContentVBox;
 
   /**
-   * VBox container for route description.
-   */
-  @FXML
-  private VBox directionsContainer;
-
-  /**
-   * VBox for the content of route description.
-   */
-  @FXML
-  private VBox directionsContentVBox;
-
-  /**
    * PopOver for toggle button settings.
    */
   private static PopOver settingsPopOver;
@@ -204,7 +192,6 @@ public final class AddressController {
     );
 
     this.propertiesGridPane.getChildren().remove(this.poiContainer);
-    this.propertiesGridPane.getChildren().remove(this.directionsContainer);
 
     this.createSettingsPopOver();
     this.initPoiBox();
@@ -476,25 +463,6 @@ public final class AddressController {
       destinationAddress.y());
 
     this.autoCompletePopOver.hide();
-
-    this.showDirections();
-
-    // Initialize placeholder text
-    int stack = 30;
-    for (int i = 0; i < stack; i++) {
-      HBox hbox = new HBox(2);
-      hbox.getStyleClass().add("bottomBorder");
-      hbox.setPrefWidth(500);
-      Label icon = new Label("\uf10c");
-      icon.getStyleClass().add("icon");
-      icon.setPrefWidth(40);
-      icon.setAlignment(Pos.CENTER);
-
-      Label label = new Label("Turn right at next left");
-
-      hbox.getChildren().addAll(icon, label);
-      this.directionsContentVBox.getChildren().add(hbox);
-    }
   }
 
   /**
@@ -552,32 +520,12 @@ public final class AddressController {
   }
 
   /**
-   * Removes the route description container from the window.
-   */
-  @FXML
-  private void hideDirections() {
-    this.propertiesGridPane.getChildren().remove(this.directionsContainer);
-    ChartController.moveScale(0);
-  }
-
-  /**
    * Shows the Points Of Interest container in the window.
    */
   private void showPOI() {
     if (!this.propertiesGridPane.getChildren().contains(this.poiContainer)) {
       this.propertiesGridPane.getChildren().add(this.poiContainer);
       ChartController.moveScale(200);
-    }
-  }
-
-  /**
-   * Shows the route description container in the window.
-   */
-  private void showDirections() {
-    if (!this.propertiesGridPane.getChildren().
-      contains(this.directionsContainer)) {
-      this.propertiesGridPane.getChildren().add(this.directionsContainer);
-      ChartController.moveScale(400);
     }
   }
 
