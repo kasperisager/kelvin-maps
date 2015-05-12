@@ -7,9 +7,9 @@ package dk.itu.kelvin.math;
 import org.junit.Test;
 
 // JUnit assertions
-import javax.xml.bind.SchemaOutputResolver;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 
 public class GeometryTest {
   /**
