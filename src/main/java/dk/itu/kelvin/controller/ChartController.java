@@ -696,7 +696,8 @@ public final class ChartController {
     final ElementStore elementStore,
     final BoundingBox bounds
   ) {
-    ChartController.instance.chart.elementStore(elementStore);
+    ChartController.elementStore = elementStore;
+    ChartController.instance.chart.elementStore(ChartController.elementStore);
     ChartController.instance.chart.bounds(bounds);
   }
 }
