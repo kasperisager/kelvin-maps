@@ -84,67 +84,67 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * Point tree for quick search in node elements.
    */
-  private SpatialIndex<Node> poiTree;
+  private transient SpatialIndex<Node> poiTree;
 
   /**
    * Rectangle tree for quick search in way elements.
    */
-  private SpatialIndex<Way> waysTree;
+  private transient SpatialIndex<Way> waysTree;
 
   /**
    * Rectangle tree for quick search in land elements.
    */
-  private SpatialIndex<Way> landTree;
+  private transient SpatialIndex<Way> landTree;
 
   /**
    * Rectangle tree for quick search in way elements.
    */
-  private SpatialIndex<Relation> relationsTree;
+  private transient SpatialIndex<Relation> relationsTree;
 
   /**
    * Rectangle tree for quick search in road elements.
    */
-  private SpatialIndex<Way> roadsTree;
+  private transient SpatialIndex<Way> roadsTree;
 
   /**
    * Point tree for quick search in cycleways elements.
    */
-  private SpatialIndex<Way> cyclewaysTree;
+  private transient SpatialIndex<Way> cyclewaysTree;
 
   /**
    * Point tree for quick search in transportWays elements.
    */
-  private RectangleTree<Way> transportWaysTree;
+  private transient RectangleTree<Way> transportWaysTree;
 
   /**
    * Indicates whether waysTree needs to be indexed or not.
    */
-  private boolean waysIsDirty;
+  private transient boolean waysIsDirty;
 
   /**
    * Indicates whether roadsTree needs to be indexed or not.
    */
-  private boolean roadsIsDirty;
+  private transient boolean roadsIsDirty;
 
   /**
    * Indicates whether roadsTree needs to be indexed or not.
    */
-  private boolean cyclewaysIsDirty;
+  private transient boolean cyclewaysIsDirty;
 
   /**
    * Indicates whether landsTree needs to be indexed or not.
    */
-  private boolean landIsDirty;
+  private transient boolean landIsDirty;
 
   /**
    * Indicates whether relationsTree needs to be indexed or not.
    */
-  private boolean relationsIsDirty;
+  private transient boolean relationsIsDirty;
 
   /**
    * Indicates whether poiTree needs to be indexed or not.
    */
-  private boolean poiIsDirty;
+  private transient boolean poiIsDirty;
 
   /**
    * Initialize a new element store.
