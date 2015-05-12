@@ -13,8 +13,8 @@ import java.util.List;
 import java.io.Serializable;
 
 // Math
-import dk.itu.kelvin.math.Geometry;
 import dk.itu.kelvin.math.Epsilon;
+import dk.itu.kelvin.math.Geometry;
 
 // Functional utilities
 import dk.itu.kelvin.util.function.Filter;
@@ -104,7 +104,11 @@ public class RectangleTree<E extends RectangleTree.Index>
    *                contains the specified element.
    */
   public final boolean contains(final E element) {
-    throw new UnsupportedOperationException();
+    if (this.root == null || element == null) {
+      return false;
+    }
+
+    return this.root.contains(element);
   }
 
   /**
@@ -115,9 +119,12 @@ public class RectangleTree<E extends RectangleTree.Index>
    *                specified bounds.
    */
   public final List<E> range(final Bounds bounds) {
-    if (bounds == null) {
+    if (this.root == null || bounds == null) {
       return null;
     }
+    /*if (bounds == null) {
+      return null;
+    }*/
 
     return this.range(bounds, (element) -> {
       return true;
