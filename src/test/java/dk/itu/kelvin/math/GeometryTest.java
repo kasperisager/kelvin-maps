@@ -11,7 +11,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 
-public class GeometryTest {
+/**
+ * {@link Geometry} test suite.
+ */
+public final class GeometryTest {
   /**
    * Test the calculation of distance between two points.
    */
@@ -97,7 +100,7 @@ public class GeometryTest {
 
     double expectedAngle = 90 * 1.01;
     double expectedAngle2 = 90 * 0.99;
-    double angle = Geometry.angle(p1, p2 ,p3);
+    double angle = Geometry.angle(p1, p2 , p3);
 
     assertTrue(angle < expectedAngle);
     assertTrue(angle > expectedAngle2);
@@ -147,7 +150,10 @@ public class GeometryTest {
     assertTrue(r3.height() == 5);
   }
 
-  public static class LineTest {
+  /**
+   * {@link LineTest} test suite.
+   */
+  public static final class LineTest {
     /**
      * Test the constructor.
      */
@@ -231,7 +237,12 @@ public class GeometryTest {
     }
   }
 
-  public static class PolylineTest {
+  /**
+   * Testing of the inner class Polyline.
+   *
+   * {@link Geometry.Polyline} test suite.
+   */
+  public static final class PolylineTest {
     /**
      * Test initializing a polyline with too few points.
      */
@@ -298,7 +309,7 @@ public class GeometryTest {
       Geometry.Point p5 = new Geometry.Point(26, 90);
       Geometry.Point p6 = new Geometry.Point(70, 34);
 
-      Geometry.Polyline pl1 = new Geometry.Polyline(p1, p2 ,p3 ,p4);
+      Geometry.Polyline pl1 = new Geometry.Polyline(p1, p2 , p3, p4);
       assertTrue(pl1.contains(p5));
       assertFalse(pl1.contains(p6));
     }
@@ -313,7 +324,7 @@ public class GeometryTest {
       Geometry.Point p3 = new Geometry.Point(21, 25);
       Geometry.Point p4 = new Geometry.Point(16, 90);
 
-      Geometry.Polyline pl1 = new Geometry.Polyline(p1, p2 ,p3 ,p4);
+      Geometry.Polyline pl1 = new Geometry.Polyline(p1, p2, p3 , p4);
 
       Geometry.Point p5 = new Geometry.Point(1, 1);
       Geometry.Point p6 = new Geometry.Point(21, 90);
@@ -335,7 +346,9 @@ public class GeometryTest {
 
       Geometry.Polyline pl1 = new Geometry.Polyline(p1, p2);
 
-      String polyString = "Polyline[points = [Point[x = 1.0, y = 1.0], Point[x = 11.0, y = 32.0]]]";
+      String polyString =
+              "Polyline[points = [Point[x = 1.0, y = 1.0], "
+                      + "Point[x = 11.0, y = 32.0]]]";
 
       assertEquals(polyString, pl1.toString());
 
@@ -344,8 +357,10 @@ public class GeometryTest {
 
   /**
    * Testing of the inner class Circle.
+   *
+   * {@link Geometry.Circle} test suite.
    */
-  public static class CircleTest {
+  public static final class CircleTest {
     /**
      * Test constructor with null point.
      */
@@ -374,7 +389,8 @@ public class GeometryTest {
       Geometry.Point p1 = new Geometry.Point(3, 4);
       Geometry.Circle c1 = new Geometry.Circle(p1, 15);
 
-      String circleString = "Circle[center = Point[x = 3.0, y = 4.0], radius = 15.0]";
+      String circleString
+              = "Circle[center = Point[x = 3.0, y = 4.0], radius = 15.0]";
 
       assertEquals(circleString, c1.toString());
     }
@@ -382,8 +398,10 @@ public class GeometryTest {
 
   /**
    * Test of the inner class Rectangle.
+   *
+   * {@link Geometry.Rectangle} test suite.
    */
-  public static class RectangleTest {
+  public static final class RectangleTest {
     /**
      * Test initializing a rectangle with a null point.
      */
@@ -444,15 +462,19 @@ public class GeometryTest {
       Geometry.Point p1 = new Geometry.Point(2, 2);
       Geometry.Rectangle r1 = new Geometry.Rectangle(p1, 5, 5);
 
-      String rectangleString = "Rectangle[position = Point[x = 2.0, y = 2.0], width = 5.0, height = 5.0]";
+      String rectangleString =
+              "Rectangle[position = Point[x = 2.0, y = 2.0], "
+                      + "width = 5.0, height = 5.0]";
       assertEquals(r1.toString(), rectangleString);
     }
   }
 
   /**
-   * Test of the Bounds inner class.
+   * Test of the inner class Bounds.
+   *
+   * {@link Geometry.Bounds} test suite.
    */
-  public static class BoundsTest {
+  public static final class BoundsTest {
     /**
      * Test initialization with null point.
      */
@@ -514,7 +536,9 @@ public class GeometryTest {
 
       Geometry.Bounds b1 = new Geometry.Bounds(p1, p2);
 
-      String boundsString = "Bounds[min = Point[x = 2.0, y = 2.0], max = Point[x = 5.0, y = 5.0]]";
+      String boundsString =
+              "Bounds[min = Point[x = 2.0, y = 2.0], "
+                      + "max = Point[x = 5.0, y = 5.0]]";
       assertEquals(b1.toString(), boundsString);
     }
 

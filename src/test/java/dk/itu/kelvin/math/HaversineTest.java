@@ -13,8 +13,9 @@ import static org.junit.Assert.assertTrue;
  * {@link Haversine} test suite.
  *
  * <p>
- * Test the distance between two specified coordinates. The results are calculated
- * on http://andrew.hedges.name/experiments/haversine/.
+ * Test the distance between two specified coordinates.
+ * The results are calculated on
+ * http://andrew.hedges.name/experiments/haversine/.
  *
  * We accept a deviation of 2 %.
  * <p>
@@ -38,8 +39,8 @@ public final class HaversineTest {
     double realDist2 = 2.216 * 0.99;
     double ourDist = Haversine.distance(lat1, lon1, lat2, lon2) * 0.99;
 
-    assertTrue( ourDist < realDist1);
-    assertTrue( ourDist > realDist2);
+    assertTrue(ourDist < realDist1);
+    assertTrue(ourDist > realDist2);
 
     // from ITU to Bahamas.
     final double lat3 = 55.659890;
@@ -52,8 +53,8 @@ public final class HaversineTest {
     double realDist4 = 6159.197 * 0.98;
     double ourDist1 = Haversine.distance(lat3, lon3, lat4, lon4) * 0.99;
 
-    assertTrue( ourDist1 < realDist3);
-    assertTrue( ourDist1 > realDist4);
+    assertTrue(ourDist1 < realDist3);
+    assertTrue(ourDist1 > realDist4);
   }
 
 }

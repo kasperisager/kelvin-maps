@@ -16,9 +16,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- *
+ * {@link TernarySearchTree} test suite.
  */
-public class ternarySearchTreeTest {
+public final class ternarySearchTreeTest {
   /**
    * Test if a tst is empty or not.
    */

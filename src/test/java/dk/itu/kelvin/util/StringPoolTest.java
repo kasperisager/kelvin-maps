@@ -13,7 +13,7 @@ import static org.junit.Assert.assertNull;
 /**
  * Testing the stringpool class.
  */
-public class StringPoolTest {
+public final class StringPoolTest {
   /**
    * Testing get method with string, empty string and null string.
    */

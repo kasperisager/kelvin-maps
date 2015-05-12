@@ -19,9 +19,9 @@ import static org.junit.Assert.assertTrue;
  * <p>
  *
  */
-public class MercatorTest {
+public final class MercatorTest {
   /**
-   * Test convert an x-coordinate into a spherical longitude
+   * Test convert an x-coordinate into a spherical longitude.
    */
   @Test
   public void testXToLon() {
@@ -32,7 +32,7 @@ public class MercatorTest {
   }
 
   /**
-   * Test convert an y-coordinate into a spherical latitude
+   * Test convert an y-coordinate into a spherical latitude.
    */
   @Test
   public void testYToLon() {
@@ -44,8 +44,7 @@ public class MercatorTest {
     double devLat2 = m.latToY(lat) * 0.099;
     double yCoord = 200.03;
 
-    assertTrue( yCoord < devLat1);
-    assertTrue( yCoord > devLat2);
+    assertTrue(yCoord < devLat1);
+    assertTrue(yCoord > devLat2);
   }
-
 }

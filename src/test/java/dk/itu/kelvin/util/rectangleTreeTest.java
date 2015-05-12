@@ -4,23 +4,24 @@
 package dk.itu.kelvin.util;
 
 // General utilities
-import dk.itu.kelvin.model.Node;
-import dk.itu.kelvin.model.Way;
 import java.util.ArrayList;
 import java.util.List;
+
+// JUnit annotations
 import org.junit.Test;
 
+// JUnit assertions
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-// JUnit annotations
-// JUnit assertions
 // Models
+import dk.itu.kelvin.model.Node;
+import dk.itu.kelvin.model.Way;
 
 /**
  * {@link RectangleTree} test suite.
  */
-public class rectangleTreeTest {
+public final class rectangleTreeTest {
   /**
    * Test the size of tree.
    */
@@ -38,7 +39,7 @@ public class rectangleTreeTest {
     assertTrue(1 == rectTree.size());
 
     // add 51 elements to tree.
-    for(int i = 0; i < 50; i++) {
+    for (int i = 0; i < 50; i++) {
       ways.add(new Way());
     }
 
@@ -46,7 +47,7 @@ public class rectangleTreeTest {
     assertTrue(51 == rectTree.size());
 
     // add another 337 elements to tree.
-    for(int i = 0; i < 337; i++) {
+    for (int i = 0; i < 337; i++) {
       ways.add(new Way());
     }
 
@@ -79,8 +80,8 @@ public class rectangleTreeTest {
 
     // test contains work correct
     Way w1 = new Way();
-    w1.add(new Node(2,2));
-    w1.add(new Node(23,21));
+    w1.add(new Node(2, 2));
+    w1.add(new Node(23, 21));
     ways.add(w1);
     rectTree = new RectangleTree<>(ways);
     assertTrue(rectTree.contains(w1));
@@ -118,7 +119,7 @@ public class rectangleTreeTest {
 
     // fill up tree.
     for (int i = 0; i < 500; i++) {
-      Node n = new Node(i*2, i);
+      Node n = new Node(i * 2, i);
       Way way = new Way();
       way.add(n);
       ways.add(way);
@@ -150,7 +151,8 @@ public class rectangleTreeTest {
     expected.add(w3);
 
     // filter == null
-    assertTrue(rectTree.range(new SpatialIndex.Bounds(1, 1, 1 , 1), null) == null);
+    assertTrue(rectTree.range(
+            new SpatialIndex.Bounds(1, 1, 1 , 1), null) == null);
 
     // bounds && filter == null
     assertTrue(rectTree.range(null, null) == null);
@@ -162,7 +164,8 @@ public class rectangleTreeTest {
 
 
     // return all elements in filter: "test tag"
-    result = rectTree.range(new SpatialIndex.Bounds(1, 1, 10, 10), (element) ->{
+    result = rectTree.range(
+            new SpatialIndex.Bounds(1, 1, 10, 10), (element) -> {
       return element.tags().containsKey("test tag");
     });
 
@@ -187,9 +190,9 @@ public class rectangleTreeTest {
     RectangleTree<Way> rectTree;
 
     // fill tree.
-    Node n1 = new Node(2,1);
-    Node n2 = new Node(4,2);
-    Node n3 = new Node(4,4);
+    Node n1 = new Node(2, 1);
+    Node n2 = new Node(4, 2);
+    Node n3 = new Node(4, 4);
     Node n4 = new Node(7, 9);
 
     Way w1 = new Way();
@@ -207,9 +210,9 @@ public class rectangleTreeTest {
     rectTree = new RectangleTree<>(ways);
 
     // find closest element.
-    assertTrue(w1 == rectTree.nearest(new SpatialIndex.Point(2,1)));
+    assertTrue(w1 == rectTree.nearest(new SpatialIndex.Point(2, 1)));
 
-    assertFalse(w2 == rectTree.nearest(new SpatialIndex.Point(2,1)));
+    assertFalse(w2 == rectTree.nearest(new SpatialIndex.Point(2, 1)));
 
     // point == null.
     assertTrue(rectTree.nearest(null) == null);
@@ -227,7 +230,7 @@ public class rectangleTreeTest {
     assertTrue(rectTree.nearest(null, null) == null);
 
     // filter == null
-    assertTrue(rectTree.nearest(new SpatialIndex.Point(2,1), null) == null);
+    assertTrue(rectTree.nearest(new SpatialIndex.Point(2, 1), null) == null);
 
     // fill up tree.
     Way w1 = new Way();
@@ -256,7 +259,7 @@ public class rectangleTreeTest {
     }) == null);
 
     // return the nearest way in filter: "test tag"
-    Way testWay = rectTree.nearest(new SpatialIndex.Point(2,1), (element) ->{
+    Way testWay = rectTree.nearest(new SpatialIndex.Point(2, 1), (element) -> {
       return element.tags().containsKey("test tag");
     });
 
@@ -268,9 +271,9 @@ public class rectangleTreeTest {
    * Test the if important methods work when bucket_max is transcended.
    */
   @Test
-  public void testBucket(){
+  public void testBucket() {
     List<Way> ways = new ArrayList<>();
-    for(int i = 0; i < 513; i++) {
+    for (int i = 0; i < 513; i++) {
       Node n = new Node(i, i);
       Way way = new Way();
       way.add(n);
@@ -308,13 +311,12 @@ public class rectangleTreeTest {
    * Test the if important methods work when page_max is transcended.
    */
   @Test
-  public void testPage2(){
+  public void testPage2() {
     List<Way> ways = new ArrayList<>();
-    for(int i = 0; i < 7500; i++) {
+    for (int i = 0; i < 7500; i++) {
       Way way = new Way();
-      way.add(new Node(i*5-2, i*4+3));
+      way.add(new Node(i * 5 - 2, i * 4 + 3));
       ways.add(way);
-
     }
 
     Way w1 = new Way();
@@ -333,7 +335,8 @@ public class rectangleTreeTest {
 
     RectangleTree<Way> rectTree = new RectangleTree<>(ways);
 
-    List<Way> result = rectTree.range(new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) ->{
+    List<Way> result = rectTree.range(
+            new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) -> {
       return element.tags().containsValue("test multi-tags");
     });
     List<Node> expected = new ArrayList<>();
@@ -343,7 +346,8 @@ public class rectangleTreeTest {
       assertTrue(expected.contains(way));
     }
 
-    result = rectTree.range(new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) ->{
+    result = rectTree.range(
+            new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) -> {
       return element.tags().containsValue("test value");
     });
     assertTrue(result.contains(w1));

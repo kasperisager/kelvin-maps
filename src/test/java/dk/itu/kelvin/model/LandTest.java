@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * {@link Land} test suite.
  */
-public class LandTest {
+public final class LandTest {
   /**
    *
    */

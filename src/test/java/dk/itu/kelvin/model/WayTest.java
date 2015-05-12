@@ -15,7 +15,10 @@ import dk.itu.kelvin.util.Graph;
 import org.junit.Test;
 
 // JUnit assertions
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
+
 
 /**
  * {@link Way} test suite.

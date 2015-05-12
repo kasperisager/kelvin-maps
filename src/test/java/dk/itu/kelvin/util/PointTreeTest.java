@@ -6,21 +6,19 @@ import java.util.List;
 
 // JUnit annotations
 import dk.itu.kelvin.model.Node;
-import org.junit.Before;
 import org.junit.Test;
 
 // JUnit assertions
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-
-public class PointTreeTest {
-
-  @Before
-  public void setUp() {
-
-  }
-
+/**
+ * {@link PointTree} test suite.
+ */
+public final class PointTreeTest {
+  /**
+   * Test the size of tree.
+   */
   @Test
   public void testSize() {
     List<Node> nodes = new ArrayList<>();
@@ -30,20 +28,23 @@ public class PointTreeTest {
     nodes.add(new Node(1, 1));
     pointTree = new PointTree<>(nodes);
     assertTrue(pointTree.size() == 1);
-    for(int i = 0; i < 50; i++) {
-      nodes.add(new Node(i, i*2));
+    for (int i = 0; i < 50; i++) {
+      nodes.add(new Node(i, i * 2));
     }
     pointTree = new PointTree<>(nodes);
     assertTrue(pointTree.size() == 51);
 
-    for(int i = 0; i < 337; i++) {
-      nodes.add(new Node(i, i*2));
+    for (int i = 0; i < 337; i++) {
+      nodes.add(new Node(i, i * 2));
     }
     pointTree = new PointTree<>(nodes);
     assertTrue(pointTree.size() == 388);
     assertFalse(pointTree.isEmpty());
   }
 
+  /**
+   * Test if tree contains specified element.
+   */
   @Test
   public void testContains() {
     List<Node> nodes = new ArrayList<>();
@@ -57,7 +58,7 @@ public class PointTreeTest {
 
     assertTrue(pointTree.contains(new Node(1, 1)));
     for (int i = 0; i < 20; i++) {
-      nodes.add(new Node(i*2, i*3));
+      nodes.add(new Node(i * 2, i * 3));
     }
     pointTree = new PointTree<>(nodes);
     assertTrue(pointTree.contains(new Node(4, 6)));
@@ -66,6 +67,9 @@ public class PointTreeTest {
 
   }
 
+  /**
+   * Test elements within the range of specified bounds.
+   */
   @Test
   public void testRange() {
     List<Node> nodes = new ArrayList<>();
@@ -78,7 +82,7 @@ public class PointTreeTest {
     assertTrue(pointTree.range(null) == null);
 
     for (int i = 0; i < 500; i++) {
-      nodes.add(new Node(i*2, i));
+      nodes.add(new Node(i * 2, i));
     }
     pointTree = new PointTree<>(nodes);
 
@@ -104,13 +108,15 @@ public class PointTreeTest {
     }
     assertTrue(expected.isEmpty());
 
-    assertTrue(pointTree.range(new SpatialIndex.Bounds(1, 1, 1 , 1), null) == null);
+    assertTrue(pointTree.range(
+            new SpatialIndex.Bounds(1, 1, 1 , 1), null) == null);
     assertTrue(pointTree.range(null, null) == null);
     assertTrue(pointTree.range(null, (element) -> {
       return element.tags().containsKey("test tag");
     }) == null);
 
-    result = pointTree.range(new SpatialIndex.Bounds(1, 1, 10, 10), (element) ->{
+    result = pointTree.range(
+            new SpatialIndex.Bounds(1, 1, 10, 10), (element) -> {
       return element.tags().containsKey("test tag");
     });
     expected.clear();
@@ -123,10 +129,13 @@ public class PointTreeTest {
     expected.isEmpty();
   }
 
+  /**
+   * Test the if important methods work when bucket_max is transcended.
+   */
   @Test
-  public void testBucket(){
+  public void testBucket() {
     List<Node> nodes = new ArrayList<>();
-    for(int i = 0; i < 2049; i++) {
+    for (int i = 0; i < 2049; i++) {
       nodes.add(new Node(i, i));
     }
 
@@ -137,7 +146,8 @@ public class PointTreeTest {
 
     assertFalse(pointTree.contains(new Node(75, 74)));
     List<Node> expected = new ArrayList<>();
-    List<Node> result = pointTree.range(new SpatialIndex.Bounds(49, 50, 51, 80));
+    List<Node> result = pointTree.range(
+            new SpatialIndex.Bounds(49, 50, 51, 80));
     assertTrue(pointTree.range(null) == null);
 
     expected.add(new Node(50, 50));
@@ -153,11 +163,14 @@ public class PointTreeTest {
 
   }
 
+  /**
+   * Test the if important methods work when bucket_max is transcended.
+   */
   @Test
-  public void testBucket2(){
+  public void testBucket2() {
     List<Node> nodes = new ArrayList<>();
-    for(int i = 0; i < 7500; i++) {
-      nodes.add(new Node(i*5-2, i*4+3));
+    for (int i = 0; i < 7500; i++) {
+      nodes.add(new Node(i * 5 - 2, i * 4 + 3));
     }
 
     Node n1 = new Node(1902, 4600);
@@ -170,7 +183,8 @@ public class PointTreeTest {
 
     PointTree<Node> pointTree = new PointTree<>(nodes);
 
-    List<Node> result = pointTree.range(new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) ->{
+    List<Node> result = pointTree.range(
+            new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) -> {
       return element.tags().containsValue("test multi-tags");
     });
     List<Node> expected = new ArrayList<>();
@@ -180,7 +194,8 @@ public class PointTreeTest {
       assertTrue(expected.contains(n));
     }
 
-    result = pointTree.range(new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) ->{
+    result = pointTree.range(
+            new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) -> {
       return element.tags().containsValue("test value");
     });
     assertTrue(result.contains(n1));

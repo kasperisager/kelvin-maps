@@ -5,16 +5,14 @@ package dk.itu.kelvin.model;
 
 // General utilities
 import dk.itu.kelvin.math.Epsilon;
-import org.junit.Test;
-
-// Utilities
-import org.junit.Test;
-
 import java.util.Map;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
+// JUnit annotations
+import org.junit.Test;
 
 // JUnit assertions
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * {@link Node} test suite.
