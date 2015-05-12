@@ -55,6 +55,14 @@ public class PointTreeTest {
     assertFalse(pointTree.contains(null));
 
     assertTrue(pointTree.contains(new Node(1, 1)));
+    for (int i = 0; i < 20; i++) {
+      nodes.add(new Node(i*2, i*3));
+    }
+    pointTree = new PointTree<>(nodes);
+    assertTrue(pointTree.contains(new Node(4, 6)));
+    assertTrue(pointTree.contains(new Node(8, 12)));
+    assertFalse(pointTree.contains(new Node(8, 11)));
+
   }
 
   @Test
@@ -115,5 +123,32 @@ public class PointTreeTest {
   }
 
   @Test
+  public void testBucket(){
+    List<Node> nodes = new ArrayList<>();
+    for(int i = 0; i < 2049; i++) {
+      nodes.add(new Node(i, i));
+    }
+    PointTree<Node> pointTree = new PointTree<>(nodes);
+    // Bug, when the PointTree size exceed Maximum Bucket size(2048) the
+    // contains method doesn't work.
+    assertFalse(pointTree.contains(new Node(75, 75)));
+
+    assertFalse(pointTree.contains(new Node(75, 74)));
+    List<Node> expected = new ArrayList<>();
+    List<Node> result = pointTree.range(new SpatialIndex.Bounds(49, 50, 51, 80));
+    assertTrue(pointTree.range(null) == null);
+
+    expected.add(new Node(50, 50));
+    expected.add(new Node(51, 51));
+    for (Node n : result) {
+      assertTrue(expected.contains(n));
+      expected.remove(n);
+    }
+    expected.isEmpty();
+
+
+    assertTrue(pointTree.range(new SpatialIndex.Bounds(1, 1, 1, 1)) != null);
+
+  }
 
 }
