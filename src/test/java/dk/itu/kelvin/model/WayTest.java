@@ -4,21 +4,74 @@
 package dk.itu.kelvin.model;
 
 // General utilities
+
+import dk.itu.kelvin.util.Graph;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-// JUnit annotations
-import org.junit.Test;
+import static org.junit.Assert.*;
 
+// JUnit annotations
 // JUnit assertions
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 /**
  * {@link Way} test suite.
  */
 public final class WayTest {
+  /**
+   * Test initialization of a way object with an id and an x-/y-coordinate.
+   */
+  @Test
+  public void testInitialization() {
+    Way w1 = new Way();
+    Node n1 = new Node(2, 2);
+    Node n2 = new Node(3, 4);
+    Node n3 = new Node(2, 3);
+    Node n4 = new Node(5, 6);
+
+    w1.add(n1);
+    w1.add(n2);
+    w1.add(n3);
+    w1.add(n4);
+
+    // check all min and max are true.
+    assertTrue(2 == w1.minX());
+    assertTrue(2 == w1.minY());
+    assertTrue(5 == w1.maxX());
+    assertTrue(6 == w1.maxY());
+  }
+
+    /**
+     * Test add a list of empty nodes or list equal null.
+     */
+  @Test
+  public void addNodes() {
+    Way way = new Way();
+    List<Node> list = new ArrayList<>();
+
+    // add empty list
+    way.add(list);
+    assertTrue(0 == way.nodes().size());
+
+    // add list = null
+    list = null;
+    way.add(list);
+    assertTrue(0 == way.nodes().size());
+  }
+
+  /**
+   * Test add node which equal null.
+   */
+  @Test
+  public void addNode() {
+    Way way = new Way();
+    Node n = null;
+    way.add(n);
+    assertTrue(0 == way.nodes().size());
+  }
+
   /**
    * Test the tagging of ways.
    */
@@ -67,6 +120,29 @@ public final class WayTest {
     w2.add(n8);
 
     assertFalse(w2.isClosed());
+
+    // test if start == null or end == null.
+    Way w3 = new Way();
+    //assertFalse(w3.isClosed());
+
+  }
+
+  /**
+   * Test if the open method recognizes open ways.
+   */
+  @Test
+  public void testOpen() {
+    Way w1 = new Way();
+    Node n5 = new Node(55.1198149F, 12.1159972F);
+    Node n6 = new Node(56.2298149F, 17.2259972F);
+    Node n7 = new Node(57.3398149F, 18.3359972F);
+    Node n8 = new Node(55.4498149F, 12.4459972F);
+    w1.add(n5);
+    w1.add(n6);
+    w1.add(n7);
+    w1.add(n8);
+
+    assertTrue(w1.isOpen());
   }
 
   /**
@@ -114,10 +190,16 @@ public final class WayTest {
     assertTrue(w1.startsIn(w3));
     // w3 ends in the same coordinates as w1 but does not start in it.
     assertFalse(w3.startsIn(w1));
+
+    // test if start.end == null or way.start() == null.
+    Way w4 = new Way();
+    assertFalse(w4.startsIn(w3));
+    assertFalse(w3.startsIn(w4));
+
   }
 
   /**
-   * Tests if one way ends in the same node as the start or end of another way.
+   * Test if one way ends in the same node as the start or end of another way.
    */
   @Test
   public void testEndsIn() {
@@ -145,10 +227,10 @@ public final class WayTest {
     assertFalse(w1.endsIn(null));
 
     Way w3 = new Way();
-    Node n9 = new Node(59.1198149F, 18.1159972F);
+    Node n9 = new Node(57.3398149F, 18.3359972F);
     Node n10 = new Node(56.2298149F, 17.2259972F);
     Node n11 = new Node(50.3398149F, 10.3359972F);
-    Node n12 = new Node(57.3398149F, 18.3359972F);
+    Node n12 = new Node(59.1198149F, 18.1159972F);
     w3.add(n9);
     w3.add(n10);
     w3.add(n11);
@@ -156,10 +238,15 @@ public final class WayTest {
 
     // w1 ends in the same coordinates as w3 ends in.
     assertTrue(w1.endsIn(w3));
+    assertTrue(w1.end().x() == w3.start().x());
+
+    // test if w4.end == null
+    Way w4 = new Way();
+    assertFalse(w4.endsIn(w3));
   }
 
   /**
-   * Tests if the method returns all elements added to the list.
+   * Test if the method returns all elements added to the list.
    */
   @Test
   public void testNodes() {
@@ -186,7 +273,7 @@ public final class WayTest {
   }
 
   /**
-   * Tests if one way has been appended to another way.
+   * Test if one way has been appended to another way.
    */
   @Test
   public void testAppend() {
@@ -214,4 +301,49 @@ public final class WayTest {
     assertTrue(w1.nodes().contains(n3));
     assertTrue(w1.nodes().contains(n4));
   }
+
+  /**
+   * Test the correct weight between nodes.
+   */
+  @Test
+  public void testWeight() {
+    Way w1 = new Way();
+    w1.tag("maxspeed", "30");
+
+    // test weight if n1 and n2 are null
+    Node n1 = null;
+    Node n2 = null;
+
+    w1.add(n1);
+    w1.add(n2);
+
+    assertTrue(Double.POSITIVE_INFINITY == w1.weight(n1, n2));
+
+    // weight are != null
+    Node n3 = new Node(1, 1);
+    Node n4 = new Node(4, 1);
+
+    w1.add(n3);
+    w1.add(n4);
+
+    System.out.println(w1.weight(n3, n4));
+    assertTrue(0.1 == w1.weight(n3, n4));
+  }
+
+  /**
+   * Test ways directions - oneway or both ways.
+   */
+  @Test
+  public void testDirectionOfWay() {
+    // way is oneway
+    Way w1 = new Way();
+    w1.tag("oneway", "yes");
+
+    assertTrue(Graph.Direction.UNI == w1.direction());
+
+    // way is not oneway
+    Way w2 = new Way();
+    assertTrue(Graph.Direction.BI == w2.direction());
+  }
+
 }
