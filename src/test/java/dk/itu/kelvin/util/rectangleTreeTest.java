@@ -6,10 +6,9 @@ package dk.itu.kelvin.util;
 // General utilities
 import dk.itu.kelvin.model.Node;
 import dk.itu.kelvin.model.Way;
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

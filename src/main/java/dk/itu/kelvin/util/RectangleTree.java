@@ -122,9 +122,6 @@ public class RectangleTree<E extends RectangleTree.Index>
     if (this.root == null || bounds == null) {
       return null;
     }
-    /*if (bounds == null) {
-      return null;
-    }*/
 
     return this.range(bounds, (element) -> {
       return true;
