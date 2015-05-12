@@ -2,6 +2,7 @@ package dk.itu.kelvin.util;
 
 // JUnit annotations
 import dk.itu.kelvin.model.Node;
+import dk.itu.kelvin.util.function.Filter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,12 +62,60 @@ public class PointTreeTest {
     List<Node> nodes = new ArrayList<>();
     PointTree<Node> pointTree = new PointTree<>(nodes);
     assertTrue(pointTree.range(null) == null);
-    assertTrue(pointTree.range(new SpatialIndex.Bounds(1, 1, 3, 3)) == null);
+    //assertTrue(pointTree.range(new SpatialIndex.Bounds(1, 1, 3, 3)) == null);
 
     nodes.add(new Node(1, 1));
     pointTree = new PointTree<>(nodes);
     assertTrue(pointTree.range(null) == null);
 
+    for (int i = 0; i < 500; i++) {
+      nodes.add(new Node(i*2, i));
+    }
+    pointTree = new PointTree<>(nodes);
+
+    List<Node> result = pointTree.range(new SpatialIndex.Bounds(1, 1, 10, 10));
+    List<Node> expected = new ArrayList<>();
+    expected.add(new Node(1, 1));
+
+    Node n1 = new Node(2, 1);
+    n1.tag("test tag", "true");
+    expected.add(n1);
+    Node n2 = new Node(4, 2);
+    n2.tag("test tag", "false");
+    expected.add(n2);
+    Node n3 = new Node(6, 3);
+    n3.tag("false tag", "true");
+    expected.add(n3);
+
+    expected.add(new Node(8, 4));
+    expected.add(new Node(10, 5));
+    for (Node n: result) {
+      assertTrue(expected.contains(n));
+      expected.remove(n);
+    }
+    assertTrue(expected.isEmpty());
+
+    assertTrue(pointTree.range(new SpatialIndex.Bounds(1, 1, 1 , 1), null) == null);
+    assertTrue(pointTree.range(null, null) == null);
+    assertTrue(pointTree.range(null, (element) -> {
+      return element.tags().containsKey("test tag");
+    }) == null);
+
+    result = pointTree.range(new SpatialIndex.Bounds(1, 1, 10, 10), (element) ->{
+      return element.tags().containsKey("test tag");
+    });
+    expected = new ArrayList<>();
+    expected.add(n1);
+    expected.add(n2);
+    for (Node n : result) {
+      assertTrue(expected.contains(n));
+      expected.remove(n);
+    }
+
+
+
+
 
   }
+
 }
