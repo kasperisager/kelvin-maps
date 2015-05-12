@@ -43,15 +43,24 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
    */
   private final Properties properties;
 
+  private final N from;
+
+  private final N to;
+
   /**
    * Initialize a new shortest path instance given a weighted graph and a
    * source node.
    *
-   * @param graph   The weighted graph to use for constructing the path tree.
-   * @param source  Starting point for the shortest path.
+   * @param graph The weighted graph to use for constructing the path tree.
+   * @param from  Starting point for the shortest path.
+   * @param to    Ending point for the shortest path.
    */
-  public ShortestPath(final WeightedGraph<N, E> graph, final N source) {
-    this(graph, source, new Properties());
+  public ShortestPath(
+    final WeightedGraph<N, E> graph,
+    final N from,
+    final N to
+  ) {
+    this(graph, from, to, new Properties());
   }
 
   /**
@@ -59,14 +68,18 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
    * source node along with any custom properties.
    *
    * @param graph       The weighted graph to use for constructing the path tree.
-   * @param source      Starting point for the shortest path.
+   * @param from        Starting point for the shortest path.
+   * @param to          Ending point for the shortest path.
    * @param properties  A configuration map of custom properties.
    */
   public ShortestPath(
     final WeightedGraph<N, E> graph,
-    final N source,
+    final N from,
+    final N to,
     final Properties properties
   ) {
+    this.from = from;
+    this.to = to;
     this.properties = properties;
 
     List<E> edges = graph.edges();
@@ -89,19 +102,21 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
       }
     }
 
-    this.distance.put(source, 0.0f);
+    this.distance.put(from, 0.0f);
 
-    // Relax vertices in order of distance from s
     this.queue = new PriorityQueue<>(11, (a, b) -> {
-      // Comparing b to a instead of a to b to make
-      // a minimum priority and not maximum priority.
-      return this.distance.get(b).compareTo(this.distance.get(a));
+      return this.distance.get(a).compareTo(this.distance.get(b));
     });
 
-    this.queue.add(source);
+    this.queue.add(from);
 
     while (!this.queue.isEmpty()) {
       N next = this.queue.poll();
+
+      // Bail out as soon as we've dequeued the node we're looking for.
+      if (next.equals(to)) {
+        break;
+      }
 
       Map<N, E> neighbours = graph.neighbours(next);
 
@@ -110,10 +125,10 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
       }
 
       for (Map.Entry<N, E> neighbour: neighbours.entrySet()) {
-        N to = neighbour.getKey();
+        N node = neighbour.getKey();
         E edge = neighbour.getValue();
 
-        this.relax(next, to, edge);
+        this.relax(next, node, edge);
       }
     }
   }
@@ -130,13 +145,18 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
       return;
     }
 
-    float weight = (float) edge.weight(from, to, this.properties);
+    double weight = edge.weight(from, to, this.properties);
+
+    double estimateFrom = edge.weight(from, this.to, this.properties);
+    double estimateTo = edge.weight(to, this.to, this.properties);
+
+    weight += estimateFrom - estimateTo;
 
     float distFrom = this.distance.get(from);
     float distTo = this.distance.get(to);
 
-    if (distTo > distFrom + weight) {
-      this.distance.put(to, distFrom + weight);
+    if (distTo > distFrom + (float) weight) {
+      this.distance.put(to, distFrom + (float) weight);
       this.edgeTo.put(to, from);
 
       if (this.queue.contains(to)) {
@@ -147,51 +167,26 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
     }
   }
 
-  /**
-   * Returns the length of a shortest path from the source.
-   * @param node the destination vertex.
-   * @return the length of a shortest path.
-   * Float.POSITIVE_INFINITY if no such path
-   */
-  public float distanceTo(final N node) {
-    if (node == null) {
-      return Float.POSITIVE_INFINITY;
-    }
-
-    return this.distance.get(node);
+  public float distance() {
+    return this.distance.get(this.to);
   }
 
-  /**
-   * Is there a path from the source vertex to the param vertex.
-   * @param node the destination vertex.
-   * @return true if there is a path, false otherwise.
-   */
-  public boolean hasPathTo(final N node) {
-    if (!this.distance.containsKey(node)) {
-      return false;
-    }
-
-    return this.distanceTo(node) < Float.POSITIVE_INFINITY;
+  public boolean hasPath() {
+    return this.distance() < Float.POSITIVE_INFINITY;
   }
 
-  /**
-   * Returns a shortest path.
-   * @param node the destination vertex.
-   * @return shortest path from the source vertex to the param vertex
-   * as an iterable of edges, and null if no such path.
-   */
-  public List<N> path(final N node) {
-    if (!this.hasPathTo(node)) {
+  public List<N> path() {
+    if (!this.hasPath()) {
       return null;
     }
 
     List<N> path = new ArrayList<>();
 
     // Add the source node to the path.
-    path.add(node);
+    path.add(this.to);
 
     for (
-      N n = this.edgeTo.get(node);
+      N n = this.edgeTo.get(this.to);
       n != null;
       n = this.edgeTo.get(n)
     ) {

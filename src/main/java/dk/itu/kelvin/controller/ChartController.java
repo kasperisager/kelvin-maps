@@ -270,10 +270,10 @@ public final class ChartController {
     }
 
     ShortestPath<Node, Way> shortestPath = new ShortestPath<Node, Way>(
-      graph, from, properties
+      graph, from, to, properties
     );
 
-    List<Node> path = shortestPath.path(to);
+    List<Node> path = shortestPath.path();
 
     float dist = 0.0f;
 
