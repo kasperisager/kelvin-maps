@@ -4,11 +4,7 @@
 package dk.itu.kelvin.layout;
 
 // General utilities
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 // JavaFX scene utilities
 import javafx.scene.Group;
@@ -97,6 +93,9 @@ public final class Chart extends Group {
 
   private Map<Anchor, Group> showingPOI = HashObjObjMaps.newMutableMap();
 
+  private Map<Anchor, HashSet<String>> anchorTags = HashObjObjMaps.newMytableMap();
+
+  private HashSet<String> currentTags = new HashSet<>();
   /**
    * Current smallest x-coordinate of the chart viewport.
    */
@@ -466,7 +465,28 @@ public final class Chart extends Group {
 
       this.show(anchor);
     }
-    this.checkPOI();
+
+
+    it = this.showingPOI.keySet().iterator();
+
+    while (it.hasNext()) {
+      Anchor anchor = it.next();
+
+      if (anchors.contains(anchor)) {
+        if(anchorTags.get(anchor).containsAll(currentTags)){
+          continue;
+        }
+      }
+      this.hidePOI(anchor);
+      it.remove();
+
+    }
+    for (Anchor anchor: anchors) {
+      if(this.anchorTags.get(anchor).containsAll(currentTags)) {
+        continue;
+      }
+      this.showPOI(anchor);
+    }
   }
 
   /**
@@ -475,6 +495,9 @@ public final class Chart extends Group {
    * @param tag unique type of POI.
    */
   public void showSelectedPoi(final String tag) {
+    currentTags.add(tag);
+    layoutTiles();
+    /*
     List<Element> elements = this.elementStore.find()
       .types("poi")
       .tag(tag)
@@ -491,7 +514,7 @@ public final class Chart extends Group {
         Label label = node.render();
         this.points.put(node, label);
         this.metaLayer.getChildren().add(label);
-      }
+      }*/
   }
 
   /**
@@ -500,6 +523,9 @@ public final class Chart extends Group {
    * @param tag unique key in POI.
    */
   public void hidePointsOfInterests(final String tag) {
+    currentTags.remove(tag);
+    layoutTiles();
+    /*
     List<Element> elements = this.elementStore.find()
       .types("poi")
       .tag(tag)
@@ -511,7 +537,43 @@ public final class Chart extends Group {
       Node node = (Node) element;
       Label label = this.points.remove(node);
       this.metaLayer.getChildren().remove(label);
+    }*/
+  }
+
+  private void showPOI(Anchor anchor) {
+    if (anchor == null) {
+      return;
     }
+
+    int x = anchor.x;
+    int y = anchor.y;
+
+    Group group = new Group();
+
+    for (String tag: currentTags) {
+      List<Element> elements = this.elementStore.find()
+        .types("poi")
+        .tag(tag)
+        .bounds(this.minX, this.minY, this.maxX + this.tileSize,
+          this.maxY + this.tileSize)
+        .get();
+      for (Element element: elements) {
+        Node node = (Node) element;
+        Label label = node.render();
+        group.getChildren().add(label);
+      }
+    }
+    group.setClip(new Rectangle(x, y, this.tileSize, this.tileSize));
+    group.setCache(true);
+
+    this.metaLayer.getChildren().add(group);
+
+    this.anchorTags.put(anchor, currentTags);
+    this.showingPOI.put(anchor, group);
+  }
+
+  private void hidePOI(Anchor anchor) {
+
   }
 
   /**
