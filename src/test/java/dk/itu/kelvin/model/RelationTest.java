@@ -6,19 +6,20 @@ package dk.itu.kelvin.model;
 // JUnit annotations
 import org.junit.Test;
 
-// JUnit assertions
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+// JUnit assertions
 
 /**
  * {@link Relation} test suite.
  */
 public final class RelationTest {
+
   /**
-   * A relation should be able to consist of one or more member elements.
+   * Test max. and min. coordinates of the relation.
    */
   @Test
-  public void testRelationListOfMembers() {
+  public void testCoordinates() {
     // Test creation of relation with a number of members.
     Relation r1 = new Relation();
     Node n1 = new Node(3, 3);
@@ -29,13 +30,36 @@ public final class RelationTest {
     r1.add(n2);
     r1.add(n3);
 
-    assertEquals(3, r1.members().size());
-    assertTrue(r1.members().contains(n1));
-    assertTrue(r1.members().contains(n2));
-    assertTrue(r1.members().contains(n3));
+    // Test largest coordinates of the relation.
+    assertTrue(3 == r1.minX());
+    assertTrue(3 == r1.minY());
 
-    // Test creation of relation without members.
-    Relation r2 = new Relation();
-    assertEquals(0, r2.members().size());
+    // Test smallest coordinates of the relation.
+    assertTrue(5 == r1.maxX());
+    assertTrue(5 == r1.maxY());
+  }
+
+  /**
+   * A relation should be able to consist of one or more member elements.
+   */
+  @Test
+  public void addElement() {
+    Relation r1 = new Relation();
+
+    // test add element = null
+    assertTrue(0 == r1.members().size());
+    Node n1 = null;
+    r1.add(n1);
+    assertTrue(0 == r1.members().size());
+
+    // test add !empty way
+    Way w1 = new Way();
+    Node n2 = new Node(3, 3);
+    w1.add(n2);
+    r1.add(w1);
+
+    // test add empty way
+    Way w2 = new Way();
+    r1.add(w2);
   }
 }
