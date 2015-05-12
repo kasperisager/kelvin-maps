@@ -4,17 +4,18 @@
 package dk.itu.kelvin.model;
 
 // General utilities
-
-import dk.itu.kelvin.util.Graph;
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
-import static org.junit.Assert.*;
+// Utilities
+import dk.itu.kelvin.util.Graph;
 
 // JUnit annotations
+import org.junit.Test;
+
 // JUnit assertions
+import static org.junit.Assert.*;
 
 /**
  * {@link Way} test suite.
@@ -317,7 +318,9 @@ public final class WayTest {
     w1.add(n1);
     w1.add(n2);
 
-    assertTrue(Double.POSITIVE_INFINITY == w1.weight(n1, n2));
+    Properties prop = new Properties();
+    prop.put("bicycle", "no");
+    assertTrue(Double.POSITIVE_INFINITY == w1.weight(n1, n2, prop));
 
     // weight are != null
     Node n3 = new Node(1, 1);
@@ -326,8 +329,7 @@ public final class WayTest {
     w1.add(n3);
     w1.add(n4);
 
-    System.out.println(w1.weight(n3, n4));
-    assertTrue(0.1 == w1.weight(n3, n4));
+    assertTrue(0.1 == w1.weight(n3, n4, prop));
   }
 
   /**
@@ -339,11 +341,15 @@ public final class WayTest {
     Way w1 = new Way();
     w1.tag("oneway", "yes");
 
-    assertTrue(Graph.Direction.UNI == w1.direction());
+    Properties prop = new Properties();
+    prop.put("bicycle", "no");
+    assertTrue(Graph.Direction.UNI == w1.direction(prop));
 
     // way is not oneway
     Way w2 = new Way();
-    assertTrue(Graph.Direction.BI == w2.direction());
+    Properties prop2 = new Properties();
+    prop2.put("bicycle", "yes");
+    assertTrue(Graph.Direction.BI == w2.direction(prop2));
   }
 
 }
