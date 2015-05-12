@@ -15,21 +15,18 @@ import javafx.beans.value.ObservableValue;
 
 // JavaFX Geometry
 import javafx.geometry.Bounds;
-import javafx.geometry.Pos;
 
 // JavaFX Control
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 
 // JavaFX Input
 import javafx.scene.input.KeyEvent;
 
 // JavaFX Layout
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 // JavaFX Utilities
