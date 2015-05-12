@@ -104,18 +104,16 @@ public class PointTreeTest {
     result = pointTree.range(new SpatialIndex.Bounds(1, 1, 10, 10), (element) ->{
       return element.tags().containsKey("test tag");
     });
-    expected = new ArrayList<>();
+    expected.clear();
     expected.add(n1);
     expected.add(n2);
     for (Node n : result) {
       assertTrue(expected.contains(n));
       expected.remove(n);
     }
-
-
-
-
-
+    expected.isEmpty();
   }
+
+  @Test
 
 }
