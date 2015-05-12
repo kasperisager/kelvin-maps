@@ -11,6 +11,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 
+/**
+ * {@link Geometry} test suite.
+ */
 public class GeometryTest {
   /**
    * Test the calculation of distance between two points.
@@ -517,7 +520,6 @@ public class GeometryTest {
       String boundsString = "Bounds[min = Point[x = 2.0, y = 2.0], max = Point[x = 5.0, y = 5.0]]";
       assertEquals(b1.toString(), boundsString);
     }
-
   }
 
 }
