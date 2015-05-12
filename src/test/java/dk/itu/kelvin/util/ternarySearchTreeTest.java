@@ -16,7 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- *
+ * {@link TernarySearchTree} test suite.
  */
 public class ternarySearchTreeTest {
   /**
@@ -61,7 +61,7 @@ public class ternarySearchTreeTest {
   }
 
   /**
-   *
+   * Test whether the tree contains a given element.
    */
   @Test
   public void testContains() {
@@ -84,7 +84,7 @@ public class ternarySearchTreeTest {
   }
 
   /**
-   *
+   * Test that putting is done as expected.
    */
   @Test
   public void testPut() {
@@ -115,21 +115,7 @@ public class ternarySearchTreeTest {
   }
 
   /**
-   *
-   */
-  @Test
-  public void testRemove() {
-  }
-
-  /**
-   *
-   */
-  @Test
-  public void testClear() {
-  }
-
-  /**
-   *
+   * Test that the correct elements are found when searching.
    */
   @Test
   public void testSearch() {

@@ -13,6 +13,9 @@ import org.junit.Test;
 // JUnit assertions
 import static org.junit.Assert.assertTrue;
 
+/**
+ * {@link WeightedGraph} test suite.
+ */
 public class WeightedGraphTest {
   /**
    * Testing the add method.
