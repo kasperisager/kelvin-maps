@@ -208,16 +208,10 @@ public final class AddressController {
   private void createSettingsPopOver() {
     VBox vbox = new VBox(2);
 
-    Button hContrast = new Button("High Contrast");
     Button poi = new Button("Points of Interest");
 
-    hContrast.setPrefWidth(140);
     poi.setPrefWidth(140);
-    vbox.getChildren().addAll(hContrast, poi);
-
-    hContrast.setOnAction((event) -> {
-      ApplicationController.highContrast();
-    });
+    vbox.getChildren().addAll(poi);
 
     poi.setOnAction((event) -> {
       if (!this.propertiesGridPane.getChildren().contains(this.poiContainer)) {

@@ -96,26 +96,6 @@ public final class ApplicationController {
   }
 
   /**
-   * Add a styleclass to borderpane element.
-   * This enables us to change colours of the map.
-   */
-  public static void highContrast() {
-    if (
-      !ApplicationController.instance.mainBorderPane
-        .getStyleClass()
-        .contains("high-contrast")
-    ) {
-      ApplicationController.instance.mainBorderPane
-        .getStyleClass()
-        .add("high-contrast");
-    } else {
-      ApplicationController.instance.mainBorderPane
-        .getStyleClass()
-        .remove("high-contrast");
-    }
-  }
-
-  /**
    * To rotate the load icon.
    */
   public static void rotateIcon() {
