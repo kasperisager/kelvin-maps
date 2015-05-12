@@ -226,6 +226,11 @@ public final class ChartController {
     Way fromWay = elementStore.transportWaysTree().nearest(p1);
     Way toWay = elementStore.transportWaysTree().nearest(p2);
 
+    if (fromWay == null) {
+      System.out.println("sorry... ");
+      return;
+    }
+
     double distanceFrom = 0;
     Node from = null;
 
@@ -696,7 +701,8 @@ public final class ChartController {
     final ElementStore elementStore,
     final BoundingBox bounds
   ) {
-    ChartController.instance.chart.elementStore(elementStore);
+    ChartController.elementStore = elementStore;
+    ChartController.instance.chart.elementStore(ChartController.elementStore);
     ChartController.instance.chart.bounds(bounds);
   }
 }
