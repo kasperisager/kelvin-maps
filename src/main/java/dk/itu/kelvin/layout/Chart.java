@@ -93,7 +93,7 @@ public final class Chart extends Group {
 
   private Map<Anchor, Group> showingPOI = HashObjObjMaps.newMutableMap();
 
-  private Map<Anchor, HashSet<String>> anchorTags = HashObjObjMaps.newMytableMap();
+  private Map<Anchor, HashSet<String>> anchorTags = HashObjObjMaps.newMutableMap();
 
   private HashSet<String> currentTags = new HashSet<>();
   /**
@@ -254,7 +254,7 @@ public final class Chart extends Group {
   public void pan(final double x, final double y) {
     this.setTranslateX(this.getTranslateX() + x);
     this.setTranslateY(this.getTranslateY() + y);
-    this.layoutTiles();
+    //this.layoutTiles();
   }
 
   /**
@@ -408,7 +408,7 @@ public final class Chart extends Group {
   /**
    * Layout the tiles of the chart.
    */
-  private void layoutTiles() {
+  public void layoutTiles() {
     Scene scene = this.getScene();
 
     if (scene == null) {
@@ -499,24 +499,6 @@ public final class Chart extends Group {
   public void showSelectedPoi(final String tag) {
     currentTags.add(tag);
     layoutTiles();
-    /*
-    List<Element> elements = this.elementStore.find()
-      .types("poi")
-      .tag(tag)
-      .bounds(
-        this.minX,
-        this.minY,
-        this.maxX + this.tileSize,
-        this.maxY + this.tileSize
-      )
-      .get();
-
-      for (Element element: elements) {
-        Node node = (Node) element;
-        Label label = node.render();
-        this.points.put(node, label);
-        this.metaLayer.getChildren().add(label);
-      }*/
   }
 
   /**
@@ -527,21 +509,12 @@ public final class Chart extends Group {
   public void hidePointsOfInterests(final String tag) {
     currentTags.remove(tag);
     layoutTiles();
-    /*
-    List<Element> elements = this.elementStore.find()
-      .types("poi")
-      .tag(tag)
-      .bounds(this.minX, this.minY, this.maxX + this.tileSize,
-        this.maxY + this.tileSize)
-      .get();
-
-    for (Element element : elements) {
-      Node node = (Node) element;
-      Label label = this.points.remove(node);
-      this.metaLayer.getChildren().remove(label);
-    }*/
   }
 
+  /**
+   * Shows all current POI on a specific anchor.
+   * @param anchor the anchor to show.
+   */
   private void showPOI(Anchor anchor) {
     if (anchor == null) {
       return;
@@ -574,11 +547,15 @@ public final class Chart extends Group {
     this.showingPOI.put(anchor, group);
   }
 
+  /**
+   * Hides a specific anchor of POI.
+   * @param anchor The anchor to hide.
+   */
   private void hidePOI(Anchor anchor) {
     if (anchor == null) {
       return;
     }
-
+    anchorTags.remove(anchor);
     Group group = this.showingPOI.get(anchor);
 
     this.metaLayer.getChildren().remove(group);

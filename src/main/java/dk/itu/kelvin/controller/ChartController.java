@@ -589,6 +589,8 @@ public final class ChartController {
         this.chart.zoom(Math.pow(ZOOM_OUT, 8));
         e.consume();
         break;
+      case P:
+        this.chart.layoutTiles();
       default:
         return;
     }
