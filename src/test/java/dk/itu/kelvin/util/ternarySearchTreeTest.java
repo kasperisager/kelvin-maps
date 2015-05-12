@@ -31,8 +31,8 @@ public final class ternarySearchTreeTest {
     elements.put("Aabra", 1);
     elements.put("Babra", 2);
 
-    TernarySearchTree tst = new TernarySearchTree(elements);
-    TernarySearchTree tstNull = new TernarySearchTree(nullElements);
+    TernarySearchTree<Integer> tst = new TernarySearchTree<>(elements);
+    TernarySearchTree<Integer> tstNull = new TernarySearchTree<>(nullElements);
 
     assertTrue(tstNull.isEmpty());
     assertFalse(tst.isEmpty());
@@ -52,16 +52,16 @@ public final class ternarySearchTreeTest {
     elements.put("Aabra", 1);
     elements.put("Babra", 2);
 
-    TernarySearchTree tst = new TernarySearchTree(elements);
-    TernarySearchTree tstNull = new TernarySearchTree(nullElements);
+    TernarySearchTree<Integer> tst = new TernarySearchTree<>(elements);
+    TernarySearchTree<Integer> tstNull = new TernarySearchTree<>(nullElements);
     assertEquals(tstNull.get("Aabra"), null);
     assertEquals(tst.get(""), null);
     assertEquals(tst.get(null), null);
-    assertEquals(tst.get("Aabra"), 1);
+    assertTrue(tst.get("Aabra") == 1);
   }
 
   /**
-   *
+   * Test whether the tree contains a given element.
    */
   @Test
   public void testContains() {
@@ -75,7 +75,7 @@ public final class ternarySearchTreeTest {
     String key = "bra";
     String key2 = "Cabra";
 
-    TernarySearchTree tst = new TernarySearchTree(elements);
+    TernarySearchTree<Integer> tst = new TernarySearchTree<>(elements);
 
     assertFalse(tst.contains(nullKey));
     assertFalse(tst.contains(""));
@@ -84,7 +84,7 @@ public final class ternarySearchTreeTest {
   }
 
   /**
-   *
+   * Test that putting is done as expected.
    */
   @Test
   public void testPut() {
@@ -95,7 +95,7 @@ public final class ternarySearchTreeTest {
     elements.put("Gothersgade", 4);
     elements.put("Vesterbrogade", 5);
 
-    TernarySearchTree tst = new TernarySearchTree(elements);
+    TernarySearchTree<Integer> tst = new TernarySearchTree<>(elements);
 
     tst.put("Vejle", 99);
     assertTrue(tst.contains("Vejle"));
@@ -115,21 +115,7 @@ public final class ternarySearchTreeTest {
   }
 
   /**
-   *
-   */
-  @Test
-  public void testRemove() {
-  }
-
-  /**
-   *
-   */
-  @Test
-  public void testClear() {
-  }
-
-  /**
-   *
+   * Test that the correct elements are found when searching.
    */
   @Test
   public void testSearch() {
@@ -142,7 +128,7 @@ public final class ternarySearchTreeTest {
 
     Map<String, Integer> nullElements = new HashMap<>();
 
-    TernarySearchTree tst = new TernarySearchTree(elements);
+    TernarySearchTree<Integer> tst = new TernarySearchTree<>(elements);
 
     assertTrue(tst.search("Amager").size() == 3);
     assertTrue(tst.search("Amager").containsKey("Amagerbrogade 4"));
@@ -158,7 +144,7 @@ public final class ternarySearchTreeTest {
 
     assertTrue(tst.search(null).size() == 0);
 
-    TernarySearchTree nullTst = new TernarySearchTree(nullElements);
+    TernarySearchTree<Integer> nullTst = new TernarySearchTree<>(nullElements);
     assertTrue(nullTst.search("Amager").size() == 0);
   }
 }

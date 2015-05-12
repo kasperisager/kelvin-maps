@@ -84,67 +84,67 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * Point tree for quick search in node elements.
    */
-  private SpatialIndex<Node> poiTree;
+  private transient SpatialIndex<Node> poiTree;
 
   /**
    * Rectangle tree for quick search in way elements.
    */
-  private SpatialIndex<Way> waysTree;
+  private transient SpatialIndex<Way> waysTree;
 
   /**
    * Rectangle tree for quick search in land elements.
    */
-  private SpatialIndex<Way> landTree;
+  private transient SpatialIndex<Way> landTree;
 
   /**
    * Rectangle tree for quick search in way elements.
    */
-  private SpatialIndex<Relation> relationsTree;
+  private transient SpatialIndex<Relation> relationsTree;
 
   /**
    * Rectangle tree for quick search in road elements.
    */
-  private SpatialIndex<Way> roadsTree;
+  private transient SpatialIndex<Way> roadsTree;
 
   /**
    * Point tree for quick search in cycleways elements.
    */
-  private SpatialIndex<Way> cyclewaysTree;
+  private transient SpatialIndex<Way> cyclewaysTree;
 
   /**
    * Point tree for quick search in transportWays elements.
    */
-  private RectangleTree<Way> transportWaysTree;
+  private transient RectangleTree<Way> transportWaysTree;
 
   /**
    * Indicates whether waysTree needs to be indexed or not.
    */
-  private boolean waysIsDirty;
+  private transient boolean waysIsDirty;
 
   /**
    * Indicates whether roadsTree needs to be indexed or not.
    */
-  private boolean roadsIsDirty;
+  private transient boolean roadsIsDirty;
 
   /**
    * Indicates whether roadsTree needs to be indexed or not.
    */
-  private boolean cyclewaysIsDirty;
+  private transient boolean cyclewaysIsDirty;
 
   /**
    * Indicates whether landsTree needs to be indexed or not.
    */
-  private boolean landIsDirty;
+  private transient boolean landIsDirty;
 
   /**
    * Indicates whether relationsTree needs to be indexed or not.
    */
-  private boolean relationsIsDirty;
+  private transient boolean relationsIsDirty;
 
   /**
    * Indicates whether poiTree needs to be indexed or not.
    */
-  private boolean poiIsDirty;
+  private transient boolean poiIsDirty;
 
   /**
    * Initialize a new element store.
@@ -289,6 +289,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
     this.pois.add(n);
     this.poiIsDirty = true;
   }
+
   /**
    * Returns new search query.
    * @return the query object.
@@ -298,36 +299,27 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   }
 
   /**
+   * Return the transportWayTree.
+   * @return transportWaysTree.
+   */
+  public RectangleTree<Way> transportWaysTree() {
+    this.index();
+
+    return this.transportWaysTree;
+  }
+
+  /**
    * Finds elements that meet the criteria.
    *
    * @param q  The criteria object to look up elements based on.
    * @return the list of elements that meet the criteria.
    */
   private List<Element> search(final Query q) {
-    if (this.waysTree == null || this.waysIsDirty) {
-      this.waysTree = this.indexWays(this.ways);
-    }
-    if (this.relationsTree == null || this.relationsIsDirty) {
-      this.relationsTree = this.indexRelations(this.relations);
-    }
-    if (this.landTree == null || this.landIsDirty) {
-      this.landTree = this.indexLand(this.land);
-    }
-    if (this.poiTree == null || this.poiIsDirty) {
-      this.poiTree = this.indexPoi(this.pois);
-    }
-    if (this.roadsTree == null || this.roadsIsDirty) {
-     this.roadsTree = this.indexRoads(this.roads);
-      this.transportWaysTree = this.indexTransportWays(this.transportWays);
-    }
-    if (this.cyclewaysTree == null || this.cyclewaysIsDirty) {
-      this.cyclewaysTree = this.indexCycleways(this.cycleways);
-      this.transportWaysTree = this.indexTransportWays(this.transportWays);
-    }
+    this.index();
 
     List<Element> elementList = new ArrayList<>();
 
-    for (String s : q.types) {
+    for (String s: q.types) {
       switch (s) {
         case "transportWay":
           elementList.addAll(this.transportWaysTree.range(q.bounds));
@@ -368,131 +360,44 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   }
 
   /**
-   * Indexing the way rangeTree.
-   *
-   * @param ways The collection of ways to be indexed.
-   * @return the indexed rectangleTree.
+   * (Re-)build all indexes if needed.
    */
-  public SpatialIndex<Way> indexWays(final Collection<Way> ways) {
-    if (ways == null || ways.isEmpty()) {
-      return null;
+  private void index() {
+    if (this.waysTree == null || this.waysIsDirty) {
+      this.waysTree = new RectangleTree<>(this.ways);
+      this.waysIsDirty = false;
     }
 
-    RectangleTree<Way> wayTree = new RectangleTree<>(ways);
-    this.waysIsDirty = false;
-
-    return wayTree;
-  }
-
-  /**
-   * Indexing the road rangeTree.
-   *
-   * @param ways The collection of roads to be indexed.
-   * @return the indexed rectangleTree.
-   */
-  public SpatialIndex<Way> indexRoads(final Collection<Way> ways) {
-    if (ways == null || ways.isEmpty()) {
-      return null;
+    if (this.relationsTree == null || this.relationsIsDirty) {
+      this.relationsTree = new RectangleTree<>(this.relations);
+      this.relationsIsDirty = false;
     }
 
-    RectangleTree<Way> roadTree = new RectangleTree<>(ways);
-    this.roadsIsDirty = false;
-
-    return roadTree;
-  }
-
-  /**
-   * Indexing the road rangeTree.
-   *
-   * @param ways The collection of roads to be indexed.
-   * @return the indexed rectangleTree.
-   */
-  public RectangleTree<Way> indexTransportWays(final Collection<Way> ways) {
-    if (ways == null || ways.isEmpty()) {
-      return null;
+    if (this.landTree == null || this.landIsDirty) {
+      this.landTree = new RectangleTree<>(this.land);
+      this.landIsDirty = false;
     }
 
-    RectangleTree<Way> transportWaysTree = new RectangleTree<>(ways);
-    this.roadsIsDirty = false;
-
-    return transportWaysTree;
-  }
-
-  /**
-   * Return the transportWayTree.
-   * @return transportWaysTree.
-   */
-  public RectangleTree<Way> transportWaysTree() {
-    return this.transportWaysTree;
-  }
-
-  /**
-   * Indexing the road rangeTree.
-   *
-   * @param ways The collection of roads to be indexed.
-   * @return the indexed rectangleTree.
-   */
-  public SpatialIndex<Way> indexCycleways(final Collection<Way> ways) {
-    if (ways == null || ways.isEmpty()) {
-      return null;
+    if (this.poiTree == null || this.poiIsDirty) {
+      this.poiTree = new PointTree<>(this.pois);
+      this.poiIsDirty = false;
     }
 
-    RectangleTree<Way> cyclewaysTree = new RectangleTree<>(ways);
-    this.cyclewaysIsDirty = false;
+    if (this.roadsTree == null || this.roadsIsDirty) {
+      this.roadsTree = new RectangleTree<>(this.roads);
+      this.roadsIsDirty = false;
 
-    return cyclewaysTree;
-  }
-
-  /**
-   * Indexing relations rangeTree.
-   *
-   * @param relations The collection of relations to be indexed.
-   * @return the indexed rectangleTree.
-   */
-  public SpatialIndex<Relation> indexRelations(
-    final Collection<Relation> relations) {
-    if (relations == null || relations.isEmpty()) {
-      return null;
+      this.transportWaysTree = new RectangleTree<>(this.transportWays);
+      this.roadsIsDirty = false;
     }
 
-    RectangleTree<Relation> relationTree = new RectangleTree<>(relations);
-    this.relationsIsDirty = false;
+    if (this.cyclewaysTree == null || this.cyclewaysIsDirty) {
+      this.cyclewaysTree = new RectangleTree<>(this.cycleways);
+      this.cyclewaysIsDirty = false;
 
-    return relationTree;
-  }
-
-  /**
-   * Indexing the land rangeTree.
-   *
-   * @param land The collection of land to be indexed.
-   * @return the indexed rectangleTree.
-   */
-  public SpatialIndex<Way> indexLand(final Collection<Way> land) {
-    if (this.land == null || this.land.isEmpty()) {
-      return null;
+      this.transportWaysTree = new RectangleTree<>(this.transportWays);
+      this.roadsIsDirty = false;
     }
-
-    RectangleTree<Way> landTree = new RectangleTree<>(land);
-    this.landIsDirty = false;
-
-    return landTree;
-  }
-
-  /**
-   * If needed indexes the given pointTree.
-   *
-   * @param nodes the list of nodes to be indexed.
-   * @return the indexed point tree.
-   */
-  public SpatialIndex<Node> indexPoi(final Collection<Node> nodes) {
-    if (nodes == null || nodes.isEmpty()) {
-      return null;
-    }
-
-    PointTree<Node> poiTree = new PointTree<>(nodes);
-    this.poiIsDirty = false;
-
-    return poiTree;
   }
 
   /**
@@ -584,9 +489,9 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
       final float minX,
       final float minY,
       final float maxX,
-      final float maxY) {
-      SpatialIndex.Bounds b = new SpatialIndex.Bounds(minX, minY, maxX, maxY);
-      this.bounds = b;
+      final float maxY
+    ) {
+      this.bounds = new SpatialIndex.Bounds(minX, minY, maxX, maxY);
 
       return this;
     }

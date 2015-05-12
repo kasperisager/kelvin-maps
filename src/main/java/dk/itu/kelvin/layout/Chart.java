@@ -96,6 +96,21 @@ public final class Chart extends Group {
   private Map<Anchor, Group> showing = new Object2ObjectOpenHashMap<>();
 
   /**
+   * Keep track of the tiles of POI currently showing.
+   */
+  private Map<Anchor, Group> showingPOI = new Object2ObjectOpenHashMap<>();
+
+  /**
+   * HashSet representing the POI tags currently being shown on the map.
+   */
+  private Set<String> activeTags = new ObjectOpenHashSet<>();
+
+  /**
+   * HashSet representing the POI tags that is selected by the user.
+   */
+  private Set<String> currentTags = new ObjectOpenHashSet<>();
+
+  /**
    * Current smallest x-coordinate of the chart viewport.
    */
   private int minX;
@@ -127,11 +142,14 @@ public final class Chart extends Group {
   private Group metaLayer = new Group();
 
   /**
+<<<<<<< HEAD
    * Map of points currently being shown.
    */
   private Map<Node, Label> points = new Object2ObjectOpenHashMap<>();
 
   /**
+=======
+>>>>>>> hotfix/dynamic-load-poi
    * The width of the map.
    */
   private double mapWidth;
@@ -422,15 +440,6 @@ public final class Chart extends Group {
     int maxX = (int) (this.tileSize * Math.floor(max.getX() / this.tileSize));
     int maxY = (int) (this.tileSize * Math.floor(max.getY() / this.tileSize));
 
-    if (
-      minX == this.minX
-      && minY == this.minY
-      && maxX == this.maxX
-      && maxY == this.maxY
-    ) {
-      return;
-    }
-
     this.minX = minX;
     this.minY = minY;
     this.maxX = maxX;
@@ -443,7 +452,6 @@ public final class Chart extends Group {
         anchors.add(new Anchor(x, y));
       }
     }
-
     Iterator<Anchor> it = this.showing.keySet().iterator();
 
     while (it.hasNext()) {
@@ -464,6 +472,34 @@ public final class Chart extends Group {
 
       this.show(anchor);
     }
+
+    it = this.showingPOI.keySet().iterator();
+
+    while (it.hasNext()) {
+      Anchor anchor = it.next();
+
+      if (anchors.contains(anchor)) {
+        if (
+          this.activeTags.containsAll(this.currentTags)
+          && this.activeTags.size() == this.currentTags.size()
+        ) {
+          continue;
+        }
+      }
+      this.hidePOI(anchor);
+      it.remove();
+    }
+    for (Anchor anchor: anchors) {
+      if (this.showingPOI.containsKey(anchor)) {
+        if (
+          this.activeTags.containsAll(this.currentTags)
+          && this.activeTags.size() == this.currentTags.size()
+        ) {
+          continue;
+        }
+      }
+      this.showPOI(anchor);
+    }
   }
 
   /**
@@ -472,23 +508,8 @@ public final class Chart extends Group {
    * @param tag unique type of POI.
    */
   public void showSelectedPoi(final String tag) {
-    List<Element> elements = this.elementStore.find()
-      .types("poi")
-      .tag(tag)
-      .bounds(
-        this.minX,
-        this.minY,
-        this.maxX + this.tileSize,
-        this.maxY + this.tileSize
-      )
-      .get();
-
-      for (Element element: elements) {
-        Node node = (Node) element;
-        Label label = node.render();
-        this.points.put(node, label);
-        this.metaLayer.getChildren().add(label);
-      }
+    this.currentTags.add(tag);
+    this.layoutTiles();
   }
 
   /**
@@ -497,18 +518,57 @@ public final class Chart extends Group {
    * @param tag unique key in POI.
    */
   public void hidePointsOfInterests(final String tag) {
-    List<Element> elements = this.elementStore.find()
-      .types("poi")
-      .tag(tag)
-      .bounds(this.minX, this.minY, this.maxX + this.tileSize,
-        this.maxY + this.tileSize)
-      .get();
+    this.currentTags.remove(tag);
+    this.layoutTiles();
+  }
 
-    for (Element element : elements) {
-      Node node = (Node) element;
-      Label label = this.points.remove(node);
-      this.metaLayer.getChildren().remove(label);
+  /**
+   * Shows all current POI on a specific anchor.
+   * @param anchor the anchor to show.
+   */
+  private void showPOI(final Anchor anchor) {
+    if (anchor == null) {
+      return;
     }
+
+    int x = anchor.x;
+    int y = anchor.y;
+
+    Group group = new Group();
+
+    for (String tag: this.currentTags) {
+      List<Element> elements = this.elementStore.find()
+        .types("poi")
+        .tag(tag)
+        .bounds(this.minX, this.minY, this.maxX + this.tileSize,
+          this.maxY + this.tileSize)
+        .get();
+      for (Element element: elements) {
+        Node node = (Node) element;
+        Label label = node.render();
+        group.getChildren().add(label);
+      }
+    }
+    group.setClip(new Rectangle(x, y, this.tileSize, this.tileSize));
+    group.setCache(true);
+
+    this.metaLayer.getChildren().add(group);
+    this.activeTags = new ObjectOpenHashSet<>(this.currentTags);
+    this.showingPOI.put(anchor, group);
+  }
+
+  /**
+   * Hides a specific anchor of POI.
+   * @param anchor The anchor to hide.
+   */
+  private void hidePOI(final Anchor anchor) {
+    if (anchor == null) {
+      return;
+    }
+
+    Group group = this.showingPOI.get(anchor);
+
+    this.metaLayer.getChildren().remove(group);
   }
 
   /**

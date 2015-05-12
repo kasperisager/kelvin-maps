@@ -22,6 +22,11 @@ public final class WeightedGraph<
   N extends WeightedGraph.Node, E extends WeightedGraph.Edge<N>
 > implements Graph<N, E> {
   /**
+   * UID for identifying serialized objects.
+   */
+  private static final long serialVersionUID = 18813;
+
+  /**
    * The adjacency list for all vertices and edges in the graph.
    */
   private final Map<N, Map<N, E>> neighbours = new Object2ObjectOpenHashMap<>();

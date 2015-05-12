@@ -169,7 +169,7 @@ public class RectangleTree<E extends RectangleTree.Index>
    * @return        The element closest to the specified point.
    */
   public final E nearest(final Point point, final Filter<E> filter) {
-    if (point == null || filter == null) {
+    if (this.root == null || point == null || filter == null) {
       return null;
     }
 
