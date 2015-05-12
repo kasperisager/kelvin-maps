@@ -7,6 +7,11 @@ package dk.itu.kelvin.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+
+// Regex utilities
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 // JavaFX shapes
 import javafx.scene.shape.Polyline;
@@ -266,11 +271,16 @@ public final class Way extends Element<Polyline>
   /**
    * Get the weight between the specified nodes.
    *
-   * @param a The first node.
-   * @param b The second node.
-   * @return  The weight between the specified nodes.
+   * @param a           The first node.
+   * @param b           The second node.
+   * @param properties  A configuration map of custom properties.
+   * @return            The weight between the specified nodes.
    */
-  public double weight(final Node a, final Node b) {
+  public double weight(
+    final Node a,
+    final Node b,
+    final Properties properties
+  ) {
     if (a == null || b == null) {
       return Double.POSITIVE_INFINITY;
     }
@@ -278,21 +288,45 @@ public final class Way extends Element<Polyline>
     Geometry.Point ap = new Geometry.Point(a.x(), a.y());
     Geometry.Point bp = new Geometry.Point(b.x(), b.y());
 
+    double distance = Geometry.distance(ap, bp);
     double maxspeed = 50.0;
 
-    if (this.tag("maxspeed") != null) {
-      maxspeed = Double.parseDouble(this.tag("maxspeed"));
+    if (properties.getProperty("bicycle", "no").equals("yes")) {
+      // If we ever want to calculate how fast it takes to travel a path then
+      // this will be used for computing the metric for bikes.
+      //
+      // http://en.wikipedia.org/wiki/Bicycle_performance#Typical_speeds
+      maxspeed = 15.5;
+    }
+    else if (this.tag("maxspeed") != null) {
+      // http://wiki.openstreetmap.org/wiki/Key:maxspeed#Parser
+      String maxspeedRegex = "^"
+      + "(?<speed>[0-9][\\.0-9]+?)\\s?(?<unit>km/h|kmh|kph|mph|knots)?"
+      + "$";
+
+      Pattern p = Pattern.compile(maxspeedRegex);
+      Matcher m = p.matcher(this.tag("maxspeed"));
+
+      if (m.matches()) {
+        maxspeed = Double.parseDouble(m.group("speed"));
+      }
     }
 
-    return Geometry.distance(ap, bp) / maxspeed;
+    return distance / maxspeed;
   }
 
   /**
    * Get the direction of the way.
    *
-   * @return The direction of the way.
+   * @param properties  A configuration map of custom properties.
+   * @return            The direction of the way.
    */
-  public Graph.Direction direction() {
+  public Graph.Direction direction(final Properties properties) {
+    // If a bicycle is used, the way will always be bi-directional.
+    if (properties.getProperty("bicycle", "no").equals("yes")) {
+      return Graph.Direction.BI;
+    }
+
     String oneway = this.tag("oneway");
 
     if (oneway != null && oneway.equals("yes")) {
