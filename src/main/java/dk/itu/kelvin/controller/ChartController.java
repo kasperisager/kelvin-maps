@@ -325,18 +325,20 @@ public final class ChartController {
     double minLength = 50;
     int count = 1;
     double temp = length;
+
     while (temp < minLength) {
-      temp = length * ChartController.instance.findScale(++count);
+      temp = length * ChartController.findScale(++count);
     }
-    if (ChartController.instance.findScale(count) >= 1000) {
-      ChartController.instance.setScaleText(
-        ChartController.instance.findScale(count) / 1000 + " km"
-      );
-    } else {
-      ChartController.instance.setScaleText(
-        ChartController.instance.findScale(count) + " m"
-      );
+
+    int scale = ChartController.findScale(count);
+
+    if (scale >= 1000) {
+      ChartController.instance.setScaleText(scale / 1000 + " km");
     }
+    else {
+      ChartController.instance.setScaleText(scale + " m");
+    }
+
     ChartController.instance.scaleIndicatorLabel.setPrefWidth(temp);
   }
 
@@ -347,17 +349,13 @@ public final class ChartController {
    * @return the scale that correlates to the count.
    */
   private static int findScale(final int count) {
-    int scaleCase = count % 3;
     int multiplier = (int) Math.ceil(count / 3) + 1;
-    switch (scaleCase) {
-      case 0:
-        return 1 * (int) (Math.pow(10, multiplier));
-      case 1:
-        return 2 * (int) (Math.pow(10, multiplier));
-      case 2:
-        return 5 * (int) (Math.pow(10, multiplier));
-      default:
-        return 0;
+
+    switch (count % 3) {
+      case 0:   return 1 * (int) (Math.pow(10, multiplier));
+      case 1:   return 2 * (int) (Math.pow(10, multiplier));
+      case 2:   return 5 * (int) (Math.pow(10, multiplier));
+      default:  return 0;
     }
   }
 
