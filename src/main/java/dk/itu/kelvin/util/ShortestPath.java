@@ -216,8 +216,8 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
     double estimateTo = edge.weight(to, this.to, this.properties);
 
     // Decrease the actual weight by the difference between the approximated
-    // distances. This ensures that nodes closer to the target node will be moved
-    // further up the queue.
+    // distances. This ensures that nodes closer to the target node will be
+    // moved further up the queue.
     weight -= estimateFrom - estimateTo;
 
     return weight;
