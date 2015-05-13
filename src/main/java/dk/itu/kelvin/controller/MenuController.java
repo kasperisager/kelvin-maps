@@ -4,9 +4,9 @@
 package dk.itu.kelvin.controller;
 
 // I/O utilities
-import java.io.File;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
@@ -37,6 +37,9 @@ import javafx.fxml.FXML;
 // ControlsFX
 import org.controlsfx.control.PopOver;
 
+// Main
+import dk.itu.kelvin.Main;
+
 /**
  * MenuBar controller class.
  */
@@ -54,12 +57,12 @@ public final class MenuController {
   /**
    * Current binary file that the user can overwrite by saving or load.
    */
-  private static final String CURRENT_BIN = "currentMap.bin";
+  private static final String CURRENT_BIN =  "currentMap.bin";
 
   /**
    * Location for default bin file. Default bin can't be changed.
    */
-  private static final String DEFAULT_BIN = "defaultMap.bin";
+  private static final String DEFAULT_BIN =  "defaultMap.bin";
 
   /**
    * About PopOver.
@@ -131,6 +134,7 @@ public final class MenuController {
 
         ApplicationController.removeIcon();
       } catch (Exception e) {
+        ApplicationController.removeIcon();
         throw new RuntimeException(e);
       }
     });
@@ -149,14 +153,36 @@ public final class MenuController {
    */
   @FXML
   private void defaultBin() {
-    this.loadBin(DEFAULT_BIN);
+    MenuController.loadDefault();
   }
 
   /**
    * Static method for loading the default map that can't be changed.
    */
   public static void loadDefault() {
-    MenuController.loadBin(DEFAULT_BIN);
+    ApplicationController.addIcon();
+
+    MenuController.clearMap();
+
+    Platform.runLater(() -> {
+      try (
+        ObjectInputStream in = new ObjectInputStream(
+          Main.class.getResourceAsStream(DEFAULT_BIN)
+        );
+      ) {
+        BoundingBox bounds = (BoundingBox) in.readObject();
+        ElementStore elementStore = (ElementStore) in.readObject();
+        AddressStore addressStore = (AddressStore) in.readObject();
+        in.close();
+
+        ChartController.loadBinMap(elementStore, bounds);
+        AddressController.setAddressStore(addressStore);
+        ApplicationController.removeIcon();
+      } catch (Exception e) {
+        ApplicationController.removeIcon();
+        throw new RuntimeException(e);
+      }
+    });
   }
 
   /**
@@ -185,6 +211,7 @@ public final class MenuController {
         AddressController.setAddressStore(addressStore);
         ApplicationController.removeIcon();
       } catch (Exception e) {
+        ApplicationController.removeIcon();
         throw new RuntimeException(e);
       }
     });
