@@ -97,10 +97,6 @@ public final class TaskQueue {
 
   /**
    * Shut down the task queue.
-   *
-   * @see <a href="https://docs.oracle.com/javase/8/docs/api/java/util/
-   * concurrent/ExecutorService.html">https://docs.oracle.com/javase/8/docs/api
-   * /java/util/concurrent/ExecutorService.html</a>
    */
   public static void shutdown() {
     // Clear any remaining task groups.
