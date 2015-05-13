@@ -4,7 +4,11 @@
 package dk.itu.kelvin.controller;
 
 // I/O utilities
-import java.io.*;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 // JavaFX stage utilities
 import javafx.application.Platform;
@@ -53,12 +57,12 @@ public final class MenuController {
   /**
    * Current binary file that the user can overwrite by saving or load.
    */
-  private static final String CURRENT_BIN =  "\\currentMap.bin";
+  private static final String CURRENT_BIN =  "currentMap.bin";
 
   /**
    * Location for default bin file. Default bin can't be changed.
    */
-  private static final String DEFAULT_BIN =  "\\defaultMap.bin";
+  private static final String DEFAULT_BIN =  "defaultMap.bin";
 
   /**
    * About PopOver.
@@ -163,7 +167,7 @@ public final class MenuController {
     Platform.runLater(() -> {
       try (
         ObjectInputStream in = new ObjectInputStream(
-          Main.class.getResourceAsStream("defaultMap.bin")
+          Main.class.getResourceAsStream(DEFAULT_BIN)
         );
       ) {
         BoundingBox bounds = (BoundingBox) in.readObject();
