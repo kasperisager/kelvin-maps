@@ -338,8 +338,10 @@ public final class Chart extends Group {
     double deltaY = addr2.y() - addr1.y();
     Node center = new Node(addr1.x() + (deltaX / 2), addr1.y() + (deltaY / 2));
 
-    double xDist = 50 + Math.abs(addr1.x() - addr2.x());
-    double yDist = 200 + Math.abs(addr1.y() - addr2.y());
+    double paddingX = 50;
+    double paddingY = 200;
+    double xDist = paddingX + Math.abs(addr1.x() - addr2.x());
+    double yDist = paddingY + Math.abs(addr1.y() - addr2.y());
     double scaleX = xDist / this.getScene().getWidth();
     double scaleY = yDist / this.getScene().getHeight();
     double scaleMax = Math.max(scaleX, scaleY);
