@@ -146,7 +146,7 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
     double estimateFrom = edge.weight(from, this.to, this.properties);
     double estimateTo = edge.weight(to, this.to, this.properties);
 
-    weight += estimateFrom - estimateTo;
+    weight -= estimateFrom - estimateTo;
 
     double distFrom = this.distance.get(from);
     double distTo = this.distance.get(to);
