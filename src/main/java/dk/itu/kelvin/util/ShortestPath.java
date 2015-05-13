@@ -99,8 +99,8 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
       return Float.compare(this.distance(a), this.distance(b));
     });
 
-    this.distance.put(from, 0.0f);
-    this.queue.add(from);
+    this.distance.put(this.from, 0.0f);
+    this.queue.add(this.from);
 
     while (!this.queue.isEmpty()) {
       N next = this.queue.poll();
@@ -124,6 +124,7 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
       }
     }
 
+    // Clear remaining elements in the queue and let GC do its work.
     this.queue.clear();
   }
 
