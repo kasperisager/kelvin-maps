@@ -343,7 +343,12 @@ public final class Chart extends Group {
     double scaleX = xDist / this.getScene().getWidth();
     double scaleY = yDist / this.getScene().getHeight();
     double scaleMax = Math.max(scaleX, scaleY);
-    this.center(center, 1 / scaleMax);
+
+    if (1 / scaleMax < MIN_ZOOM_FACTOR) {
+      this.center(addr1, MIN_ZOOM_FACTOR);
+    } else {
+      this.center(center, 1 / scaleMax);
+    }
   }
 
   /**
