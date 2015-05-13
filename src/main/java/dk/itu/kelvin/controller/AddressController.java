@@ -490,7 +490,12 @@ public final class AddressController {
    */
   @FXML
   private void routeByCar() {
-    showShortestPath("car");
+    if (
+      AddressController.currentAddress != null
+      && AddressController.destinationAddress != null
+    ) {
+      showShortestPath("car");
+    }
   }
 
   /**
@@ -498,7 +503,12 @@ public final class AddressController {
    */
   @FXML
   private void routeByFoot() {
-    showShortestPath("bicycle");
+    if (
+      AddressController.currentAddress != null
+      && AddressController.destinationAddress != null
+    ) {
+      showShortestPath("bicycle");
+    }
   }
 
   /**
@@ -703,9 +713,20 @@ public final class AddressController {
   }
 
   /**
+   * Resets the UI of all relevant AddressController elements.
+   */
+  public static void resetUI() {
+    AddressController.resetPOI();
+    AddressController.instance.findAddressTextField.setText("");
+    AddressController.instance.findRouteTextField.setText("");
+    AddressController.currentAddress = null;
+    AddressController.destinationAddress = null;
+  }
+
+  /**
    * Unchecks all checkboxes in the Points Of Interest box.
    */
-  public static void resetPOI() {
+  private static void resetPOI() {
     for (int i = 0; i < AddressController.instance.filter.size(); i++) {
       CheckBox cb = (CheckBox) AddressController.instance.poiContentVBox
         .getChildren()

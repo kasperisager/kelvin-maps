@@ -24,7 +24,6 @@
     </Menu>
     <Menu text="Help">
       <items>
-        <MenuItem text="User manual" onAction="#showManual"/>
         <MenuItem text="About" onAction="#showAbout"/>
       </items>
     </Menu>

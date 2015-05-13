@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.MenuBar;
+import javafx.scene.text.TextAlignment;
 
 // JavaFX Geometry
 import javafx.geometry.Pos;
@@ -48,7 +49,7 @@ public final class MenuController {
   /**
    * Current Version number.
    */
-  private static final String CUR_VERSION = "RC1";
+  private static final String CUR_VERSION = "1.0.0";
 
   /**
    * Current binary file that the user can overwrite by saving or load.
@@ -197,7 +198,8 @@ public final class MenuController {
    * Calls methods for resetting all relevant data when loading new map file.
    */
   private static void clearMap() {
-    AddressController.resetPOI();
+    AddressController.resetUI();
+
     AddressController.clearAddresses();
     ChartController.clearMap();
   }
@@ -209,38 +211,6 @@ public final class MenuController {
   private void close() {
     Stage stage = (Stage) this.mainMenuBar.getScene().getWindow();
     stage.close();
-  }
-
-  /**
-   * Resets all application settings to default.
-   */
-  @FXML
-  private void resetAll() {
-    //do stuff.
-  }
-
-  /**
-   * Manual shows information about general interaction with the software.
-   */
-  @FXML
-  private void showManual() {
-    this.manual = new PopOver();
-    VBox vbox = new VBox();
-
-    vbox.setAlignment(Pos.CENTER);
-    vbox.setPrefWidth(500);
-    vbox.getStyleClass().add("aboutVBox");
-
-    Label l1 = new Label("User Manual");
-    l1.getStyleClass().add("header");
-
-    vbox.getChildren().addAll(l1);
-    this.manual.setContentNode(vbox);
-    this.manual.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
-    this.manual.setCornerRadius(2);
-    this.manual.setArrowSize(6);
-    this.manual.setAutoHide(true);
-    this.manual.show(this.mainMenuBar);
   }
 
   /**
@@ -270,6 +240,8 @@ public final class MenuController {
     + "\nSebastian Molding Bork"
     + "\n"
     );
+    version.setTextAlignment(TextAlignment.CENTER);
+    credits.setTextAlignment(TextAlignment.CENTER);
 
     vbox.getChildren().addAll(header, version, credits);
     vbox.setAlignment(Pos.CENTER);

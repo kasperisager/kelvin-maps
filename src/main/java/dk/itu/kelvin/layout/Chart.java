@@ -52,22 +52,10 @@ import dk.itu.kelvin.store.ElementStore;
  *
  * <p>
  * Aside from being able to add regular {@code JavaFX} elements, additional
- * methods have been added to allow for adding our own data model, respectively
- * {@link #add(Element)}, {@link #add(Node)}, {@link #add(BoundingBox)},
- * {@link #add(Land)} and implementation for adding a collection of elements
- * {@link #add(Collection)}.
+ * methods have been added to allow for adding our own data model.
  *
- * <p>
- * General map interactions are handled with methods, respectively
- * {@link #zoom(double)}, {@link #pan(double, double)}, {@link #rotate(double)},
- * additional implementations for zoom, pan and rotate are usually not called
- * directly, but kept {@code public} as it gives more options.
- * This class also has implementations for specialised interactions with the
- * {@link Chart}, respectively {@link #center(double, double, double)},
- * {@link #center(Node, double)} and {@link #setPointer(Node)}.
- *
- * {@link Chart} constructor takes no parameters, adding initial elements to
- * chart.
+ * {@link Chart} constructor takes no parameters, adding initial layers elements
+ * to the chart.
  */
 public final class Chart extends Group {
   /**
@@ -226,7 +214,19 @@ public final class Chart extends Group {
     double unitPrPx = mapLength / (this.mapWidth / 100);
     this.unitPrM = 100 / unitPrPx;
 
-    this.center(centerNode);
+    this.center(centerNode, this.getMapScale());
+  }
+
+  /**
+   * Calculates the appropriate scale for the map and window size, with the
+   * intent see the whole map.
+   * @return the scale needed to see the whole map.
+   */
+  private double getMapScale() {
+    double scaleX = this.mapWidth / this.getScene().getWidth();
+    double scaleY = this.mapHeight / this.getScene().getHeight();
+    double scaleMax = Math.max(scaleX, scaleY);
+    return 1 / scaleMax;
   }
 
   /**
@@ -400,9 +400,17 @@ public final class Chart extends Group {
    * @param scale the scale to set.
    */
   private void setScale(final double scale) {
-    ChartController.setScaleLength(this.unitPrM * scale);
-    this.setScaleX(scale);
-    this.setScaleY(scale);
+    if (scale <= MIN_ZOOM_FACTOR) {
+      this.setScaleX(MIN_ZOOM_FACTOR);
+      this.setScaleY(MIN_ZOOM_FACTOR);
+    } else if (scale >= MAX_ZOOM_FACTOR) {
+      this.setScaleX(MAX_ZOOM_FACTOR);
+      this.setScaleY(MAX_ZOOM_FACTOR);
+    } else {
+      this.setScaleX(scale);
+      this.setScaleY(scale);
+    }
+    ChartController.setScaleLength(this.unitPrM * this.getScaleX());
   }
 
   /**
@@ -613,7 +621,9 @@ public final class Chart extends Group {
     this.landLayer.getChildren().clear();
     this.metaLayer.getChildren().clear();
     this.showing.clear();
+    this.showingPOI.clear();
     this.elementStore = new ElementStore();
+    this.currentTags.clear();
   }
 
   /**
