@@ -18,6 +18,7 @@ import dk.itu.kelvin.math.Geometry.Point;
 
 /**
  * Calculation and merging of coastlines to land polyLines.
+ *
  * <p>
  * Initially all coastlines are put in a {@link List}.
  * Then {@link Geometry.Line} line segments are created from the bounds of
@@ -28,8 +29,6 @@ import dk.itu.kelvin.math.Geometry.Point;
  * the line segments intersect with any of the bounds that we made to line
  * segments, if the intersect we add the intersection point to the nodes list.
  * We then render the points to polyLines representing the Land segments.
- *
- *
  */
 public final class Land extends Element<Group> {
   /**
