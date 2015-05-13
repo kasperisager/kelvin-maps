@@ -65,6 +65,23 @@ public interface SpatialIndex<E> extends Serializable {
   List<E> range(final Bounds bounds, final Filter<E> filter);
 
   /**
+   * Find the element closest to the specified point.
+   *
+   * @param point The point to look for elements near.
+   * @return      The element closest to the specified point.
+   */
+  E nearest(final Point point);
+
+  /**
+   * Find the element included in the filter closest to the specified point.
+   *
+   * @param point   The point to look for elements near.
+   * @param filter  The filter to apply to the search.
+   * @return        The element closest to the specified point.
+   */
+  E nearest(final Point point, final Filter<E> filter);
+
+  /**
    * The {@link Point} class describes a 2-dimensional point in a spatial index.
    */
   public static final class Point extends Geometry.Point {

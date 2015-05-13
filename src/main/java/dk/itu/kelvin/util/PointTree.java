@@ -136,6 +136,27 @@ public class PointTree<E extends PointTree.Index> implements SpatialIndex<E> {
   }
 
   /**
+   * Find the element closest to the specified point.
+   *
+   * @param point The point to look for elements near.
+   * @return      The element closest to the specified point.
+   */
+  public final E nearest(final Point point) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Find the element included in the filter closest to the specified point.
+   *
+   * @param point   The point to look for elements near.
+   * @param filter  The filter to apply to the search.
+   * @return        The element closest to the specified point.
+   */
+  public final E nearest(final Point point, final Filter<E> filter) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
    * Partition the given elements at the specified depth between the given
    * indices.
    *

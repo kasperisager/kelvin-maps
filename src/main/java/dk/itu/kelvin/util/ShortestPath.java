@@ -60,33 +60,27 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
   private final N to;
 
   /**
-   * Initialize a new shortest path instance given a weighted graph and a
-   * source node.
+   * Initialize a new shortest path instance given a graph and a source node.
    *
-   * @param graph The weighted graph to use for constructing the path tree.
+   * @param graph The graph to use for constructing the path tree.
    * @param from  Starting point for the shortest path.
    * @param to    Ending point for the shortest path.
    */
-  public ShortestPath(
-    final WeightedGraph<N, E> graph,
-    final N from,
-    final N to
-  ) {
+  public ShortestPath(final Graph<N, E> graph, final N from, final N to) {
     this(graph, from, to, new Properties());
   }
 
   /**
-   * Initialize a new shortest path instance given a weighted graph and a
-   * source node along with any custom properties.
+   * Initialize a new shortest path instance given a graph and a source node
+   * along with any custom properties.
    *
-   * @param graph       The weighted graph to use for constructing the path
-   *                    tree.
+   * @param graph       The graph to use for constructing the path tree.
    * @param from        Starting point for the shortest path.
    * @param to          Ending point for the shortest path.
    * @param properties  A configuration map of custom properties.
    */
   public ShortestPath(
-    final WeightedGraph<N, E> graph,
+    final Graph<N, E> graph,
     final N from,
     final N to,
     final Properties properties

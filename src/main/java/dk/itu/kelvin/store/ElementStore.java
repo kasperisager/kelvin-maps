@@ -8,18 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+// Utilities
+import dk.itu.kelvin.util.Graph;
+import dk.itu.kelvin.util.SpatialIndex;
+import dk.itu.kelvin.util.PointTree;
+import dk.itu.kelvin.util.RectangleTree;
+import dk.itu.kelvin.util.WeightedGraph;
+
 // Models
 import dk.itu.kelvin.model.Element;
 import dk.itu.kelvin.model.Way;
 import dk.itu.kelvin.model.Relation;
 import dk.itu.kelvin.model.BoundingBox;
 import dk.itu.kelvin.model.Node;
-
-// Utilities
-import dk.itu.kelvin.util.SpatialIndex;
-import dk.itu.kelvin.util.PointTree;
-import dk.itu.kelvin.util.RectangleTree;
-import dk.itu.kelvin.util.WeightedGraph;
 
 /**
  * Common store for storing all elements in the chart.
@@ -31,14 +32,14 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   private static final long serialVersionUID = 3081;
 
   /**
-   * Weighted graph for all carRoads.
+   * Graph for all carRoads.
    */
-  private final WeightedGraph<Node, Way> carGraph;
+  private final Graph<Node, Way> carGraph;
 
   /**
-   * Weighted graph for all roads.
+   * Graph for all roads.
    */
-  private final WeightedGraph<Node, Way> bicycleGraph;
+  private final Graph<Node, Way> bicycleGraph;
 
   /**
    * A list for all land elements.
@@ -113,7 +114,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   /**
    * Point tree for quick search in transportWays elements.
    */
-  private transient RectangleTree<Way> transportWaysTree;
+  private transient SpatialIndex<Way> transportWaysTree;
 
   /**
    * Indicates whether waysTree needs to be indexed or not.
@@ -241,7 +242,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * Accessor to carGraph.
    * @return A graph for to shortest path for cars.
    */
-  public WeightedGraph<Node, Way> carGraph() {
+  public Graph<Node, Way> carGraph() {
     return this.carGraph;
   }
 
@@ -249,7 +250,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * Accessor to bicycleGraph.
    * @return A graph for to shortest path for bicycles.
    */
-  public WeightedGraph<Node, Way> bycicleGraph() {
+  public Graph<Node, Way> bycicleGraph() {
     return this.bicycleGraph;
   }
 
@@ -301,7 +302,7 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
    * Return the transportWayTree.
    * @return transportWaysTree.
    */
-  public RectangleTree<Way> transportWaysTree() {
+  public SpatialIndex<Way> transportWaysTree() {
     this.index();
 
     return this.transportWaysTree;

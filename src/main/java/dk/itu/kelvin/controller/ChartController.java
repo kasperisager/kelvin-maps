@@ -36,9 +36,9 @@ import javafx.scene.control.Label;
 import javafx.fxml.FXML;
 
 // Utilities
+import dk.itu.kelvin.util.Graph;
 import dk.itu.kelvin.util.SpatialIndex;
 import dk.itu.kelvin.util.ShortestPath;
-import dk.itu.kelvin.util.WeightedGraph;
 
 // Math
 import dk.itu.kelvin.math.Geometry;
@@ -254,7 +254,7 @@ public final class ChartController {
       return;
     }
 
-    WeightedGraph<Node, Way> graph = null;
+    Graph<Node, Way> graph = null;
     Properties properties = new Properties();
 
     switch (type.toLowerCase()) {

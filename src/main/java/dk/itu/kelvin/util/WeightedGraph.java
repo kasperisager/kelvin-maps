@@ -15,15 +15,18 @@ import java.util.Properties;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
+// Utilities
+import dk.itu.kelvin.util.WeightedGraph.Edge;
+import dk.itu.kelvin.util.WeightedGraph.Node;
+
 /**
  * WeightedGraph class.
  *
  * @param <N> The type of nodes to use within the weighted graph.
  * @param <E> The type of edges to use within the weighted graph.
  */
-public final class WeightedGraph<
-  N extends WeightedGraph.Node, E extends WeightedGraph.Edge<N>
-> implements Graph<N, E> {
+public final class WeightedGraph<N extends Node, E extends Edge<N>>
+  implements Graph<N, E> {
   /**
    * UID for identifying serialized objects.
    */
