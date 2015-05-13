@@ -85,20 +85,17 @@ public final class WeightedGraph<N extends Node, E extends Edge<N>>
         this.neighbours.put(a, new Object2ObjectOpenHashMap<>(2));
       }
 
+      this.neighbours.get(a).put(b, edge);
+
+      if (direction == Direction.UNI) {
+        continue;
+      }
+
       if (!this.neighbours.containsKey(b)) {
         this.neighbours.put(b, new Object2ObjectOpenHashMap<>(2));
       }
 
-      switch (direction) {
-        case UNI:
-          this.neighbours.get(a).put(b, edge);
-          break;
-
-        case BI:
-        default:
-          this.neighbours.get(a).put(b, edge);
-          this.neighbours.get(b).put(a, edge);
-      }
+      this.neighbours.get(b).put(a, edge);
     }
 
     return true;
