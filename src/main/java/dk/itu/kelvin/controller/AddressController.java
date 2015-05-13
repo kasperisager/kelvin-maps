@@ -451,7 +451,8 @@ public final class AddressController {
     showShortestPath("car");
     ChartController.setDistinationPointer(
       destinationAddress.x(),
-      destinationAddress.y());
+      destinationAddress.y()
+    );
 
     this.autoCompletePopOver.hide();
   }
@@ -735,6 +736,7 @@ public final class AddressController {
       cb.setSelected(false);
     }
   }
+
   /**
    * Inserts a String into a specific text field, and hides PopOver.
    * @param tf the text field to set text.

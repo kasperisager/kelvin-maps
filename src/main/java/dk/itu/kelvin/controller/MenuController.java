@@ -98,6 +98,7 @@ public final class MenuController {
   private void initialize() {
     MenuController.instance = this;
   }
+
   /**
    * Choose an .OSM, .XML, .PBF file to be loaded.
    */

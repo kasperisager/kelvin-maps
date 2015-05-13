@@ -108,7 +108,6 @@ public final class ChartController {
    */
   private Text locationPointer;
 
-
   /**
    * Text(icon) representing the destination address.
    */
@@ -122,7 +121,7 @@ public final class ChartController {
   /**
    * Polyline to represent the route.render().
    */
-  private Polyline route = null;
+  private Polyline route;
 
   /**
    * The Canvas element to add all the Chart elements to.
