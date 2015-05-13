@@ -18,7 +18,7 @@ public final class LandTest {
    *
    */
   @Test
-  public void addWay() {
+  public void testAddWay() {
     Land land = new Land(new BoundingBox(4, 6, 2, 1));
     Way way = new Way();
 
@@ -30,6 +30,5 @@ public final class LandTest {
     // test size of coastlines when added 1 one
     land.add(way);
     assertTrue(1 == land.coastlines().size());
-
   }
 }

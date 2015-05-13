@@ -38,7 +38,6 @@ public final class TernarySearchTreeTest {
     assertFalse(tst.isEmpty());
   }
 
-
   /**
    * Test getting the mapped element out of a ternary search tree.
    * Indirectly tests: Initialize(), partition() and get().

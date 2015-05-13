@@ -64,7 +64,6 @@ public final class PointTreeTest {
     assertTrue(pointTree.contains(new Node(4, 6)));
     assertTrue(pointTree.contains(new Node(8, 12)));
     assertFalse(pointTree.contains(new Node(8, 11)));
-
   }
 
   /**
@@ -75,7 +74,6 @@ public final class PointTreeTest {
     List<Node> nodes = new ArrayList<>();
     PointTree<Node> pointTree = new PointTree<>(nodes);
     assertTrue(pointTree.range(null) == null);
-    //assertTrue(pointTree.range(new SpatialIndex.Bounds(1, 1, 3, 3)) == null);
 
     nodes.add(new Node(1, 1));
     pointTree = new PointTree<>(nodes);
@@ -109,20 +107,23 @@ public final class PointTreeTest {
     assertTrue(expected.isEmpty());
 
     assertTrue(pointTree.range(
-            new SpatialIndex.Bounds(1, 1, 1 , 1), null) == null);
+      new SpatialIndex.Bounds(1, 1, 1 , 1), null
+    ) == null);
     assertTrue(pointTree.range(null, null) == null);
     assertTrue(pointTree.range(null, (element) -> {
       return element.tags().containsKey("test tag");
     }) == null);
 
     result = pointTree.range(
-            new SpatialIndex.Bounds(1, 1, 10, 10), (element) -> {
-      return element.tags().containsKey("test tag");
-    });
+      new SpatialIndex.Bounds(1, 1, 10, 10),
+      (element) -> {
+        return element.tags().containsKey("test tag");
+      }
+    );
     expected.clear();
     expected.add(n1);
     expected.add(n2);
-    for (Node n : result) {
+    for (Node n: result) {
       assertTrue(expected.contains(n));
       expected.remove(n);
     }
@@ -152,15 +153,13 @@ public final class PointTreeTest {
 
     expected.add(new Node(50, 50));
     expected.add(new Node(51, 51));
-    for (Node n : result) {
+    for (Node n: result) {
       assertTrue(expected.contains(n));
       expected.remove(n);
     }
     expected.isEmpty();
 
-
     assertTrue(pointTree.range(new SpatialIndex.Bounds(1, 1, 1, 1)) != null);
-
   }
 
   /**
@@ -184,9 +183,11 @@ public final class PointTreeTest {
     PointTree<Node> pointTree = new PointTree<>(nodes);
 
     List<Node> result = pointTree.range(
-            new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) -> {
-      return element.tags().containsValue("test multi-tags");
-    });
+      new SpatialIndex.Bounds(1901, 1800, 5001, 4601),
+      (element) -> {
+        return element.tags().containsValue("test multi-tags");
+      }
+    );
     List<Node> expected = new ArrayList<>();
     expected.add(n1);
     expected.add(n2);
@@ -195,11 +196,12 @@ public final class PointTreeTest {
     }
 
     result = pointTree.range(
-            new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) -> {
-      return element.tags().containsValue("test value");
-    });
+      new SpatialIndex.Bounds(1901, 1800, 5001, 4601),
+      (element) -> {
+        return element.tags().containsValue("test value");
+      }
+    );
     assertTrue(result.contains(n1));
     assertFalse(result.contains(n2));
   }
-
 }

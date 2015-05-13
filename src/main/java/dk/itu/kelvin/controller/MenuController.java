@@ -62,11 +62,6 @@ public final class MenuController {
   private static final String DEFAULT_BIN = "defaultMap.bin";
 
   /**
-   * Manual PopOver.
-   */
-  private PopOver manual;
-
-  /**
    * About PopOver.
    */
   private PopOver about;

@@ -15,9 +15,8 @@ import static org.junit.Assert.assertTrue;
  * <p>
  * Test convert a x- and y-coordinate into a spherical latitude and longitude.
  *
- * We take into account that we compare doubles and set a deviation at 0,1 %.
  * <p>
- *
+ * We take into account that we compare doubles and set a deviation at 0,1 %.
  */
 public final class MercatorTest {
   /**

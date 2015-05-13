@@ -346,12 +346,13 @@ public final class GeometryTest {
 
       Geometry.Polyline pl1 = new Geometry.Polyline(p1, p2);
 
-      String polyString =
-              "Polyline[points = [Point[x = 1.0, y = 1.0], "
-                      + "Point[x = 11.0, y = 32.0]]]";
+      String string = "Polyline["
+      +   "points = ["
+      +     "Point[x = 1.0, y = 1.0], Point[x = 11.0, y = 32.0]"
+      +   "]"
+      + "]";
 
-      assertEquals(polyString, pl1.toString());
-
+      assertEquals(string, pl1.toString());
     }
   }
 
@@ -389,10 +390,11 @@ public final class GeometryTest {
       Geometry.Point p1 = new Geometry.Point(3, 4);
       Geometry.Circle c1 = new Geometry.Circle(p1, 15);
 
-      String circleString
-              = "Circle[center = Point[x = 3.0, y = 4.0], radius = 15.0]";
+      String string = "Circle["
+      +   "center = Point[x = 3.0, y = 4.0], radius = 15.0"
+      + "]";
 
-      assertEquals(circleString, c1.toString());
+      assertEquals(string, c1.toString());
     }
   }
 
@@ -462,10 +464,11 @@ public final class GeometryTest {
       Geometry.Point p1 = new Geometry.Point(2, 2);
       Geometry.Rectangle r1 = new Geometry.Rectangle(p1, 5, 5);
 
-      String rectangleString =
-              "Rectangle[position = Point[x = 2.0, y = 2.0], "
-                      + "width = 5.0, height = 5.0]";
-      assertEquals(r1.toString(), rectangleString);
+      String string = "Rectangle["
+      +   "position = Point[x = 2.0, y = 2.0], width = 5.0, height = 5.0"
+      + "]";
+
+      assertEquals(r1.toString(), string);
     }
   }
 
@@ -536,12 +539,11 @@ public final class GeometryTest {
 
       Geometry.Bounds b1 = new Geometry.Bounds(p1, p2);
 
-      String boundsString =
-              "Bounds[min = Point[x = 2.0, y = 2.0], "
-                      + "max = Point[x = 5.0, y = 5.0]]";
-      assertEquals(b1.toString(), boundsString);
+      String string = "Bounds["
+      +   "min = Point[x = 2.0, y = 2.0], max = Point[x = 5.0, y = 5.0]"
+      + "]";
+
+      assertEquals(b1.toString(), string);
     }
-
   }
-
 }

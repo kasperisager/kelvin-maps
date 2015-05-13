@@ -25,5 +25,4 @@ public final class StringPoolTest {
     assertEquals(sp.get(""), "");
     assertNull(sp.get(null));
   }
-
 }

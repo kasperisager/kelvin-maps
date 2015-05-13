@@ -131,7 +131,6 @@ public final class RectangleTreeTest {
     List<Way> expected = new ArrayList<>();
     expected.add(new Way());
 
-
     Way w1 = new Way();
     Node n1 = new Node(2, 1);
     w1.tag("test tag", "true");
@@ -152,7 +151,8 @@ public final class RectangleTreeTest {
 
     // filter == null
     assertTrue(rectTree.range(
-            new SpatialIndex.Bounds(1, 1, 1 , 1), null) == null);
+      new SpatialIndex.Bounds(1, 1, 1 , 1), null
+    ) == null);
 
     // bounds && filter == null
     assertTrue(rectTree.range(null, null) == null);
@@ -162,18 +162,19 @@ public final class RectangleTreeTest {
       return element.tags().containsKey("test tag");
     }) == null);
 
-
     // return all elements in filter: "test tag"
     result = rectTree.range(
-            new SpatialIndex.Bounds(1, 1, 10, 10), (element) -> {
-      return element.tags().containsKey("test tag");
-    });
+      new SpatialIndex.Bounds(1, 1, 10, 10),
+      (element) -> {
+        return element.tags().containsKey("test tag");
+      }
+    );
 
     // test filter by adding w1 && w2 to an array
     expected.clear();
     expected.add(w1);
     expected.add(w2);
-    for (Way way : result) {
+    for (Way way: result) {
       assertTrue(expected.contains(way));
       expected.remove(way);
     }
@@ -284,11 +285,9 @@ public final class RectangleTreeTest {
 
     assertFalse(rectTree.contains(new Way()));
 
-
     List<Way> expected = new ArrayList<>();
     List<Way> result = rectTree.range(new SpatialIndex.Bounds(1, 1, 512, 512));
     assertTrue(rectTree.range(null) == null);
-
 
     Way w1 = new Way();
     w1.add(new Node(50, 50));
@@ -298,11 +297,10 @@ public final class RectangleTreeTest {
     expected.add(w1);
     expected.add(w2);
 
-
-    for (Way way : result) {
+    for (Way way: result) {
       // Bug, when the rectTree size exceed Maximum Bucket size(512) the
       // does not work..
-     assertFalse(expected.contains(way));
+      assertFalse(expected.contains(way));
       expected.remove(way);
     }
   }
@@ -336,20 +334,25 @@ public final class RectangleTreeTest {
     RectangleTree<Way> rectTree = new RectangleTree<>(ways);
 
     List<Way> result = rectTree.range(
-            new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) -> {
-      return element.tags().containsValue("test multi-tags");
-    });
+      new SpatialIndex.Bounds(1901, 1800, 5001, 4601),
+      (element) -> {
+        return element.tags().containsValue("test multi-tags");
+      }
+    );
     List<Node> expected = new ArrayList<>();
     expected.add(n1);
     expected.add(n2);
+
     for (Way way: result) {
       assertTrue(expected.contains(way));
     }
 
     result = rectTree.range(
-            new SpatialIndex.Bounds(1901, 1800, 5001, 4601), (element) -> {
-      return element.tags().containsValue("test value");
-    });
+      new SpatialIndex.Bounds(1901, 1800, 5001, 4601),
+      (element) -> {
+        return element.tags().containsValue("test value");
+      }
+    );
     assertTrue(result.contains(w1));
     assertFalse(result.contains(w2));
   }

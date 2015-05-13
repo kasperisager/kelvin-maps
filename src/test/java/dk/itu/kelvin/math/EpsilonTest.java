@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
  *
  */
 public final class EpsilonTest {
-
   /**
    * Test if two values are equal.
    */
@@ -39,14 +38,9 @@ public final class EpsilonTest {
     assertTrue(Epsilon.equal(s1, s3));
     assertFalse(Epsilon.equal(s2, s1));
 
-
     // test Math.abs(a - b) < E^-8 (double)
     assertTrue(Epsilon.equal(1.0, 1.00000001));
     assertFalse(Epsilon.equal(1.0, 1.0000001));
-
-    // test Math.abs(a - b) < E^-4 (float) - virker kun på E^-5
-    //assertTrue(Epsilon.equal(1.0, 1.0001));
-    //assertFalse(Epsilon.equal(1.0f, 1.001f));
   }
 
   /**
@@ -118,7 +112,6 @@ public final class EpsilonTest {
     assertTrue(Epsilon.greaterOrEqual(65.21f, 55.21f));
     assertTrue(Epsilon.greaterOrEqual(54.42f, 34.39f));
 
-
     assertFalse(Epsilon.greaterOrEqual(-0.011, -0.01));
     assertFalse(Epsilon.greaterOrEqual(125.20, 125.21));
     assertFalse(Epsilon.greaterOrEqual(44.42f, 54.42f));
@@ -130,6 +123,5 @@ public final class EpsilonTest {
     assertTrue(Epsilon.greaterOrEqual(s1, s3));
     assertTrue(Epsilon.greaterOrEqual(s3, s2));
     assertFalse(Epsilon.greaterOrEqual(s2, s1));
-
   }
 }

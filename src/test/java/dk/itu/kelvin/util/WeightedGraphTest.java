@@ -86,5 +86,4 @@ public final class WeightedGraphTest {
     assertTrue(wg.neighbours(n5).containsKey(n6));
     assertTrue(wg.neighbours(n5).size() == 2);
   }
-
 }

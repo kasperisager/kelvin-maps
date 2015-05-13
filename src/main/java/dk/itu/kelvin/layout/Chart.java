@@ -485,6 +485,7 @@ public final class Chart extends Group {
       this.hidePOI(anchor);
       it.remove();
     }
+
     for (Anchor anchor: anchors) {
       if (this.showingPOI.containsKey(anchor)) {
         if (

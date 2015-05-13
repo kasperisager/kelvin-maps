@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
  *
  */
 public final class HaversineTest {
-
   /**
    * Test the distance between two specified coordinates.
    */
@@ -56,5 +55,4 @@ public final class HaversineTest {
     assertTrue(ourDist1 < realDist3);
     assertTrue(ourDist1 > realDist4);
   }
-
 }

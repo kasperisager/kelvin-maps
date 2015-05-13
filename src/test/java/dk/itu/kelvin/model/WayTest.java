@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-// Utilities
-import dk.itu.kelvin.util.Graph;
-
 // JUnit annotations
 import org.junit.Test;
 
@@ -19,6 +16,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 
+// Utilities
+import dk.itu.kelvin.util.Graph;
 
 /**
  * {@link Way} test suite.
@@ -47,9 +46,9 @@ public final class WayTest {
     assertTrue(6 == w1.maxY());
   }
 
-    /**
-     * Test add a list of empty nodes or list equal null.
-     */
+  /**
+   * Test add a list of empty nodes or list equal null.
+   */
   @Test
   public void addNodes() {
     Way way = new Way();
@@ -124,11 +123,6 @@ public final class WayTest {
     w2.add(n8);
 
     assertFalse(w2.isClosed());
-
-    // test if start == null or end == null.
-    Way w3 = new Way();
-    //assertFalse(w3.isClosed());
-
   }
 
   /**
@@ -199,7 +193,6 @@ public final class WayTest {
     Way w4 = new Way();
     assertFalse(w4.startsIn(w3));
     assertFalse(w3.startsIn(w4));
-
   }
 
   /**
@@ -354,5 +347,4 @@ public final class WayTest {
     prop2.put("bicycle", "yes");
     assertTrue(Graph.Direction.BI == w2.direction(prop2));
   }
-
 }
