@@ -29,10 +29,6 @@ import dk.itu.kelvin.math.Geometry.Point;
  * segments, if the intersect we add the intersection point to the nodes list.
  * We then render the points to polyLines representing the Land segments.
  *
- * Time complexity for finding intersection points on bounds is worst case: ~8N
- * (goes though the coastlines 2 times, and each coastline checks for each of
- * the 4 bounds in BondingBox for intersections).
- * Average is significantly lower since first iteration of coastlines only...
  *
  */
 public final class Land extends Element<Group> {

@@ -117,7 +117,7 @@ public final class ChartController {
   /**
    * Element store storing all elements.
    */
-  private static ElementStore elementStore = new ElementStore();
+  private static ElementStore elementStore;
 
   /**
    * Polyline to represent the route.render().
@@ -408,7 +408,9 @@ public final class ChartController {
    * @param tag tag to show on map.
    */
   public static void showPoi(final String tag) {
-    ChartController.instance.chart.showSelectedPoi(tag);
+    if (ChartController.elementStore != null) {
+      ChartController.instance.chart.showSelectedPoi(tag);
+    }
   }
 
   /**
@@ -417,7 +419,9 @@ public final class ChartController {
    * @param tag to hide on map.
    */
   public static void hidePoi(final String tag) {
-    ChartController.instance.chart.hidePointsOfInterests(tag);
+    if (ChartController.elementStore != null) {
+      ChartController.instance.chart.hidePointsOfInterests(tag);
+    }
   }
 
   /**
@@ -611,7 +615,7 @@ public final class ChartController {
    */
   public static void clearMap() {
     ChartController.instance.chart.clear();
-    ChartController.elementStore = new ElementStore();
+    ChartController.elementStore = null;
   }
 
   /**
@@ -622,7 +626,7 @@ public final class ChartController {
     ApplicationController.addIcon();
 
     Parser parser = Parser.probe(file);
-
+    ChartController.elementStore = new ElementStore();
     parser.read(file, () -> {
       // Get all addresses from parser.
       for (Address address: parser.addresses()) {

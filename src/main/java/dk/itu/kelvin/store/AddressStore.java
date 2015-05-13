@@ -23,11 +23,8 @@ import dk.itu.kelvin.model.Address;
  * HashTable store for all addresses from the OSM file.
  *
  * <p>
- * Addresses are stored with an {@link Address} as {@code key} and {@link Node}
- * as {@code value}.
- *
- * <p>
- * The {@link #find(Address)} operation takes constant time complexity.
+ * Addresses are stored with an {@link Address} as {@code key} and
+ * {@link String} as {@code value}.
  */
 public final class AddressStore extends Store<Address, String> {
   /**
