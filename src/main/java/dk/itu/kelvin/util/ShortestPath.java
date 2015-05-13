@@ -6,11 +6,14 @@ package dk.itu.kelvin.util;
 // General utilities
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Properties;
+
+// Fast utils
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 // Utilities
 import dk.itu.kelvin.util.WeightedGraph.Edge;
@@ -29,12 +32,12 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
   /**
    * Maps the distance from the source to all different vertices in the graph.
    */
-  private final Map<N, Float> distance = new HashMap<>();
+  private final Map<N, Float> distance = new Object2FloatOpenHashMap<>();
 
   /**
    * Maps vertices with the last edge on the vertex's shortest path.
    */
-  private final Map<N, N> edgeTo = new HashMap<>();
+  private final Map<N, N> edgeTo = new Object2ObjectOpenHashMap<>();
 
   /**
    * Priority queue holding all vertices.
@@ -92,18 +95,11 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
     this.to = to;
     this.properties = properties;
 
-    for (E edge: graph.edges()) {
-      for (N node: edge.nodes()) {
-        this.distance.put(node, Float.POSITIVE_INFINITY);
-      }
-    }
-
-    this.distance.put(from, 0.0f);
-
-    this.queue = new PriorityQueue<>(this.distance.size(), (a, b) -> {
-      return this.distance.get(a).compareTo(this.distance.get(b));
+    this.queue = new PriorityQueue<>(11, (a, b) -> {
+      return Float.compare(this.distance(a), this.distance(b));
     });
 
+    this.distance.put(from, 0.0f);
     this.queue.add(from);
 
     while (!this.queue.isEmpty()) {
@@ -127,37 +123,8 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
         this.relax(next, node, edge);
       }
     }
-  }
 
-  /**
-   * Relax edge and update queue if changed.
-   *
-   * @param from  The first node.
-   * @param to    The second node.
-   * @param edge  The edge between the nodes.
-   */
-  private void relax(final N from, final N to, final E edge) {
-    if (from == null || to == null || edge == null) {
-      return;
-    }
-
-    double weight = edge.weight(from, to, this.properties);
-
-    double estimateFrom = edge.weight(from, this.to, this.properties);
-    double estimateTo = edge.weight(to, this.to, this.properties);
-
-    weight -= estimateFrom - estimateTo;
-
-    double distFrom = this.distance.get(from);
-    double distTo = this.distance.get(to);
-
-    if (Epsilon.greater(distTo, distFrom + weight)) {
-      this.distance.put(to, (float) (distFrom + weight));
-      this.edgeTo.put(to, from);
-
-      this.queue.remove(to);
-      this.queue.add(to);
-    }
+    this.queue.clear();
   }
 
   /**
@@ -166,7 +133,7 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
    * @return The distance of the shortest path.
    */
   public float distance() {
-    return this.distance.get(this.to);
+    return this.distance(this.to);
   }
 
   /**
@@ -206,5 +173,74 @@ public final class ShortestPath<N extends Node, E extends Edge<N>> {
     Collections.reverse(path);
 
     return path;
+  }
+
+  /**
+   * Relax edge and update queue if changed.
+   *
+   * @param from  The first node.
+   * @param to    The second node.
+   * @param edge  The edge connecting the nodes.
+   */
+  private void relax(final N from, final N to, final E edge) {
+    if (from == null || to == null || edge == null) {
+      return;
+    }
+
+    double weight = this.weight(from, to, edge);
+    double distFrom = this.distance(from);
+    double distTo = this.distance(to);
+
+    if (Epsilon.lessOrEqual(distTo, distFrom + weight)) {
+      return;
+    }
+
+    this.distance.put(to, (float) (distFrom + weight));
+    this.edgeTo.put(to, from);
+    this.queue.add(to);
+  }
+
+  /**
+   * Compute the weight between the specified nodes.
+   *
+   * @param from  The first node.
+   * @param to    The second node.
+   * @param edge  The edge connecting the nodes.
+   * @return      The weight between the specified nodes.
+   */
+  private double weight(final N from, final N to, final E edge) {
+    if (from == null || to == null || edge == null) {
+      return Double.POSITIVE_INFINITY;
+    }
+
+    // Compute the actual weight between the nodes.
+    double weight = edge.weight(from, to, this.properties);
+
+    // Approximate the weight from both nodes to the target node.
+    double estimateFrom = edge.weight(from, this.to, this.properties);
+    double estimateTo = edge.weight(to, this.to, this.properties);
+
+    // Decrease the actual weight by the difference between the approximated
+    // distances. This ensures that nodes closer to the target node will be moved
+    // further up the queue.
+    weight -= estimateFrom - estimateTo;
+
+    return weight;
+  }
+
+  /**
+   * Get the distance from the starting node to the specified node.
+   *
+   * @param node  The node whose distance from the starting node to get.
+   * @return      The distance from the starting node to the specified node.
+   */
+  private float distance(final N node) {
+    Float distance = this.distance.get(node);
+
+    if (node == null || distance == null) {
+      return Float.POSITIVE_INFINITY;
+    }
+
+    return distance;
   }
 }

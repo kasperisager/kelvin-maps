@@ -4,7 +4,9 @@
 package dk.itu.kelvin.util;
 
 // General utilities
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 // I/O utilities
@@ -21,16 +23,27 @@ public interface Graph<N extends Graph.Node, E extends Graph.Edge<N>>
   /**
    * Add an edge to the graph.
    *
-   * @param edge The edge to add to the graph.
+   * @param edge  The edge to add to the graph.
+   * @return      A boolean indicating whether or not the edge was added to the
+   *              graph.
    */
-  void add(final E edge);
+  boolean add(final E edge);
 
   /**
    * Get the edges of the graph.
    *
    * @return The edges of the graph.
    */
-  List<E> edges();
+  Collection<E> edges();
+
+  /**
+   * Get all edges incident on the specified node.
+   *
+   * @param node  The node whose incident edges to get.
+   * @return      A map of nodes and their associated edges incident on the
+   *              specified node.
+   */
+  Map<N, E> neighbours(final N node);
 
   /**
    * The {@link Node} interface describes a node within a graph.

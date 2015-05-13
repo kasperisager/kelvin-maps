@@ -5,12 +5,15 @@ package dk.itu.kelvin.util;
 
 // General utilities
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Properties;
 
 // Fast utils
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 /**
  * WeightedGraph class.
@@ -56,10 +59,20 @@ public final class WeightedGraph<
    * Add an edge to the weighted graph.
    *
    * @param edge The edge to add to the weighted graph.
+   * @return      A boolean indicating whether or not the edge was added to the
+   *              weighted graph.
    */
-  public void add(final E edge) {
+  public boolean add(final E edge) {
+    if (edge == null) {
+      return false;
+    }
+
     List<N> nodes = edge.nodes();
     Direction direction = edge.direction(this.properties);
+
+    if (nodes == null || nodes.isEmpty() || direction == null) {
+      return false;
+    }
 
     for (int i = 0; i < nodes.size() - 1; i++) {
       N a = nodes.get(i);
@@ -84,23 +97,28 @@ public final class WeightedGraph<
           this.neighbours.get(b).put(a, edge);
       }
     }
+
+    return true;
   }
 
   /**
-   * Gets all edges incident on a vertex.
-   * @param node the vertex.
-   * @return set of edges incident on the given vertex.
+   * Get all edges incident on the specified node.
+   *
+   * @param node  The node whose incident edges to get.
+   * @return      A map of nodes and their associated edges incident on the
+   *              specified node.
    */
   public Map<N, E> neighbours(final N node) {
     return this.neighbours.get(node);
   }
 
   /**
-   * Returns all edges in the graph.
-   * @return all edges.
+   * Get the edges of the weighted graph.
+   *
+   * @return The edges of the weighted graph.
    */
-  public List<E> edges() {
-    List<E> edges = new ArrayList<>();
+  public Collection<E> edges() {
+    Set<E> edges = new ObjectOpenHashSet<>();
 
     for (Map<N, E> neighbour: this.neighbours.values()) {
       for (E edge: neighbour.values()) {
