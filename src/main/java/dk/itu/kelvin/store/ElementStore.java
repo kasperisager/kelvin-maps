@@ -347,19 +347,6 @@ public final class ElementStore extends Store<Element, SpatialIndex.Bounds> {
   }
 
   /**
-   * Adds all elements of the param into a new list.
-   * @param list the list to be added.
-   * @return the resulting list.
-   */
-  public List<Element> getElements(final List<Element> list) {
-    List<Element> liste = new ArrayList<>();
-    for (Element e : list) {
-      liste.add(e);
-    }
-    return liste;
-  }
-
-  /**
    * (Re-)build all indexes if needed.
    */
   private void index() {
